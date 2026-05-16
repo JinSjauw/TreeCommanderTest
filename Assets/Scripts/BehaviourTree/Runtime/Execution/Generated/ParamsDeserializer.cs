@@ -12,49 +12,34 @@ namespace BehaviourTree.Runtime
 {
     public static partial class ParamsDeserializer
     {
-        public static BYEWORLD_Params DeserializeBYEWORLD(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        public static CHECK_FLAG_Params DeserializeCHECK_FLAG(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader reader = new FieldReader(fields, blackboard);
-            return new BYEWORLD_Params
+            return new CHECK_FLAG_Params
             {
-                // index 0: waitingTime (constant)
-                waitingTime = reader.GetFloat(0),
-                // index 1: testTimedThreshhold (blackboard variable)
-                testTimedThreshhold = reader.GetInt(1),
-                // index 2: timer (blackboard variable)
-                timer = reader.GetFloat(2),
+                // index 0: flagToCheck (blackboard variable)
+                flagToCheck = reader.GetBool(0),
             };
         }
 
-        public static void SerializeBYEWORLD(BYEWORLD_Params p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
-        {
-            FieldReader writer = new FieldReader(fields, blackboard);
-            writer.SetInt(1, p.testTimedThreshhold);
-            writer.SetFloat(2, p.timer);
-        }
-
-        public static HELLOWORLD_Params DeserializeHELLOWORLD(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        public static COMPARE_FLOAT_Params DeserializeCOMPARE_FLOAT(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader reader = new FieldReader(fields, blackboard);
-            return new HELLOWORLD_Params
+            return new COMPARE_FLOAT_Params
             {
-                // index 0: Speed (constant)
-                Speed = reader.GetVector2(0),
-                // index 1: Velocity (blackboard variable)
-                Velocity = reader.GetVector2(1),
-                // index 2: Health (blackboard variable)
-                Health = reader.GetInt(2),
-                // index 3: TestTime (blackboard variable)
-                TestTime = reader.GetFloat(3),
+                // index 0: value (blackboard variable)
+                value = reader.GetFloat(0),
+                // index 1: threshold (constant)
+                threshold = reader.GetFloat(1),
+                // index 2: operation (constant)
+                operation = (CompareFloatOperation)reader.GetInt(2),
             };
         }
 
-        public static void SerializeHELLOWORLD(HELLOWORLD_Params p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        public static void SerializeCOMPARE_FLOAT(COMPARE_FLOAT_Params p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader writer = new FieldReader(fields, blackboard);
-            writer.SetVector2(1, p.Velocity);
-            writer.SetInt(2, p.Health);
-            writer.SetFloat(3, p.TestTime);
+            writer.SetFloat(0, p.value);
         }
 
         public static INVERTER_Params DeserializeINVERTER(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
@@ -67,6 +52,24 @@ namespace BehaviourTree.Runtime
                 // index 1: alwaysSuccess (constant)
                 alwaysSuccess = reader.GetBool(1),
             };
+        }
+
+        public static MOVE_TO_Params DeserializeMOVE_TO(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader reader = new FieldReader(fields, blackboard);
+            return new MOVE_TO_Params
+            {
+                // index 0: target (blackboard variable)
+                target = reader.GetTransform(0),
+                // index 1: arrivalDistance (constant)
+                arrivalDistance = reader.GetFloat(1),
+            };
+        }
+
+        public static void SerializeMOVE_TO(MOVE_TO_Params p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader writer = new FieldReader(fields, blackboard);
+            writer.SetTransform(0, p.target);
         }
 
         public static REPEATER_Params DeserializeREPEATER(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
@@ -87,22 +90,57 @@ namespace BehaviourTree.Runtime
             writer.SetInt(1, p.currentCount);
         }
 
-        public static WAITWORLD_Params DeserializeWAITWORLD(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        public static SET_FLAG_Params DeserializeSET_FLAG(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader reader = new FieldReader(fields, blackboard);
-            return new WAITWORLD_Params
+            return new SET_FLAG_Params
             {
-                // index 0: testTimedThreshhold (blackboard variable)
-                testTimedThreshhold = reader.GetInt(0),
+                // index 0: valueToSet (constant)
+                valueToSet = reader.GetBool(0),
+                // index 1: flagToSet (blackboard variable)
+                flagToSet = reader.GetBool(1),
+            };
+        }
+
+        public static void SerializeSET_FLAG(SET_FLAG_Params p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader writer = new FieldReader(fields, blackboard);
+            writer.SetBool(1, p.flagToSet);
+        }
+
+        public static TICK_COOLDOWN_Params DeserializeTICK_COOLDOWN(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader reader = new FieldReader(fields, blackboard);
+            return new TICK_COOLDOWN_Params
+            {
+                // index 0: delay (constant)
+                delay = reader.GetFloat(0),
+                // index 1: cooldownToTick (blackboard variable)
+                cooldownToTick = reader.GetFloat(1),
+            };
+        }
+
+        public static void SerializeTICK_COOLDOWN(TICK_COOLDOWN_Params p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader writer = new FieldReader(fields, blackboard);
+            writer.SetFloat(1, p.cooldownToTick);
+        }
+
+        public static WAIT_Params DeserializeWAIT(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader reader = new FieldReader(fields, blackboard);
+            return new WAIT_Params
+            {
+                // index 0: waitTime (constant)
+                waitTime = reader.GetFloat(0),
                 // index 1: timer (blackboard variable)
                 timer = reader.GetFloat(1),
             };
         }
 
-        public static void SerializeWAITWORLD(WAITWORLD_Params p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        public static void SerializeWAIT(WAIT_Params p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader writer = new FieldReader(fields, blackboard);
-            writer.SetInt(0, p.testTimedThreshhold);
             writer.SetFloat(1, p.timer);
         }
 

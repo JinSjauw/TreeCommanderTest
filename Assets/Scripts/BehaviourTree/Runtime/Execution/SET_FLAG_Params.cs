@@ -1,15 +1,14 @@
 using System.Runtime.InteropServices;
 using BehaviourTree.Core;
-using UnityEngine;
 
 namespace BehaviourTree.Runtime
 {
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct WAITWORLD_Params
+    public partial struct SET_FLAG_Params
     {
+        public bool valueToSet;
+
         [SharedVar]
-        public int testTimedThreshhold;
-        [SharedVar]
-        public float timer;
+        public bool flagToSet;
     }
 }

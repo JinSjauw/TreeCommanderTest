@@ -57,7 +57,7 @@ public class EnemyController : MonoBehaviour
     private ObjectPool pool;
 
     public bool IsReloading { get; private set; }
-
+    public NavMeshAgent Agent => agent;
     public EventHandler<EnemyController> OnDestructionEvent;
 
     public void InitializeEnemy(Transform playerTransform, Vector3 spawnPosition, string ID)

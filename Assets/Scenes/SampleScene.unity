@@ -432,6 +432,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1467309727 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2725640078921277708, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+  m_PrefabInstance: {fileID: 7680346216598463629}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1467309734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467309727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de84ed8973a25ae4a9ee5f6fb88c2f85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackBoard
+  serializedReferences: []
+--- !u!114 &1467309735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467309727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0720dcbbe15181f4eb6892d02d595b62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BehaviourTree.Runtime::BehaviourTree.Runtime.TreeRunner
+  blackBoard: {fileID: 1467309734}
+  runtimeAsset: {fileID: 0}
+  authoringAsset: {fileID: 0}
 --- !u!1 &1660154981
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,7 +694,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2725640078921277708, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1467309735}
+    - targetCorrespondingSourceObject: {fileID: 2725640078921277708, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1467309734}
   m_SourcePrefab: {fileID: 100100000, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BehaviourTree.Core 
+namespace BehaviourTree.Core
 {
     public enum BlackBoardType
     {
@@ -11,32 +11,43 @@ namespace BehaviourTree.Core
     }
 
     public class BlackBoard : MonoBehaviour
-    {        
-        /// <summary>Serialized reference-values exclusivly for GameObject / Transform slots.
-        /// These are kept in sync with the runtime values[] array.
-        /// Index maps 1:1 to the definition's sharedVariables list.
-        /// Value types are stored as null </summary>
+    {
         [SerializeField] private List<UnityEngine.Object> serializedReferences = new();
 
-        // ── Runtime ────────────────────────────────────────
-        /// <summary>Index-based storage for blackboard variables. Index corresponds to position in BlackboardDefinition.</summary>
         private BlackboardDefinition definition;
-        private object[] values;
+
+        private int[] intValues;
+        private float[] floatValues;
+        private bool[] boolValues;
+        private Vector2[] vector2Values;
+        private Vector3[] vector3Values;
+
+        private GameObject[] gameObjectValues;
+        private Transform[] transformValues;
+
+        private int capacity;
 
         public BlackboardDefinition Definition => definition;
 
-        /// <summary>Initialize index-based storage from a definition.</summary>
         public void Initialize(BlackboardDefinition blackboardDefinition)
         {
-            if(definition == null || definition != blackboardDefinition)
+            if (definition == null || definition != blackboardDefinition)
             {
-                definition = blackboardDefinition;   
+                definition = blackboardDefinition;
             }
 
             if (definition == null) return;
 
             int count = definition.sharedVariables.Count;
-            values = new object[count];
+            capacity = count;
+
+            intValues = new int[count];
+            floatValues = new float[count];
+            boolValues = new bool[count];
+            vector2Values = new Vector2[count];
+            vector3Values = new Vector3[count];
+            gameObjectValues = new GameObject[count];
+            transformValues = new Transform[count];
 
             while (serializedReferences.Count < count)
             {
@@ -45,13 +56,23 @@ namespace BehaviourTree.Core
 
             for (int i = 0; i < count; i++)
             {
-                values[i] = definition.sharedVariables[i].GetInitialValue();
-                
                 Type type = FieldTypeHelper.GetSystemTypeFromName(definition.sharedVariables[i].typeName);
-                if (type != null && !type.IsValueType && serializedReferences[i] != null)
-                {
-                    values[i] = serializedReferences[i];
-                }
+                object initVal = definition.sharedVariables[i].GetInitialValue();
+
+                if (type == typeof(int))
+                    intValues[i] = initVal != null ? (int)initVal : 0;
+                else if (type == typeof(float))
+                    floatValues[i] = initVal != null ? (float)initVal : 0f;
+                else if (type == typeof(bool))
+                    boolValues[i] = initVal != null ? (bool)initVal : false;
+                else if (type == typeof(Vector2))
+                    vector2Values[i] = initVal != null ? (Vector2)initVal : Vector2.zero;
+                else if (type == typeof(Vector3))
+                    vector3Values[i] = initVal != null ? (Vector3)initVal : Vector3.zero;
+                else if (type == typeof(GameObject))
+                    gameObjectValues[i] = serializedReferences[i] as GameObject;
+                else if (type == typeof(Transform))
+                    transformValues[i] = serializedReferences[i] as Transform;
             }
         }
 
@@ -59,9 +80,8 @@ namespace BehaviourTree.Core
         {
             definition = blackboardDefinition;
 
-            if (definition == null) return;            
+            if (definition == null) return;
 
-            // Ensure serializedReferences list matches definition length
             int count = definition.sharedVariables.Count;
             while (serializedReferences.Count < count)
             {
@@ -79,61 +99,53 @@ namespace BehaviourTree.Core
             serializedReferences.Clear();
         }
 
-        /// <summary>Get a value by index in the blackboard array.</summary>
-        public T Get<T>(int index)
+        private bool OutOfRange(int index)
         {
-            if (values == null || index < 0 || index >= values.Length)
+            if (capacity == 0 || index < 0 || index >= capacity)
             {
-                Debug.LogWarning($"[Blackboard] Invalid index or values[] is NULL, returning default");
-                return default;
+                Debug.LogWarning($"[Blackboard] Invalid index {index}, capacity={capacity}");
+                return true;
             }
-
-            object val = values[index];
-            if (val is T tVal)
-            {
-                return tVal;
-            }
-            else if(val != null)
-            {
-                Debug.LogWarning(
-                    $"[Blackboard] Type mismatch at index {index} — " +
-                    $"Expected: {typeof(T).Name}, Retrieved: {val.GetType().Name}. " +
-                    $"Returning default.");
-                return default;
-            }
-
-            return default;
+            return false;
         }
 
-        /// <summary>Set a value by index in the blackboard array.</summary>
-        public void Set<T>(int index, T value)
+        public int GetInt(int index) => OutOfRange(index) ? 0 : intValues[index];
+        public void SetInt(int index, int value) { if (!OutOfRange(index)) intValues[index] = value; }
+
+        public float GetFloat(int index) => OutOfRange(index) ? 0f : floatValues[index];
+        public void SetFloat(int index, float value) { if (!OutOfRange(index)) floatValues[index] = value; }
+
+        public bool GetBool(int index) => OutOfRange(index) ? false : boolValues[index];
+        public void SetBool(int index, bool value) { if (!OutOfRange(index)) boolValues[index] = value; }
+
+        public Vector2 GetVector2(int index) => OutOfRange(index) ? Vector2.zero : vector2Values[index];
+        public void SetVector2(int index, Vector2 value) { if (!OutOfRange(index)) vector2Values[index] = value; }
+
+        public Vector3 GetVector3(int index) => OutOfRange(index) ? Vector3.zero : vector3Values[index];
+        public void SetVector3(int index, Vector3 value) { if (!OutOfRange(index)) vector3Values[index] = value; }
+
+        public GameObject GetGameObject(int index) => OutOfRange(index) ? null : gameObjectValues[index];
+        public void SetGameObject(int index, GameObject value)
         {
-            if (values == null || index < 0 || index >= values.Length)
-            {
-                Debug.LogWarning($"[Blackboard] Invalid index or values[] is NULL");
-                return;
-            }
+            if (OutOfRange(index)) return;
+            gameObjectValues[index] = value;
+            SyncSerializedRef(index, value);
+        }
 
-            object existingObject = values[index];
+        public Transform GetTransform(int index) => OutOfRange(index) ? null : transformValues[index];
+        public void SetTransform(int index, Transform value)
+        {
+            if (OutOfRange(index)) return;
+            transformValues[index] = value;
+            SyncSerializedRef(index, value);
+        }
 
-            if(existingObject != null && existingObject is not T)
-            {
-                Debug.LogWarning(
-                    $"[Blackboard] Type mismatch at index: {index}" +
-                    $"Stored = {existingObject.GetType().Name}, Trying to write type: {typeof(T).Name}" +
-                    $"Cancelling write"
-                );
-
-                return;
-            }
-
-            values[index] = value;
-
-            // Keep serialized reference in sync for reference types
+        private void SyncSerializedRef(int index, UnityEngine.Object unityObject)
+        {
             if (definition != null && index < definition.sharedVariables.Count)
             {
                 Type type = FieldTypeHelper.GetSystemTypeFromName(definition.sharedVariables[index].typeName);
-                if (type != null && !type.IsValueType && value is UnityEngine.Object unityObject)
+                if (type != null && !type.IsValueType)
                 {
                     if (index < serializedReferences.Count)
                     {
@@ -141,6 +153,33 @@ namespace BehaviourTree.Core
                     }
                 }
             }
+        }
+
+        public T Get<T>(int index)
+        {
+            if (typeof(T) == typeof(int)) return (T)(object)GetInt(index);
+            if (typeof(T) == typeof(float)) return (T)(object)GetFloat(index);
+            if (typeof(T) == typeof(bool)) return (T)(object)GetBool(index);
+            if (typeof(T) == typeof(Vector2)) return (T)(object)GetVector2(index);
+            if (typeof(T) == typeof(Vector3)) return (T)(object)GetVector3(index);
+                if (typeof(T) == typeof(GameObject)) return (T)(object)GetGameObject(index);
+            if (typeof(T) == typeof(Transform)) return (T)(object)GetTransform(index);
+
+            Debug.LogWarning($"[Blackboard] Unsupported type {typeof(T).Name}");
+            return default;
+        }
+
+        public void Set<T>(int index, T value)
+        {
+            if (value is int vInt) { SetInt(index, vInt); return; }
+            if (value is float vFloat) { SetFloat(index, vFloat); return; }
+            if (value is bool vBool) { SetBool(index, vBool); return; }
+            if (value is Vector2 v2) { SetVector2(index, v2); return; }
+            if (value is Vector3 v3) { SetVector3(index, v3); return; }
+            if (value is GameObject go) { SetGameObject(index, go); return; }
+            if (value is Transform tr) { SetTransform(index, tr); return; }
+
+            Debug.LogWarning($"[Blackboard] Unsupported type {typeof(T).Name}");
         }
     }
 }
