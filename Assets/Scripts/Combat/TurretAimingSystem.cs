@@ -1,0 +1,14 @@
+using UnityEngine;
+
+public class TurretAimingSystem : MonoBehaviour
+{
+    [SerializeField] private TurretController turretController;
+    [SerializeField] private SmoothTransformFollower follower;
+
+    public bool OnTarget => follower.OnTarget;
+
+    public void SetTarget(Vector3 worldPosition)
+    {
+        follower.SetTarget(worldPosition);
+    }
+}
