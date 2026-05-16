@@ -1,0 +1,462 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine.UIElements;
+using UnityEngine;
+using BehaviourTree.Core;
+using BehaviourTree.Runtime;
+
+namespace BehaviourTree.Editor
+{
+    [UxmlElement("BTGraphView")]
+    public partial class BehaviourTreeEditorGraphView : GraphView
+    {
+        // Callback for when graph changes (hook up export logic here)
+        public Action<BehaviourTreeEditorGraphView> onGraphDataChanged;
+        public Action<BehaviourNodeView> OnNodeSelected;
+        
+        private BehaviourTreeAsset tree;
+        private Dictionary<string, BehaviourNodeView> nodeViewDict;
+        private NodeSearchProvider searchWindow;
+        private Label graphTitleLabel;
+        private CopyPasteHandler copyPasteHandler;
+
+        public BehaviourTreeEditorGraphView()
+        {
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeEditorPaths.EditorUss);
+            styleSheets.Add(styleSheet);
+
+            nodeViewDict = new Dictionary<string, BehaviourNodeView>();   
+
+            SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
+
+            // Standard manipulators for pan, select, box-select
+            this.AddManipulator(new ContentDragger());
+            this.AddManipulator(new SelectionDragger());
+            this.AddManipulator(new RectangleSelector());
+
+            AddGrid();
+            AddGraphTitle();
+            AddSearchWindow();
+            
+            //Setup copy/paste callbacks
+            copyPasteHandler = new CopyPasteHandler(this);
+
+            serializeGraphElements = SerializeGraphSelection;
+            unserializeAndPaste = UnSerializeAndPaste;
+
+            //Listen for graph changes to trigger auto-save/compile
+            graphViewChanged += OnGraphViewChanged;
+
+            Undo.undoRedoPerformed += OnUndoRedo;
+        }
+
+        private void UnSerializeAndPaste(string operationName, string data)
+        {
+            if (string.IsNullOrEmpty(data)) return;
+
+            // Restore the static clipboard from the string
+            copyPasteHandler.DeserializeClipboard(data);
+
+            // Paste the nodes using the handler’s existing logic
+            copyPasteHandler.PasteNodes(tree);
+        }
+
+        private string SerializeGraphSelection(IEnumerable<GraphElement> elements)
+        {
+            copyPasteHandler.CopySelectedNodes();
+
+            return copyPasteHandler.SerializeClipboard();
+        }
+
+        private void AddGrid()
+        {
+            // Grid background
+            GridBackground grid = new GridBackground();
+            Insert(0, grid);
+            grid.StretchToParentSize();
+        }
+
+        private void AddGraphTitle()
+        {
+            graphTitleLabel = new Label("Behaviour Tree")
+            {
+                style =
+                {
+                    flexShrink = 1,
+                    fontSize = 18,
+                    unityFontStyleAndWeight = FontStyle.Bold,
+                    unityTextAlign = TextAnchor.MiddleLeft,
+                    paddingTop = 8,
+                    paddingLeft = 12,
+                    paddingBottom = 4,
+                    color = new Color(0.8f, 0.8f, 0.8f, 1f)
+                }
+            };
+            Add(graphTitleLabel);
+        }
+
+        private void AddSearchWindow()
+        {
+            if(searchWindow == null)
+            {
+                searchWindow = ScriptableObject.CreateInstance<NodeSearchProvider>();
+
+                searchWindow.Initialize(this);
+            }
+
+            nodeCreationRequest = context =>
+            {
+                Rect windowRect = EditorWindow.focusedWindow.position;
+
+                Vector2 localPos = this.ChangeCoordinatesTo(contentViewContainer, this.WorldToLocal(context.screenMousePosition - new Vector2(windowRect.x, windowRect.y)));
+
+                searchWindow.SetCreationPosition(localPos);
+                OpenSearchWindow(context.screenMousePosition);
+            };
+        }
+
+        private void OpenSearchWindow(Vector2 mousePosition)
+        {
+            SearchWindow.Open(new SearchWindowContext(mousePosition), searchWindow);
+        }
+
+        private void OnUndoRedo()
+        {
+            if(tree == null) return;
+            
+            PopulateView(tree);
+        }
+
+        // Simple cycle detection: can't connect if 'target' is an ancestor of 'source'
+        private bool WouldCreateCycle(BehaviourNodeView source, BehaviourNodeView target)
+        {
+            var current = target;
+            while (current != null)
+            {
+                if (current == source) return true;
+                // Walk up via input port (parent)
+                var parentPort = current.inputContainer.Children().OfType<Port>().FirstOrDefault();
+                if (parentPort?.connections.FirstOrDefault()?.output?.node is not BehaviourNodeView parent)
+                    break;
+                current = parent;
+            }
+            return false;
+        }
+
+        private GraphViewChange OnGraphViewChanged(GraphViewChange change)
+        {
+            if (change.elementsToRemove != null)
+                HandleElementRemoval(change.elementsToRemove);
+
+            if (change.edgesToCreate != null)
+                HandleEdgeCreation(change.edgesToCreate);
+
+            if (change.movedElements != null)
+                HandleElementsMoved();
+
+            return change;
+        }
+
+        private void HandleElementRemoval(List<GraphElement> elementsToRemove)
+        {
+            for (int i = 0; i < elementsToRemove.Count; i++)
+            {
+                if (elementsToRemove[i] is BehaviourNodeView nodeView)
+                {
+                    tree.DeleteNode(nodeView.NodeSO);
+                    nodeViewDict.Remove(nodeView.Guid);
+                }
+                else if (elementsToRemove[i] is Edge edge)
+                {
+                    BehaviourNodeView parentView = edge.output.node as BehaviourNodeView;
+                    BehaviourNodeView childView = edge.input.node as BehaviourNodeView;
+                    tree.RemoveChild(parentView.NodeSO, childView.NodeSO);
+                }
+            }
+
+            onGraphDataChanged?.Invoke(this);
+        }
+
+        private void HandleEdgeCreation(List<Edge> edgesToCreate)
+        {
+            for (int i = 0; i < edgesToCreate.Count; i++)
+            {
+                Edge edge = edgesToCreate[i];
+                BehaviourNodeView parentView = edge.output.node as BehaviourNodeView;
+                BehaviourNodeView childView = edge.input.node as BehaviourNodeView;
+
+                tree.AddChild(parentView.NodeSO, childView.NodeSO);
+            }
+
+            onGraphDataChanged?.Invoke(this);
+        }
+
+        private void HandleElementsMoved()
+        {
+            foreach (BehaviourNodeView nodeView in nodeViewDict.Values)
+                nodeView.SortChildren();
+        }
+
+        public BehaviourNodeView CreateNodeView(BehaviourNode node)
+        {
+            BehaviourNodeView nodeView = BuildNodeView(node);
+            RegisterNodeView(nodeView);
+            return nodeView;
+        }
+
+        private BehaviourNodeView BuildNodeView(BehaviourNode node)
+        {
+            BehaviourNodeView nodeView = new BehaviourNodeView(node);
+            nodeView.OnNodeSelected = OnNodeSelected;
+            nodeView.layer = 0;
+            return nodeView;
+        }
+
+        private void RegisterNodeView(BehaviourNodeView nodeView)
+        {
+            AddElement(nodeView);
+
+            if (!nodeViewDict.TryAdd(nodeView.Guid, nodeView))
+                Debug.LogWarning($"Duplicate GUID in graph view: {nodeView.Guid}");
+        }
+
+        private BehaviourNodeView FindNodeView(BehaviourNode node) 
+        {
+            if(nodeViewDict.TryGetValue(node.guid, out BehaviourNodeView nodeView)) 
+            {
+                return nodeView;
+            }
+            
+            return null;
+        }
+        
+        public BehaviourNode CreateCompositeNode(BehaviourNodeType compositeType, Vector2 position)
+        {
+            CompositeNode node = (CompositeNode)tree.CreateNode(typeof(CompositeNode));
+            node.SetCompositeType(compositeType);
+            node.name = compositeType.ToString();
+            node.graphPosition = position;
+            
+            CreateNodeView(node);
+            return node;
+        }
+        
+        public void CreateLeafNode(MethodID methodID, Vector2 position, BehaviourNodeType leafType = BehaviourNodeType.ACTION)
+        {
+            LeafNode node = (LeafNode)tree.CreateNode(typeof(LeafNode));
+            node.SetLeafType(leafType);
+            node.methodID = methodID;
+            node.name = methodID.ToString();
+            node.graphPosition = position;
+
+            CreateNodeView(node);
+        }
+
+        public void CreateDecoratorNode(MethodID methodID, Vector2 position)
+        {
+            DecoratorNode node = (DecoratorNode)tree.CreateNode(typeof(DecoratorNode));
+            node.methodID = methodID;
+            node.name = methodID.ToString();
+            node.graphPosition = position;
+
+            CreateNodeView(node);
+        }
+
+        public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
+        {
+            var compatible = new List<Port>();
+
+            foreach (var port in ports)
+            {
+                if (IsSelfOrSameNode(port, startPort)) continue;
+                if (IsWrongDirection(port, startPort)) continue;
+
+                if (startPort.node is BehaviourNodeView startNode &&
+                    port.node is BehaviourNodeView endNode)
+                {
+                    if (IsRootAsChild(endNode, port)) continue;
+                    if (IsLeafNodeParenting(startNode, port)) continue;
+                    if (IsDuplicateChild(endNode, startNode)) continue;
+                    if (WouldCreateCycle(startNode, endNode)) continue;
+                }
+
+                compatible.Add(port);
+            }
+
+            return compatible;
+        }
+
+        private static bool IsSelfOrSameNode(Port port, Port startPort)
+        {
+            return port == startPort || port.node == startPort.node;
+        }
+
+        private static bool IsWrongDirection(Port port, Port startPort)
+        {
+            return port.direction == startPort.direction;
+        }
+
+        private static bool IsRootAsChild(BehaviourNodeView endNode, Port port)
+        {
+            return endNode.NodeSO.NodeType == BehaviourNodeType.ROOT
+                && port.direction == Direction.Input;
+        }
+
+        private static bool IsLeafNodeParenting(BehaviourNodeView startNode, Port port)
+        {
+            if (port.direction != Direction.Input) return false;
+
+            var nodeType = startNode.NodeSO.NodeType;
+            return nodeType == BehaviourNodeType.ACTION
+                || nodeType == BehaviourNodeType.CONDITION;
+        }
+
+        private static bool IsDuplicateChild(BehaviourNodeView endNode, BehaviourNodeView startNode)
+        {
+            return endNode.NodeSO.children.Contains(startNode.NodeSO);
+        }
+
+        //Build dropdown menu
+        public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
+        {
+            base.BuildContextualMenu(evt);
+
+            if(tree == null) return;
+            evt.menu.AppendAction($"Create Node", (a) => OpenSearchWindow(GUIUtility.GUIToScreenPoint(Event.current.mousePosition)));
+        }
+
+        public void PopulateView(BehaviourTreeAsset tree)
+        {
+            if (!tree)
+            {
+                Debug.LogWarning("No treeAsset selected");
+                return;
+            }
+
+            InitTree(tree);
+            ClearAndRebuildViews();
+            EnsureRootNodeExists();
+            CleanupAndCreateViews();
+            CleanupAndWireEdges();
+        }
+
+        private void InitTree(BehaviourTreeAsset tree)
+        {
+            this.tree = tree;
+            graphTitleLabel.text = tree.name;
+
+            if (tree.nodesList == null)
+                tree.nodesList = new List<BehaviourNode>();
+        }
+
+        private void ClearAndRebuildViews()
+        {
+            graphViewChanged -= OnGraphViewChanged;
+            try
+            {
+                DeleteElements(graphElements);
+                nodeViewDict.Clear();
+            }
+            finally { graphViewChanged += OnGraphViewChanged; }
+        }
+
+        private void EnsureRootNodeExists()
+        {
+            if (tree.rootCopy != null) return;
+
+            tree.rootCopy = tree.CreateNode(typeof(RootNode));
+            tree.rootCopy.name = "ROOT";
+            tree.rootCopy.graphPosition = ViewportCenter();
+            EditorUtility.SetDirty(tree);
+        }
+
+        private void CleanupAndCreateViews()
+        {
+            for (int i = tree.nodesList.Count - 1; i >= 0; i--)
+            {
+                if (tree.nodesList[i] == null)
+                {
+                    tree.nodesList.RemoveAt(i);
+                    continue;
+                }
+                CreateNodeView(tree.nodesList[i]);
+            }
+        }
+
+        private void CleanupAndWireEdges()
+        {
+            for (int i = 0; i < tree.nodesList.Count; i++)
+            {
+                BehaviourNode node = tree.nodesList[i];
+
+                for (int j = node.children.Count - 1; j >= 0; j--)
+                {
+                    if (node.children[j] == null)
+                        node.children.RemoveAt(j);
+                }
+
+                for (int j = 0; j < node.children.Count; j++)
+                {
+                    BehaviourNodeView parentView = FindNodeView(node);
+                    BehaviourNodeView childView = FindNodeView(node.children[j]);
+
+                    if (parentView == null || childView == null)
+                    {
+                        Debug.LogWarning($"Failed to connect edge: {node.guid} → {node.children[j]?.guid}");
+                        continue;
+                    }
+
+                    if (parentView.output == null || childView.input == null)
+                    {
+                        Debug.LogWarning($"Port missing: {node.NodeType} → {node.children[j].NodeType}");
+                        continue;
+                    }
+
+                    Edge edge = parentView.output.ConnectTo(childView.input);
+                    AddElement(edge);
+                }
+            }
+        }
+    
+        public void RefreshDebugVisuals(TreeRunner runner)
+        {
+            // Only meaningful in Play Mode
+            if (!EditorApplication.isPlaying) return;
+
+            if (runner == null) return;
+
+            RuntimeDebugProvider provider = runner.GetComponent<RuntimeDebugProvider>();
+            if (provider == null || provider.currentNodeStates == null) return;
+
+            NodeState[] states = provider.currentNodeStates;
+            int activeIndex = provider.activeNodeIndex;
+
+            foreach (BehaviourNodeView nodeViewEntry in nodeViewDict.Values)
+            {
+                BehaviourNodeView nodeView = nodeViewEntry;
+                if (nodeView?.NodeSO == null) continue;
+
+                int runtimeIdx = nodeView.NodeSO.runtimeIndex;
+                if (runtimeIdx < 0 || runtimeIdx >= states.Length) continue;
+
+                NodeState state = states[runtimeIdx];
+                bool isActive = runtimeIdx == activeIndex;
+
+                nodeView.SetDebugState(state, isActive);
+            }
+        }
+
+        private Vector2 ViewportCenter()
+        {
+            Rect layout = contentViewContainer.layout;
+            if (layout.width > 0 && layout.height > 0)
+            {
+                return new Vector2(layout.width * 0.5f, layout.height * 0.5f);
+            }
+            return new Vector2(400, 300);
+        }
+    }
+}

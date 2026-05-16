@@ -1,0 +1,21 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True" style="flex-grow: 1;">
+    <Style src="project://database/Assets/Scripts/BehaviourTree/Editor/UIDocuments/BehaviourTreeEditor.uss?fileID=7433441132597879392&amp;guid=f5b57338203a14a4380802d587fdec85&amp;type=3#BehaviourTreeEditor"/>
+    <uie:Toolbar>
+        <uie:ToolbarMenu text="Assets" name="AssetBarMenu"/>
+    </uie:Toolbar>
+    <SplitView fixed-pane-index="0" fixed-pane-initial-dimension="300" orientation="Horizontal">
+        <ui:VisualElement name="InspectorPane" style="flex-grow: 1;">
+            <ui:TabView name="TabView" style="height: auto; flex-grow: 1;">
+                <ui:Tab label="Inspector" name="InspectorTab" style="flex-grow: 1; height: auto;">
+                    <InspectorView enabled="true" style="flex-grow: 1; width: auto; display: flex; visibility: visible;"/>
+                </ui:Tab>
+                <ui:Tab label="Blackboard" name="BlackBoardTab" style="flex-grow: 1;">
+                    <BlackBoardView/>
+                </ui:Tab>
+            </ui:TabView>
+        </ui:VisualElement>
+        <ui:VisualElement name="GraphPane" style="flex-grow: 1;">
+            <BehaviourTree.Editor.BTGraphView style="flex-grow: 1;"/>
+        </ui:VisualElement>
+    </SplitView>
+</ui:UXML>

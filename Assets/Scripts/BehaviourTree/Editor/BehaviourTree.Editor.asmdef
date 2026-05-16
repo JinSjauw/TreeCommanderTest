@@ -1,0 +1,19 @@
+{
+    "name": "BehaviourTree.Editor",
+    "rootNamespace": "BehaviourTree.Editor",
+    "references": [
+        "BehaviourTree.Core",
+        "BehaviourTree.Runtime"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
