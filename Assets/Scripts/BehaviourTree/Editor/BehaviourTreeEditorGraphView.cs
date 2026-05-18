@@ -7,6 +7,8 @@ using UnityEngine.UIElements;
 using UnityEngine;
 using BehaviourTree.Core;
 using BehaviourTree.Runtime;
+using System.Net.NetworkInformation;
+using Codice.Client.Common.GameUI;
 
 namespace BehaviourTree.Editor
 {
@@ -20,9 +22,14 @@ namespace BehaviourTree.Editor
         private BehaviourTreeAsset tree;
         private Dictionary<string, BehaviourNodeView> nodeViewDict;
         private NodeSearchProvider searchWindow;
-        private Label graphTitleLabel;
+        private TextField graphTitleLabel;
         private CopyPasteHandler copyPasteHandler;
         private BtEdgeConnectorListener edgeConnectorListener;
+        private bool shouldCenterNodes;
+        private bool centerOnNextGeometry;
+        private bool geometryCallbackRegistered;
+
+        public bool HasTree => tree != null;
 
         public BehaviourTreeEditorGraphView()
         {
@@ -83,20 +90,57 @@ namespace BehaviourTree.Editor
 
         private void AddGraphTitle()
         {
-            graphTitleLabel = new Label("Behaviour Tree")
+            graphTitleLabel = new TextField
             {
-                style =
-                {
-                    flexShrink = 1,
-                    fontSize = 18,
-                    unityFontStyleAndWeight = FontStyle.Bold,
-                    unityTextAlign = TextAnchor.MiddleLeft,
-                    paddingTop = 8,
-                    paddingLeft = 12,
-                    paddingBottom = 4,
-                    color = new Color(0.8f, 0.8f, 0.8f, 1f)
-                }
+                value = "Behaviour Tree",
+                isDelayed = true
             };
+            graphTitleLabel.name = "GraphTitle";
+            graphTitleLabel.ClearClassList();
+
+            VisualElement input = graphTitleLabel.Q<VisualElement>("unity-text-input");
+            input.name = "GraphTitleInput";
+            input.ClearClassList();
+
+            graphTitleLabel.RegisterValueChangedCallback(evt =>
+            {
+                if (tree == null)
+                {
+                    graphTitleLabel.SetValueWithoutNotify("Behaviour Tree");
+                    return;
+                }
+
+                string newName = evt.newValue?.Trim();
+                if (string.IsNullOrEmpty(newName) || newName == tree.name)
+                {
+                    RefreshTitle();
+                    return;
+                }
+
+                if (EditorApplication.isPlaying)
+                {
+                    RefreshTitle();
+                    return;
+                }
+
+                string path = AssetDatabase.GetAssetPath(tree);
+                if (string.IsNullOrEmpty(path))
+                {
+                    RefreshTitle();
+                    return;
+                }
+
+                string err = AssetDatabase.RenameAsset(path, newName);
+                if (!string.IsNullOrEmpty(err))
+                {
+                    Debug.LogError(err);
+                    RefreshTitle();
+                    return;
+                }
+
+                AssetDatabase.SaveAssets();
+                RefreshTitle();
+            });
             Add(graphTitleLabel);
         }
 
@@ -112,6 +156,7 @@ namespace BehaviourTree.Editor
             nodeCreationRequest = context =>
             {
                 EnsureSearchWindow();
+                if (tree == null) return;
 
                 Rect windowRect = EditorWindow.focusedWindow.position;
 
@@ -126,6 +171,7 @@ namespace BehaviourTree.Editor
         private void OpenSearchWindow(Vector2 mousePosition)
         {
             EnsureSearchWindow();
+            if (tree == null) return;
             SearchWindow.Open(new SearchWindowContext(mousePosition), searchWindow);
         }
 
@@ -143,6 +189,7 @@ namespace BehaviourTree.Editor
             if (startPort == null) return;
             EnsureSearchWindow();
             if (searchWindow == null) return;
+            if (tree == null) return;
 
             Vector2 screenPos = GUIUtility.GUIToScreenPoint(graphMousePosition);
             Rect windowRect = EditorWindow.focusedWindow.position;
@@ -152,6 +199,23 @@ namespace BehaviourTree.Editor
             searchWindow.SetCreationPosition(localPos);
             searchWindow.SetPendingConnection(startPort);
             OpenSearchWindow(screenPos);
+        }
+
+        public void ClearView()
+        {
+            tree = null;
+            graphTitleLabel.SetValueWithoutNotify("Behaviour Tree");
+
+            graphViewChanged -= OnGraphViewChanged;
+            try
+            {
+                DeleteElements(graphElements);
+                nodeViewDict.Clear();
+            }
+            finally
+            {
+                graphViewChanged += OnGraphViewChanged;
+            }
         }
 
         public bool TryConnectPorts(Port from, Port to)
@@ -406,12 +470,11 @@ namespace BehaviourTree.Editor
         {
             base.BuildContextualMenu(evt);
 
-            if(tree == null) return;
             evt.menu.AppendAction($"Create Node", (a) =>
             {
                 searchWindow.ClearPendingConnection();
                 OpenSearchWindow(GUIUtility.GUIToScreenPoint(Event.current.mousePosition));
-            });
+            }, _ => tree == null ? DropdownMenuAction.Status.Disabled : DropdownMenuAction.Status.Normal);
         }
 
         public void PopulateView(BehaviourTreeAsset tree)
@@ -427,15 +490,32 @@ namespace BehaviourTree.Editor
             EnsureRootNodeExists();
             CleanupAndCreateViews();
             CleanupAndWireEdges();
+            
+            if (shouldCenterNodes)
+            {
+                shouldCenterNodes = false;
+                RequestCenterNodes();
+            }
         }
 
         private void InitTree(BehaviourTreeAsset tree)
         {
             this.tree = tree;
-            graphTitleLabel.text = tree.name;
+            RefreshTitle();
 
             if (tree.nodesList == null)
                 tree.nodesList = new List<BehaviourNode>();
+        }
+
+        public void RefreshTitle()
+        {
+            if (graphTitleLabel == null) return;
+            graphTitleLabel.SetValueWithoutNotify(tree != null ? tree.name : "Behaviour Tree");
+        }
+
+        public void CenterOnNextPopulate()
+        {
+            shouldCenterNodes = true;
         }
 
         private void ClearAndRebuildViews()
@@ -454,9 +534,7 @@ namespace BehaviourTree.Editor
             if (tree.rootCopy != null) return;
 
             tree.rootCopy = tree.CreateNode(typeof(RootNode));
-            //Undo.RecordObject(tree.rootCopy, "(BTree) Configure Node");
             tree.rootCopy.name = "ROOT";
-            tree.rootCopy.graphPosition = ViewportCenter();
             tree.RegisterNode(tree.rootCopy);
         }
 
@@ -543,14 +621,40 @@ namespace BehaviourTree.Editor
             }
         }
 
-        private Vector2 ViewportCenter()
+        private void CenterViewOnNodes()
         {
-            Rect layout = contentViewContainer.layout;
-            if (layout.width > 0 && layout.height > 0)
+            this.ClearSelection();
+            foreach (BehaviourNodeView nodeView in nodeViewDict.Values)
             {
-                return new Vector2(layout.width * 0.5f, layout.height * 0.5f);
+                this.AddToSelection(nodeView);
             }
-            return new Vector2(400, 300);
+            this.FrameSelection();
+        }
+
+        private void RequestCenterNodes()
+        {
+            centerOnNextGeometry = true;
+
+            if (!geometryCallbackRegistered)
+            {
+                geometryCallbackRegistered = true;
+                RegisterCallback<GeometryChangedEvent>(OnGraphGeometryChanged);
+            }
+        }
+
+        private void OnGraphGeometryChanged(GeometryChangedEvent evt)
+        {
+            if (!centerOnNextGeometry) return;
+
+            centerOnNextGeometry = false;
+
+            if (geometryCallbackRegistered)
+            {
+                geometryCallbackRegistered = false;
+                UnregisterCallback<GeometryChangedEvent>(OnGraphGeometryChanged);
+            }
+
+            CenterViewOnNodes();
         }
 
         private sealed class BtEdgeConnectorListener : IEdgeConnectorListener
@@ -561,7 +665,6 @@ namespace BehaviourTree.Editor
             {
                 this.graphView = graphView;
             }
-
             public void OnDropOutsidePort(Edge edge, Vector2 position)
             {
                 Port startPort = edge?.output ?? edge?.input;

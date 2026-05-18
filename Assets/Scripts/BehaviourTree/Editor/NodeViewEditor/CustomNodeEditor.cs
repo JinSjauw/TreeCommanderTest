@@ -59,14 +59,15 @@ namespace BehaviourTree.Editor
             BuildFieldEntries(selectedMethod, methodChanged);
 
             EditorGUILayout.Space();
-            EditorGUILayout.PropertyField(blackBoardTypeIDProp);
+            //EditorGUILayout.PropertyField(blackBoardTypeIDProp);
 
-            DrawChildrenDebug();
             serializedObject.ApplyModifiedProperties();
         }
 
         private void DrawChildrenDebug()
         {
+
+
             if (childrenProp == null) return;
 
             EditorGUILayout.Space();

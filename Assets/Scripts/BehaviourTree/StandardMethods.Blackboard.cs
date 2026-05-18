@@ -34,7 +34,6 @@ namespace BehaviourTree
                 NumericCompareOp.LessOrEqual => a <= b,
                 NumericCompareOp.Greater => a > b,
                 NumericCompareOp.GreaterOrEqual => a >= b,
-                NumericCompareOp.ApproxEqual => a == b,
                 _ => false
             };
 
@@ -49,7 +48,6 @@ namespace BehaviourTree
             float a = blackBoard.Get<float>(fields[0].value);
             float b = blackBoard.Get<float>(fields[1].value);
             NumericCompareOp op = (NumericCompareOp)fields[2].GetInt();
-            float epsilon = fields[3].GetFloat();
 
             bool result = op switch
             {
@@ -59,7 +57,6 @@ namespace BehaviourTree
                 NumericCompareOp.LessOrEqual => a <= b,
                 NumericCompareOp.Greater => a > b,
                 NumericCompareOp.GreaterOrEqual => a >= b,
-                NumericCompareOp.ApproxEqual => Mathf.Abs(a - b) <= epsilon,
                 _ => false
             };
 
@@ -93,7 +90,6 @@ namespace BehaviourTree
             Vector2 a = blackBoard.Get<Vector2>(fields[0].value);
             Vector2 b = blackBoard.Get<Vector2>(fields[1].value);
             VectorCompareOp op = (VectorCompareOp)fields[2].GetInt();
-            float epsilon = fields[3].GetFloat();
 
             float aMag = a.magnitude;
             float bMag = b.magnitude;
@@ -106,7 +102,6 @@ namespace BehaviourTree
                 VectorCompareOp.MagnitudeLessOrEqual => aMag <= bMag,
                 VectorCompareOp.MagnitudeGreater => aMag > bMag,
                 VectorCompareOp.MagnitudeGreaterOrEqual => aMag >= bMag,
-                VectorCompareOp.MagnitudeApproxEqual => Mathf.Abs(aMag - bMag) <= epsilon,
                 _ => false
             };
 
@@ -121,7 +116,6 @@ namespace BehaviourTree
             Vector3 a = blackBoard.Get<Vector3>(fields[0].value);
             Vector3 b = blackBoard.Get<Vector3>(fields[1].value);
             VectorCompareOp op = (VectorCompareOp)fields[2].GetInt();
-            float epsilon = fields[3].GetFloat();
 
             float aMag = a.magnitude;
             float bMag = b.magnitude;
@@ -134,7 +128,6 @@ namespace BehaviourTree
                 VectorCompareOp.MagnitudeLessOrEqual => aMag <= bMag,
                 VectorCompareOp.MagnitudeGreater => aMag > bMag,
                 VectorCompareOp.MagnitudeGreaterOrEqual => aMag >= bMag,
-                VectorCompareOp.MagnitudeApproxEqual => Mathf.Abs(aMag - bMag) <= epsilon,
                 _ => false
             };
 

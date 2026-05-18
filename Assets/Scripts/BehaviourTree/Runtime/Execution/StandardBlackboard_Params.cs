@@ -18,7 +18,6 @@ namespace BehaviourTree.Runtime
         [SharedVar] public float A;
         [SharedVar] public float B;
         public NumericCompareOp Operation;
-        public float Epsilon;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -35,7 +34,6 @@ namespace BehaviourTree.Runtime
         [SharedVar] public Vector2 A;
         [SharedVar] public Vector2 B;
         public VectorCompareOp Operation;
-        public float Epsilon;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -44,7 +42,6 @@ namespace BehaviourTree.Runtime
         [SharedVar] public Vector3 A;
         [SharedVar] public Vector3 B;
         public VectorCompareOp Operation;
-        public float Epsilon;
     }
 
     [StructLayout(LayoutKind.Sequential)]

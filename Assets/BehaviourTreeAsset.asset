@@ -17,14 +17,14 @@ MonoBehaviour:
   firstChildIndex: 13
   lastChildIndex: 13
   guid: eec9c75270270604982d036cdde1ab1f
-  graphPosition: {x: 47.00003, y: 1140.1249}
+  graphPosition: {x: 45, y: 1147}
   runtimeIndex: 11
   methodID: 1
   fieldEntries:
-  - fieldName: alwaysFailure
+  - fieldName: Speed
     isVariable: 0
     variableName: 
-    fieldType: 2
+    fieldType: 3
     intValue: 0
     floatValue: 0
     boolValue: 0
@@ -32,10 +32,32 @@ MonoBehaviour:
     vector3Value: {x: 0, y: 0, z: 0}
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
-  - fieldName: alwaysSuccess
-    isVariable: 0
-    variableName: 
-    fieldType: 2
+  - fieldName: Velocity
+    isVariable: 1
+    variableName: POSITION
+    fieldType: 3
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: Health
+    isVariable: 1
+    variableName: HEALTHTHRESHHOLD
+    fieldType: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: TestTime
+    isVariable: 1
+    variableName: TIMER
+    fieldType: 1
     intValue: 0
     floatValue: 0
     boolValue: 0
@@ -128,7 +150,18 @@ MonoBehaviour:
   runtimeIndex: 9
   leafType: 4
   methodID: 21
-  fieldEntries: []
+  fieldEntries:
+  - fieldName: Target
+    isVariable: 1
+    variableName: IdleTimer
+    fieldType: 1
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
   BlackBoardTypeID: 0
 --- !u!114 &-5282281331114449391
 MonoBehaviour:
@@ -146,11 +179,33 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 3b53740529bb3144ba6ecb48ef1784ae
-  graphPosition: {x: 55.000046, y: 1318.1249}
+  graphPosition: {x: 45, y: 1296}
   runtimeIndex: 13
   leafType: 3
   methodID: 15
-  fieldEntries: []
+  fieldEntries:
+  - fieldName: Target
+    isVariable: 1
+    variableName: 
+    fieldType: 2
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: Value
+    isVariable: 1
+    variableName: 
+    fieldType: 2
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
   BlackBoardTypeID: 0
 --- !u!114 &-4588285741406189714
 MonoBehaviour:
@@ -170,7 +225,7 @@ MonoBehaviour:
   firstChildIndex: 14
   lastChildIndex: 15
   guid: c1818a148403efd40b86cc727c0a5c88
-  graphPosition: {x: 907.594, y: 601.494}
+  graphPosition: {x: 763, y: 568}
   runtimeIndex: 2
   compositeType: 2
 --- !u!114 &-3804147167955361072
@@ -189,11 +244,22 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 41fba5317299eed4f8b8231d23f5764a
-  graphPosition: {x: 937.594, y: 963.494}
+  graphPosition: {x: 772, y: 927}
   runtimeIndex: 17
   leafType: 3
   methodID: 20
-  fieldEntries: []
+  fieldEntries:
+  - fieldName: Target
+    isVariable: 1
+    variableName: 
+    fieldType: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
   BlackBoardTypeID: 0
 --- !u!114 &-2957228306212691727
 MonoBehaviour:
@@ -236,11 +302,44 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: c009c71a770c7034c881d45c63fd707f
-  graphPosition: {x: -714.692, y: 1148}
+  graphPosition: {x: -702.36, y: 1148}
   runtimeIndex: 8
   leafType: 3
   methodID: 10
-  fieldEntries: []
+  fieldEntries:
+  - fieldName: A
+    isVariable: 1
+    variableName: 
+    fieldType: 4
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: B
+    isVariable: 1
+    variableName: 
+    fieldType: 4
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: Operation
+    isVariable: 0
+    variableName: 
+    fieldType: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
   BlackBoardTypeID: 0
 --- !u!114 &-348678101724805307
 MonoBehaviour:
@@ -279,7 +378,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: b5c23349e8133914c89c200f7b64fbf8
-  graphPosition: {x: 1315.0039, y: 962}
+  graphPosition: {x: 1120.1152, y: 922.7768}
   runtimeIndex: 19
   leafType: 4
   methodID: 4
@@ -344,7 +443,29 @@ MonoBehaviour:
   runtimeIndex: 3
   leafType: 4
   methodID: 18
-  fieldEntries: []
+  fieldEntries:
+  - fieldName: Target
+    isVariable: 1
+    variableName: 
+    fieldType: 5
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: Value
+    isVariable: 1
+    variableName: 
+    fieldType: 5
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
   BlackBoardTypeID: 0
 --- !u!114 &2119422342692562981
 MonoBehaviour:
@@ -365,7 +486,7 @@ MonoBehaviour:
   firstChildIndex: 17
   lastChildIndex: 19
   guid: a9ecde921004faf48a60c7dcd4492f4c
-  graphPosition: {x: 1144.0004, y: 775.99994}
+  graphPosition: {x: 949.11523, y: 736.7768}
   runtimeIndex: 15
   compositeType: 2
 --- !u!114 &2132709996596733306
@@ -429,10 +550,21 @@ MonoBehaviour:
   leafType: 4
   methodID: 5
   fieldEntries:
-  - fieldName: startingHeight
+  - fieldName: targetCount
     isVariable: 0
     variableName: 
-    fieldType: 1
+    fieldType: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: currentCount
+    isVariable: 1
+    variableName: 
+    fieldType: 0
     intValue: 0
     floatValue: 0
     boolValue: 0
@@ -457,15 +589,15 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: c8b852039db6f3245b38b228bab70b0f
-  graphPosition: {x: 1135.9843, y: 954.9998}
+  graphPosition: {x: 957, y: 919}
   runtimeIndex: 18
   leafType: 4
   methodID: 8
   fieldEntries:
-  - fieldName: waitTime
-    isVariable: 0
+  - fieldName: A
+    isVariable: 1
     variableName: 
-    fieldType: 1
+    fieldType: 2
     intValue: 0
     floatValue: 2
     boolValue: 0
@@ -473,10 +605,21 @@ MonoBehaviour:
     vector3Value: {x: 0, y: 0, z: 0}
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
-  - fieldName: timer
+  - fieldName: B
     isVariable: 1
+    variableName: 
+    fieldType: 2
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: Operation
+    isVariable: 0
     variableName: IdleTimer
-    fieldType: 1
+    fieldType: 0
     intValue: 0
     floatValue: 0
     boolValue: 0
@@ -505,7 +648,40 @@ MonoBehaviour:
   runtimeIndex: 11
   leafType: 4
   methodID: 6
-  fieldEntries: []
+  fieldEntries:
+  - fieldName: A
+    isVariable: 1
+    variableName: 
+    fieldType: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: B
+    isVariable: 1
+    variableName: 
+    fieldType: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: Operation
+    isVariable: 0
+    variableName: 
+    fieldType: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
   BlackBoardTypeID: 0
 --- !u!114 &5245939499160155811
 MonoBehaviour:
@@ -524,7 +700,7 @@ MonoBehaviour:
   firstChildIndex: 16
   lastChildIndex: 16
   guid: acd67fbf1971d384199a7e5f869f4d9c
-  graphPosition: {x: 768.5941, y: 791.494}
+  graphPosition: {x: 574.1153, y: 751.77686}
   runtimeIndex: 14
   methodID: 1
   fieldEntries:
@@ -567,7 +743,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 70056c05c07971b4f80bf9b826869f40
-  graphPosition: {x: 768.5941, y: 963.494}
+  graphPosition: {x: 574.1153, y: 923.77686}
   runtimeIndex: 16
   leafType: 4
   methodID: 18
@@ -626,7 +802,29 @@ MonoBehaviour:
   runtimeIndex: 4
   leafType: 3
   methodID: 19
-  fieldEntries: []
+  fieldEntries:
+  - fieldName: Target
+    isVariable: 1
+    variableName: 
+    fieldType: 6
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: Value
+    isVariable: 1
+    variableName: 
+    fieldType: 6
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
   BlackBoardTypeID: 0
 --- !u!114 &8207706053683152904
 MonoBehaviour:
@@ -644,7 +842,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: eb4706003a3ba1945b1da6b1fcd499c0
-  graphPosition: {x: 373.99997, y: 1006}
+  graphPosition: {x: 375.1001, y: 996.7502}
   runtimeIndex: 13
   leafType: 4
   methodID: 17
@@ -692,5 +890,27 @@ MonoBehaviour:
   runtimeIndex: 11
   leafType: 3
   methodID: 14
-  fieldEntries: []
+  fieldEntries:
+  - fieldName: Target
+    isVariable: 1
+    variableName: IdleTimer
+    fieldType: 1
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: Value
+    isVariable: 1
+    variableName: IdleTimer
+    fieldType: 1
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
   BlackBoardTypeID: 0

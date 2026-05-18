@@ -6,7 +6,7 @@ public class TrajectorySystem : MonoBehaviour
 {
     [Header("Component References")]
     [SerializeField] private Transform trajectoryStart;
-    [SerializeField] private Transform previewTarget;
+    [SerializeField] private Transform trajectoryTarget;
     [SerializeField] private CurveController trajectoryCurve;
     [SerializeField] private CurveController fireCurve;
     [SerializeField] private TrajectoryValidator validator;
@@ -31,8 +31,8 @@ public class TrajectorySystem : MonoBehaviour
 
     public void SetTarget(Vector3 position)
     {
-        if (previewTarget != null)
-            previewTarget.position = position;
+        if (trajectoryTarget != null)
+            trajectoryTarget.position = position;
 
         targetPosition = position;
         hasTarget = true;
@@ -76,7 +76,7 @@ public class TrajectorySystem : MonoBehaviour
                 aimingSystem.SetTarget(targetPosition);
 
             fireCurve.InterpolateTo = true;
-            fireCurve.DesiredCurveHeight = curveHeight + trajectoryAdjustmentStep;
+            fireCurve.DesiredCurveHeight = curveHeight;
             attemptsTotal = 0;
             return TrajectorySearchState.Found;
         }
@@ -101,5 +101,6 @@ public class TrajectorySystem : MonoBehaviour
     {
         hasTarget = false;
         hasTrajectory = false;
+        hasFailed = false;
     }
 }

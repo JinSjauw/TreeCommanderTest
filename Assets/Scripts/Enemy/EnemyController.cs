@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -17,7 +18,6 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float firingRadius;
     [SerializeField] private float detectionRadius;
     [SerializeField] private LayerMask targetLayers;
-
     [SerializeField] private Transform attackTarget;
 
     private Collider[] detectBuffer = new Collider[32];
@@ -30,11 +30,6 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float minimumPadding = 0.15f;
 
     [SerializeField] private NavMeshAgent agent;
-    private NavMeshPath path;
-
-    private Vector3 pathOrigin;
-    private Vector3 pathDestination;
-
     public bool CanMove { get; set; }
     public bool HasPath { get; private set; }
     public bool InPosition { get; private set; } = true;
@@ -54,36 +49,34 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float projectileDamage;
     [SerializeField] private float roundPerMinute;
 
-    [Header("State")]
-    [SerializeField] private bool isAwareOfPlayer = true;
-
     private float firingTimer;
     private ObjectPool pool;
-
     public bool IsReloading { get; private set; }
     public NavMeshAgent Agent => agent;
     public Transform AttackTarget => attackTarget;
-
     public bool HasAimTarget => Trajectory.HasTarget;
-
     public EventHandler<EnemyController> OnDestructionEvent;
 
-    public void InitializeEnemy(Transform playerTransform, Vector3 spawnPosition, string ID)
-    {
-        attackTarget = playerTransform;
-        transform.position = spawnPosition;
-        enemySignID = ID;
+    // public void InitializeEnemy(Transform playerTransform, Vector3 spawnPosition, string ID)
+    // {
+    //     attackTarget = playerTransform;
+    //     transform.position = spawnPosition;
+    //     enemySignID = ID;
 
-        this.enabled = true;
-    }
+    //     this.enabled = true;
+    // }
 
     void Start()
     {
-        path = new NavMeshPath();
         pool = FindFirstObjectByType<ObjectPool>();
     }
 
-    public void SetPlayerTarget(Transform playerTransform)
+    void Update()
+    {
+        TickFiringCooldown(Time.deltaTime);
+    }
+
+    public void SetAttackTarget(Transform playerTransform)
     {
         attackTarget = playerTransform;
     }
@@ -164,6 +157,7 @@ public class EnemyController : MonoBehaviour
         }
 
         Trajectory.ResetTrajectory();
+        firingTimer = 0f;
         IsReloading = true;
     }
 
@@ -228,25 +222,14 @@ public class EnemyController : MonoBehaviour
             muzzleTransform.position, attackTarget.position, LayerMask.GetMask("Ground"));
     }
 
-    public bool IsAwareOfPlayer()
-    {
-        return isAwareOfPlayer;
-    }
-
-    public void CalculateNewPathToTarget()
+    public Vector3 CalculateNewPathToTarget()
     {
         if (attackTarget == null)
-            return;
+            return Vector3.zero;
 
-        InPosition = false;
+        Vector3 nextPosition = CalculateTargetPosition(attackTarget.position, maxConeAngle, minDistance, maxDistance);
 
-        Vector3 nextPosition = CalculateTargetPosition(
-            attackTarget.position, maxConeAngle, minDistance, maxDistance);
-
-        agent.SetDestination(nextPosition);
-        agent.isStopped = false;
-        HasPath = true;
-        CanMove = false;
+        return nextPosition;
     }
 
     public Vector3 CalculateTargetPosition(Vector3 target, float maxAngle, float minDist, float maxDist)

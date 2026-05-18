@@ -9,12 +9,12 @@ public struct TrajectoryValidationResult
 public class TrajectoryValidator : MonoBehaviour
 {
     [SerializeField] private int linePositions = 8;
-    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private LayerMask obstacleMask;
 
     private void Awake()
     {
-        if (groundMask == 0)
-            groundMask = LayerMask.GetMask("Ground");
+        if (obstacleMask == 0)
+            obstacleMask = LayerMask.GetMask("Ground");
     }
 
     public TrajectoryValidationResult Validate(Vector3 start, Vector3 end, Vector3 controlPoint)
@@ -28,7 +28,7 @@ public class TrajectoryValidator : MonoBehaviour
 
             Debug.DrawLine(oldPosition, nextPosition, Color.red, 2f);
 
-            if (Physics.Linecast(oldPosition, nextPosition, out RaycastHit hit, groundMask))
+            if (Physics.Linecast(oldPosition, nextPosition, out RaycastHit hit, obstacleMask))
             {
                 return new TrajectoryValidationResult
                 {

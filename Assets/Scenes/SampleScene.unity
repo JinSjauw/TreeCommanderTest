@@ -1335,6 +1335,11 @@ Transform:
   - {fileID: 108414923}
   m_Father: {fileID: 1010059960}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1369417824 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6934628058458211422, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+  m_PrefabInstance: {fileID: 7680346216598463629}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1372861272 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1868966535197908441, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
@@ -1926,6 +1931,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 160954761229263472, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+      propertyPath: startCurve
+      value: 
+      objectReference: {fileID: 1372861272}
     - target: {fileID: 1184232950835513493, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
       propertyPath: fireCurve
       value: 
@@ -1946,6 +1955,10 @@ PrefabInstance:
       propertyPath: maxTotalAttempts
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 1184232950835513493, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+      propertyPath: trajectoryTarget
+      value: 
+      objectReference: {fileID: 1369417824}
     - target: {fileID: 1184232950835513493, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
       propertyPath: trajectoryAdjustmentStep
       value: 3
@@ -1994,6 +2007,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5224203421038599467, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+      propertyPath: obstacleMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 6105658406885812264, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
       propertyPath: threshold
       value: 0.05
@@ -2010,6 +2027,10 @@ PrefabInstance:
       propertyPath: projectileCollection
       value: 
       objectReference: {fileID: 1660154983}
+    - target: {fileID: 8970614946888345882, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
