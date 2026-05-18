@@ -1449,6 +1449,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackBoard
   serializedReferences:
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 1467309727}
+  - {fileID: 1660154981}
 --- !u!114 &1467309735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1463,7 +1468,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Runtime::BehaviourTree.Runtime.TreeRunner
   blackBoard: {fileID: 1467309734}
   runtimeAsset: {fileID: 0}
-  authoringAsset: {fileID: 11400000, guid: 25aae498183d28d4086abf081bd3544d, type: 2}
+  authoringAsset: {fileID: 11400000, guid: 0333a4886c43a3243bef0b8bb8dc9770, type: 2}
 --- !u!1 &1474461657
 GameObject:
   m_ObjectHideFlags: 0

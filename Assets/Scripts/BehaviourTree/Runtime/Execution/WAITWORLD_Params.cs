@@ -4,12 +4,13 @@ using UnityEngine;
 
 namespace BehaviourTree.Runtime
 {
+    [GenerateNodeFieldBindings]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct MOVE_TO_Params
+    public partial struct WAITWORLD_NodeFields
     {
         [SharedVar]
-        public Transform target;
-
-        public float arrivalDistance;
+        public int testTimedThreshhold;
+        [SharedVar]
+        public float timer;
     }
 }

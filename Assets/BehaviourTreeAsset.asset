@@ -211,9 +211,9 @@ MonoBehaviour:
   - {fileID: -1124028469671925310}
   - {fileID: -6142774606689517235}
   - {fileID: 3426664798423148002}
-  - {fileID: 4475199723417681093}
-  - {fileID: -7384110676791506713}
   - {fileID: 8602398180727494217}
+  - {fileID: -7384110676791506713}
+  - {fileID: 4475199723417681093}
   firstChildIndex: 8
   lastChildIndex: 11
   guid: 8c83904256fba0c4197099f39eb0be95
@@ -593,7 +593,18 @@ MonoBehaviour:
   runtimeIndex: 12
   leafType: 3
   methodID: 20
-  fieldEntries: []
+  fieldEntries:
+  - fieldName: Target
+    isVariable: 1
+    variableName: HEALTHTHRESHHOLD
+    fieldType: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
   BlackBoardTypeID: 0
 --- !u!114 &6684900254008790980
 MonoBehaviour:
@@ -633,11 +644,33 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: eb4706003a3ba1945b1da6b1fcd499c0
-  graphPosition: {x: 365.50006, y: 998}
+  graphPosition: {x: 373.99997, y: 1006}
   runtimeIndex: 13
   leafType: 4
   methodID: 17
-  fieldEntries: []
+  fieldEntries:
+  - fieldName: Target
+    isVariable: 1
+    variableName: 
+    fieldType: 4
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: Value
+    isVariable: 1
+    variableName: 
+    fieldType: 4
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
   BlackBoardTypeID: 0
 --- !u!114 &8602398180727494217
 MonoBehaviour:

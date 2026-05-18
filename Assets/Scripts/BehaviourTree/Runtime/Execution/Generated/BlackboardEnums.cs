@@ -5,4 +5,14 @@
 
 namespace BehaviourTree.Runtime
 {
+    public enum BehaviourTreeAsset_BB_Keys : int
+    {
+        TIMER = 0,
+        POSITION = 1,
+        HEALTHTHRESHHOLD = 2,
+        HEALTH = 3,
+        TESTRUNNER = 4,
+        TESTRUNNER2 = 5
+    }
+
 }

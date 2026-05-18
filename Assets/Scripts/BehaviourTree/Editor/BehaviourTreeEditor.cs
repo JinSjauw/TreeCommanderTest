@@ -6,7 +6,6 @@ using UnityEngine.UIElements;
 using BehaviourTree.Core;
 using BehaviourTree.Editor;
 using BehaviourTree.Runtime;
-using System;
 
 public class BehaviourTreeEditor : EditorWindow
 {
@@ -119,7 +118,7 @@ public class BehaviourTreeEditor : EditorWindow
         {
             currentRunner = runner;
 
-            return runner.GetSourceTree();
+            return runner.GetSourceTree() as BehaviourTreeAsset;
         }
         else
         {
@@ -142,7 +141,7 @@ public class BehaviourTreeEditor : EditorWindow
 
         Debug.Log("Baking Tree!");
 
-        RuntimeBTreeAsset runtimeAsset = CreateInstance<RuntimeBTreeAsset>();
+        RuntimeBehaviourTreeAsset runtimeAsset = CreateInstance<RuntimeBehaviourTreeAsset>();
         runtimeAsset.name = currentTree.name + "_Runtime";
         runtimeAsset.blackboardDefinition = currentBlackboardDef;
         runtimeAsset.sourceTree = currentTree;

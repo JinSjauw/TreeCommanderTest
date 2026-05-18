@@ -2,19 +2,15 @@ using System;
 using BehaviourTree.Core;
 using BehaviourTree.Runtime;
 using UnityEngine;
-using UnityEngine.Scripting;
 
 namespace BehaviourTree
 {
-    public class StandardMethods
+    public partial class StandardMethods
     {
         [BTreeDecoratorMethod(MethodID.INVERTER)]
         public static NodeState Inverter(NodeState childResult, BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
-            INVERTER_Params p = new INVERTER_Params();
-            var reader = new FieldReader(fields, blackBoard);
-            p.alwaysFailure = reader.GetBool(0);
-            p.alwaysSuccess = reader.GetBool(1);
+            INVERTER_NodeFields p = NodeFieldBindings.DeserializeINVERTER(fields, blackBoard);
 
             if (p.alwaysFailure) return NodeState.FAILURE;
             if (p.alwaysSuccess) return NodeState.SUCCESS;
@@ -22,8 +18,8 @@ namespace BehaviourTree
             return childResult switch
             {
                 NodeState.SUCCESS => NodeState.FAILURE,
-                NodeState.FAILURE => NodeState.SUCCESS,
-                _ => childResult
+                NodeState.FAILURE  => NodeState.SUCCESS,
+                _                  => childResult   // RUNNING passes through
             };
         }
 
@@ -33,101 +29,20 @@ namespace BehaviourTree
             if (childResult == NodeState.RUNNING)
                 return NodeState.RUNNING;
 
-            REPEATER_Params p = new REPEATER_Params();
-            var reader = new FieldReader(fields, blackBoard);
-            p.targetCount = reader.GetInt(0);
-            p.currentCount = reader.GetInt(1);
+            REPEATER_NodeFields p = NodeFieldBindings.DeserializeREPEATER(fields, blackBoard);
 
             if (childResult == NodeState.SUCCESS && p.currentCount < p.targetCount)
             {
                 p.currentCount++;
-                reader.SetInt(1, p.currentCount);
-                return NodeState.RUNNING;
+                NodeFieldBindings.SerializeREPEATER(p, fields, blackBoard);
+                Debug.Log($"Repeating! {p.currentCount}");
+                return NodeState.RUNNING;   // signals handler to re-push child
             }
 
-            reader.SetInt(1, 0);
+            p.currentCount = 0;
+            NodeFieldBindings.SerializeREPEATER(p, fields, blackBoard);
             return childResult;
         }
-
-        [Preserve]
-        [BTreeMethod(MethodID.CHECK_FLAG)]
-        public static NodeState CheckFlag(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
-        {
-            CHECK_FLAG_Params p = new CHECK_FLAG_Params();
-            var reader = new FieldReader(fields, blackBoard);
-            p.flagToCheck = reader.GetBool(0);
-
-            return p.flagToCheck ? NodeState.SUCCESS : NodeState.FAILURE;
-        }
-
-        [Preserve]
-        [BTreeMethod(MethodID.SET_FLAG)]
-        public static NodeState SetFlag(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
-        {
-            SET_FLAG_Params p = new SET_FLAG_Params();
-            var reader = new FieldReader(fields, blackBoard);
-            p.valueToSet = reader.GetBool(0);
-            p.flagToSet = reader.GetBool(1);
-
-            reader.SetBool(1, p.valueToSet);
-            return NodeState.SUCCESS;
-        }
-
-        [Preserve]
-        [BTreeMethod(MethodID.COMPARE_FLOAT)]
-        public static NodeState CompareFloat(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
-        {
-            COMPARE_FLOAT_Params p = new COMPARE_FLOAT_Params();
-            var reader = new FieldReader(fields, blackBoard);
-            p.value = reader.GetFloat(0);
-            p.threshold = reader.GetFloat(1);
-            p.operation = reader.GetInt(2);
-
-            //Create enum for operation;
-            return false ? NodeState.SUCCESS : NodeState.FAILURE;
-        }
-
-        [Preserve]
-        [BTreeMethod(MethodID.TICK_COOLDOWN)]
-        public static NodeState TickCooldown(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
-        {
-            TICK_COOLDOWN_Params p = new TICK_COOLDOWN_Params();
-            var reader = new FieldReader(fields, blackBoard);
-            p.delay = reader.GetFloat(0);
-            p.cooldownToTick = reader.GetFloat(1);
-
-            p.cooldownToTick += Time.deltaTime;
-
-            if (p.cooldownToTick >= p.delay)
-            {
-                reader.SetFloat(1, 0f);
-                return NodeState.SUCCESS;
-            }
-
-            reader.SetFloat(1, p.cooldownToTick);
-            return NodeState.RUNNING;
-        }
-
-        [Preserve]
-        [BTreeMethod(MethodID.WAIT)]
-        public static NodeState Wait(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
-        {
-            WAIT_Params p = new WAIT_Params();
-            var reader = new FieldReader(fields, blackBoard);
-            p.waitTime = reader.GetFloat(0);
-            p.timer = reader.GetFloat(1);
-
-            p.timer += Time.deltaTime;
-
-            if (p.timer >= p.waitTime)
-            {
-                reader.SetFloat(1, 0f);
-                return NodeState.SUCCESS;
-            }
-
-            reader.SetFloat(1, p.timer);
-            return NodeState.RUNNING;
-        }
     }
-
+        
 }

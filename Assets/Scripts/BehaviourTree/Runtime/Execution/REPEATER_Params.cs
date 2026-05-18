@@ -3,8 +3,9 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Runtime
 {
+    [GenerateNodeFieldBindings]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct REPEATER_Params
+    public partial struct REPEATER_NodeFields
     {
         public int targetCount;
 

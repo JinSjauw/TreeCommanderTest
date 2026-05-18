@@ -17,11 +17,12 @@ namespace BehaviourTree.Editor
         public int index;
     }
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
 
     public static class MethodMetadataCache
     {
         private static Dictionary<MethodID, List<ParamInfo>> _cache;
+        private static HashSet<MethodID> _generateDeserializer;
 
         public static IReadOnlyDictionary<MethodID, List<ParamInfo>> Cache
         {
@@ -39,22 +40,34 @@ namespace BehaviourTree.Editor
             return list;
         }
 
+        public static bool ShouldGenerateBindings(MethodID id)
+        {
+            BuildIfNeeded();
+            return _generateDeserializer != null && _generateDeserializer.Contains(id);
+        }
+
         private static void BuildIfNeeded()
         {
             if (_cache != null) return;
             _cache = new Dictionary<MethodID, List<ParamInfo>>();
+            _generateDeserializer = new HashSet<MethodID>();
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (var asm in assemblies)
             {
                 foreach (var type in asm.GetTypes())
                 {
-                    // Look for partial struct types named *_Params
-                    if (!type.IsValueType || !type.Name.EndsWith("_Params")) continue;
+                    // Look for partial struct types named *_NodeFields
+                    if (!type.IsValueType || !type.Name.EndsWith("_NodeFields")) continue;
 
-                    // Infer MethodID from the name (e.g. HELLOWORLD_Params -> HELLOWORLD)
-                    string methodName = type.Name.Replace("_Params", "");
+                    // Infer MethodID from the name (e.g. HELLOWORLD_NodeFields -> HELLOWORLD)
+                    string methodName = type.Name.Replace("_NodeFields", "");
                     if (!Enum.TryParse<MethodID>(methodName, out var methodId)) continue;
+
+                    if (type.GetCustomAttribute<GenerateNodeFieldBindingsAttribute>() != null)
+                    {
+                        _generateDeserializer.Add(methodId);
+                    }
 
                     var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
                     var paramList = new List<ParamInfo>();
@@ -75,5 +88,5 @@ namespace BehaviourTree.Editor
             }
         }
     }
-    #endif
+#endif
 }
