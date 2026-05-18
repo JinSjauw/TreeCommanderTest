@@ -16,8 +16,11 @@ public class EnemyController : MonoBehaviour
     [Header("Detection")]
     [SerializeField] private float firingRadius;
     [SerializeField] private float detectionRadius;
+    [SerializeField] private LayerMask targetLayers;
 
-    [SerializeField] private Transform playerTarget;
+    [SerializeField] private Transform attackTarget;
+
+    private Collider[] detectBuffer = new Collider[32];
 
     [Header("Pathfinding")]
     [SerializeField] private float maxConeAngle;
@@ -38,6 +41,7 @@ public class EnemyController : MonoBehaviour
 
     [Header("Target Selection")]
     [SerializeField] private float randomTargetRadius;
+    [SerializeField] private Transform patrolPointsParent;
 
     [Header("Firing")]
     [SerializeField] private Transform muzzleTransform;
@@ -58,11 +62,15 @@ public class EnemyController : MonoBehaviour
 
     public bool IsReloading { get; private set; }
     public NavMeshAgent Agent => agent;
+    public Transform AttackTarget => attackTarget;
+
+    public bool HasAimTarget => Trajectory.HasTarget;
+
     public EventHandler<EnemyController> OnDestructionEvent;
 
     public void InitializeEnemy(Transform playerTransform, Vector3 spawnPosition, string ID)
     {
-        playerTarget = playerTransform;
+        attackTarget = playerTransform;
         transform.position = spawnPosition;
         enemySignID = ID;
 
@@ -73,6 +81,45 @@ public class EnemyController : MonoBehaviour
     {
         path = new NavMeshPath();
         pool = FindFirstObjectByType<ObjectPool>();
+    }
+
+    public void SetPlayerTarget(Transform playerTransform)
+    {
+        attackTarget = playerTransform;
+    }
+
+    public bool DetectTarget()
+    {
+        int hitCount = Physics.OverlapSphereNonAlloc(
+            agent.transform.position, detectionRadius, detectBuffer, targetLayers);
+
+        if (hitCount == 0)
+        {
+            attackTarget = null;
+            agent.isStopped = false;
+            return false;
+        }
+
+        Transform bestTarget = null;
+        float bestDistance = float.MaxValue;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Transform candidate = detectBuffer[i].transform;
+            float dist = Vector3.Distance(agent.transform.position, candidate.position);
+
+            if (Physics.Linecast(muzzleTransform.position, candidate.position, LayerMask.GetMask("Ground")))
+                continue;
+
+            if (dist < bestDistance)
+            {
+                bestDistance = dist;
+                bestTarget = candidate;
+            }
+        }
+
+        attackTarget = bestTarget;
+        return true;
     }
 
     public bool TickFiringCooldown(float deltaTime)
@@ -126,21 +173,21 @@ public class EnemyController : MonoBehaviour
         return projectileVariables.GetTravelTime(distance, FireCurve.DesiredCurveHeight);
     }
 
-    public void PickRandomTargetNearPlayer()
+    public void SelectAimTarget()
     {
-        if (playerTarget == null)
+        if (attackTarget == null)
             return;
 
         Vector2 randomFactor = Random.insideUnitCircle * randomTargetRadius;
 
-        Vector3 overshootDirection = playerTarget.position - agent.transform.position;
+        Vector3 overshootDirection = attackTarget.position - agent.transform.position;
 
         bool directLineOfSight = !Physics.Linecast(
-            muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground"));
+            muzzleTransform.position, attackTarget.position, LayerMask.GetMask("Ground"));
 
         float overshootFactor = directLineOfSight ? 2.2f : 0.75f;
 
-        Vector3 randomPosition = playerTarget.position
+        Vector3 randomPosition = attackTarget.position
             + (overshootDirection.normalized * overshootFactor)
             + new Vector3(randomFactor.x, 0, randomFactor.y);
 
@@ -154,11 +201,11 @@ public class EnemyController : MonoBehaviour
 
     public float GetDistanceToPlayer()
     {
-        if (playerTarget == null)
+        if (attackTarget == null)
             return float.MaxValue;
 
         return Vector2.Distance(
-            new Vector2(playerTarget.position.x, playerTarget.position.z),
+            new Vector2(attackTarget.position.x, attackTarget.position.z),
             new Vector2(agent.transform.position.x, agent.transform.position.z));
     }
 
@@ -174,11 +221,11 @@ public class EnemyController : MonoBehaviour
 
     public bool HasDirectLineOfSight()
     {
-        if (playerTarget == null)
+        if (attackTarget == null)
             return false;
 
         return !Physics.Linecast(
-            muzzleTransform.position, playerTarget.position, LayerMask.GetMask("Ground"));
+            muzzleTransform.position, attackTarget.position, LayerMask.GetMask("Ground"));
     }
 
     public bool IsAwareOfPlayer()
@@ -188,20 +235,18 @@ public class EnemyController : MonoBehaviour
 
     public void CalculateNewPathToTarget()
     {
+        if (attackTarget == null)
+            return;
+
         InPosition = false;
 
         Vector3 nextPosition = CalculateTargetPosition(
-            playerTarget.position, maxConeAngle, minDistance, maxDistance);
+            attackTarget.position, maxConeAngle, minDistance, maxDistance);
 
-        if (agent.CalculatePath(nextPosition, path) && !HasPath)
-        {
-            agent.SetPath(path);
-            pathOrigin = agent.transform.position;
-            pathDestination = path.corners[path.corners.Length - 1];
-
-            HasPath = true;
-            CanMove = false;
-        }
+        agent.SetDestination(nextPosition);
+        agent.isStopped = false;
+        HasPath = true;
+        CanMove = false;
     }
 
     public Vector3 CalculateTargetPosition(Vector3 target, float maxAngle, float minDist, float maxDist)
@@ -239,5 +284,24 @@ public class EnemyController : MonoBehaviour
         agent.isStopped = true;
         OnDestructionEvent?.Invoke(this, this);
         this.enabled = false;
+    }
+
+    public Vector3 SetNextPatrolPoint()
+    {
+        int randomIndex = Random.Range(0, patrolPointsParent.childCount);
+        Vector3 point = patrolPointsParent.GetChild(randomIndex).position;
+        agent.SetDestination(point);
+        agent.isStopped = false;
+        return point;
+    }
+
+    public bool HasArrivedAtDestination()
+    {
+        return !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.1f;
+    }
+
+    public void StopMoving()
+    {
+        agent.isStopped = true;
     }
 }

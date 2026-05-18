@@ -22,9 +22,33 @@ namespace BehaviourTree
             AIM_Params p = new AIM_Params();
             var reader = new FieldReader(fields, blackBoard);
             p.startingHeight = reader.GetFloat(0);
+            controller.StopMoving();
 
-            controller.Trajectory.FindTrajectory(p.startingHeight);
+            TrajectorySearchState result = controller.Trajectory.FindTrajectory(p.startingHeight);
+
+            return result switch
+            {
+                TrajectorySearchState.Found => NodeState.SUCCESS,
+                TrajectorySearchState.Failed => NodeState.FAILURE,
+                _ => NodeState.RUNNING
+            };
+        }
+
+        [Preserve]
+        [BTreeMethod(MethodID.SELECT_AIM_TARGET)]
+        public static NodeState SelectAimTarget(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            var controller = GetController(blackBoard);
+            controller.SelectAimTarget();
             return NodeState.SUCCESS;
+        }
+
+        [Preserve]
+        [BTreeMethod(MethodID.HAS_AIM_TARGET)]
+        public static NodeState HasAimTarget(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            var controller = GetController(blackBoard);
+            return controller.HasAimTarget ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
         [Preserve]
@@ -37,11 +61,20 @@ namespace BehaviourTree
         }
 
         [Preserve]
-        [BTreeMethod(MethodID.PICK_RANDOM_TARGET)]
-        public static NodeState PickRandomTarget(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        [BTreeMethod(MethodID.SET_NEXT_PATROL_POINT)]
+        public static NodeState SetNextPatrolPoint(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
             var controller = GetController(blackBoard);
-            controller.PickRandomTargetNearPlayer();
+            controller.SetNextPatrolPoint();
+            return NodeState.SUCCESS;
+        }
+
+        [Preserve]
+        [BTreeMethod(MethodID.SET_NEXT_ATTACK_POINT)]
+        public static NodeState SetNextAttackPoint(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            var controller = GetController(blackBoard);
+            controller.CalculateNewPathToTarget();
             return NodeState.SUCCESS;
         }
 
@@ -83,6 +116,30 @@ namespace BehaviourTree
         {
             var controller = GetController(blackBoard);
             return controller.HasDirectLineOfSight() ? NodeState.SUCCESS : NodeState.FAILURE;
+        }
+
+        [Preserve]
+        [BTreeMethod(MethodID.DETECT_TARGET)]
+        public static NodeState DetectTarget(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            var controller = GetController(blackBoard);
+            return controller.DetectTarget() ? NodeState.SUCCESS : NodeState.FAILURE;
+        }
+
+        [Preserve]
+        [BTreeMethod(MethodID.HAS_TARGET)]
+        public static NodeState HasTarget(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            var controller = GetController(blackBoard);
+            return controller.AttackTarget != null ? NodeState.SUCCESS : NodeState.FAILURE;
+        }
+
+        [Preserve]
+        [BTreeMethod(MethodID.ARRIVED_AT_DESTINATION)]
+        public static NodeState ArrivedAtDestination(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            var controller = GetController(blackBoard);
+            return controller.HasArrivedAtDestination() ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
         [Preserve]

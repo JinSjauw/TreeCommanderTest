@@ -32,7 +32,7 @@ namespace BehaviourTree.Runtime
                 // index 1: threshold (constant)
                 threshold = reader.GetFloat(1),
                 // index 2: operation (constant)
-                operation = (CompareFloatOperation)reader.GetInt(2),
+                operation = reader.GetInt(2),
             };
         }
 

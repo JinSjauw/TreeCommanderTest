@@ -71,7 +71,7 @@ public class Projectile : MonoBehaviour
         isInitialized = true;
         isStopped = false;
 
-        projectileUI = GetComponent<ProjectileUI>();
+        //projectileUI = GetComponent<ProjectileUI>();
 
         isPlayerProjectile = playerProjectile;
 
@@ -153,9 +153,9 @@ public class Projectile : MonoBehaviour
 
     private void Explode() 
     {
-        EnableMark(false);
+        //EnableMark(false);
         
-        projectileUI.DisableLockMark();
+        //projectileUI.DisableLockMark();
 
         pool.GetObject(explosionVFX.gameObject).transform.position = transform.position;
 

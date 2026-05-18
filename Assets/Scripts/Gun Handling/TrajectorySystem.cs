@@ -1,5 +1,7 @@
 using UnityEngine;
 
+public enum TrajectorySearchState { Searching, Found, Failed }
+
 public class TrajectorySystem : MonoBehaviour
 {
     [Header("Component References")]
@@ -36,7 +38,7 @@ public class TrajectorySystem : MonoBehaviour
         hasTarget = true;
     }
 
-    public void FindTrajectory(float startingHeight)
+    public TrajectorySearchState FindTrajectory(float startingHeight)
     {
         hasFailed = false;
         hasTrajectory = false;
@@ -76,14 +78,18 @@ public class TrajectorySystem : MonoBehaviour
             fireCurve.InterpolateTo = true;
             fireCurve.DesiredCurveHeight = curveHeight + trajectoryAdjustmentStep;
             attemptsTotal = 0;
+            return TrajectorySearchState.Found;
         }
 
-        if (attemptsTotal >= maxTotalAttempts && !hasTrajectory)
+        if (attemptsTotal >= maxTotalAttempts)
         {
             attemptsTotal = 0;
             hasTarget = false;
             hasFailed = true;
+            return TrajectorySearchState.Failed;
         }
+
+        return TrajectorySearchState.Searching;
     }
 
     public void ResetTries()

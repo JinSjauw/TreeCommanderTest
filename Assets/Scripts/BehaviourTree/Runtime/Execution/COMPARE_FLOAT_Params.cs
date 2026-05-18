@@ -11,6 +11,6 @@ namespace BehaviourTree.Runtime
 
         public float threshold;
 
-        public CompareFloatOperation operation;
+        public int operation;
     }
 }

@@ -2,7 +2,6 @@ using System;
 using BehaviourTree.Core;
 using BehaviourTree.Runtime;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.Scripting;
 
 namespace BehaviourTree
@@ -58,8 +57,7 @@ namespace BehaviourTree
             var reader = new FieldReader(fields, blackBoard);
             p.flagToCheck = reader.GetBool(0);
 
-            bool value = p.flagToCheck;
-            return value ? NodeState.SUCCESS : NodeState.FAILURE;
+            return p.flagToCheck ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
         [Preserve]
@@ -71,7 +69,7 @@ namespace BehaviourTree
             p.valueToSet = reader.GetBool(0);
             p.flagToSet = reader.GetBool(1);
 
-            //blackBoard.Set(p.flagToSet, p.valueToSet);
+            reader.SetBool(1, p.valueToSet);
             return NodeState.SUCCESS;
         }
 
@@ -83,21 +81,10 @@ namespace BehaviourTree
             var reader = new FieldReader(fields, blackBoard);
             p.value = reader.GetFloat(0);
             p.threshold = reader.GetFloat(1);
-            p.operation = (CompareFloatOperation)reader.GetInt(2);
+            p.operation = reader.GetInt(2);
 
             //Create enum for operation;
-            bool result = p.operation switch
-            {
-                CompareFloatOperation.LessThan => p.value < p.threshold,
-                CompareFloatOperation.GreaterThan => p.value > p.threshold,
-                CompareFloatOperation.Equal => p.value == p.threshold,
-                CompareFloatOperation.NotEqual => p.value != p.threshold,
-                CompareFloatOperation.LessThanOrEqual => p.value >= p.threshold,
-                CompareFloatOperation.GreaterThanOrEqual => Mathf.Abs(p.value - p.threshold) < 0.001f,
-                _ => false
-            };
-
-            return result ? NodeState.SUCCESS : NodeState.FAILURE;
+            return false ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
         [Preserve]

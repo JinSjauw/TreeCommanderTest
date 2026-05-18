@@ -4,6 +4,7 @@ public class SmoothTransformFollower : MonoBehaviour
 {
     [SerializeField] private Transform follower;
     [SerializeField] private float changeRate = 5f;
+    [SerializeField] private float threshold = 0.01f;
 
     private Vector3 targetPosition;
     private bool onTarget;
@@ -20,7 +21,7 @@ public class SmoothTransformFollower : MonoBehaviour
         follower.position = Vector3.MoveTowards(
             follower.position, targetPosition, changeRate * Time.deltaTime);
 
-        if (Vector3.Distance(follower.position, targetPosition) < 0.01f)
+        if (Vector3.Distance(follower.position, targetPosition) < threshold)
         {
             onTarget = true;
         }
