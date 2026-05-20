@@ -12,49 +12,52 @@ namespace BehaviourTree.Runtime
 {
     public static partial class NodeFieldBindings
     {
-        public static BYEWORLD_NodeFields DeserializeBYEWORLD(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        public static Enemy_MoveTo_NodeFields DeserializeEnemy_MoveTo(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader reader = new FieldReader(fields, blackboard);
-            return new BYEWORLD_NodeFields
+            return new Enemy_MoveTo_NodeFields
             {
-                // index 0: waitingTime (constant)
-                waitingTime = reader.GetFloat(0),
-                // index 1: testTimedThreshhold (blackboard variable)
-                testTimedThreshhold = reader.GetInt(1),
-                // index 2: timer (blackboard variable)
-                timer = reader.GetFloat(2),
+                // index 0: TargetMovePosition (blackboard variable)
+                TargetMovePosition = reader.GetVector3(0),
             };
         }
 
-        public static void SerializeBYEWORLD(BYEWORLD_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        public static void SerializeEnemy_MoveTo(Enemy_MoveTo_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader writer = new FieldReader(fields, blackboard);
-            writer.SetInt(1, p.testTimedThreshhold);
-            writer.SetFloat(2, p.timer);
+            writer.SetVector3(0, p.TargetMovePosition);
         }
 
-        public static HELLOWORLD_NodeFields DeserializeHELLOWORLD(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        public static Enemy_SelectPatrolPoint_NodeFields DeserializeEnemy_SelectPatrolPoint(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader reader = new FieldReader(fields, blackboard);
-            return new HELLOWORLD_NodeFields
+            return new Enemy_SelectPatrolPoint_NodeFields
             {
-                // index 0: Speed (constant)
-                Speed = reader.GetVector2(0),
-                // index 1: Velocity (blackboard variable)
-                Velocity = reader.GetVector2(1),
-                // index 2: Health (blackboard variable)
-                Health = reader.GetInt(2),
-                // index 3: TestTime (blackboard variable)
-                TestTime = reader.GetFloat(3),
+                // index 0: TargetMovePosition (blackboard variable)
+                TargetMovePosition = reader.GetVector3(0),
             };
         }
 
-        public static void SerializeHELLOWORLD(HELLOWORLD_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        public static void SerializeEnemy_SelectPatrolPoint(Enemy_SelectPatrolPoint_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader writer = new FieldReader(fields, blackboard);
-            writer.SetVector2(1, p.Velocity);
-            writer.SetInt(2, p.Health);
-            writer.SetFloat(3, p.TestTime);
+            writer.SetVector3(0, p.TargetMovePosition);
+        }
+
+        public static Enemy_SelectEngagePosition_NodeFields DeserializeEnemy_SelectEngagePosition(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader reader = new FieldReader(fields, blackboard);
+            return new Enemy_SelectEngagePosition_NodeFields
+            {
+                // index 0: TargetMovePosition (blackboard variable)
+                TargetMovePosition = reader.GetVector3(0),
+            };
+        }
+
+        public static void SerializeEnemy_SelectEngagePosition(Enemy_SelectEngagePosition_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader writer = new FieldReader(fields, blackboard);
+            writer.SetVector3(0, p.TargetMovePosition);
         }
 
         public static INVERTER_NodeFields DeserializeINVERTER(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
@@ -87,24 +90,5 @@ namespace BehaviourTree.Runtime
             writer.SetInt(1, p.currentCount);
         }
 
-        public static WAITWORLD_NodeFields DeserializeWAITWORLD(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
-        {
-            FieldReader reader = new FieldReader(fields, blackboard);
-            return new WAITWORLD_NodeFields
-            {
-                // index 0: testTimedThreshhold (blackboard variable)
-                testTimedThreshhold = reader.GetInt(0),
-                // index 1: timer (blackboard variable)
-                timer = reader.GetFloat(1),
-            };
-        }
-
-        public static void SerializeWAITWORLD(WAITWORLD_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
-        {
-            FieldReader writer = new FieldReader(fields, blackboard);
-            writer.SetInt(0, p.testTimedThreshhold);
-            writer.SetFloat(1, p.timer);
-        }
     }
 }
-

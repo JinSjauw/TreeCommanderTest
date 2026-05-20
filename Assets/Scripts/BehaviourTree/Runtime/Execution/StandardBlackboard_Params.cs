@@ -82,6 +82,20 @@ namespace BehaviourTree.Runtime
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    public partial struct BB_CheckVector2_NodeFields
+    {
+        [SharedVar] public Vector2 Value;
+        public VectorCheckOp Operation;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public partial struct BB_CheckVector3_NodeFields
+    {
+        [SharedVar] public Vector3 Value;
+        public VectorCheckOp Operation;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public partial struct BB_Log_NodeFields
     {
         public string Message;

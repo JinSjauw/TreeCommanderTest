@@ -8,6 +8,7 @@ public class SmoothTransformFollower : MonoBehaviour
 
     private Vector3 targetPosition;
     private bool onTarget;
+    private bool targetSet;
 
     public bool OnTarget => onTarget;
 
@@ -18,18 +19,23 @@ public class SmoothTransformFollower : MonoBehaviour
 
     private void Update()
     {
+        if (!targetSet) return;
+
         follower.position = Vector3.MoveTowards(
             follower.position, targetPosition, changeRate * Time.deltaTime);
 
         if (Vector3.Distance(follower.position, targetPosition) < threshold)
         {
             onTarget = true;
+            targetSet = false;
         }
     }
 
     public void SetTarget(Vector3 position)
     {
+        Debug.Log($"Set Target follower: {position}");
         targetPosition = position;
         onTarget = false;
+        targetSet = true;
     }
 }

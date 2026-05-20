@@ -226,6 +226,44 @@ namespace BehaviourTree
             return result ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
+        [BTreeMethod(MethodID.BB_CheckVector2)]
+        public static NodeState BB_CheckVector2(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            if (!RequireVariable(fields, 0) || !RequireConstant(fields, 1)) return NodeState.FAILURE;
+
+            Vector2 value = blackBoard.Get<Vector2>(fields[0].value);
+            VectorCheckOp op = (VectorCheckOp)fields[1].GetInt();
+
+            bool result = op switch
+            {
+                VectorCheckOp.IsZero => value.sqrMagnitude < 0.0001f,
+                VectorCheckOp.IsNotZero => value.sqrMagnitude >= 0.0001f,
+                _ => false
+            };
+
+            return result ? NodeState.SUCCESS : NodeState.FAILURE;
+        }
+
+        [BTreeMethod(MethodID.BB_CheckVector3)]
+        public static NodeState BB_CheckVector3(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            if (!RequireVariable(fields, 0) || !RequireConstant(fields, 1)) return NodeState.FAILURE;
+
+            Vector3 value = blackBoard.Get<Vector3>(fields[0].value);
+            VectorCheckOp op = (VectorCheckOp)fields[1].GetInt();
+
+            bool result = op switch
+            {
+                VectorCheckOp.IsZero => value.sqrMagnitude < 0.0001f,
+                VectorCheckOp.IsNotZero => value.sqrMagnitude >= 0.0001f,
+                _ => false
+            };
+
+            Debug.Log("result: " + result + " : " + value);
+
+            return result ? NodeState.SUCCESS : NodeState.FAILURE;
+        }
+
         [BTreeMethod(MethodID.BB_SetInt)]
         public static NodeState BB_SetInt(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {

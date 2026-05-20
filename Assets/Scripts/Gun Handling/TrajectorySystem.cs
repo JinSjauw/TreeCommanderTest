@@ -20,8 +20,9 @@ public class TrajectorySystem : MonoBehaviour
     private int attemptsTotal;
     private float curveHeight;
     private Vector3 targetPosition;
+    private Vector3 resultPosition;
 
-    private bool hasTrajectory;
+    private bool hasTrajectory = false;
     private bool hasTarget;
     private bool hasFailed;
 
@@ -62,6 +63,7 @@ public class TrajectorySystem : MonoBehaviour
             if (result.IsValid)
             {
                 hasTrajectory = true;
+                resultPosition = targetPosition;
                 break;
             }
 
@@ -73,8 +75,10 @@ public class TrajectorySystem : MonoBehaviour
         if (hasTrajectory)
         {
             if (aimingSystem != null)
-                aimingSystem.SetTarget(targetPosition);
-
+            {
+                Debug.Log($"Set Aiming System Target: {resultPosition}");
+                aimingSystem.SetTarget(resultPosition);
+            }
             fireCurve.InterpolateTo = true;
             fireCurve.DesiredCurveHeight = curveHeight;
             attemptsTotal = 0;

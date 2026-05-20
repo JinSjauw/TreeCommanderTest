@@ -43,4 +43,10 @@ namespace BehaviourTree.Runtime
         IsTrue = 0,
         IsFalse = 1,
     }
+
+    public enum VectorCheckOp : int
+    {
+        IsZero = 0,
+        IsNotZero = 1,
+    }
 }

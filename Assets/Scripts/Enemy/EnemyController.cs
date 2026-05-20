@@ -73,7 +73,7 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
-        TickFiringCooldown(Time.deltaTime);
+        //TickFiringCooldown(Time.deltaTime);
     }
 
     public void SetAttackTarget(Transform playerTransform)
@@ -89,7 +89,6 @@ public class EnemyController : MonoBehaviour
         if (hitCount == 0)
         {
             attackTarget = null;
-            agent.isStopped = false;
             return false;
         }
 
@@ -110,7 +109,7 @@ public class EnemyController : MonoBehaviour
                 bestTarget = candidate;
             }
         }
-
+        Debug.Log("Set AttackTarget");
         attackTarget = bestTarget;
         return true;
     }

@@ -9,6 +9,7 @@ public class TurretAimingSystem : MonoBehaviour
 
     public void SetTarget(Vector3 worldPosition)
     {
+        Debug.Log($"Set Target: {worldPosition}");
         follower.SetTarget(worldPosition);
     }
 }
