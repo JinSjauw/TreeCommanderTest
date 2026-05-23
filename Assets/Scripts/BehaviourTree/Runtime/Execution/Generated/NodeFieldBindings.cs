@@ -60,6 +60,56 @@ namespace BehaviourTree.Runtime
             writer.SetVector3(0, p.TargetMovePosition);
         }
 
+        public static Enemy_SelectDetectedTarget_NodeFields DeserializeEnemy_SelectDetectedTarget(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader reader = new FieldReader(fields, blackboard);
+            return new Enemy_SelectDetectedTarget_NodeFields
+            {
+                // index 0: strategy (constant)
+                strategy = reader.GetEnum<global::BehaviourTree.Runtime.SelectionStrategy>(0),
+                // index 1: selectedTarget (blackboard variable)
+                selectedTarget = reader.GetTransform(1),
+            };
+        }
+
+        public static void SerializeEnemy_SelectDetectedTarget(Enemy_SelectDetectedTarget_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader writer = new FieldReader(fields, blackboard);
+            writer.SetTransform(1, p.selectedTarget);
+        }
+
+        public static Enemy_IsInFiringRange_NodeFields DeserializeEnemy_IsInFiringRange(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader reader = new FieldReader(fields, blackboard);
+            return new Enemy_IsInFiringRange_NodeFields
+            {
+                // index 0: selectedTarget (blackboard variable)
+                selectedTarget = reader.GetTransform(0),
+            };
+        }
+
+        public static void SerializeEnemy_IsInFiringRange(Enemy_IsInFiringRange_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader writer = new FieldReader(fields, blackboard);
+            writer.SetTransform(0, p.selectedTarget);
+        }
+
+        public static Enemy_HasLineOfSight_NodeFields DeserializeEnemy_HasLineOfSight(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader reader = new FieldReader(fields, blackboard);
+            return new Enemy_HasLineOfSight_NodeFields
+            {
+                // index 0: selectedTarget (blackboard variable)
+                selectedTarget = reader.GetTransform(0),
+            };
+        }
+
+        public static void SerializeEnemy_HasLineOfSight(Enemy_HasLineOfSight_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader writer = new FieldReader(fields, blackboard);
+            writer.SetTransform(0, p.selectedTarget);
+        }
+
         public static INVERTER_NodeFields DeserializeINVERTER(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader reader = new FieldReader(fields, blackboard);

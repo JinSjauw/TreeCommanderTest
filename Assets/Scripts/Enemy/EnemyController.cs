@@ -1,7 +1,7 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using BehaviourTree.Runtime;
 using Random = UnityEngine.Random;
 
 public class EnemyController : MonoBehaviour
@@ -13,14 +13,10 @@ public class EnemyController : MonoBehaviour
     [field: SerializeField] public TurretAimingSystem Aiming { get; private set; }
     [field: SerializeField] public TrajectorySystem Trajectory { get; private set; }
     [field: SerializeField] public CurveController FireCurve { get; private set; }
+    [field: SerializeField] public TurretController Turret { get; private set; }
 
     [Header("Detection")]
-    [SerializeField] private float firingRadius;
-    [SerializeField] private float detectionRadius;
-    [SerializeField] private LayerMask targetLayers;
-    [SerializeField] private Transform attackTarget;
-
-    private Collider[] detectBuffer = new Collider[32];
+    [field: SerializeField] public EnemyDetectionSystem Detection { get; private set; }
 
     [Header("Pathfinding")]
     [SerializeField] private float maxConeAngle;
@@ -53,18 +49,10 @@ public class EnemyController : MonoBehaviour
     private ObjectPool pool;
     public bool IsReloading { get; private set; }
     public NavMeshAgent Agent => agent;
-    public Transform AttackTarget => attackTarget;
     public bool HasAimTarget => Trajectory.HasTarget;
     public EventHandler<EnemyController> OnDestructionEvent;
 
-    // public void InitializeEnemy(Transform playerTransform, Vector3 spawnPosition, string ID)
-    // {
-    //     attackTarget = playerTransform;
-    //     transform.position = spawnPosition;
-    //     enemySignID = ID;
-
-    //     this.enabled = true;
-    // }
+    private Transform selectedTarget;
 
     void Start()
     {
@@ -74,44 +62,6 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         //TickFiringCooldown(Time.deltaTime);
-    }
-
-    public void SetAttackTarget(Transform playerTransform)
-    {
-        attackTarget = playerTransform;
-    }
-
-    public bool DetectTarget()
-    {
-        int hitCount = Physics.OverlapSphereNonAlloc(
-            agent.transform.position, detectionRadius, detectBuffer, targetLayers);
-
-        if (hitCount == 0)
-        {
-            attackTarget = null;
-            return false;
-        }
-
-        Transform bestTarget = null;
-        float bestDistance = float.MaxValue;
-
-        for (int i = 0; i < hitCount; i++)
-        {
-            Transform candidate = detectBuffer[i].transform;
-            float dist = Vector3.Distance(agent.transform.position, candidate.position);
-
-            if (Physics.Linecast(muzzleTransform.position, candidate.position, LayerMask.GetMask("Ground")))
-                continue;
-
-            if (dist < bestDistance)
-            {
-                bestDistance = dist;
-                bestTarget = candidate;
-            }
-        }
-        Debug.Log("Set AttackTarget");
-        attackTarget = bestTarget;
-        return true;
     }
 
     public bool TickFiringCooldown(float deltaTime)
@@ -130,6 +80,16 @@ public class EnemyController : MonoBehaviour
         }
 
         return false;
+    }
+
+    public Transform SelectTarget(SelectionStrategy strategy)
+    {
+        if (!Detection.DetectTargets())
+            return null;
+
+        selectedTarget = Detection.GetTarget(strategy);
+
+        return selectedTarget;
     }
 
     public void Fire()
@@ -166,67 +126,13 @@ public class EnemyController : MonoBehaviour
         return projectileVariables.GetTravelTime(distance, FireCurve.DesiredCurveHeight);
     }
 
-    public void SelectAimTarget()
-    {
-        if (attackTarget == null)
-            return;
-
-        Vector2 randomFactor = Random.insideUnitCircle * randomTargetRadius;
-
-        Vector3 overshootDirection = attackTarget.position - agent.transform.position;
-
-        bool directLineOfSight = !Physics.Linecast(
-            muzzleTransform.position, attackTarget.position, LayerMask.GetMask("Ground"));
-
-        float overshootFactor = directLineOfSight ? 2.2f : 0.75f;
-
-        Vector3 randomPosition = attackTarget.position
-            + (overshootDirection.normalized * overshootFactor)
-            + new Vector3(randomFactor.x, 0, randomFactor.y);
-
-        if (Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
-        {
-            randomPosition = hit.point;
-        }
-
-        Trajectory.SetTarget(randomPosition);
-    }
-
-    public float GetDistanceToPlayer()
-    {
-        if (attackTarget == null)
-            return float.MaxValue;
-
-        return Vector2.Distance(
-            new Vector2(attackTarget.position.x, attackTarget.position.z),
-            new Vector2(agent.transform.position.x, agent.transform.position.z));
-    }
-
-    public bool IsPlayerInFiringRadius()
-    {
-        return GetDistanceToPlayer() <= firingRadius;
-    }
-
-    public bool IsPlayerInDetectionRadius()
-    {
-        return GetDistanceToPlayer() <= detectionRadius;
-    }
-
-    public bool HasDirectLineOfSight()
-    {
-        if (attackTarget == null)
-            return false;
-
-        return !Physics.Linecast(
-            muzzleTransform.position, attackTarget.position, LayerMask.GetMask("Ground"));
-    }
-
     public Vector3 CalculateNewPathToTarget()
     {
-        if (attackTarget == null)
+        if (selectedTarget == null)
             return Vector3.zero;
 
-        Vector3 nextPosition = CalculateTargetPosition(attackTarget.position, maxConeAngle, minDistance, maxDistance);
+        Vector3 nextPosition = CalculateTargetPosition(selectedTarget.position, maxConeAngle, minDistance, maxDistance);
+        agent.SetDestination(nextPosition);
 
         return nextPosition;
     }
@@ -237,7 +143,7 @@ public class EnemyController : MonoBehaviour
         Vector3 directionToTarget = (target - origin).normalized;
 
         float distanceToTarget = Vector3.Distance(target, origin);
-        float distanceAlpha = (distanceToTarget - maintainDistance) / (detectionRadius - maintainDistance);
+        float distanceAlpha = (distanceToTarget - maintainDistance) / (Detection.DetectionRadius - maintainDistance);
         distanceAlpha = distanceAlpha * 2 - 1;
 
         float distancePadding = distanceAlpha > 0 ? minimumPadding : -minimumPadding;
@@ -273,7 +179,6 @@ public class EnemyController : MonoBehaviour
         int randomIndex = Random.Range(0, patrolPointsParent.childCount);
         Vector3 point = patrolPointsParent.GetChild(randomIndex).position;
         agent.SetDestination(point);
-        agent.isStopped = false;
         return point;
     }
 
@@ -286,4 +191,46 @@ public class EnemyController : MonoBehaviour
     {
         agent.isStopped = true;
     }
+
+    public bool TargetInFiringRange(Transform target)
+    {
+        return Detection.TargetInFiringRange(target);
+    }
+
+    public bool HasLineOfSightToTarget(Transform target)
+    {
+        return Detection.HasLineOfSightToTarget(target);
+    }
+
+    public bool SetAimTarget()
+    {
+        if (selectedTarget == null) return false; 
+        Vector3 trajectoryTarget = GetRandomTargetOffset(selectedTarget);
+        Trajectory.SetTarget(trajectoryTarget);
+        return true;
+    }
+
+    private Vector3 GetRandomTargetOffset(Transform attackTarget)
+    {
+        Vector2 randomFactor = Random.insideUnitCircle * randomTargetRadius;
+
+        Vector3 overshootDirection = attackTarget.position - agent.transform.position;
+
+        bool directLineOfSight = !Physics.Linecast(
+            muzzleTransform.position, attackTarget.position, LayerMask.GetMask("Ground"));
+
+        float overshootFactor = directLineOfSight ? 2.2f : 0.75f;
+
+        Vector3 randomPosition = attackTarget.position
+            + (overshootDirection.normalized * overshootFactor)
+            + new Vector3(randomFactor.x, 0, randomFactor.y);
+
+        if (Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
+        {
+            randomPosition = hit.point;
+        }
+
+        return randomPosition;
+    }
+
 }

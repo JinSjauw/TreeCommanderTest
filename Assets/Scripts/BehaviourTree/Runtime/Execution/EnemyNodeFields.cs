@@ -27,4 +27,29 @@ namespace BehaviourTree.Runtime
         [SharedVar]
         public Vector3 TargetMovePosition;
     }
+
+    [GenerateNodeFieldBindings]
+    [StructLayout(LayoutKind.Sequential)]
+    public partial struct Enemy_SelectDetectedTarget_NodeFields
+    {
+        public SelectionStrategy strategy;
+        [SharedVar]
+        public Transform selectedTarget;
+    }
+
+    [GenerateNodeFieldBindings]
+    [StructLayout(LayoutKind.Sequential)]
+    public partial struct Enemy_IsInFiringRange_NodeFields
+    {
+        [SharedVar]
+        public Transform selectedTarget;
+    }
+
+    [GenerateNodeFieldBindings]
+    [StructLayout(LayoutKind.Sequential)]
+    public partial struct Enemy_HasLineOfSight_NodeFields
+    {
+        [SharedVar]
+        public Transform selectedTarget;
+    }
 }

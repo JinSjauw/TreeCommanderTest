@@ -14,6 +14,8 @@ namespace BehaviourTree
                 Debug.LogError("[EnemyMethods] EnemyController not found on BlackBoard GameObject");
             return ec;
         }
+        
+        #region Pathfinding
 
         [BTreeMethod(MethodID.Enemy_MoveTo)]
         public static NodeState Enemy_MoveTo(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
@@ -50,7 +52,6 @@ namespace BehaviourTree
             Enemy_SelectEngagePosition_NodeFields nodeFields = NodeFieldBindings.DeserializeEnemy_SelectEngagePosition(fields, blackBoard);
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
-            if (controller.AttackTarget == null) return NodeState.FAILURE;
 
             Vector3 position = controller.CalculateNewPathToTarget();
             nodeFields.TargetMovePosition = position;
@@ -58,14 +59,39 @@ namespace BehaviourTree
             return NodeState.SUCCESS;
         }
 
+        [BTreeMethod(MethodID.Enemy_HasArrived)]
+        public static NodeState Enemy_HasArrived(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            EnemyController controller = GetController(blackBoard);
+            if (controller == null) return NodeState.FAILURE;
+
+            return controller.HasArrivedAtDestination() ? NodeState.SUCCESS : NodeState.FAILURE;
+        }
+
+        [BTreeMethod(MethodID.Enemy_StopMovement)]
+        public static NodeState Enemy_StopMovement(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            EnemyController controller = GetController(blackBoard);
+            if (controller == null) return NodeState.FAILURE;
+
+            controller.StopMoving();
+            return NodeState.SUCCESS;
+        }
+
+        #endregion
+
+        #region Aiming
+
         [BTreeMethod(MethodID.Enemy_SelectAimTarget)]
         public static NodeState Enemy_SelectAimTarget(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
-            if (controller.AttackTarget == null) return NodeState.FAILURE;
+            
+            bool success = controller.SetAimTarget();
+            
+            if(!success) return NodeState.FAILURE;
 
-            controller.SelectAimTarget();
             return NodeState.SUCCESS;
         }
 
@@ -75,20 +101,42 @@ namespace BehaviourTree
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
 
-            float startingHeight = controller.FireCurve.DesiredCurveHeight > 0f
-                ? controller.FireCurve.DesiredCurveHeight
-                : 1f;
-
+            float startingHeight = 1f;
             TrajectorySearchState searchState = controller.Trajectory.FindTrajectory(startingHeight);
 
-            return searchState switch
+            NodeState result;
+
+            switch (searchState)
             {
-                TrajectorySearchState.Found => NodeState.SUCCESS,
-                TrajectorySearchState.Failed => NodeState.FAILURE,
-                _ => NodeState.RUNNING
-            };
+                case TrajectorySearchState.Found:
+                    result = NodeState.SUCCESS;
+                    controller.Turret.SetAiming(true);
+                    break;
+                case TrajectorySearchState.Failed:
+                    result = NodeState.FAILURE;
+                    controller.Turret.SetAiming(false);
+                    break;
+                default:
+                    result = NodeState.RUNNING;
+                    break;
+            }
+
+            return result;
         }
 
+        [BTreeMethod(MethodID.Enemy_IsTrajectoryReady)]
+        public static NodeState Enemy_IsTrajectoryReady(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            EnemyController controller = GetController(blackBoard);
+            if (controller == null) return NodeState.FAILURE;
+
+            return controller.Trajectory.HasTrajectory ? NodeState.SUCCESS : NodeState.FAILURE;
+        }
+
+        #endregion
+        
+        #region Firing
+        
         [BTreeMethod(MethodID.Enemy_WaitForReload)]
         public static NodeState Enemy_WaitForReload(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
@@ -113,16 +161,6 @@ namespace BehaviourTree
             return NodeState.SUCCESS;
         }
 
-        [BTreeMethod(MethodID.Enemy_StopMovement)]
-        public static NodeState Enemy_StopMovement(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
-        {
-            EnemyController controller = GetController(blackBoard);
-            if (controller == null) return NodeState.FAILURE;
-
-            controller.StopMoving();
-            return NodeState.SUCCESS;
-        }
-
         [BTreeMethod(MethodID.Enemy_IsAimed)]
         public static NodeState Enemy_IsAimed(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
@@ -132,50 +170,58 @@ namespace BehaviourTree
             return controller.Aiming.OnTarget ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
+        #endregion
+        
+        #region Detection
+        
         [BTreeMethod(MethodID.Enemy_DetectTarget)]
         public static NodeState Enemy_DetectTarget(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
 
-            bool detected = controller.DetectTarget();
+            bool detected = controller.Detection.DetectTargets();
+
+            if (!detected) controller.Turret.SetAiming(false);
+
             return detected ? NodeState.SUCCESS : NodeState.FAILURE;
+        }
+
+        [BTreeMethod(MethodID.Enemy_SelectDetectedTarget)]
+        public static NodeState Enemy_SelectDetectedTarget(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            Enemy_SelectDetectedTarget_NodeFields nodeFields = NodeFieldBindings.DeserializeEnemy_SelectDetectedTarget(fields, blackBoard);
+            EnemyController controller = GetController(blackBoard);
+            if (controller == null) return NodeState.FAILURE;
+
+            Transform selected = controller.SelectTarget(nodeFields.strategy);
+            if (selected == null)
+                return NodeState.FAILURE;
+
+            nodeFields.selectedTarget = selected;
+            NodeFieldBindings.SerializeEnemy_SelectDetectedTarget(nodeFields, fields, blackBoard);
+            return NodeState.SUCCESS;
         }
 
         [BTreeMethod(MethodID.Enemy_IsInFiringRange)]
         public static NodeState Enemy_IsInFiringRange(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
+            Enemy_IsInFiringRange_NodeFields nodeFields = NodeFieldBindings.DeserializeEnemy_IsInFiringRange(fields, blackBoard);
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
-
-            return controller.IsPlayerInFiringRadius() ? NodeState.SUCCESS : NodeState.FAILURE;
+            
+            return controller.TargetInFiringRange(nodeFields.selectedTarget) ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
         [BTreeMethod(MethodID.Enemy_HasLineOfSight)]
         public static NodeState Enemy_HasLineOfSight(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
+            Enemy_HasLineOfSight_NodeFields nodeFields = NodeFieldBindings.DeserializeEnemy_HasLineOfSight(fields, blackBoard);
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
-
-            return controller.HasDirectLineOfSight() ? NodeState.SUCCESS : NodeState.FAILURE;
+            return controller.HasLineOfSightToTarget(nodeFields.selectedTarget) ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
-        [BTreeMethod(MethodID.Enemy_IsTrajectoryReady)]
-        public static NodeState Enemy_IsTrajectoryReady(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
-        {
-            EnemyController controller = GetController(blackBoard);
-            if (controller == null) return NodeState.FAILURE;
-
-            return controller.Trajectory.HasTrajectory ? NodeState.SUCCESS : NodeState.FAILURE;
-        }
-
-        [BTreeMethod(MethodID.Enemy_HasArrived)]
-        public static NodeState Enemy_HasArrived(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
-        {
-            EnemyController controller = GetController(blackBoard);
-            if (controller == null) return NodeState.FAILURE;
-
-            return controller.HasArrivedAtDestination() ? NodeState.SUCCESS : NodeState.FAILURE;
-        }
+        #endregion
     }
 }
