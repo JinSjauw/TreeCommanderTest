@@ -1,45 +1,48 @@
 using UnityEngine;
 
-public struct TrajectoryValidationResult
+public class TrajectoryValidator
 {
-    public bool IsValid;
-    public Vector3 HitPoint;
-}
-
-public class TrajectoryValidator : MonoBehaviour
-{
-    [SerializeField] private int linePositions = 8;
-    [SerializeField] private LayerMask obstacleMask;
-
-    private void Awake()
+    private int segmentCount = 8;
+    private LayerMask obstacleMask;
+    private float positionAlpha = 0.5f;
+    public TrajectoryValidator(int segmentCount, LayerMask obstacleMask, float positionAlpha)
     {
-        if (obstacleMask == 0)
-            obstacleMask = LayerMask.GetMask("Ground");
+        this.segmentCount = segmentCount;
+        this.obstacleMask = obstacleMask;
+        this.positionAlpha = positionAlpha;
     }
 
-    public TrajectoryValidationResult Validate(Vector3 start, Vector3 end, Vector3 controlPoint)
+    public bool Validate(Vector3 start, Vector3 end, Vector3 controlPoint)
     {
+        if (IsControlPointBelowLine(start, end, controlPoint))
+        {
+            return false;
+        }
+
         Vector3 oldPosition = start;
 
-        for (int i = 0; i < linePositions; i++)
+        for (int i = 0; i < segmentCount; i++)
         {
-            float t = (float)i / linePositions;
-            Vector3 nextPosition = QuadraticCurve.EvaluateCurve(start, end, controlPoint, t);
+            float segmentIndex = (float)i / segmentCount;
+            Vector3 nextPosition = QuadraticCurve.EvaluateCurve(start, end, controlPoint, segmentIndex);
 
             Debug.DrawLine(oldPosition, nextPosition, Color.red, 2f);
 
-            if (Physics.Linecast(oldPosition, nextPosition, out RaycastHit hit, obstacleMask))
+            if (Physics.Linecast(oldPosition, nextPosition, obstacleMask))
             {
-                return new TrajectoryValidationResult
-                {
-                    IsValid = false,
-                    HitPoint = hit.point
-                };
+                return false;
             }
 
             oldPosition = nextPosition;
         }
 
-        return new TrajectoryValidationResult { IsValid = true };
+        return true;
+    }
+
+    //Calculate the projected line y position of the control point and reject if valley
+    private bool IsControlPointBelowLine(Vector3 start, Vector3 end, Vector3 controlPoint)
+    {
+        float minHeight = Mathf.Lerp(start.y, end.y, positionAlpha);
+        return controlPoint.y <= minHeight; 
     }
 }

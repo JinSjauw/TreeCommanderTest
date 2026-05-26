@@ -1,69 +1,72 @@
 using UnityEngine;
 
-public enum TrajectorySearchState { Searching, Found, Failed }
-
 public class TrajectorySystem : MonoBehaviour
 {
-    [Header("Component References")]
+    [Header("References")]
     [SerializeField] private Transform trajectoryStart;
-    [SerializeField] private Transform trajectoryTarget;
-    [SerializeField] private CurveController trajectoryCurve;
     [SerializeField] private CurveController fireCurve;
-    [SerializeField] private TrajectoryValidator validator;
-    [SerializeField] private TurretAimingSystem aimingSystem;
+    [SerializeField] private Transform fireTarget;
+    private TrajectoryValidator validator;
+
+    [Header("Obstacle Settings")]
+    [SerializeField] private LayerMask obstacleMask;
 
     [Header("Search Settings")]
     [SerializeField] private int attemptsPerFrame = 2;
     [SerializeField] private int maxTotalAttempts = 8;
     [SerializeField] private float trajectoryAdjustmentStep = 1f;
+    [SerializeField] private float trajectorySearchStartHeight = 2f;
+    [SerializeField] private int segmentCount = 8;
 
     private int attemptsTotal;
     private float curveHeight;
-    private Vector3 targetPosition;
-    private Vector3 resultPosition;
-
-    private bool hasTrajectory = false;
-    private bool hasTarget;
+    private Vector3 trajectoryTargetPosition;
+    private bool hasTrajectory;
+    private bool hasAimTarget;
     private bool hasFailed;
 
     public bool HasTrajectory => hasTrajectory;
+    public bool HasAimTarget => hasAimTarget;
     public bool HasFailed => hasFailed;
-    public bool HasTarget => hasTarget;
-
-    public void SetTarget(Vector3 position)
+    private void Awake()
     {
-        if (trajectoryTarget != null)
-            trajectoryTarget.position = position;
+        if (obstacleMask == 0)
+        {
+            obstacleMask = LayerMask.GetMask("Ground");
+        }
 
-        targetPosition = position;
-        hasTarget = true;
+        validator = new TrajectoryValidator(segmentCount, obstacleMask, fireCurve.GetPosition());
+        
+    }
+    public void SetTrajectoryTarget(Vector3 position)
+    {
+        if (fireTarget != null)
+            fireTarget.position = position;
+
+        trajectoryTargetPosition = position;
+        hasAimTarget = true;
     }
 
-    public TrajectorySearchState FindTrajectory(float startingHeight)
+    public TrajectorySearchState SearchTrajectory()
     {
         hasFailed = false;
         hasTrajectory = false;
 
         Vector3 startPosition = trajectoryStart.position;
+        Vector3 controlPosition = fireCurve.transform.position;
 
         if (attemptsTotal == 0)
-        {
-            curveHeight = startingHeight;
-            trajectoryCurve.SetHeight(startingHeight);
-        }
+            curveHeight = trajectorySearchStartHeight;
 
         for (int i = 0; i < attemptsPerFrame && !hasTrajectory; i++)
         {
-            trajectoryCurve.SetHeight(curveHeight);
-            Vector3 controlPosition = trajectoryCurve.transform.position;
+            controlPosition.y = curveHeight;
 
-            TrajectoryValidationResult result = validator.Validate(
-                startPosition, targetPosition, controlPosition);
+            bool isValid = validator.Validate(startPosition, trajectoryTargetPosition, controlPosition);
 
-            if (result.IsValid)
+            if (isValid)
             {
                 hasTrajectory = true;
-                resultPosition = targetPosition;
                 break;
             }
 
@@ -74,13 +77,8 @@ public class TrajectorySystem : MonoBehaviour
 
         if (hasTrajectory)
         {
-            if (aimingSystem != null)
-            {
-                Debug.Log($"Set Aiming System Target: {resultPosition}");
-                aimingSystem.SetTarget(resultPosition);
-            }
-            fireCurve.InterpolateTo = true;
-            fireCurve.DesiredCurveHeight = curveHeight;
+            fireTarget.position = trajectoryTargetPosition;
+            fireCurve.SetHeight(curveHeight);
             attemptsTotal = 0;
             return TrajectorySearchState.Found;
         }
@@ -88,7 +86,8 @@ public class TrajectorySystem : MonoBehaviour
         if (attemptsTotal >= maxTotalAttempts)
         {
             attemptsTotal = 0;
-            hasTarget = false;
+            fireCurve.SetHeight(trajectorySearchStartHeight);
+            hasAimTarget = false;
             hasFailed = true;
             return TrajectorySearchState.Failed;
         }
@@ -96,14 +95,9 @@ public class TrajectorySystem : MonoBehaviour
         return TrajectorySearchState.Searching;
     }
 
-    public void ResetTries()
-    {
-        hasFailed = false;
-    }
-
     public void ResetTrajectory()
     {
-        hasTarget = false;
+        hasAimTarget = false;
         hasTrajectory = false;
         hasFailed = false;
     }

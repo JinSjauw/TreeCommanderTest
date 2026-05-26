@@ -1,0 +1,135 @@
+using Unity.VisualScripting;
+using UnityEngine;
+using Random = UnityEngine.Random;
+
+public enum TrajectorySearchState { Searching, Found, Failed }
+
+public class GunHandling : MonoBehaviour
+{
+    [Header("Turret")]
+    [SerializeField] private TurretController turretController;
+
+    [Header("Trajectory")]
+    [SerializeField] private TrajectorySystem trajectory;
+
+    [Header("Firing")]
+    [SerializeField] private Transform muzzleTransform;
+    [SerializeField] private Transform projectileTargetTransform;
+    [SerializeField] private CurveController fireCurve;
+    [SerializeField] private ProjectileVariables projectileVariables;
+    [SerializeField] private Transform projectileCollection;
+    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private float projectileDamage;
+    [SerializeField] private float roundPerMinute;
+
+    [Header("Aim Targeting")]
+    [SerializeField] private float randomTargetRadius = 0.5f;
+
+    private float firingTimer;
+    private bool isReloading;
+    private ObjectPool pool;
+
+    public bool OnTarget => turretController.UpdateOnTarget();
+    public bool HasTrajectory => trajectory.HasTrajectory;
+    public bool HasAimTarget => trajectory.HasAimTarget;
+    public bool HasFailed => trajectory.HasFailed;
+    public bool IsReloading => isReloading;
+    public TrajectorySystem Trajectory => trajectory;
+
+    private void Start()
+    {
+        pool = FindFirstObjectByType<ObjectPool>();
+    }
+
+    private void Update()
+    {
+        TickFiringCooldown(Time.deltaTime);
+    }
+
+    public void SetAiming(bool aiming)
+    {
+        turretController.SetAiming(aiming);
+    }
+
+    public bool SelectAimTarget(Transform attackTarget, Vector3 originPosition)
+    {
+        if (attackTarget == null) return false;
+
+        Vector2 randomFactor = Random.insideUnitCircle * randomTargetRadius;
+
+        Vector3 overshootDirection = attackTarget.position - originPosition;
+
+        bool directLineOfSight = !Physics.Linecast( muzzleTransform.position, attackTarget.position, LayerMask.GetMask("Ground") );
+
+        float overshootFactor = directLineOfSight ? 80f : 1.5f; //placeholder numbers
+        
+        Vector3 randomPosition = attackTarget.position
+            + (overshootDirection.normalized * overshootFactor)
+            + new Vector3(randomFactor.x, 0, randomFactor.y);
+
+        if (!directLineOfSight && Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
+        {
+            //randomPosition = hit.point;
+        }
+
+        trajectory.SetTrajectoryTarget(randomPosition);
+        return true;
+    }
+
+    public TrajectorySearchState SearchTrajectory()
+    {
+        return trajectory.SearchTrajectory();
+    }
+
+    public void Fire()
+    {
+        GameObject newProjectile = pool.GetObject(projectilePrefab);
+        newProjectile.transform.position = muzzleTransform.position;
+        newProjectile.transform.forward = muzzleTransform.forward;
+        newProjectile.transform.parent = projectileCollection;
+
+        if (newProjectile.TryGetComponent(out Projectile projectileComponent))
+        {
+            projectileComponent.InitProjectile(
+                muzzleTransform.position,
+                projectileTargetTransform.position,
+                fireCurve.transform.position,
+                CalculateTravelTime(),
+                projectileDamage,
+                pool,
+                false);
+        }
+        else
+        {
+            Debug.LogError("Couldn't get Projectile component on: " + newProjectile.name);
+        }
+
+        trajectory.ResetTrajectory();
+        firingTimer = 0f;
+        isReloading = true;
+    }
+
+    public bool TickFiringCooldown(float deltaTime)
+    {
+        if (!isReloading)
+            return false;
+
+        float firingDelay = 1.0f / (roundPerMinute / 60f);
+        firingTimer += deltaTime;
+
+        if (firingTimer >= firingDelay)
+        {
+            firingTimer = 0f;
+            isReloading = false;
+            return true;
+        }
+
+        return false;
+    }
+
+    private float CalculateTravelTime()
+    {
+        float distance = Vector3.Distance(muzzleTransform.position, projectileTargetTransform.position);
+        return projectileVariables.GetTravelTime(distance, fireCurve.CurrentCurveHeight);
+    }
+}

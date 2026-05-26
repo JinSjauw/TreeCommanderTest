@@ -35,6 +35,8 @@ namespace BehaviourTree.Runtime
             {
                 // index 0: TargetMovePosition (blackboard variable)
                 TargetMovePosition = reader.GetVector3(0),
+                // index 1: PatrolPointsParent (blackboard variable)
+                PatrolPointsParent = reader.GetTransform(1),
             };
         }
 
@@ -42,6 +44,7 @@ namespace BehaviourTree.Runtime
         {
             FieldReader writer = new FieldReader(fields, blackboard);
             writer.SetVector3(0, p.TargetMovePosition);
+            writer.SetTransform(1, p.PatrolPointsParent);
         }
 
         public static Enemy_SelectEngagePosition_NodeFields DeserializeEnemy_SelectEngagePosition(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
@@ -108,6 +111,16 @@ namespace BehaviourTree.Runtime
         {
             FieldReader writer = new FieldReader(fields, blackboard);
             writer.SetTransform(0, p.selectedTarget);
+        }
+
+        public static Enemy_SetAiming_NodeFields DeserializeEnemy_SetAiming(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader reader = new FieldReader(fields, blackboard);
+            return new Enemy_SetAiming_NodeFields
+            {
+                // index 0: aiming (constant)
+                aiming = reader.GetBool(0),
+            };
         }
 
         public static INVERTER_NodeFields DeserializeINVERTER(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)

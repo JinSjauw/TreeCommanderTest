@@ -33,8 +33,8 @@ public class EnemyDetectionSystem : MonoBehaviour
         for (int i = 0; i < hitCount; i++)
         {
             Transform candidate = detectBuffer[i].transform;
-            if (!HasLineOfSight(candidate))
-                continue;
+            // if (!HasLineOfSight(candidate))
+            //     continue;
 
             DetectedTargets.Add(candidate);
         }
@@ -118,14 +118,15 @@ public class EnemyDetectionSystem : MonoBehaviour
             eyeTransform.position, target.position, LayerMask.GetMask("Ground"));
     }
 
-    public bool IsTargetInRange(Transform target, float range)
+    public bool IsTargetInRange(Transform target, float range, bool log = false)
     {
         if (target == null)
             return false;
 
-        return Vector2.Distance(
-            new Vector2(target.position.x, target.position.z),
-            new Vector2(transform.position.x, transform.position.z)) <= range;
+        float distance = Vector2.Distance(new Vector2(target.position.x, target.position.z), new Vector2(transform.position.x, transform.position.z));
+        if (log) Debug.Log($"Distance to target: {distance} Range: {range} IsInRange: {distance <= range}");
+
+        return distance <= range;
     }
 
     public bool TargetInFiringRange(Transform target)

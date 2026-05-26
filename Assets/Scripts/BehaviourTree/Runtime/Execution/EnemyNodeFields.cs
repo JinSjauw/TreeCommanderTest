@@ -18,6 +18,8 @@ namespace BehaviourTree.Runtime
     {
         [SharedVar]
         public Vector3 TargetMovePosition;
+        [SharedVar]
+        public Transform PatrolPointsParent;
     }
 
     [GenerateNodeFieldBindings]
@@ -51,5 +53,12 @@ namespace BehaviourTree.Runtime
     {
         [SharedVar]
         public Transform selectedTarget;
+    }
+
+    [GenerateNodeFieldBindings]
+    [StructLayout(LayoutKind.Sequential)]
+    public partial struct Enemy_SetAiming_NodeFields
+    {
+        public bool aiming;
     }
 }

@@ -64,6 +64,7 @@ namespace BehaviourTree.Core
         [MethodCategory(BehaviourNodeType.CONDITION)]Enemy_IsTrajectoryReady = 58,
         [MethodCategory(BehaviourNodeType.CONDITION)]Enemy_HasArrived = 59,
         [MethodCategory(BehaviourNodeType.ACTION)]Enemy_SelectDetectedTarget = 62,
+        [MethodCategory(BehaviourNodeType.ACTION)]Enemy_SetAiming = 63,
         //Check single value
         [MethodCategory(BehaviourNodeType.CONDITION)]BB_CheckVector2 = 60,
         [MethodCategory(BehaviourNodeType.CONDITION)]BB_CheckVector3 = 61,

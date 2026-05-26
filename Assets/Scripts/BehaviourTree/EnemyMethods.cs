@@ -1,9 +1,8 @@
 using System;
 using BehaviourTree.Core;
-using BehaviourTree.Runtime;
 using UnityEngine;
 
-namespace BehaviourTree
+namespace BehaviourTree.Runtime
 {
     public class EnemyMethods
     {
@@ -40,7 +39,7 @@ namespace BehaviourTree
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
 
-            Vector3 point = controller.SetNextPatrolPoint();
+            Vector3 point = controller.SetNextPatrolPoint(nodeFields.PatrolPointsParent);
             nodeFields.TargetMovePosition = point;
             NodeFieldBindings.SerializeEnemy_SelectPatrolPoint(nodeFields, fields, blackBoard);
             return NodeState.SUCCESS;
@@ -88,7 +87,7 @@ namespace BehaviourTree
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
             
-            bool success = controller.SetAimTarget();
+            bool success = controller.SelectAimTarget();
             
             if(!success) return NodeState.FAILURE;
 
@@ -101,8 +100,7 @@ namespace BehaviourTree
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
 
-            float startingHeight = 1f;
-            TrajectorySearchState searchState = controller.Trajectory.FindTrajectory(startingHeight);
+            TrajectorySearchState searchState = controller.SearchTrajectory();
 
             NodeState result;
 
@@ -110,11 +108,9 @@ namespace BehaviourTree
             {
                 case TrajectorySearchState.Found:
                     result = NodeState.SUCCESS;
-                    controller.Turret.SetAiming(true);
                     break;
                 case TrajectorySearchState.Failed:
                     result = NodeState.FAILURE;
-                    controller.Turret.SetAiming(false);
                     break;
                 default:
                     result = NodeState.RUNNING;
@@ -130,7 +126,18 @@ namespace BehaviourTree
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
 
-            return controller.Trajectory.HasTrajectory ? NodeState.SUCCESS : NodeState.FAILURE;
+            return controller.GunHandling.HasTrajectory ? NodeState.SUCCESS : NodeState.FAILURE;
+        }
+
+        [BTreeMethod(MethodID.Enemy_SetAiming)]
+        public static NodeState Enemy_SetAiming(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            EnemyController controller = GetController(blackBoard);
+            if (controller == null) return NodeState.FAILURE;
+
+            Enemy_SetAiming_NodeFields nodeFields = NodeFieldBindings.DeserializeEnemy_SetAiming(fields, blackBoard);
+            controller.GunHandling.SetAiming(nodeFields.aiming);
+            return NodeState.SUCCESS;
         }
 
         #endregion
@@ -143,9 +150,7 @@ namespace BehaviourTree
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
 
-            controller.TickFiringCooldown(Time.deltaTime);
-
-            if (controller.IsReloading)         
+            if (controller.GunHandling.IsReloading)         
                 return NodeState.RUNNING;
 
             return NodeState.SUCCESS;
@@ -167,7 +172,7 @@ namespace BehaviourTree
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
 
-            return controller.Aiming.OnTarget ? NodeState.SUCCESS : NodeState.FAILURE;
+            return controller.GunHandling.OnTarget ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
         #endregion
@@ -181,8 +186,6 @@ namespace BehaviourTree
             if (controller == null) return NodeState.FAILURE;
 
             bool detected = controller.Detection.DetectTargets();
-
-            if (!detected) controller.Turret.SetAiming(false);
 
             return detected ? NodeState.SUCCESS : NodeState.FAILURE;
         }

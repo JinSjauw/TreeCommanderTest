@@ -9,78 +9,27 @@ public class EnemyController : MonoBehaviour
     [Header("Identity")]
     [SerializeField] private string enemySignID;
 
-    [Header("Shared Subsystems")]
-    [field: SerializeField] public TurretAimingSystem Aiming { get; private set; }
-    [field: SerializeField] public TrajectorySystem Trajectory { get; private set; }
-    [field: SerializeField] public CurveController FireCurve { get; private set; }
-    [field: SerializeField] public TurretController Turret { get; private set; }
-
-    [Header("Detection")]
+    [Header("Systems")]
     [field: SerializeField] public EnemyDetectionSystem Detection { get; private set; }
+    [field: SerializeField] public GunHandling GunHandling { get; private set; }
 
     [Header("Pathfinding")]
-    [SerializeField] private float maxConeAngle;
+    [SerializeField] private float maxConeHalfAngle;
     [SerializeField] private float minDistance;
     [SerializeField] private float maxDistance;
     [SerializeField] private float maintainDistance;
     [SerializeField] private float minimumPadding = 0.15f;
 
     [SerializeField] private NavMeshAgent agent;
+
     public bool CanMove { get; set; }
     public bool HasPath { get; private set; }
     public bool InPosition { get; private set; } = true;
 
-    [Header("Target Selection")]
-    [SerializeField] private float randomTargetRadius;
-    [SerializeField] private Transform patrolPointsParent;
-
-    [Header("Firing")]
-    [SerializeField] private Transform muzzleTransform;
-    [SerializeField] private Transform targetTransform;
-
-    [Header("Projectile")]
-    [SerializeField] private ProjectileVariables projectileVariables;
-    [SerializeField] private Transform projectileCollection;
-    [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private float projectileDamage;
-    [SerializeField] private float roundPerMinute;
-
-    private float firingTimer;
-    private ObjectPool pool;
-    public bool IsReloading { get; private set; }
     public NavMeshAgent Agent => agent;
-    public bool HasAimTarget => Trajectory.HasTarget;
     public EventHandler<EnemyController> OnDestructionEvent;
 
     private Transform selectedTarget;
-
-    void Start()
-    {
-        pool = FindFirstObjectByType<ObjectPool>();
-    }
-
-    void Update()
-    {
-        //TickFiringCooldown(Time.deltaTime);
-    }
-
-    public bool TickFiringCooldown(float deltaTime)
-    {
-        if (!IsReloading)
-            return false;
-
-        float firingDelay = 1.0f / (roundPerMinute / 60f);
-        firingTimer += deltaTime;
-
-        if (firingTimer >= firingDelay)
-        {
-            firingTimer = 0f;
-            IsReloading = false;
-            return true;
-        }
-
-        return false;
-    }
 
     public Transform SelectTarget(SelectionStrategy strategy)
     {
@@ -88,42 +37,23 @@ public class EnemyController : MonoBehaviour
             return null;
 
         selectedTarget = Detection.GetTarget(strategy);
-
         return selectedTarget;
+    }
+
+    public bool SelectAimTarget()
+    {
+        if (selectedTarget == null) return false;
+        return GunHandling.SelectAimTarget(selectedTarget, agent.transform.position);
+    }
+
+    public TrajectorySearchState SearchTrajectory()
+    {
+        return GunHandling.SearchTrajectory();
     }
 
     public void Fire()
     {
-        GameObject newProjectile = pool.GetObject(projectilePrefab);
-        newProjectile.transform.position = muzzleTransform.position;
-        newProjectile.transform.forward = muzzleTransform.forward;
-        newProjectile.transform.parent = projectileCollection;
-
-        if (newProjectile.TryGetComponent(out Projectile projectileComponent))
-        {
-            projectileComponent.InitProjectile(
-                muzzleTransform.position,
-                targetTransform.position,
-                FireCurve.transform.position,
-                CalculateTravelTime(),
-                projectileDamage,
-                pool,
-                false);
-        }
-        else
-        {
-            Debug.LogError("Couldn't get Projectile component on: " + newProjectile.name);
-        }
-
-        Trajectory.ResetTrajectory();
-        firingTimer = 0f;
-        IsReloading = true;
-    }
-
-    public float CalculateTravelTime()
-    {
-        float distance = Vector3.Distance(muzzleTransform.position, targetTransform.position);
-        return projectileVariables.GetTravelTime(distance, FireCurve.DesiredCurveHeight);
+        GunHandling.Fire();
     }
 
     public Vector3 CalculateNewPathToTarget()
@@ -131,9 +61,8 @@ public class EnemyController : MonoBehaviour
         if (selectedTarget == null)
             return Vector3.zero;
 
-        Vector3 nextPosition = CalculateTargetPosition(selectedTarget.position, maxConeAngle, minDistance, maxDistance);
+        Vector3 nextPosition = CalculateTargetPosition(selectedTarget.position, maxConeHalfAngle, minDistance, maxDistance);
         agent.SetDestination(nextPosition);
-
         return nextPosition;
     }
 
@@ -174,7 +103,7 @@ public class EnemyController : MonoBehaviour
         this.enabled = false;
     }
 
-    public Vector3 SetNextPatrolPoint()
+    public Vector3 SetNextPatrolPoint(Transform patrolPointsParent)
     {
         int randomIndex = Random.Range(0, patrolPointsParent.childCount);
         Vector3 point = patrolPointsParent.GetChild(randomIndex).position;
@@ -201,36 +130,4 @@ public class EnemyController : MonoBehaviour
     {
         return Detection.HasLineOfSightToTarget(target);
     }
-
-    public bool SetAimTarget()
-    {
-        if (selectedTarget == null) return false; 
-        Vector3 trajectoryTarget = GetRandomTargetOffset(selectedTarget);
-        Trajectory.SetTarget(trajectoryTarget);
-        return true;
-    }
-
-    private Vector3 GetRandomTargetOffset(Transform attackTarget)
-    {
-        Vector2 randomFactor = Random.insideUnitCircle * randomTargetRadius;
-
-        Vector3 overshootDirection = attackTarget.position - agent.transform.position;
-
-        bool directLineOfSight = !Physics.Linecast(
-            muzzleTransform.position, attackTarget.position, LayerMask.GetMask("Ground"));
-
-        float overshootFactor = directLineOfSight ? 2.2f : 0.75f;
-
-        Vector3 randomPosition = attackTarget.position
-            + (overshootDirection.normalized * overshootFactor)
-            + new Vector3(randomFactor.x, 0, randomFactor.y);
-
-        if (Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
-        {
-            randomPosition = hit.point;
-        }
-
-        return randomPosition;
-    }
-
 }
