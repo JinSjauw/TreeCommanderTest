@@ -107,35 +107,35 @@ namespace BehaviourTree.Runtime
     public partial struct BB_SetInt_NodeFields
     {
         [SharedVar] public int Target;
-        [SharedVar] public int Value;
+        [SharedVar(true)] public int Value;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public partial struct BB_SetFloat_NodeFields
     {
         [SharedVar] public float Target;
-        [SharedVar] public float Value;
+        [SharedVar(true)] public float Value;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public partial struct BB_SetBool_NodeFields
     {
         [SharedVar] public bool Target;
-        [SharedVar] public bool Value;
+        [SharedVar(true)] public bool Value;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public partial struct BB_SetVector2_NodeFields
     {
         [SharedVar] public Vector2 Target;
-        [SharedVar] public Vector2 Value;
+        [SharedVar(true)] public Vector2 Value;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public partial struct BB_SetVector3_NodeFields
     {
         [SharedVar] public Vector3 Target;
-        [SharedVar] public Vector3 Value;
+        [SharedVar(true)] public Vector3 Value;
     }
 
     [StructLayout(LayoutKind.Sequential)]

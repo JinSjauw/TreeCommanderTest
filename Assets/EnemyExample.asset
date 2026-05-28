@@ -23,6 +23,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: Target
     isVariable: 1
+    isToggleVariable: 0
     variableName: MoveTarget
     fieldType: 4
     intValue: 0
@@ -118,6 +119,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: Target
     isVariable: 1
+    isToggleVariable: 0
     variableName: EngagePosition
     fieldType: 4
     intValue: 0
@@ -194,6 +196,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: TargetMovePosition
     isVariable: 1
+    isToggleVariable: 0
     variableName: EngagePosition
     fieldType: 4
     intValue: 0
@@ -227,6 +230,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: aiming
     isVariable: 0
+    isToggleVariable: 0
     variableName: 
     fieldType: 2
     intValue: 0
@@ -304,6 +308,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: Value
     isVariable: 1
+    isToggleVariable: 0
     variableName: MoveTarget
     fieldType: 4
     intValue: 0
@@ -315,6 +320,7 @@ MonoBehaviour:
     transformValue: {fileID: 0}
   - fieldName: Operation
     isVariable: 0
+    isToggleVariable: 0
     variableName: 
     fieldType: 0
     intValue: 1
@@ -370,6 +376,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: Value
     isVariable: 1
+    isToggleVariable: 0
     variableName: EngagePosition
     fieldType: 4
     intValue: 0
@@ -381,6 +388,7 @@ MonoBehaviour:
     transformValue: {fileID: 0}
   - fieldName: Operation
     isVariable: 0
+    isToggleVariable: 0
     variableName: 
     fieldType: 0
     intValue: 1
@@ -553,6 +561,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: aiming
     isVariable: 0
+    isToggleVariable: 0
     variableName: 
     fieldType: 2
     intValue: 0
@@ -622,13 +631,14 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: be3cc5e7069065f448f6d50e33c0fca5
-  graphPosition: {x: -795, y: 499.5}
+  graphPosition: {x: -668, y: 499.5}
   runtimeIndex: 5
   leafType: 3
   methodID: 56
   fieldEntries:
   - fieldName: selectedTarget
     isVariable: 1
+    isToggleVariable: 0
     variableName: SelectedTarget
     fieldType: 6
     intValue: 0
@@ -728,6 +738,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: strategy
     isVariable: 0
+    isToggleVariable: 0
     variableName: 
     fieldType: 0
     intValue: 1
@@ -739,6 +750,7 @@ MonoBehaviour:
     transformValue: {fileID: 0}
   - fieldName: selectedTarget
     isVariable: 1
+    isToggleVariable: 0
     variableName: SelectedTarget
     fieldType: 6
     intValue: 0
@@ -882,6 +894,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: selectedTarget
     isVariable: 1
+    isToggleVariable: 0
     variableName: SelectedTarget
     fieldType: 6
     intValue: 0
@@ -915,6 +928,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: Duration
     isVariable: 0
+    isToggleVariable: 0
     variableName: 
     fieldType: 1
     intValue: 0
@@ -926,6 +940,7 @@ MonoBehaviour:
     transformValue: {fileID: 0}
   - fieldName: Elapsed
     isVariable: 1
+    isToggleVariable: 0
     variableName: WaitTimer
     fieldType: 1
     intValue: 0
@@ -1004,6 +1019,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: TargetMovePosition
     isVariable: 1
+    isToggleVariable: 0
     variableName: MoveTarget
     fieldType: 4
     intValue: 0
@@ -1015,6 +1031,7 @@ MonoBehaviour:
     transformValue: {fileID: 0}
   - fieldName: PatrolPointsParent
     isVariable: 1
+    isToggleVariable: 0
     variableName: PatrolPoints
     fieldType: 6
     intValue: 0
@@ -1095,6 +1112,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: Duration
     isVariable: 0
+    isToggleVariable: 0
     variableName: 
     fieldType: 1
     intValue: 0
@@ -1106,6 +1124,7 @@ MonoBehaviour:
     transformValue: {fileID: 0}
   - fieldName: Elapsed
     isVariable: 1
+    isToggleVariable: 0
     variableName: WaitTimer
     fieldType: 1
     intValue: 0
@@ -1139,6 +1158,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: TargetMovePosition
     isVariable: 1
+    isToggleVariable: 0
     variableName: MoveTarget
     fieldType: 4
     intValue: 0
@@ -1303,6 +1323,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: selectedTarget
     isVariable: 1
+    isToggleVariable: 0
     variableName: SelectedTarget
     fieldType: 6
     intValue: 0
@@ -1380,6 +1401,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: Target
     isVariable: 1
+    isToggleVariable: 0
     variableName: MoveTarget
     fieldType: 4
     intValue: 0
@@ -1456,6 +1478,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: Duration
     isVariable: 0
+    isToggleVariable: 0
     variableName: 
     fieldType: 1
     intValue: 0
@@ -1467,6 +1490,7 @@ MonoBehaviour:
     transformValue: {fileID: 0}
   - fieldName: Elapsed
     isVariable: 1
+    isToggleVariable: 0
     variableName: WaitTimer
     fieldType: 1
     intValue: 0
@@ -1500,6 +1524,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: alwaysFailure
     isVariable: 0
+    isToggleVariable: 0
     variableName: 
     fieldType: 2
     intValue: 0
@@ -1511,6 +1536,7 @@ MonoBehaviour:
     transformValue: {fileID: 0}
   - fieldName: alwaysSuccess
     isVariable: 0
+    isToggleVariable: 0
     variableName: 
     fieldType: 2
     intValue: 0
@@ -1544,6 +1570,7 @@ MonoBehaviour:
   fieldEntries:
   - fieldName: TargetMovePosition
     isVariable: 1
+    isToggleVariable: 0
     variableName: EngagePosition
     fieldType: 4
     intValue: 0

@@ -66,8 +66,6 @@ namespace BehaviourTree.Editor
 
         private void DrawChildrenDebug()
         {
-
-
             if (childrenProp == null) return;
 
             EditorGUILayout.Space();
@@ -94,6 +92,7 @@ namespace BehaviourTree.Editor
                     SerializedProperty entryProp = fieldEntriesProp.GetArrayElementAtIndex(i);
                     SerializedProperty fieldNameProp = entryProp.FindPropertyRelative("fieldName");
                     SerializedProperty isVariableProp = entryProp.FindPropertyRelative("isVariable");
+                    SerializedProperty isToggleVariableProp = entryProp.FindPropertyRelative("isToggleVariable");
                     SerializedProperty variableNameProp = entryProp.FindPropertyRelative("variableName");
                     SerializedProperty fieldTypeProp = entryProp.FindPropertyRelative("fieldType");
 
@@ -103,10 +102,17 @@ namespace BehaviourTree.Editor
                     fieldNameProp.stringValue = info.fieldName;
                     fieldTypeProp.enumValueIndex = (int)fieldType;
 
-                    isVariableProp.boolValue = info.isVariable;
-
                     EditorGUILayout.BeginVertical("box");
                     EditorGUILayout.LabelField($"<b>{info.fieldName}</b> : <color=lightblue>{fieldType}</color>", RichTextLabelStyle);
+
+                    isVariableProp.boolValue = info.isVariable;
+
+                    if(info.isToggleVariable)
+                    {
+                        isToggleVariableProp.boolValue = EditorGUILayout.Toggle("is Variable", isToggleVariableProp.boolValue);
+                        isVariableProp.boolValue = isToggleVariableProp.boolValue;
+                    }
+
 
                     if (isVariableProp.boolValue)
                     {
