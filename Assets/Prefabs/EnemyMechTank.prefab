@@ -2822,7 +2822,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Runtime::BehaviourTree.Runtime.TreeRunner
   blackBoard: {fileID: 7737988351252046679}
   runtimeAsset: {fileID: 0}
-  authoringAsset: {fileID: 11400000, guid: 384f9da992798574191e6df6ef2df64d, type: 2}
+  authoringAsset: {fileID: 0}
 --- !u!114 &7737988351252046679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2835,12 +2835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de84ed8973a25ae4a9ee5f6fb88c2f85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackBoard
-  serializedReferences:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  serializedReferences: []
 --- !u!1 &2797757227797668710
 GameObject:
   m_ObjectHideFlags: 0

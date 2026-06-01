@@ -60,7 +60,7 @@ namespace BehaviourTree.Core
         [MethodCategory(BehaviourNodeType.ACTION)]Enemy_StartTrajectorySearch = 54,
         [MethodCategory(BehaviourNodeType.CONDITION)]Enemy_IsTrajectoryReady = 55,
         [MethodCategory(BehaviourNodeType.ACTION)]Enemy_SetAiming = 56,
-        [MethodCategory(BehaviourNodeType.CONDITION)]Enemy_WaitForReload = 57,
+        [MethodCategory(BehaviourNodeType.ACTION)]Enemy_WaitForReload = 57,
         [MethodCategory(BehaviourNodeType.ACTION)]Enemy_Fire = 58,
         [MethodCategory(BehaviourNodeType.CONDITION)]Enemy_IsAimed = 59,
         [MethodCategory(BehaviourNodeType.CONDITION)]Enemy_DetectTarget = 60,

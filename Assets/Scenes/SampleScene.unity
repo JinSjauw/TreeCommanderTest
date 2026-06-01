@@ -2456,7 +2456,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.8333333
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 445ac336dfe0cf545be52dbe2459ef82, type: 2}
   m_BuildHeightMesh: 0
@@ -2699,9 +2699,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1504933653420949153, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+      propertyPath: authoringAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: a88d459d18d76ce4ba34954526359eb7, type: 2}
     - target: {fileID: 2725640078921277708, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
       propertyPath: m_Name
       value: EnemyMechTank
+      objectReference: {fileID: 0}
+    - target: {fileID: 2725640078921277708, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3167757399913710317, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2743,14 +2751,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3334882514279484221, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+      propertyPath: m_Radius
+      value: 2.48
+      objectReference: {fileID: 0}
     - target: {fileID: 3628266624396378776, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
       propertyPath: projectileCollection
       value: 
       objectReference: {fileID: 1660154983}
     - target: {fileID: 7737988351252046679, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
+      propertyPath: serializedReferences.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7737988351252046679, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
       propertyPath: 'serializedReferences.Array.data[1]'
       value: 
-      objectReference: {fileID: 108414923}
+      objectReference: {fileID: 0}
     - target: {fileID: 7737988351252046679, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
       propertyPath: 'serializedReferences.Array.data[4]'
       value: 
