@@ -32,7 +32,14 @@ namespace BehaviourTree.Core
             for (int i = 0; i < count; i++)
             {
                 BlackboardVariable variable = definition.sharedVariables[i];
-                Type t = FieldTypeHelper.GetSystemTypeFromName(variable.typeName);
+                Type t = null;
+                if (!FieldTypeHelper.TryGetSystemTypeFromName(variable.typeName, out t))
+                {
+                    if (Debug.isDebugBuild)
+                    {
+                        Debug.LogWarning($"[Blackboard] Unresolved typeName '{variable.typeName}' for variable '{variable.name}' (index {i}).");
+                    }
+                }
                 slotTypes[i] = t;
                 slotKinds[i] = (t != null && !t.IsValueType) ? BlackboardSlotKind.Reference : BlackboardSlotKind.Value;
                 values[i] = variable.GetInitialValue();
@@ -118,7 +125,11 @@ namespace BehaviourTree.Core
         private bool CanWrite<T>(int index, T value)
         {
             Type expectedType = slotTypes != null && index >= 0 && index < slotTypes.Length ? slotTypes[index] : null;
-            if (expectedType == null) return true;
+            if (expectedType == null)
+            {
+                Debug.LogError($"[Blackboard] Invalid index or slotTypes[] is NULL");
+                return false;
+            }
 
             if (value == null)
             {
@@ -156,7 +167,11 @@ namespace BehaviourTree.Core
         private bool CanWriteBoxed(int index, object value)
         {
             Type expectedType = slotTypes != null && index >= 0 && index < slotTypes.Length ? slotTypes[index] : null;
-            if (expectedType == null) return true;
+            if (expectedType == null) 
+            {
+                Debug.LogError($"[Blackboard] Invalid index or slotTypes[] is NULL");
+                return false; 
+            }
 
             if (value == null)
             {

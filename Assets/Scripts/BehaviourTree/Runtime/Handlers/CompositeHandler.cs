@@ -16,8 +16,15 @@ namespace BehaviourTree.Runtime
 
         public virtual bool Process(EvaluatorContext context)
         {
-            EvaluatorFrame frame = context.CurrentFrame;
+            ref EvaluatorFrame frame = ref context.CurrentFrame;
             ref NodeData node = ref context.CurrentNode;
+
+            if (node.firstChildIndex < 0)
+            {
+                context.PopAndNotifyParent(ExhaustedState);
+                return false;
+            }
+
             int childCount = node.lastChildIndex - node.firstChildIndex + 1;
 
             if (frame.lastChildStatus != NodeState.NONE)

@@ -7,8 +7,6 @@ using UnityEngine.UIElements;
 using UnityEngine;
 using BehaviourTree.Core;
 using BehaviourTree.Runtime;
-using System.Net.NetworkInformation;
-using Codice.Client.Common.GameUI;
 
 namespace BehaviourTree.Editor
 {
@@ -25,9 +23,9 @@ namespace BehaviourTree.Editor
         private TextField graphTitleLabel;
         private CopyPasteHandler copyPasteHandler;
         private BtEdgeConnectorListener edgeConnectorListener;
-        private bool shouldCenterNodes;
-        private bool centerOnNextGeometry;
-        private bool geometryCallbackRegistered;
+        private RuntimeDebugManager runtimeDebugManager;
+        private SubtreeExtractor subtreeExtractor;
+        private List<Port> compatiblePortsCache = new List<Port>();
 
         public bool HasTree => tree != null;
 
@@ -36,7 +34,9 @@ namespace BehaviourTree.Editor
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeEditorPaths.EditorUss);
             styleSheets.Add(styleSheet);
 
-            nodeViewDict = new Dictionary<string, BehaviourNodeView>();   
+            nodeViewDict = new Dictionary<string, BehaviourNodeView>();
+            runtimeDebugManager = new RuntimeDebugManager(this);
+            subtreeExtractor = new SubtreeExtractor(this);
 
             SetupZoom(ContentZoomer.DefaultMinScale, ContentZoomer.DefaultMaxScale);
 
@@ -232,13 +232,13 @@ namespace BehaviourTree.Editor
 
             if (input.capacity == Port.Capacity.Single)
             {
-                foreach (Edge e in input.connections.ToList())
+                foreach (Edge e in input.connections)
                     edgesToRemove.Add(e);
             }
 
             if (output.capacity == Port.Capacity.Single)
             {
-                foreach (Edge e in output.connections.ToList())
+                foreach (Edge e in output.connections)
                     edgesToRemove.Add(e);
             }
 
@@ -278,7 +278,7 @@ namespace BehaviourTree.Editor
             {
                 if (current == source) return true;
                 // Walk up via input port (parent)
-                var parentPort = current.inputContainer.Children().OfType<Port>().FirstOrDefault();
+                Port parentPort = current.input;
                 if (parentPort?.connections.FirstOrDefault()?.output?.node is not BehaviourNodeView parent)
                     break;
                 current = parent;
@@ -288,6 +288,16 @@ namespace BehaviourTree.Editor
 
         private GraphViewChange OnGraphViewChanged(GraphViewChange change)
         {
+            if (EditorApplication.isPlaying && change.edgesToCreate != null)
+            {
+                change.edgesToCreate.RemoveAll(edge =>
+                {
+                    BehaviourNodeView pv = edge.output?.node as BehaviourNodeView;
+                    BehaviourNodeView cv = edge.input?.node as BehaviourNodeView;
+                    return (pv != null && pv.IsReadOnlyProxy) || (cv != null && cv.IsReadOnlyProxy);
+                });
+            }
+
             if (change.elementsToRemove != null)
                 HandleElementRemoval(change.elementsToRemove);
 
@@ -302,6 +312,8 @@ namespace BehaviourTree.Editor
 
         private void HandleElementRemoval(List<GraphElement> elementsToRemove)
         {
+            if (EditorApplication.isPlaying) return;
+
             for (int i = 0; i < elementsToRemove.Count; i++)
             {
                 if (elementsToRemove[i] is BehaviourNodeView nodeView)
@@ -411,11 +423,21 @@ namespace BehaviourTree.Editor
             return CreateNodeView(node);
         }
 
+        public BehaviourNodeView CreateSubtreeNode(Vector2 position)
+        {
+            SubtreeNode node = (SubtreeNode)tree.CreateNode(typeof(SubtreeNode));
+            node.name = "SUBTREE";
+            node.graphPosition = position;
+            tree.RegisterNode(node);
+
+            return CreateNodeView(node);
+        }
+
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
-            var compatible = new List<Port>();
+            compatiblePortsCache.Clear();
 
-            foreach (var port in ports)
+            foreach (Port port in ports)
             {
                 if (IsSelfOrSameNode(port, startPort)) continue;
                 if (IsWrongDirection(port, startPort)) continue;
@@ -424,16 +446,16 @@ namespace BehaviourTree.Editor
                 {
                     if (IsRootAsChild(endNode, port)) continue;
                     if (IsLeafNodeParenting(startNode, port)) continue;
-                    if (IsDuplicateChild(endNode, startNode)) continue;
+                    if (IsChild(endNode, startNode)) continue;
                     if (WouldCreateCycle(startNode, endNode)) continue;
                     if (startNode.NodeSO.NodeType == BehaviourNodeType.PARALLEL 
                     && (endNode.NodeSO.NodeType != BehaviourNodeType.ACTION && endNode.NodeSO.NodeType != BehaviourNodeType.CONDITION)) continue;    
                 }
 
-                compatible.Add(port);
+                compatiblePortsCache.Add(port);
             }
 
-            return compatible;
+            return compatiblePortsCache;
         }
 
         private static bool IsSelfOrSameNode(Port port, Port startPort)
@@ -458,10 +480,11 @@ namespace BehaviourTree.Editor
 
             BehaviourNodeType nodeType = startNode.NodeSO.NodeType;
             return nodeType == BehaviourNodeType.ACTION
-                || nodeType == BehaviourNodeType.CONDITION;
+                || nodeType == BehaviourNodeType.CONDITION
+                || nodeType == BehaviourNodeType.SUBTREE;
         }
 
-        private static bool IsDuplicateChild(BehaviourNodeView endNode, BehaviourNodeView startNode)
+        private static bool IsChild(BehaviourNodeView endNode, BehaviourNodeView startNode)
         {
             return endNode.NodeSO.children.Contains(startNode.NodeSO);
         }
@@ -476,6 +499,11 @@ namespace BehaviourTree.Editor
                 searchWindow.ClearPendingConnection();
                 OpenSearchWindow(GUIUtility.GUIToScreenPoint(Event.current.mousePosition));
             }, _ => tree == null ? DropdownMenuAction.Status.Disabled : DropdownMenuAction.Status.Normal);
+
+            evt.menu.AppendAction("Extract Selection To Subtree", _ =>
+            {
+                subtreeExtractor.Extract(selection, tree, PopulateView);
+            }, _ => subtreeExtractor.CanExtract(selection, tree) ? DropdownMenuAction.Status.Normal : DropdownMenuAction.Status.Disabled);
         }
 
         public void PopulateView(BehaviourTreeAsset tree)
@@ -491,11 +519,11 @@ namespace BehaviourTree.Editor
             EnsureRootNodeExists();
             CleanupAndCreateViews();
             CleanupAndWireEdges();
-            
-            if (shouldCenterNodes)
+
+            if (EditorApplication.isPlaying)
             {
-                shouldCenterNodes = false;
-                RequestCenterNodes();
+                TreeRunner runner = BehaviourTreeEditor.currentRunner;
+                if (runner != null) runtimeDebugManager.SetupDebugProxies(runner, nodeViewDict);
             }
         }
 
@@ -514,11 +542,6 @@ namespace BehaviourTree.Editor
             graphTitleLabel.SetValueWithoutNotify(tree != null ? tree.name : "Behaviour Tree");
         }
 
-        public void CenterOnNextPopulate()
-        {
-            shouldCenterNodes = true;
-        }
-
         private void ClearAndRebuildViews()
         {
             graphViewChanged -= OnGraphViewChanged;
@@ -526,17 +549,18 @@ namespace BehaviourTree.Editor
             {
                 DeleteElements(graphElements);
                 nodeViewDict.Clear();
+                runtimeDebugManager.ClearCaches();
             }
             finally { graphViewChanged += OnGraphViewChanged; }
         }
 
         private void EnsureRootNodeExists()
         {
-            if (tree.rootCopy != null) return;
+            if (tree.root != null) return;
 
-            tree.rootCopy = tree.CreateNode(typeof(RootNode));
-            tree.rootCopy.name = "ROOT";
-            tree.RegisterNode(tree.rootCopy);
+            tree.root = tree.CreateNode(typeof(RootNode));
+            tree.root.name = "ROOT";
+            tree.RegisterNode(tree.root);
         }
 
         private void CleanupAndCreateViews()
@@ -596,67 +620,23 @@ namespace BehaviourTree.Editor
     
         public void RefreshDebugVisuals(TreeRunner runner)
         {
-            // Only meaningful in Play Mode
-            if (!EditorApplication.isPlaying) return;
-
-            if (runner == null) return;
-
-            RuntimeDebugProvider provider = runner.GetComponent<RuntimeDebugProvider>();
-            if (provider == null || provider.currentNodeStates == null) return;
-
-            NodeState[] states = provider.currentNodeStates;
-            int activeIndex = provider.activeNodeIndex;
-
-            foreach (BehaviourNodeView nodeViewEntry in nodeViewDict.Values)
-            {
-                BehaviourNodeView nodeView = nodeViewEntry;
-                if (nodeView?.NodeSO == null) continue;
-
-                int runtimeIdx = nodeView.NodeSO.runtimeIndex;
-                if (runtimeIdx < 0 || runtimeIdx >= states.Length) continue;
-
-                NodeState state = states[runtimeIdx];
-                bool isActive = runtimeIdx == activeIndex;
-
-                nodeView.SetDebugState(state, isActive);
-            }
+            runtimeDebugManager.RefreshDebugVisuals(runner, nodeViewDict);
         }
 
-        private void CenterViewOnNodes()
+        public void ClearRuntimeDebugProxies()
         {
-            this.ClearSelection();
+            runtimeDebugManager.RemoveAllProxies();
             foreach (BehaviourNodeView nodeView in nodeViewDict.Values)
             {
-                this.AddToSelection(nodeView);
-            }
-            this.FrameSelection();
-        }
-
-        private void RequestCenterNodes()
-        {
-            centerOnNextGeometry = true;
-
-            if (!geometryCallbackRegistered)
-            {
-                geometryCallbackRegistered = true;
-                RegisterCallback<GeometryChangedEvent>(OnGraphGeometryChanged);
+                nodeView?.SetDebugState(NodeState.NONE, false);
             }
         }
 
-        private void OnGraphGeometryChanged(GeometryChangedEvent evt)
-        {
-            if (!centerOnNextGeometry) return;
+        // public void SetupRuntimeDebugProxies(TreeRunner runner)
+        // {
+        //     runtimeDebugManager.SetupDebugProxies(runner, nodeViewDict);    
+        // }
 
-            centerOnNextGeometry = false;
-
-            if (geometryCallbackRegistered)
-            {
-                geometryCallbackRegistered = false;
-                UnregisterCallback<GeometryChangedEvent>(OnGraphGeometryChanged);
-            }
-
-            CenterViewOnNodes();
-        }
 
         private sealed class BtEdgeConnectorListener : IEdgeConnectorListener
         {
@@ -687,7 +667,7 @@ namespace BehaviourTree.Editor
 
                 if (edge.input.capacity == Port.Capacity.Single)
                 {
-                    foreach (Edge connection in edge.input.connections.ToList())
+                    foreach (Edge connection in edge.input.connections)
                     {
                         if (connection != edge)
                             elementsToRemove.Add(connection);
@@ -696,7 +676,7 @@ namespace BehaviourTree.Editor
 
                 if (edge.output.capacity == Port.Capacity.Single)
                 {
-                    foreach (Edge connection in edge.output.connections.ToList())
+                    foreach (Edge connection in edge.output.connections)
                     {
                         if (connection != edge)
                             elementsToRemove.Add(connection);

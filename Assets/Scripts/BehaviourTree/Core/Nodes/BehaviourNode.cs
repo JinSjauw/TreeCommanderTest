@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Codice.CM.WorkspaceServer.DataStore;
 using UnityEngine;
 
 namespace BehaviourTree.Core 
@@ -8,13 +7,12 @@ namespace BehaviourTree.Core
     {
         [HideInInspector] public List<BehaviourNode> children = new List<BehaviourNode>();
         [HideInInspector] public abstract BehaviourNodeType NodeType { get; }
-
         [HideInInspector] public int firstChildIndex;
         [HideInInspector] public int lastChildIndex;
 
         [HideInInspector] public string guid;
         [HideInInspector] public Vector2 graphPosition;
-        [HideInInspector] public int runtimeIndex;
+        [HideInInspector] public int runtimeIndex = -1;
     }
 }
 

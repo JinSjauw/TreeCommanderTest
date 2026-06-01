@@ -20,6 +20,15 @@ namespace BehaviourTree.Editor
 
         private Texture2D identationIcon;
 
+        private void OnDestroy()
+        {
+            if (identationIcon != null)
+            {
+                DestroyImmediate(identationIcon);
+                identationIcon = null;
+            }
+        }
+
         public void Initialize(BehaviourTreeEditorGraphView sourceGraphView)
         {
             graphView = sourceGraphView;
@@ -98,6 +107,11 @@ namespace BehaviourTree.Editor
             {
                 level = 2,
                 userData = BehaviourNodeType.PRIORITY,
+            });
+            searchList.Add(new SearchTreeEntry(new GUIContent("Subtree", identationIcon))
+            {
+                level = 1,
+                userData = BehaviourNodeType.SUBTREE,
             });
 
             searchList.Add(new SearchTreeGroupEntry(new GUIContent("Actions"), 1));
@@ -236,6 +250,11 @@ namespace BehaviourTree.Editor
                     case BehaviourNodeType compositeType when compositeType == BehaviourNodeType.SELECTOR || compositeType == BehaviourNodeType.SEQUENCE || compositeType == BehaviourNodeType.PARALLEL || compositeType == BehaviourNodeType.PRIORITY:
                     {
                         createdNodeView = graphView.CreateCompositeNode(compositeType, creationPosition);
+                        break;
+                    }
+                    case BehaviourNodeType compositeType when compositeType == BehaviourNodeType.SUBTREE:
+                    {
+                        createdNodeView = graphView.CreateSubtreeNode(creationPosition);
                         break;
                     }
                     case MethodID methodID when decoratorMethods.Contains(methodID):

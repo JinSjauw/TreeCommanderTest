@@ -15,7 +15,8 @@ public class BehaviourTreeEditor : EditorWindow
     private InspectorView inspectorView;
     private BlackBoardView blackBoardView;
     private ToolbarMenu assetBarMenu;
-    private bool isPollingDebug;
+    private TabView tabView;
+    private Tab inspectorTab;
 
     public static BlackboardDefinition currentBlackboardDef { get; private set; }
     public static BehaviourTreeAsset currentTree { get; private set; }
@@ -71,14 +72,12 @@ public class BehaviourTreeEditor : EditorWindow
         inspectorView = root.Q<InspectorView>();
         blackBoardView = root.Q<BlackBoardView>();
         assetBarMenu = root.Q<ToolbarMenu>("AssetBarMenu");
+        tabView = root.Q<TabView>("TabView");
+        inspectorTab = tabView?.Q<Tab>("InspectorTab");
 
         if (treeGraphView == null)
         {
             Debug.LogError("Could not find BehaviourTreeEditorGraphView in UXML");
-        }
-        else
-        {
-            treeGraphView.CenterOnNextPopulate();
         }
 
         if (inspectorView == null)
@@ -106,10 +105,24 @@ public class BehaviourTreeEditor : EditorWindow
 
         OnSelectionChange();
 
-        if (!isPollingDebug)
+        EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+    }
+
+    private void OnPlayModeStateChanged(PlayModeStateChange change)
+    {
+        switch (change)
         {
-            EditorApplication.update += PollDebugState;
-            isPollingDebug = true;
+            case PlayModeStateChange.EnteredPlayMode:
+                EditorApplication.update -= PollDebugState;
+                EditorApplication.update += PollDebugState;
+                break;
+            case PlayModeStateChange.ExitingPlayMode:
+                EditorApplication.update -= PollDebugState;
+                treeGraphView?.ClearRuntimeDebugProxies();
+                break;
+            case PlayModeStateChange.EnteredEditMode:
+                OnSelectionChange();
+                break;
         }
     }
 
@@ -174,12 +187,8 @@ public class BehaviourTreeEditor : EditorWindow
     private void OnDisable()
     {
         EditorApplication.projectChanged -= OnProjectChanged;
-
-        if (isPollingDebug)
-        {
-            EditorApplication.update -= PollDebugState;
-            isPollingDebug = false;
-        }
+        EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+        EditorApplication.update -= PollDebugState;
     }
 
     private void BakeTree(DropdownMenuAction dropdownMenuAction)
@@ -190,13 +199,21 @@ public class BehaviourTreeEditor : EditorWindow
 
         RuntimeBehaviourTreeAsset runtimeAsset = CreateInstance<RuntimeBehaviourTreeAsset>();
         runtimeAsset.name = currentTree.name + "_Runtime";
-        runtimeAsset.blackboardDefinition = currentBlackboardDef;
         runtimeAsset.sourceTree = currentTree;
 
-        TreeBaker.BakeTree(currentTree.rootCopy, currentBlackboardDef, ref runtimeAsset.runtimeNodeData, ref runtimeAsset.runtimeFieldData);
+        runtimeAsset.blackboardDefinition = TreeBaker.BakeTree(currentTree.root, currentBlackboardDef, 
+        ref runtimeAsset.runtimeNodeData, 
+        ref runtimeAsset.runtimeFieldData, 
+        ref runtimeAsset.runtimeNodeGuids,
+        out runtimeAsset.maxTreeDepth);
 
         string path = $"Assets/{runtimeAsset.name}.asset";
         AssetDatabase.CreateAsset(runtimeAsset, path);
+        if (runtimeAsset.blackboardDefinition != null)
+        {
+            runtimeAsset.blackboardDefinition.name = runtimeAsset.name + "_BB_Definition";
+            AssetDatabase.AddObjectToAsset(runtimeAsset.blackboardDefinition, runtimeAsset);
+        }
         AssetDatabase.SaveAssets();
     }
 
@@ -205,6 +222,8 @@ public class BehaviourTreeEditor : EditorWindow
         BehaviourTreeAsset selectedAsset = OnSelectTree();
 
         if(selectedAsset == null) return;
+
+        if (selectedAsset == currentTree) return;
 
         currentTree = selectedAsset;
         
@@ -234,6 +253,7 @@ public class BehaviourTreeEditor : EditorWindow
         {
             try
             {
+                inspectorView?.ClearView();
                 treeGraphView.OnNodeSelected = OnNodeSelectionChanged;
                 treeGraphView.PopulateView(currentTree);
                 blackBoardView.BuildBlackboardView(currentTree.blackboardDefinition);
@@ -263,6 +283,8 @@ public class BehaviourTreeEditor : EditorWindow
     private void OnNodeSelectionChanged(BehaviourNodeView nodeView)
     {
         inspectorView.UpdateSelection(nodeView);
+        if (tabView != null && inspectorTab != null)
+            tabView.activeTab = inspectorTab;
     }
 
     private void OnDestroy()

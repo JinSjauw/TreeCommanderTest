@@ -65,9 +65,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: SELECTOR
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: -6050656514645491209}
-  - {fileID: 4475825877408962127}
+  children: []
   firstChildIndex: 45
   lastChildIndex: 46
   guid: 1292b21032b818e45b91e3395a21cde9
@@ -143,7 +141,6 @@ MonoBehaviour:
   m_Name: SELECTOR
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   children:
-  - {fileID: 845381907545465592}
   - {fileID: -1338284550993384942}
   firstChildIndex: 10
   lastChildIndex: 11
@@ -413,7 +410,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   children:
   - {fileID: 8208085865261226664}
-  - {fileID: 3952582737293455265}
   firstChildIndex: 41
   lastChildIndex: 42
   guid: 76378a8621f140a4aaca4e18cc5d3b14
@@ -434,8 +430,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   children:
   - {fileID: 8856716059409306480}
-  - {fileID: 7256263096696876076}
-  - {fileID: 9006848938048246814}
   firstChildIndex: 18
   lastChildIndex: 20
   guid: d7d1349191d83e147a094b87b96ec7f6
@@ -454,9 +448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: SELECTOR
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: -4475797473337859661}
-  - {fileID: -7007286891963696268}
+  children: []
   firstChildIndex: 16
   lastChildIndex: 17
   guid: 4438bf5d26e164e448c444f00f07a9f5
@@ -475,16 +467,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: SEQUENCE
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: 2323387150922877089}
-  - {fileID: 3841242377873371861}
-  - {fileID: -9037390455390547237}
+  children: []
   firstChildIndex: 49
   lastChildIndex: 51
   guid: a188abeac0c58ee46942d9de8414675f
   graphPosition: {x: 859, y: 666}
   runtimeIndex: 47
   compositeType: 2
+--- !u!114 &-2947506052292768747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a38c03add90752d4c9baab04e36aaf6d, type: 3}
+  m_Name: ROOT
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.RootNode
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  guid: f29671ab00e5cda40a2a4e5162875288
+  graphPosition: {x: 0, y: 0}
+  runtimeIndex: -1
 --- !u!114 &-2646745926207804493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -586,7 +593,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   children:
   - {fileID: -3079264044348477431}
-  - {fileID: 8074794730728324686}
   firstChildIndex: 47
   lastChildIndex: 48
   guid: bb22fed344825ac4daba4ae500bc7b97
@@ -663,7 +669,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   children:
   - {fileID: 3407533724688408763}
-  - {fileID: 7698380123242262871}
   firstChildIndex: 22
   lastChildIndex: 23
   guid: 5bf423e66d34a65458c74dcf8185cc01
@@ -685,8 +690,6 @@ MonoBehaviour:
   children:
   - {fileID: -3250183158924213563}
   - {fileID: -4334198625487792089}
-  - {fileID: -7441139663327580072}
-  - {fileID: -7417947278693647756}
   firstChildIndex: 12
   lastChildIndex: 15
   guid: 481bbe23ff594544db04a9543fd7cf06
@@ -794,9 +797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: SELECTOR
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: 7957719033573674358}
-  - {fileID: 6188400010727050836}
+  children: []
   firstChildIndex: 31
   lastChildIndex: 32
   guid: 11e37270b91b7574cb43e8c8128c97aa
@@ -815,62 +816,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2337152736176314f8b42c250d167c18, type: 3}
   m_Name: EnemyExample
   m_EditorClassIdentifier: BehaviourTree.Editor::BehaviourTree.Editor.BehaviourTreeAsset
+  root: {fileID: -2947506052292768747}
+  blackboardDefinition: {fileID: -2646745926207804493}
   nodesList:
   - {fileID: -8922381066834757517}
   - {fileID: -316215156891290584}
   - {fileID: 9048387816162891789}
   - {fileID: 3700189085598558858}
-  - {fileID: 2964678438603028173}
-  - {fileID: 3952582737293455265}
-  - {fileID: -5316016836675482818}
   - {fileID: -1983539723641113040}
   - {fileID: -3079264044348477431}
-  - {fileID: 2323387150922877089}
-  - {fileID: 3841242377873371861}
-  - {fileID: -9037390455390547237}
-  - {fileID: 8074794730728324686}
   - {fileID: -4378600614823326041}
   - {fileID: -8069971193178899792}
-  - {fileID: 4475825877408962127}
-  - {fileID: -6050656514645491209}
   - {fileID: 2091105263901190113}
-  - {fileID: 7125315091675426369}
-  - {fileID: 845381907545465592}
-  - {fileID: -853754588082769178}
   - {fileID: 3407533724688408763}
-  - {fileID: 6391808492155060498}
-  - {fileID: -6530850372995836589}
   - {fileID: 8208085865261226664}
-  - {fileID: -626004792433001200}
   - {fileID: 8277838182721914448}
   - {fileID: -7372880425756347595}
   - {fileID: -1338284550993384942}
-  - {fileID: -7007286891963696268}
-  - {fileID: -7441139663327580072}
   - {fileID: -4334198625487792089}
-  - {fileID: -7417947278693647756}
-  - {fileID: 7256263096696876076}
-  - {fileID: -7277349412442893081}
   - {fileID: -3250183158924213563}
-  - {fileID: -4475797473337859661}
   - {fileID: -1500630169083093325}
-  - {fileID: 7698380123242262871}
-  - {fileID: 8773553154565274660}
-  - {fileID: 1226541051142033698}
   - {fileID: 5683744198766926852}
-  - {fileID: -2140046726664187221}
-  - {fileID: -6882201335169763180}
-  - {fileID: -1918822357667799638}
-  - {fileID: 7957719033573674358}
   - {fileID: -151718470153633450}
-  - {fileID: 6188400010727050836}
-  - {fileID: 5772761890497792417}
-  - {fileID: 9006848938048246814}
-  - {fileID: -1815684094032610477}
-  - {fileID: -4618905336783349299}
   - {fileID: 8856716059409306480}
-  rootCopy: {fileID: -8922381066834757517}
-  blackboardDefinition: {fileID: -2646745926207804493}
+  - {fileID: -2947506052292768747}
 --- !u!114 &845381907545465592
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -966,7 +935,6 @@ MonoBehaviour:
   children:
   - {fileID: 8277838182721914448}
   - {fileID: -7372880425756347595}
-  - {fileID: -1815684094032610477}
   - {fileID: -1500630169083093325}
   firstChildIndex: 3
   lastChildIndex: 6
@@ -1055,13 +1023,8 @@ MonoBehaviour:
   m_Name: SEQUENCE
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   children:
-  - {fileID: -2140046726664187221}
-  - {fileID: -1918822357667799638}
   - {fileID: -151718470153633450}
-  - {fileID: 5772761890497792417}
   - {fileID: 5683744198766926852}
-  - {fileID: -853754588082769178}
-  - {fileID: 8773553154565274660}
   firstChildIndex: 24
   lastChildIndex: 30
   guid: 6ca66291fd576ba49b84511447db720a
@@ -1080,9 +1043,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: SELECTOR
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: -5316016836675482818}
-  - {fileID: 2964678438603028173}
+  children: []
   firstChildIndex: 39
   lastChildIndex: 40
   guid: 5705cf38330dbeb40a99a1bb3a840389
@@ -1203,9 +1164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: PARALLEL
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: 1226541051142033698}
-  - {fileID: 6391808492155060498}
+  children: []
   firstChildIndex: 33
   lastChildIndex: 34
   guid: 3bb2fc9ab11adca46981c878ae935bab
@@ -1426,7 +1385,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   children:
   - {fileID: -8069971193178899792}
-  - {fileID: -6530850372995836589}
   firstChildIndex: 43
   lastChildIndex: 44
   guid: 6c08bafe28858df46ab38ae8e4e01f1d
@@ -1445,10 +1403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: SEQUENCE
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: 7125315091675426369}
-  - {fileID: -626004792433001200}
-  - {fileID: -7277349412442893081}
+  children: []
   firstChildIndex: 7
   lastChildIndex: 9
   guid: 43967136983035a489d769651d8b03c8
@@ -1513,8 +1468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7481cfd050e4cc741a9e04f011e99a2f, type: 3}
   m_Name: INVERTER
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.DecoratorNode
-  children:
-  - {fileID: -4618905336783349299}
+  children: []
   firstChildIndex: 21
   lastChildIndex: 21
   guid: 59dbb1185588b2140b816073af1793b4
@@ -1595,7 +1549,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   children:
   - {fileID: 3700189085598558858}
-  - {fileID: -6882201335169763180}
   - {fileID: -4378600614823326041}
   - {fileID: -1983539723641113040}
   firstChildIndex: 35

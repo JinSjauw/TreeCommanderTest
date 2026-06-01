@@ -8,8 +8,10 @@ using UnityEngine.UIElements;
 public partial class BlackBoardView : VisualElement
 {
     private VisualElement blackBoardViewContainer;
+    private SerializedObject cachedSerializedObject;
+    private BlackboardDefinition cachedDefinition;
 
-    Editor editor;
+    private Vector2 scrollPos;
 
     public BlackBoardView()
     {
@@ -38,15 +40,26 @@ public partial class BlackBoardView : VisualElement
 
     public void BuildBlackboardView(BlackboardDefinition blackboardDefinition)
     {
+        cachedDefinition = blackboardDefinition;
         blackBoardViewContainer.Clear();
-        // Use an IMGUIContainer to draw the serialized property
+
+        if (cachedSerializedObject == null || cachedSerializedObject.targetObject != blackboardDefinition)
+        {
+            cachedSerializedObject?.Dispose();
+            cachedSerializedObject = blackboardDefinition != null ? new SerializedObject(blackboardDefinition) : null;
+        }
+
         IMGUIContainer imgui = new IMGUIContainer(() =>
         {
-            if (blackboardDefinition == null) return;
-            SerializedObject so = new SerializedObject(blackboardDefinition);
+            SerializedObject so = cachedSerializedObject;
+            if (so == null) return;
             so.Update();
             SerializedProperty varsProp = so.FindProperty("sharedVariables");
+
+            scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
             EditorGUILayout.PropertyField(varsProp, includeChildren: true);
+            EditorGUILayout.EndScrollView();
+
             so.ApplyModifiedProperties();
         });
 

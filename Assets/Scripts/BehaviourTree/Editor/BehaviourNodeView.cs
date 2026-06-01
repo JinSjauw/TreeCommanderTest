@@ -1,6 +1,7 @@
 using BehaviourTree;
 using BehaviourTree.Core;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -15,6 +16,8 @@ namespace BehaviourTree.Editor
         public BehaviourNode NodeSO { get; private set; }
         public MethodID LeafMethodID { get; set; }
         public string Guid { get; private set; }
+        public bool IsReadOnlyProxy { get; set; }
+        public Dictionary<string, string> VariableMappings { get; set; }
 
         public Port input;
         public Port output;
@@ -25,11 +28,7 @@ namespace BehaviourTree.Editor
 
         public BehaviourNodeView(BehaviourNode nodeObject) : base(BehaviourTreeEditorPaths.GraphNodeViewUxml)
         {
-            if (nodeObject == null)
-            {
-                Debug.LogError("Cannot create BehaviourNodeView for null node object");
-                return;
-            }
+            if (nodeObject == null) throw new ArgumentNullException(nameof(nodeObject));
 
             NodeSO = nodeObject;
             Guid = NodeSO.guid;
@@ -47,6 +46,25 @@ namespace BehaviourTree.Editor
             SetNodeColor();
             CreateInputPorts();
             CreateOutputPorts();
+
+            if (NodeSO.NodeType == BehaviourNodeType.ROOT)
+                capabilities &= ~(Capabilities.Movable | Capabilities.Selectable |Capabilities.Deletable | Capabilities.Copiable);
+
+            RegisterCallback<MouseDownEvent>(OnNodeClicked);
+            RegisterCallback<DetachFromPanelEvent>(_ => OnNodeSelected = null);
+        }
+
+        private void OnNodeClicked(MouseDownEvent evt)
+        {
+            if (evt.clickCount == 1)
+            {
+                OnNodeSelected?.Invoke(this);
+            }
+            else if (evt.clickCount == 2 && NodeSO is SubtreeNode subtreeNode && subtreeNode.subTreeAsset != null)
+            {
+                Selection.activeObject = subtreeNode.subTreeAsset;
+                evt.StopPropagation();
+            }
         }
 
         private void SetNodeColor()
@@ -65,6 +83,7 @@ namespace BehaviourTree.Editor
                 BehaviourNodeType.ACTION => Color.red,
                 BehaviourNodeType.CONDITION => Color.yellow,
                 BehaviourNodeType.DECORATOR => Color.chocolate,
+                BehaviourNodeType.SUBTREE => Color.yellowGreen,
                 _ => Color.gray
             };
         }
@@ -149,7 +168,7 @@ namespace BehaviourTree.Editor
 
         private void CreateOutputPorts()
         {
-            if (NodeSO.NodeType == BehaviourNodeType.ACTION || NodeSO.NodeType == BehaviourNodeType.CONDITION)
+            if (NodeSO.NodeType == BehaviourNodeType.ACTION || NodeSO.NodeType == BehaviourNodeType.CONDITION || NodeSO.NodeType == BehaviourNodeType.SUBTREE)
             {
                 return;
             }
@@ -206,7 +225,7 @@ namespace BehaviourTree.Editor
 
         private int SortByHorizontalPosition(BehaviourNode left, BehaviourNode right)
         {
-            return left.graphPosition.x < right.graphPosition.x ? -1 : 1;
+            return left.graphPosition.x < right.graphPosition.x ? -1 : left.graphPosition.x > right.graphPosition.x ? 1 : 0;
         }
 
         public void SetDebugState(NodeState state, bool isActive)

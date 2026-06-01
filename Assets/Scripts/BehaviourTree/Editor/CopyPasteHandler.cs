@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BehaviourTree.Core;
-using Codice.CM.Common;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -42,7 +41,7 @@ namespace BehaviourTree.Editor
             {
                 BehaviourNode node = nodeView.NodeSO;
 
-                if(node == null) return;
+                if(node == null) continue;
                 if(node.NodeType == BehaviourNodeType.ROOT || node is RootNode) continue;
 
                 SerializedNodeData serializedNode = SerializeNode(node);
@@ -85,6 +84,12 @@ namespace BehaviourTree.Editor
                 guidMap[serializedNode.guid] = newGuid;
 
                 BehaviourNode newNode = CreateNodeDataFromSerialized(serializedNode, treeAsset);
+                if(newNode == null) 
+                {
+                    Debug.LogWarning($"Failed to create node from serialized data for GUID {serializedNode.guid}");
+                    continue; 
+                }
+
                 newNode.guid = newGuid;
                 newNode.graphPosition = serializedNode.graphPosition + new Vector2(30, 30); // offset
 
@@ -165,9 +170,19 @@ namespace BehaviourTree.Editor
                     compositeNode.name = data.nodeType.ToString();
                     node = compositeNode;
                     break;
-                default:
-                    node = null;
+                case BehaviourNodeType.SUBTREE:
+                    SubtreeNode subtreeNode = ScriptableObject.CreateInstance<SubtreeNode>();
+                    subtreeNode.name = "SUBTREE";
+                    subtreeNode.bindings = data.bindings ?? new List<SubtreeBinding>();
+                    if (!string.IsNullOrEmpty(data.subtreeAssetGUID))
+                    {
+                        string path = AssetDatabase.GUIDToAssetPath(data.subtreeAssetGUID);
+                        subtreeNode.subTreeAsset = AssetDatabase.LoadAssetAtPath<BehaviourTreeAssetBase>(path);
+                    }
+                    node = subtreeNode;
                     break;
+                default:
+                    return null;
             }
             
             treeAsset.RegisterNode(node);
@@ -210,6 +225,16 @@ namespace BehaviourTree.Editor
                 serializedNode.methodID = decoratorNode.methodID;
                 serializedNode.fieldEntries = decoratorNode.fieldEntries;
                 serializedNode.BlackBoardTypeID = decoratorNode.BlackBoardTypeID;
+            }
+            else if (node.NodeType == BehaviourNodeType.SUBTREE)
+            {
+                SubtreeNode subtreeNode = (SubtreeNode)node;
+                serializedNode.bindings = subtreeNode.bindings != null ? new List<SubtreeBinding>(subtreeNode.bindings) : new List<SubtreeBinding>();
+                if (subtreeNode.subTreeAsset != null)
+                {
+                    string path = AssetDatabase.GetAssetPath(subtreeNode.subTreeAsset);
+                    serializedNode.subtreeAssetGUID = AssetDatabase.AssetPathToGUID(path);
+                }
             }
             
             return serializedNode;

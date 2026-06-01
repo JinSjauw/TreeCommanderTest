@@ -23,8 +23,14 @@ public static class FieldTypeHelper
             FieldType.Vector3 => typeof(Vector3),
             FieldType.GameObject => typeof(GameObject),
             FieldType.Transform => typeof(Transform),
-            _ => typeof(int),
+            _ => LogUnknownAndFallback(ft),
         };
+
+        private static Type LogUnknownAndFallback(FieldType ft)
+        {
+            Debug.LogWarning($"[FieldTypeHelper] Unknown FieldType '{ft}' — falling back to Int.");
+            return typeof(int);
+        }
 
 
         public static string GetTypeName(FieldType ft) => GetSystemType(ft).AssemblyQualifiedName;
@@ -58,19 +64,33 @@ public static class FieldTypeHelper
         /// <summary>
         /// Convert a serialised type name (from a BlackboardVariable) back to a System.Type.
         /// </summary>
-        public static Type GetSystemTypeFromName(string typeName)
+        public static bool TryGetSystemTypeFromName(string typeName, out Type type)
         {
-            // Try assembly-qualified first, fall back to known types
+            type = null;
+            if (string.IsNullOrEmpty(typeName)) return false;
+
             Type t = Type.GetType(typeName);
-            if (t != null) return t;
+            if (t != null)
+            {
+                type = t;
+                return true;
+            }
 
             foreach (FieldType ft in AllFieldTypes)
             {
                 Type candidate = GetSystemType(ft);
                 if (candidate.FullName == typeName || candidate.AssemblyQualifiedName == typeName)
-                    return candidate;
+                {
+                    type = candidate;
+                    return true;
+                }
             }
-            return typeof(int);
+            return false;
+        }
+
+        public static Type GetSystemTypeFromName(string typeName)
+        {
+            return TryGetSystemTypeFromName(typeName, out Type type) ? type : null;
         }
     }
 }

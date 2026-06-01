@@ -7,6 +7,34 @@ using UnityEngine;
 [CustomPropertyDrawer(typeof(BlackboardVariable))]
 public class BlackboardVariableDrawer : PropertyDrawer
 {
+    private static GUIStyle cachedPlaceholderStyle;
+    private static string[] cachedDisplayNames;
+
+    private static GUIStyle PlaceholderStyle
+    {
+        get
+        {
+            if (cachedPlaceholderStyle == null)
+            {
+                cachedPlaceholderStyle = new GUIStyle(EditorStyles.label)
+                {
+                    fontStyle = FontStyle.Italic,
+                    normal = { textColor = Color.gray }
+                };
+            }
+            return cachedPlaceholderStyle;
+        }
+    }
+
+    private static string[] DisplayNames
+    {
+        get
+        {
+            if (cachedDisplayNames == null)
+                cachedDisplayNames = FieldTypeHelper.AllFieldTypes.Select(ft => FieldTypeHelper.GetDisplayName(ft)).ToArray();
+            return cachedDisplayNames;
+        }
+    }
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         SerializedProperty nameProp = property.FindPropertyRelative("name");
@@ -21,7 +49,7 @@ public class BlackboardVariableDrawer : PropertyDrawer
         Rect typeRect = new Rect(position.x + 18 + position.width * 0.42f, position.y, position.width * 0.58f - 18, lineHeight);
 
         // Draw foldout triangle (only for value types)
-        Type resolvedType = FieldTypeHelper.GetSystemTypeFromName(typeProp.stringValue);
+        bool typeResolved = FieldTypeHelper.TryGetSystemTypeFromName(typeProp.stringValue, out Type resolvedType);
         bool isValueType = resolvedType != null && resolvedType.IsValueType && !resolvedType.IsEnum;
 
         if (isValueType)
@@ -34,17 +62,10 @@ public class BlackboardVariableDrawer : PropertyDrawer
         // Placeholder text when name is empty
         if (string.IsNullOrEmpty(nameProp.stringValue))
         {
-            GUIStyle placeholderStyle = new GUIStyle(EditorStyles.label)
-            {
-                fontStyle = FontStyle.Italic,
-                normal = { textColor = Color.gray }
-            };
-            EditorGUI.LabelField(nameRect, " Variable Name", placeholderStyle);
+            EditorGUI.LabelField(nameRect, " Variable Name", PlaceholderStyle);
         }
 
         // ── Type dropdown ──
-        string[] displayNames = FieldTypeHelper.AllFieldTypes.Select(ft => FieldTypeHelper.GetDisplayName(ft)).ToArray();
-
         int currentIndex = 0;
         bool typeMatched = false;
         for (int i = 0; i < FieldTypeHelper.AllFieldTypes.Count; i++)
@@ -58,18 +79,24 @@ public class BlackboardVariableDrawer : PropertyDrawer
             }
         }
         EditorGUI.BeginChangeCheck();
-        int nextIndex = EditorGUI.Popup(typeRect, currentIndex, displayNames);
-        if (EditorGUI.EndChangeCheck() || typeMatched)
+        int nextIndex = EditorGUI.Popup(typeRect, currentIndex, DisplayNames);
+        if (EditorGUI.EndChangeCheck() || !typeMatched)
         {
             typeProp.stringValue = FieldTypeHelper.GetSystemType(FieldTypeHelper.AllFieldTypes[nextIndex]).FullName;
-            resolvedType = FieldTypeHelper.GetSystemTypeFromName(typeProp.stringValue);
+            typeResolved = FieldTypeHelper.TryGetSystemTypeFromName(typeProp.stringValue, out resolvedType);
             isValueType = resolvedType != null && resolvedType.IsValueType && !resolvedType.IsEnum;
+        }
+
+        if (!typeResolved)
+        {
+            Rect warnRect = new Rect(position.x + 18, position.y + lineHeight + spacing, position.width - 18, lineHeight * 2f);
+            EditorGUI.HelpBox(warnRect, "Unresolved type name. Please re-select a supported type.", MessageType.Warning);
         }
 
         // ── Row 1+: initial value (only if value type and foldout open) ──
         if (isValueType && showFoldoutProp.boolValue)
         {
-            float valueY = position.y + lineHeight + spacing;
+            float valueY = position.y + lineHeight + spacing + (!typeResolved ? (lineHeight * 2f + spacing) : 0f);
             float valueHeight = lineHeight;
 
             // Vector fields need two rows (label + x/y or x/y/z)
@@ -113,27 +140,28 @@ public class BlackboardVariableDrawer : PropertyDrawer
         SerializedProperty typeProp = property.FindPropertyRelative("typeName");
         SerializedProperty showFoldoutProp = property.FindPropertyRelative("showInitialValue");
 
-        Type resolvedType = FieldTypeHelper.GetSystemTypeFromName(typeProp.stringValue);
+        bool typeResolved = FieldTypeHelper.TryGetSystemTypeFromName(typeProp.stringValue, out Type resolvedType);
         bool isValueType = resolvedType != null && resolvedType.IsValueType && !resolvedType.IsEnum;
 
         float lineHeight = EditorGUIUtility.singleLineHeight;
         float spacing = EditorGUIUtility.standardVerticalSpacing;
 
+        float warnHeight = !typeResolved ? (lineHeight * 2f + spacing) : 0f;
         if (isValueType && showFoldoutProp.boolValue)
         {
             // Vector fields are two lines tall
             if (resolvedType == typeof(Vector2) || resolvedType == typeof(Vector3))
             {
-                return lineHeight * 3f + spacing * 3f;
+                return warnHeight + lineHeight * 3f + spacing * 3f;
             }
             else
             {
-                return lineHeight * 2f + spacing * 3f;
+                return warnHeight + lineHeight * 2f + spacing * 3f;
             }
         }
         else
         {
-            return lineHeight;
+            return warnHeight + lineHeight;
         }
     }
 }

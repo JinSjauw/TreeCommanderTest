@@ -9,7 +9,7 @@ namespace BehaviourTree.Runtime
       [SerializeField] private BlackBoard blackBoard;
       [SerializeField] private RuntimeBehaviourTreeAsset runtimeAsset;
 #if UNITY_EDITOR
-      [SerializeField] private UnityEngine.Object authoringAsset;
+      [SerializeField] private BehaviourTreeAssetBase authoringAsset;
 #endif
 
       private TreeEvaluator evaluator;
@@ -21,16 +21,15 @@ namespace BehaviourTree.Runtime
          if (runtimeAsset == null)
          {
 #if UNITY_EDITOR
-            BehaviourTree.Core.IBehaviourTreeAuthoringAsset authoring = authoringAsset as BehaviourTree.Core.IBehaviourTreeAuthoringAsset;
+            BehaviourTreeAssetBase authoring = authoringAsset as BehaviourTreeAssetBase;
             if (authoring != null)
             {
                RuntimeBehaviourTreeAsset tempRuntimeAsset = ScriptableObject.CreateInstance<RuntimeBehaviourTreeAsset>();
                tempRuntimeAsset.hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
                tempRuntimeAsset.name = authoring.DisplayName + "_Runtime";
-               tempRuntimeAsset.blackboardDefinition = authoring.BlackboardDefinition;
                tempRuntimeAsset.sourceTree = authoringAsset;
 
-               TreeBaker.BakeTree(authoring.Root, authoring.BlackboardDefinition, ref tempRuntimeAsset.runtimeNodeData, ref tempRuntimeAsset.runtimeFieldData);
+               tempRuntimeAsset.blackboardDefinition = TreeBaker.BakeTree(authoring.Root, authoring.BlackboardDefinition, ref tempRuntimeAsset.runtimeNodeData, ref tempRuntimeAsset.runtimeFieldData, ref tempRuntimeAsset.runtimeNodeGuids, out tempRuntimeAsset.maxTreeDepth);
                runtimeAsset = tempRuntimeAsset;
             }
             else
@@ -43,6 +42,11 @@ namespace BehaviourTree.Runtime
             return;
 #endif
          }
+         else
+         {
+            runtimeAsset = Instantiate(runtimeAsset);
+            runtimeAsset.hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
+         }
 
          if(blackBoard == null)
          {
@@ -51,18 +55,11 @@ namespace BehaviourTree.Runtime
          };
 
          blackBoard.Initialize(runtimeAsset.blackboardDefinition);
-         evaluator = new TreeEvaluator(runtimeAsset.runtimeNodeData, runtimeAsset.runtimeFieldData);
-
-         if(evaluator == null)
-         {
-            Debug.LogError("TreeEvaluator is null");
-            return;
-         };
+         evaluator = new TreeEvaluator(runtimeAsset.runtimeNodeData, runtimeAsset.runtimeFieldData, runtimeAsset.maxTreeDepth);
 
          // Ensure debug provider exists
          debugProvider = GetComponent<RuntimeDebugProvider>();
-         if (debugProvider == null)
-            debugProvider = gameObject.AddComponent<RuntimeDebugProvider>();
+         if (debugProvider == null) debugProvider = gameObject.AddComponent<RuntimeDebugProvider>();
       }
 
       private void Update()
@@ -75,12 +72,15 @@ namespace BehaviourTree.Runtime
          {
             debugProvider.currentNodeStates = evaluator.nodeStates;
             debugProvider.activeNodeIndex = evaluator.currentNodeIndex;
+            debugProvider.currentNodeGuids = runtimeAsset != null ? runtimeAsset.runtimeNodeGuids : null;
          }
       }
 
       private void OnDestroy()
       {
          if (runtimeAsset == null) return;
+         Destroy(runtimeAsset);
+         runtimeAsset = null;
       }
 
 #if UNITY_EDITOR
@@ -92,7 +92,7 @@ namespace BehaviourTree.Runtime
          }
          else
          {
-            IBehaviourTreeAuthoringAsset authoring = authoringAsset as IBehaviourTreeAuthoringAsset;
+            BehaviourTreeAssetBase authoring = authoringAsset as BehaviourTreeAssetBase;
             if (authoring != null)
             {
                blackBoard?.BuildSerializedReferences(authoring.BlackboardDefinition);

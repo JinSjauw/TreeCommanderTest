@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using BehaviourTree.Core;
 using BehaviourTree.Runtime;
 using UnityEngine;
@@ -7,20 +8,37 @@ namespace BehaviourTree
 {
     public partial class StandardMethods
     {
-        private static bool RequireVariable(ReadOnlySpan<FieldData> fields, int index)
+        private static bool GuardFail(string caller, int index, string expected, ReadOnlySpan<FieldData> fields)
         {
-            return fields.Length > index && fields[index].IsVariable && fields[index].value >= 0;
+            if (Debug.isDebugBuild) Debug.LogWarning($"[BT] Guard failed in {caller}: field[{index}] expected {expected} (length={fields.Length})");
+            return false;
         }
 
-        private static bool RequireConstant(ReadOnlySpan<FieldData> fields, int index)
+        private static bool RequireVariable(ReadOnlySpan<FieldData> fields, int index, [CallerMemberName] string caller = null)
         {
-            return fields.Length > index && fields[index].IsConstant;
+            if (fields.Length <= index) return GuardFail(caller, index, "Variable", fields);
+            FieldData field = fields[index];
+            return field.IsVariable && field.value >= 0 ? true : GuardFail(caller, index, "Variable", fields);
+        }
+
+        private static bool RequireVariableOrConstant(ReadOnlySpan<FieldData> fields, int index, [CallerMemberName] string caller = null)
+        {       
+            if (fields.Length <= index) return GuardFail(caller, index, "VariableOrConstant", fields);
+            FieldData field = fields[index];
+            return field.IsConstant || (field.IsVariable && field.value >= 0) ? true : GuardFail(caller, index, "VariableOrConstant", fields);
+        }
+
+        private static bool RequireConstant(ReadOnlySpan<FieldData> fields, int index, [CallerMemberName] string caller = null)
+        {
+            if (fields.Length <= index) return GuardFail(caller, index, "Constant", fields);
+            FieldData field = fields[index];
+            return field.IsConstant ? true : GuardFail(caller, index, "Constant", fields);
         }
 
         [BTreeMethod(MethodID.BB_CompareInt)]
         public static NodeState BB_CompareInt(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
-            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1) || !RequireConstant(fields, 2)) return NodeState.FAILURE;
+            if (!RequireVariable(fields, 0) || !RequireVariableOrConstant(fields, 1) || !RequireConstant(fields, 2)) return NodeState.FAILURE;
 
             int a = blackBoard.Get<int>(fields[0].value);
             int b = blackBoard.Get<int>(fields[1].value);
@@ -43,7 +61,7 @@ namespace BehaviourTree
         [BTreeMethod(MethodID.BB_CompareFloat)]
         public static NodeState BB_CompareFloat(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
-            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1) || !RequireConstant(fields, 2) || !RequireConstant(fields, 3)) return NodeState.FAILURE;
+            if (!RequireVariable(fields, 0) || !RequireVariableOrConstant(fields, 1) || !RequireConstant(fields, 2)) return NodeState.FAILURE;
 
             float a = blackBoard.Get<float>(fields[0].value);
             float b = blackBoard.Get<float>(fields[1].value);
@@ -66,7 +84,7 @@ namespace BehaviourTree
         [BTreeMethod(MethodID.BB_CompareBool)]
         public static NodeState BB_CompareBool(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
-            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1) || !RequireConstant(fields, 2)) return NodeState.FAILURE;
+            if (!RequireVariable(fields, 0) || !RequireVariableOrConstant(fields, 1) || !RequireConstant(fields, 2)) return NodeState.FAILURE;
 
             bool a = blackBoard.Get<bool>(fields[0].value);
             bool b = blackBoard.Get<bool>(fields[1].value);
@@ -85,7 +103,7 @@ namespace BehaviourTree
         [BTreeMethod(MethodID.BB_CompareVector2)]
         public static NodeState BB_CompareVector2(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
-            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1) || !RequireConstant(fields, 2) || !RequireConstant(fields, 3)) return NodeState.FAILURE;
+            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1) || !RequireConstant(fields, 2)) return NodeState.FAILURE;
 
             Vector2 a = blackBoard.Get<Vector2>(fields[0].value);
             Vector2 b = blackBoard.Get<Vector2>(fields[1].value);
@@ -111,7 +129,7 @@ namespace BehaviourTree
         [BTreeMethod(MethodID.BB_CompareVector3)]
         public static NodeState BB_CompareVector3(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
-            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1) || !RequireConstant(fields, 2) || !RequireConstant(fields, 3)) return NodeState.FAILURE;
+            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1) || !RequireConstant(fields, 2)) return NodeState.FAILURE;
 
             Vector3 a = blackBoard.Get<Vector3>(fields[0].value);
             Vector3 b = blackBoard.Get<Vector3>(fields[1].value);
@@ -259,32 +277,33 @@ namespace BehaviourTree
                 _ => false
             };
 
-            Debug.Log("result: " + result + " : " + value);
-
             return result ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
         [BTreeMethod(MethodID.BB_SetInt)]
         public static NodeState BB_SetInt(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
-            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1)) return NodeState.FAILURE;
-            blackBoard.Set(fields[0].value, blackBoard.Get<int>(fields[1].value));
+            if (!RequireVariable(fields, 0) || !RequireVariableOrConstant(fields, 1)) return NodeState.FAILURE;
+            int value = fields[1].IsVariable ? blackBoard.Get<int>(fields[1].value) : fields[1].GetInt();
+            blackBoard.Set(fields[0].value, value);
             return NodeState.SUCCESS;
         }
 
         [BTreeMethod(MethodID.BB_SetFloat)]
         public static NodeState BB_SetFloat(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
-            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1)) return NodeState.FAILURE;
-            blackBoard.Set(fields[0].value, blackBoard.Get<float>(fields[1].value));
+            if (!RequireVariable(fields, 0) || !RequireVariableOrConstant(fields, 1)) return NodeState.FAILURE;
+            float value = fields[1].IsVariable ? blackBoard.Get<float>(fields[1].value) : fields[1].GetFloat();
+            blackBoard.Set(fields[0].value, value);
             return NodeState.SUCCESS;
         }
 
         [BTreeMethod(MethodID.BB_SetBool)]
         public static NodeState BB_SetBool(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
-            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1)) return NodeState.FAILURE;
-            blackBoard.Set(fields[0].value, blackBoard.Get<bool>(fields[1].value));
+            if (!RequireVariable(fields, 0) || !RequireVariableOrConstant(fields, 1)) return NodeState.FAILURE;
+            bool value = fields[1].IsVariable ? blackBoard.Get<bool>(fields[1].value) : fields[1].GetBool();
+            blackBoard.Set(fields[0].value, value);
             return NodeState.SUCCESS;
         }
 

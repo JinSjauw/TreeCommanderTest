@@ -14,7 +14,9 @@ namespace BehaviourTree.Editor
         private SerializedProperty fieldEntriesProp;
         private SerializedProperty blackBoardTypeIDProp;
         private SerializedProperty childrenProp;
+        private SerializedProperty commentProp;
         private GUIStyle style;
+        private List<string> matchingVars;
         private GUIStyle RichTextLabelStyle
         {
             get
@@ -30,11 +32,13 @@ namespace BehaviourTree.Editor
         private void OnEnable()
         {
             if (target == null) return;
-
+            
+            matchingVars = new List<string>();
             methodIDProp = serializedObject.FindProperty("methodID");
             fieldEntriesProp = serializedObject.FindProperty("fieldEntries");
             blackBoardTypeIDProp = serializedObject.FindProperty("BlackBoardTypeID");
             childrenProp = serializedObject.FindProperty("children");
+            if (target is LeafNode) commentProp = serializedObject.FindProperty("comment");
         }
 
         public override void OnInspectorGUI()
@@ -55,6 +59,13 @@ namespace BehaviourTree.Editor
             lastMethodID = selectedMethod;
 
             EditorGUI.BeginChangeCheck();
+
+            if (target is LeafNode && commentProp != null)
+            {
+                EditorGUILayout.LabelField("Comment", EditorStyles.boldLabel);
+                commentProp.stringValue = EditorGUILayout.TextArea(commentProp.stringValue, GUILayout.Height(60));
+                EditorGUILayout.Space();
+            }
 
             BuildFieldEntries(selectedMethod, methodChanged);
 
@@ -103,16 +114,27 @@ namespace BehaviourTree.Editor
                     fieldTypeProp.enumValueIndex = (int)fieldType;
 
                     EditorGUILayout.BeginVertical("box");
-                    EditorGUILayout.LabelField($"<b>{info.fieldName}</b> : <color=lightblue>{fieldType}</color>", RichTextLabelStyle);
+
+                    string typeLabel = "";
+                    if(info.fieldType != null && info.fieldType.IsEnum)
+                    {
+                        typeLabel = $"Enum( {info.fieldType.Name} )";
+                    }
+                    else
+                    {
+                        typeLabel = fieldType.ToString();
+                    }
+                    
+                    EditorGUILayout.LabelField($"<b>{info.fieldName}</b> : <color=lightblue>{typeLabel}</color>", RichTextLabelStyle);
 
                     isVariableProp.boolValue = info.isVariable;
 
                     if(info.isToggleVariable)
                     {
-                        isToggleVariableProp.boolValue = EditorGUILayout.Toggle("is Variable", isToggleVariableProp.boolValue);
-                        isVariableProp.boolValue = isToggleVariableProp.boolValue;
+                        bool varToggle = EditorGUILayout.Toggle("is Variable", isToggleVariableProp.boolValue);
+                        entryProp.FindPropertyRelative("isVariable").boolValue = varToggle;
+                        entryProp.FindPropertyRelative("isToggleVariable").boolValue = varToggle;
                     }
-
 
                     if (isVariableProp.boolValue)
                     {
@@ -218,10 +240,11 @@ namespace BehaviourTree.Editor
             }
 
             // Filter variables whose type matches the expected type using unified helper
-            var matchingVars = new List<string>();
+            matchingVars.Clear();
             for (int v = 0; v < blackBoardDef.sharedVariables.Count; v++)
             {
-                Type bbType = FieldTypeHelper.GetSystemTypeFromName(blackBoardDef.sharedVariables[v].typeName);
+                if (!FieldTypeHelper.TryGetSystemTypeFromName(blackBoardDef.sharedVariables[v].typeName, out Type bbType) || bbType == null)
+                    continue;
                 if (bbType == expectedType)
                 {
                     matchingVars.Add(blackBoardDef.sharedVariables[v].name);
@@ -239,8 +262,23 @@ namespace BehaviourTree.Editor
             int selectedIndex = matchingVars.IndexOf(currentVal);
             if (selectedIndex < 0) selectedIndex = 0;
 
-            selectedIndex = EditorGUILayout.Popup("Shared Variable", selectedIndex, matchingVars.ToArray());
-            variableNameProp.stringValue = matchingVars[selectedIndex];
+            if (InspectorView.IsRenderingReadOnly)
+            {
+                string display = currentVal;
+                EditorGUILayout.LabelField("Shared Variable", display);
+
+                if (InspectorView.CurrentProxyMappings != null &&
+                    InspectorView.CurrentProxyMappings.TryGetValue(currentVal, out string parentVar))
+                {
+                    EditorGUILayout.LabelField("Mapped To: ", parentVar);
+                }
+
+            }
+            else
+            {
+                selectedIndex = EditorGUILayout.Popup("Shared Variable", selectedIndex, matchingVars.ToArray());
+                variableNameProp.stringValue = matchingVars[selectedIndex];
+            }
         }
     }
 }
