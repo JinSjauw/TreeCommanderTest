@@ -212,6 +212,8 @@ namespace BehaviourTree.Runtime
     {
         public float Duration;
         [SharedVar] public float Remaining;
+        public bool useCustomTick;
+        public float customTickValue;
     }
 
     [StructLayout(LayoutKind.Sequential)]

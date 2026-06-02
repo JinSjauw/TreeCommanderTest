@@ -125,7 +125,8 @@ namespace BehaviourTree.Editor
                         typeLabel = fieldType.ToString();
                     }
                     
-                    EditorGUILayout.LabelField($"<b>{info.fieldName}</b> : <color=lightblue>{typeLabel}</color>", RichTextLabelStyle);
+                    string displayName = char.ToUpper(info.fieldName[0]) + info.fieldName.Substring(1);
+                    EditorGUILayout.LabelField($"<b>{displayName}</b> : <color=lightblue>{typeLabel}</color>", RichTextLabelStyle);
 
                     isVariableProp.boolValue = info.isVariable;
 
@@ -134,6 +135,17 @@ namespace BehaviourTree.Editor
                         bool varToggle = EditorGUILayout.Toggle("is Variable", isToggleVariableProp.boolValue);
                         entryProp.FindPropertyRelative("isVariable").boolValue = varToggle;
                         entryProp.FindPropertyRelative("isToggleVariable").boolValue = varToggle;
+                    }
+
+                    // Hide customTickValue when useCustomTick is false
+                    if (selectedMethod == MethodID.Cooldown && info.fieldName == "customTickValue")
+                    {
+                        SerializedProperty useCustomEntry = fieldEntriesProp.GetArrayElementAtIndex(i - 1);
+                        if (!useCustomEntry.FindPropertyRelative("boolValue").boolValue)
+                        {
+                            EditorGUILayout.EndVertical();
+                            continue;
+                        }
                     }
 
                     if (isVariableProp.boolValue)

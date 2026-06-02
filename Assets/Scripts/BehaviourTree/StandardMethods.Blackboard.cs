@@ -430,11 +430,15 @@ namespace BehaviourTree
 
             float duration = fields[0].GetFloat();
             int remainingIndex = fields[1].value;
+            bool useCustomTick = fields[2].GetBool();
+            float customTick = fields[3].GetFloat();
             float remaining = blackBoard.Get<float>(remainingIndex);
+
+            float tickAmount = useCustomTick ? customTick : Time.deltaTime;
 
             if (remaining > 0f)
             {
-                remaining = Mathf.Max(0f, remaining - Time.deltaTime);
+                remaining = Mathf.Max(0f, remaining - tickAmount);
                 blackBoard.Set(remainingIndex, remaining);
                 return NodeState.FAILURE;
             }

@@ -241,13 +241,17 @@ MonoBehaviour:
     - fieldName: Elapsed
       description: Internal elapsed time counter (auto-managed shared variable).
   - nodeName: Cooldown
-    description: Returns SUCCESS once per cooldown period. After triggering, returns FAILURE until the cooldown expires.
+    description: Returns SUCCESS once per cooldown period. After triggering, returns FAILURE until the cooldown expires. Subtracts tickAmount each frame (Time.deltaTime by default, or a custom value).
     returnValues: SUCCESS when cooldown is ready; FAILURE while on cooldown.
     fieldDescriptions:
     - fieldName: Duration
       description: Cooldown duration in seconds.
     - fieldName: Remaining
       description: Time remaining on current cooldown (auto-managed shared variable).
+    - fieldName: useCustomTick
+      description: When true, uses customTickValue instead of Time.deltaTime for the countdown tick.
+    - fieldName: customTickValue
+      description: Custom amount to subtract per frame. Only used when useCustomTick is true.
   - nodeName: BB_HasChangedInt
     description: Detects if an integer blackboard variable has changed since the last evaluation.
     returnValues: SUCCESS if value changed; FAILURE if unchanged.
