@@ -23,7 +23,7 @@ namespace BehaviourTree.Runtime
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
 
-            controller.Agent.SetDestination(nodeFields.TargetMovePosition);
+            controller.Agent.SetDestination(nodeFields.targetMovePosition);
             controller.Agent.isStopped = false;
 
             if (controller.HasArrivedAtDestination())
@@ -39,8 +39,8 @@ namespace BehaviourTree.Runtime
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
 
-            Vector3 point = controller.SetNextPatrolPoint(nodeFields.PatrolPointsParent);
-            nodeFields.TargetMovePosition = point;
+            Vector3 point = controller.SetNextPatrolPoint(nodeFields.patrolPointsParent);
+            nodeFields.targetMovePosition = point;
             NodeFieldBindings.SerializeEnemy_SelectPatrolPoint(nodeFields, fields, blackBoard);
             return NodeState.SUCCESS;
         }
@@ -53,7 +53,7 @@ namespace BehaviourTree.Runtime
             if (controller == null) return NodeState.FAILURE;
 
             Vector3 position = controller.CalculateNewPathToTarget();
-            nodeFields.TargetMovePosition = position;
+            nodeFields.targetMovePosition = position;
             NodeFieldBindings.SerializeEnemy_SelectEngagePosition(nodeFields, fields, blackBoard);
             return NodeState.SUCCESS;
         }

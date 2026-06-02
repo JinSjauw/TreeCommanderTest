@@ -18,14 +18,14 @@ namespace BehaviourTree.Runtime
             return new Enemy_MoveTo_NodeFields
             {
                 // index 0: TargetMovePosition (blackboard variable)
-                TargetMovePosition = reader.GetVector3(0),
+                targetMovePosition = reader.GetVector3(0),
             };
         }
 
         public static void SerializeEnemy_MoveTo(Enemy_MoveTo_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader writer = new FieldReader(fields, blackboard);
-            writer.SetVector3(0, p.TargetMovePosition);
+            writer.SetVector3(0, p.targetMovePosition);
         }
 
         public static Enemy_SelectPatrolPoint_NodeFields DeserializeEnemy_SelectPatrolPoint(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
@@ -34,17 +34,17 @@ namespace BehaviourTree.Runtime
             return new Enemy_SelectPatrolPoint_NodeFields
             {
                 // index 0: TargetMovePosition (blackboard variable)
-                TargetMovePosition = reader.GetVector3(0),
+                targetMovePosition = reader.GetVector3(0),
                 // index 1: PatrolPointsParent (blackboard variable)
-                PatrolPointsParent = reader.GetTransform(1),
+                patrolPointsParent = reader.GetTransform(1),
             };
         }
 
         public static void SerializeEnemy_SelectPatrolPoint(Enemy_SelectPatrolPoint_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader writer = new FieldReader(fields, blackboard);
-            writer.SetVector3(0, p.TargetMovePosition);
-            writer.SetTransform(1, p.PatrolPointsParent);
+            writer.SetVector3(0, p.targetMovePosition);
+            writer.SetTransform(1, p.patrolPointsParent);
         }
 
         public static Enemy_SelectEngagePosition_NodeFields DeserializeEnemy_SelectEngagePosition(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
@@ -53,14 +53,14 @@ namespace BehaviourTree.Runtime
             return new Enemy_SelectEngagePosition_NodeFields
             {
                 // index 0: TargetMovePosition (blackboard variable)
-                TargetMovePosition = reader.GetVector3(0),
+                targetMovePosition = reader.GetVector3(0),
             };
         }
 
         public static void SerializeEnemy_SelectEngagePosition(Enemy_SelectEngagePosition_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader writer = new FieldReader(fields, blackboard);
-            writer.SetVector3(0, p.TargetMovePosition);
+            writer.SetVector3(0, p.targetMovePosition);
         }
 
         public static Enemy_SelectDetectedTarget_NodeFields DeserializeEnemy_SelectDetectedTarget(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)

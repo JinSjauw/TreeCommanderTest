@@ -91,7 +91,7 @@ MonoBehaviour:
   leafType: 4
   methodID: 25
   fieldEntries:
-  - fieldName: Duration
+  - fieldName: duration
     isVariable: 0
     isToggleVariable: 0
     variableName: 
@@ -103,7 +103,7 @@ MonoBehaviour:
     vector3Value: {x: 0, y: 0, z: 0}
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
-  - fieldName: Elapsed
+  - fieldName: elapsed
     isVariable: 1
     isToggleVariable: 0
     variableName: WaitTimer
@@ -158,7 +158,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: c12082983ec8e494ba25f240d5cc941a
-  graphPosition: {x: 919.00024, y: 686.5563}
+  graphPosition: {x: 935, y: 694}
   runtimeIndex: 41
   compositeType: 2
 --- !u!114 &-8200087898634367029
@@ -305,7 +305,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 13a99d5437757014ba165bcb107d4af2
-  graphPosition: {x: 1002.00024, y: 812.5564}
+  graphPosition: {x: 1049.1001, y: 837.0001}
   runtimeIndex: 44
   leafType: 4
   methodID: 52
@@ -333,7 +333,7 @@ MonoBehaviour:
   leafType: 4
   methodID: 21
   fieldEntries:
-  - fieldName: Target
+  - fieldName: target
     isVariable: 1
     isToggleVariable: 0
     variableName: MoveTarget
@@ -423,7 +423,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: f0a5a47df02848741ac9ae91472c53a1
-  graphPosition: {x: 836.00024, y: 812.5564}
+  graphPosition: {x: 842.85004, y: 829.0002}
   runtimeIndex: 43
   compositeType: 1
 --- !u!114 &-6215260366311527030
@@ -553,7 +553,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 27e0fcf93139b9c45876782bd8d0ede4
-  graphPosition: {x: -226.99982, y: 636.5564}
+  graphPosition: {x: -218.99995, y: 625.7002}
   runtimeIndex: 23
   leafType: 4
   methodID: 52
@@ -904,7 +904,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: c0f180951cad2c74a9eec771d9a41682
-  graphPosition: {x: 736.0001, y: 951.55634}
+  graphPosition: {x: 727.00006, y: 968.0501}
   runtimeIndex: 45
   leafType: 3
   methodID: 60
@@ -1000,7 +1000,7 @@ MonoBehaviour:
   leafType: 3
   methodID: 47
   fieldEntries:
-  - fieldName: Value
+  - fieldName: value
     isVariable: 1
     isToggleVariable: 0
     variableName: MoveTarget
@@ -1012,7 +1012,7 @@ MonoBehaviour:
     vector3Value: {x: 0, y: 0, z: 0}
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
-  - fieldName: Operation
+  - fieldName: operation
     isVariable: 0
     isToggleVariable: 0
     variableName: 
@@ -1100,7 +1100,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 66d36b6af7bf72d4db80e2ede090462e
-  graphPosition: {x: 944, y: 951.55634}
+  graphPosition: {x: 952.0002, y: 971.5002}
   runtimeIndex: 46
   leafType: 3
   methodID: 51
@@ -1228,7 +1228,7 @@ MonoBehaviour:
   leafType: 4
   methodID: 25
   fieldEntries:
-  - fieldName: Duration
+  - fieldName: duration
     isVariable: 0
     isToggleVariable: 0
     variableName: 
@@ -1240,7 +1240,7 @@ MonoBehaviour:
     vector3Value: {x: 0, y: 0, z: 0}
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
-  - fieldName: Elapsed
+  - fieldName: elapsed
     isVariable: 1
     isToggleVariable: 0
     variableName: WaitTimer

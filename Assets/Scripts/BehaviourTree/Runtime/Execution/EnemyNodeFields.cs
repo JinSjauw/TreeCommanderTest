@@ -9,7 +9,7 @@ namespace BehaviourTree.Runtime
     public partial struct Enemy_MoveTo_NodeFields
     {
         [SharedVar]
-        public Vector3 TargetMovePosition;
+        public Vector3 targetMovePosition;
     }
 
     [GenerateNodeFieldBindings]
@@ -17,9 +17,9 @@ namespace BehaviourTree.Runtime
     public partial struct Enemy_SelectPatrolPoint_NodeFields
     {
         [SharedVar]
-        public Vector3 TargetMovePosition;
+        public Vector3 targetMovePosition;
         [SharedVar]
-        public Transform PatrolPointsParent;
+        public Transform patrolPointsParent;
     }
 
     [GenerateNodeFieldBindings]
@@ -27,7 +27,7 @@ namespace BehaviourTree.Runtime
     public partial struct Enemy_SelectEngagePosition_NodeFields
     {
         [SharedVar]
-        public Vector3 TargetMovePosition;
+        public Vector3 targetMovePosition;
     }
 
     [GenerateNodeFieldBindings]
