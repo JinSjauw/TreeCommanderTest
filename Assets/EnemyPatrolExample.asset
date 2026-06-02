@@ -16,7 +16,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 03e9c794d4282624f96db77088803b39
-  graphPosition: {x: 1512, y: 685.55634}
+  graphPosition: {x: 1512.0001, y: 686.0001}
   runtimeIndex: 48
   leafType: 4
   methodID: 21
@@ -200,7 +200,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 7c435b316240588499ce3bf3a1a2b1fa
-  graphPosition: {x: 0.000061035156, y: 943.55634}
+  graphPosition: {x: 0, y: 944}
   runtimeIndex: 33
   leafType: 4
   methodID: 25
