@@ -74,4 +74,9 @@ public class TurretController : MonoBehaviour
         //Forcefully update rotations to update target rotations immediately
         UpdateRotations();
     }
+
+    public Transform GetTurretBase()
+    {
+        return turretBase;
+    }
 }

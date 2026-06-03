@@ -140,7 +140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   collisionLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 448
   explosionVFX: {fileID: 6799980578939327827, guid: cb3b8d854091a7c4ca7a8980ed5665c4, type: 3}
   impactVFX: {fileID: 5575997259139157123, guid: 9935077222f759d4aa07d70b8c35d5f9, type: 3}
   trailVFX: {fileID: 8769743974461028543}

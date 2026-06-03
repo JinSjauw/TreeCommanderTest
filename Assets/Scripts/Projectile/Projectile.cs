@@ -75,11 +75,13 @@ public class Projectile : MonoBehaviour
 
         isPlayerProjectile = playerProjectile;
 
-        if (playerProjectile)
-        {
-            trailVFX.gameObject.SetActive(true);
-            debrisVFX.gameObject.SetActive(true);
-        }
+        // if (playerProjectile)
+        // {
+        //     trailVFX.gameObject.SetActive(true);
+        //     debrisVFX.gameObject.SetActive(true);
+        // }
+        trailVFX.gameObject.SetActive(true);
+        debrisVFX.gameObject.SetActive(true);
     }
 
     private void VisibilityChanged(object sender, bool visible)

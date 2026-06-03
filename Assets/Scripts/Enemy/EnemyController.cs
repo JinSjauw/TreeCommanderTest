@@ -43,7 +43,7 @@ public class EnemyController : MonoBehaviour
     public bool SelectAimTarget()
     {
         if (selectedTarget == null) return false;
-        return GunHandling.SelectAimTarget(selectedTarget, agent.transform.position);
+        return GunHandling.SelectAimTarget(selectedTarget);
     }
 
     public TrajectorySearchState SearchTrajectory()

@@ -23,7 +23,9 @@ public class GunHandling : MonoBehaviour
     [SerializeField] private float roundPerMinute;
 
     [Header("Aim Targeting")]
+    [SerializeField] private LayerMask obstructionLayers;
     [SerializeField] private float randomTargetRadius = 0.5f;
+    private Transform aimOrigin;
 
     private float firingTimer;
     private bool isReloading;
@@ -39,6 +41,7 @@ public class GunHandling : MonoBehaviour
     private void Start()
     {
         pool = FindFirstObjectByType<ObjectPool>();
+        aimOrigin = turretController.GetTurretBase();
     }
 
     private void Update()
@@ -51,28 +54,29 @@ public class GunHandling : MonoBehaviour
         turretController.SetAiming(aiming);
     }
 
-    public bool SelectAimTarget(Transform attackTarget, Vector3 originPosition)
+    public bool SelectAimTarget(Transform attackTarget)
     {
         if (attackTarget == null) return false;
+        
+        Vector3 originPosition = aimOrigin.position;
 
         Vector2 randomFactor = Random.insideUnitCircle * randomTargetRadius;
-
         Vector3 overshootDirection = attackTarget.position - originPosition;
 
-        bool directLineOfSight = !Physics.Linecast( muzzleTransform.position, attackTarget.position, LayerMask.GetMask("Ground") );
+        bool directLineOfSight = !Physics.Linecast( originPosition, attackTarget.position, obstructionLayers );
 
-        float overshootFactor = directLineOfSight ? 80f : 1.5f; //placeholder numbers
+        float overshootFactor = directLineOfSight ? 50f : 1.5f; //placeholder numbers
         
         Vector3 randomPosition = attackTarget.position
             + (overshootDirection.normalized * overshootFactor)
             + new Vector3(randomFactor.x, 0, randomFactor.y);
 
-        if (!directLineOfSight && Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
+        if (!directLineOfSight && Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100f, obstructionLayers))
         {
-            //randomPosition = hit.point;
+            randomPosition = hit.point;
         }
 
-        trajectory.SetTrajectoryTarget(randomPosition);
+        trajectory.SetTrajectoryTarget(randomPosition, directLineOfSight);
         return true;
     }
 

@@ -4,37 +4,53 @@ public class TrajectoryValidator
 {
     private int segmentCount = 8;
     private LayerMask obstacleMask;
+    private LayerMask targetMask;
     private float positionAlpha = 0.5f;
-    public TrajectoryValidator(int segmentCount, LayerMask obstacleMask, float positionAlpha)
+    public TrajectoryValidator(int segmentCount, LayerMask obstacleMask, LayerMask targetMask, float positionAlpha)
     {
         this.segmentCount = segmentCount;
         this.obstacleMask = obstacleMask;
+        this.targetMask = targetMask;
         this.positionAlpha = positionAlpha;
     }
 
-    public bool Validate(Vector3 start, Vector3 end, Vector3 controlPoint)
+    public bool Validate(Vector3 start, Vector3 end, Vector3 controlPoint, bool hasLineOfSight, int segmentCountOverride = -1)
     {
+        int segments = segmentCountOverride > 0 ? segmentCountOverride : segmentCount;
+        
         if (IsControlPointBelowLine(start, end, controlPoint))
         {
             return false;
         }
 
         Vector3 oldPosition = start;
+        bool hasDirectHit = false;
+        bool hasObstacleHit = false;
 
-        for (int i = 0; i < segmentCount; i++)
+        for (int i = 0; i < segments; i++)
         {
-            float segmentIndex = (float)i / segmentCount;
+            float segmentIndex = (float)i / segments;
             Vector3 nextPosition = QuadraticCurve.EvaluateCurve(start, end, controlPoint, segmentIndex);
 
             Debug.DrawLine(oldPosition, nextPosition, Color.red, 2f);
 
+            if(hasLineOfSight && Physics.Linecast(oldPosition, nextPosition, targetMask))
+            {
+                Debug.Log("Has direct hit!");
+                hasDirectHit = true;
+            }
+
             if (Physics.Linecast(oldPosition, nextPosition, obstacleMask))
             {
-                return false;
+                Debug.Log("Has obstacle hit!");
+                hasObstacleHit = true;
             }
 
             oldPosition = nextPosition;
         }
+
+        if(hasDirectHit) return true; 
+        if(hasObstacleHit) return false;
 
         return true;
     }
@@ -43,6 +59,6 @@ public class TrajectoryValidator
     private bool IsControlPointBelowLine(Vector3 start, Vector3 end, Vector3 controlPoint)
     {
         float minHeight = Mathf.Lerp(start.y, end.y, positionAlpha);
-        return controlPoint.y <= minHeight; 
+        return controlPoint.y < minHeight; 
     }
 }
