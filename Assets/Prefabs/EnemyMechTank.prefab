@@ -465,8 +465,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DeathHandler
   transformToRemove: {fileID: 3167757399913710317}
   meshRootTransform: {fileID: 1901510055390076121}
-  materialToApply: {fileID: 2100000, guid: 6d700b1af0273ec4e9e097e133c3e98f, type: 2}
-  corpsePrefab: {fileID: 0}
+  materialToApply: {fileID: 2100000, guid: c218e00d5b34a6f4698911d68cf491d4, type: 2}
+  corpsePrefab: {fileID: 7949673561649792230, guid: 68c66b1a7d987454a9d22dbfafe87d57, type: 3}
 --- !u!1 &268451971728499167
 GameObject:
   m_ObjectHideFlags: 0

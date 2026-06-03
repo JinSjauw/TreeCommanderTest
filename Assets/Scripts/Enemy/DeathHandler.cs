@@ -21,10 +21,10 @@ public class DeathHandler : MonoBehaviour
 
                 if(cloneChild.TryGetComponent(out MeshRenderer meshRenderer)) 
                 {
-                    meshRenderer.material = materialToApply;
+                    meshRenderer.materials = new Material[] { materialToApply };
                 }
 
-                CloneMesh(root, cloneChild);
+                CloneMesh(child, cloneChild);
             }
         }
     }
@@ -32,8 +32,8 @@ public class DeathHandler : MonoBehaviour
     public void SpawnCorpse() 
     {
         Transform corpseObject = Instantiate(corpsePrefab);
-
         corpseObject.localScale = meshRootTransform.localScale;
+        corpseObject.position = meshRootTransform.position;
 
         CloneMesh(meshRootTransform, corpseObject);
 
