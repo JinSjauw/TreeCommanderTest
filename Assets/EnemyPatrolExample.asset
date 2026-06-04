@@ -56,7 +56,7 @@ MonoBehaviour:
   leafType: 4
   methodID: 48
   fieldEntries:
-  - fieldName: TargetMovePosition
+  - fieldName: targetMovePosition
     isVariable: 1
     isToggleVariable: 0
     variableName: MoveTarget
