@@ -61,4 +61,13 @@ namespace BehaviourTree.Runtime
     {
         public bool aiming;
     }
+
+    [GenerateNodeFieldBindings]
+    [StructLayout(LayoutKind.Sequential)]
+    public partial struct Enemy_FireSequence_NodeFields
+    {
+        public float reloadDuration;
+        [SharedVar]
+        public Transform selectedTarget;
+    }
 }

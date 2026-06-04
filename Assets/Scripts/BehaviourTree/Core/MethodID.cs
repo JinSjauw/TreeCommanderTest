@@ -67,6 +67,7 @@ namespace BehaviourTree.Core
         [MethodCategory(BehaviourNodeType.ACTION)]Enemy_SelectDetectedTarget = 61,
         [MethodCategory(BehaviourNodeType.CONDITION)]Enemy_IsInFiringRange = 62,
         [MethodCategory(BehaviourNodeType.CONDITION)]Enemy_HasLineOfSight = 63,
+        [MethodCategory(BehaviourNodeType.ACTION)]Enemy_FireSequence = 64,
         #endregion
     }
 }

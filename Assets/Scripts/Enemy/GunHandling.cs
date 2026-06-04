@@ -27,6 +27,7 @@ public class GunHandling : MonoBehaviour
     [SerializeField] private float randomTargetRadius = 0.5f;
     private Transform aimOrigin;
 
+    private float firingCooldown;
     private float firingTimer;
     private bool isReloading;
     private ObjectPool pool;
@@ -42,11 +43,17 @@ public class GunHandling : MonoBehaviour
     {
         pool = FindFirstObjectByType<ObjectPool>();
         aimOrigin = turretController.GetTurretBase();
+        firingCooldown = 60f / roundPerMinute;
     }
 
     private void Update()
     {
         TickFiringCooldown(Time.deltaTime);
+    }
+
+    public void SetFiringCooldown(float cooldown)
+    {
+        firingCooldown = cooldown;
     }
 
     public void SetAiming(bool aiming)
@@ -118,10 +125,9 @@ public class GunHandling : MonoBehaviour
         if (!isReloading)
             return false;
 
-        float firingDelay = 1.0f / (roundPerMinute / 60f);
         firingTimer += deltaTime;
 
-        if (firingTimer >= firingDelay)
+        if (firingTimer >= firingCooldown)
         {
             firingTimer = 0f;
             isReloading = false;

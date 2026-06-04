@@ -143,6 +143,65 @@ namespace BehaviourTree.Runtime
         #endregion
         
         #region Firing
+
+        [BTreeMethod(MethodID.Enemy_FireSequence)]
+        public static NodeState Enemy_FireSequence(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            Enemy_FireSequence_NodeFields nodeFields = NodeFieldBindings.DeserializeEnemy_FireSequence(fields, blackBoard);
+            EnemyController controller = GetController(blackBoard);
+            if (controller == null) return NodeState.FAILURE;
+
+            Transform target = nodeFields.selectedTarget;
+            if (target == null) return NodeState.FAILURE;
+
+            GunHandling gunHandling = controller.GunHandling;
+            gunHandling.SetFiringCooldown(nodeFields.reloadDuration);
+
+            // Phase: Reloading
+            if (gunHandling.IsReloading)
+            {
+                return NodeState.RUNNING;
+            }
+
+            // Phase: Select aim target
+            if (!gunHandling.HasAimTarget && !gunHandling.HasFailed)
+            {
+                gunHandling.SelectAimTarget(target);
+                gunHandling.SetAiming(true);
+                return NodeState.RUNNING;
+            }
+
+            // Phase: Search trajectory
+            if (gunHandling.HasAimTarget && !gunHandling.HasTrajectory && !gunHandling.HasFailed)
+            {
+                TrajectorySearchState searchState = gunHandling.SearchTrajectory();
+                switch (searchState)
+                {
+                    case TrajectorySearchState.Found:
+                        break;
+                    case TrajectorySearchState.Searching:
+                        return NodeState.RUNNING;
+                    case TrajectorySearchState.Failed:
+                        gunHandling.Trajectory.ResetTrajectory();
+                        return NodeState.FAILURE;
+                }
+            }
+
+            // Phase: Wait for turret to aim
+            if (gunHandling.HasTrajectory && !gunHandling.OnTarget)
+            {
+                return NodeState.RUNNING;
+            }
+
+            // Phase: Fire
+            if (gunHandling.HasTrajectory && gunHandling.OnTarget)
+            {
+                gunHandling.Fire();
+                return NodeState.SUCCESS;
+            }
+
+            return NodeState.FAILURE;
+        }
         
         [BTreeMethod(MethodID.Enemy_WaitForReload)]
         public static NodeState Enemy_WaitForReload(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)

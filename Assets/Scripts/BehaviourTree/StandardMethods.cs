@@ -31,7 +31,7 @@ namespace BehaviourTree
 
             REPEATER_NodeFields p = NodeFieldBindings.DeserializeREPEATER(fields, blackBoard);
 
-            if (childResult == NodeState.SUCCESS && p.currentCount < p.targetCount)
+            if (childResult == NodeState.SUCCESS && p.currentCount < p.targetCount - 1)
             {
                 p.currentCount++;
                 NodeFieldBindings.SerializeREPEATER(p, fields, blackBoard);

@@ -123,6 +123,23 @@ namespace BehaviourTree.Runtime
             };
         }
 
+        public static Enemy_FireSequence_NodeFields DeserializeEnemy_FireSequence(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader reader = new FieldReader(fields, blackboard);
+            return new Enemy_FireSequence_NodeFields
+            {
+                // index 0: reloadDuration (constant)
+                reloadDuration = reader.GetFloat(0),
+                // index 1: selectedTarget (blackboard variable)
+                selectedTarget = reader.GetTransform(1),
+            };
+        }
+
+        public static void SerializeEnemy_FireSequence(Enemy_FireSequence_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader writer = new FieldReader(fields, blackboard);
+        }
+
         public static INVERTER_NodeFields DeserializeINVERTER(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader reader = new FieldReader(fields, blackboard);
