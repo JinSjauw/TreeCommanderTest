@@ -1273,7 +1273,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b91efbb54ae18844fb30ca3518826540, type: 2}
+  - {fileID: -8458333536517858017, guid: c0b3c3db3b06c324489a1c05654c4591, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3979,7 +3979,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b91efbb54ae18844fb30ca3518826540, type: 2}
+  - {fileID: -8458333536517858017, guid: c0b3c3db3b06c324489a1c05654c4591, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5551,7 +5551,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2288d8b1bc5e6864a8a03030b9aa4390, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurretController
-  turretBase: {fileID: 7399623133651304055}
+  turretOrigin: {fileID: 1868966535197908441}
+  turretPivot: {fileID: 7399623133651304055}
   barrelPivot: {fileID: 8715283329261137679}
   aimTarget: {fileID: 5280410286162686523}
   barrelTarget: {fileID: 3328604001514004943}

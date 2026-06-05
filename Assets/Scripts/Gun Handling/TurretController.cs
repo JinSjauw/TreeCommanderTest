@@ -3,7 +3,8 @@ using UnityEngine;
 public class TurretController : MonoBehaviour
 {
     [Header("Turret Transforms")]
-    [SerializeField] private Transform turretBase;
+    [SerializeField] private Transform turretOrigin;
+    [SerializeField] private Transform turretPivot;
     [SerializeField] private Transform barrelPivot;
 
     [Header("Targets")]
@@ -45,9 +46,10 @@ public class TurretController : MonoBehaviour
 
     private Quaternion RotateTurretBase(Transform target)
     {
-        Quaternion targetRot = Quaternion.LookRotation(target.position - turretBase.position);
-        targetRot = Quaternion.Euler(0f, targetRot.eulerAngles.y, 0f);
-        turretBase.rotation = Quaternion.RotateTowards(turretBase.rotation, targetRot, turretTraverseSpeed * Time.deltaTime);
+        Vector3 localDir = turretPivot.parent.InverseTransformDirection(target.position - turretPivot.position);
+        Quaternion targetRot = Quaternion.LookRotation(localDir);
+        targetRot = Quaternion.Euler(0, targetRot.eulerAngles.y, 0);
+        turretPivot.localRotation = Quaternion.RotateTowards(turretPivot.localRotation, targetRot, turretTraverseSpeed * Time.deltaTime);
         return targetRot;
     }
 
@@ -61,7 +63,7 @@ public class TurretController : MonoBehaviour
 
     public bool UpdateOnTarget()
     {
-        float baseAngle = Quaternion.Angle(turretBase.rotation, targetBaseRot);
+        float baseAngle = Quaternion.Angle(turretPivot.localRotation, targetBaseRot);
         float barrelAngle = Mathf.Abs(Mathf.DeltaAngle(barrelPivot.localRotation.eulerAngles.x, targetBarrelRot.eulerAngles.x));
 
         return baseAngle < angleThreshold && barrelAngle < angleThreshold;
@@ -77,6 +79,6 @@ public class TurretController : MonoBehaviour
 
     public Transform GetTurretBase()
     {
-        return turretBase;
+        return turretPivot;
     }
 }
