@@ -7,6 +7,8 @@ using BehaviourTree.Core;
 using BehaviourTree.Editor;
 using BehaviourTree.Runtime;
 using System;
+using System.Linq;
+using System.IO;
 
 public class BehaviourTreeEditor : EditorWindow
 {
@@ -54,7 +56,7 @@ public class BehaviourTreeEditor : EditorWindow
         VisualElement root = visualTree.CloneTree();
         root.style.flexGrow = 1; // Fix the thin strip
 
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeEditorPaths.EditorUss);
+        StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeEditorPaths.EditorUss);
 
         // Null check for USS stylesheet
         if (styleSheet != null)
@@ -96,11 +98,7 @@ public class BehaviourTreeEditor : EditorWindow
         }
         else
         {
-            assetBarMenu.menu.AppendAction("Create New Tree", CreateNewTree);
-            assetBarMenu.menu.AppendSeparator();
-            assetBarMenu.menu.AppendAction("Bake Tree", BakeTree);    
-            assetBarMenu.menu.AppendAction("Save Tree", SaveTree);
-            assetBarMenu.menu.AppendAction("Sync Tree", SyncTree);
+            BuildAssetBarMenu();
         }
 
         OnSelectionChange();
@@ -137,6 +135,69 @@ public class BehaviourTreeEditor : EditorWindow
         EditorApplication.projectChanged += OnProjectChanged;
     }
 
+    private void BuildAssetBarMenu()
+    {
+        if (assetBarMenu == null) return;
+
+        var menu = assetBarMenu.menu;
+        menu.ClearItems();
+
+        menu.AppendAction("Create New Tree", CreateNewTree);
+        menu.AppendSeparator();
+
+        // Populate Open Tree submenu with recent BehaviourTreeAsset files (last modified, limited to 15)
+        const int maxRecentEntries = 5;
+        string[] guids = AssetDatabase.FindAssets("t:BehaviourTreeAsset");
+
+        var recentTrees = guids
+            .Select(guid => new
+            {
+                Path = AssetDatabase.GUIDToAssetPath(guid),
+                Asset = AssetDatabase.LoadAssetAtPath<BehaviourTreeAsset>(AssetDatabase.GUIDToAssetPath(guid))
+            })
+            .Where(t => t.Asset != null)
+            .Select(t => new
+            {
+                t.Asset,
+                LastWrite = File.GetLastWriteTime(t.Path)
+            })
+            .OrderByDescending(t => t.LastWrite)
+            .Take(maxRecentEntries);
+
+        foreach (var entry in recentTrees)
+        {
+            BehaviourTreeAsset capturedAsset = entry.Asset;
+            menu.AppendAction("Open Tree/" + capturedAsset.name, a =>
+            {
+                Selection.activeObject = capturedAsset;
+                AssetDatabase.OpenAsset(capturedAsset);
+            });
+        }
+
+        menu.AppendSeparator("Open Tree/");
+        menu.AppendAction("Open Tree/Browse...", BrowseOpenTree);
+
+        menu.AppendSeparator();
+        menu.AppendAction("Bake Tree", BakeTree);
+        menu.AppendAction("Save Tree", SaveTree);
+        menu.AppendAction("Sync Tree", SyncTree);
+    }
+
+    private void BrowseOpenTree(DropdownMenuAction action)
+    {
+        string path = EditorUtility.OpenFilePanelWithFilters("Open Behaviour Tree", "Assets", new[] { "Behaviour Tree Asset", "asset" });
+        if (string.IsNullOrEmpty(path)) return;
+
+        // Convert absolute path to project-relative
+        string projectRelative = path.Replace(Application.dataPath, "Assets");
+        BehaviourTreeAsset asset = AssetDatabase.LoadAssetAtPath<BehaviourTreeAsset>(projectRelative);
+        if (asset != null)
+        {
+            Selection.activeObject = asset;
+            AssetDatabase.OpenAsset(asset);
+        }
+    }
+
     private void CreateNewTree(DropdownMenuAction action)
     {
         string path = EditorUtility.SaveFilePanelInProject("Create Behaviour Tree", "NewTree", "asset", "Create a new BehaviourTreeAsset");
@@ -152,6 +213,7 @@ public class BehaviourTreeEditor : EditorWindow
         AssetDatabase.SaveAssets();
 
         Selection.activeObject = treeAsset;
+        BuildAssetBarMenu();
         OnSelectionChange();
     }
 
@@ -266,6 +328,8 @@ public class BehaviourTreeEditor : EditorWindow
 
     private void OnProjectChanged()
     {
+        BuildAssetBarMenu();
+
         if (currentTree == null) return;
 
         if (!AssetDatabase.Contains(currentTree))
