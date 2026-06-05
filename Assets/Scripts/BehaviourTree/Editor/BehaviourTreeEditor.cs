@@ -22,7 +22,7 @@ public class BehaviourTreeEditor : EditorWindow
     public static BehaviourTreeAsset currentTree { get; private set; }
     public static TreeRunner currentRunner { get; private set; }
 
-    [MenuItem("BehaviourTree/BTNodeGraph")]
+    [MenuItem("BehaviourTree/Open Behaviour Tree Graph", priority = 29)]
     public static void OpenWindow()
     {
         BehaviourTreeEditor wnd = GetWindow<BehaviourTreeEditor>();
@@ -152,7 +152,6 @@ public class BehaviourTreeEditor : EditorWindow
         AssetDatabase.SaveAssets();
 
         Selection.activeObject = treeAsset;
-        currentTree = treeAsset;
         OnSelectionChange();
     }
 
