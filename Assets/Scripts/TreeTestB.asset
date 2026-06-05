@@ -78,11 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: PARALLEL
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: -6006508481934096675}
-  - {fileID: -2388626760523455919}
-  - {fileID: 3230286840277840150}
-  - {fileID: 6351010905527966408}
+  children: []
   firstChildIndex: 5
   lastChildIndex: 8
   guid: 0e4db3baf9df0294b8ca2a9d99e32de3
@@ -300,7 +296,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   children:
   - {fileID: 2936590181940669852}
-  - {fileID: -6446956115568358721}
   firstChildIndex: 11
   lastChildIndex: 12
   guid: 3090e88c73e9c2143aeab7899dd9ec5e
@@ -413,7 +408,7 @@ MonoBehaviour:
     vector2Value: {x: 5, y: 5}
     vector3Value: {x: 0, y: 0, z: 0}
   - name: HEALTHTHRESHHOLD
-    typeName: 
+    typeName: System.Int32
     showInitialValue: 1
     intValue: 112
     floatValue: 0
@@ -421,7 +416,7 @@ MonoBehaviour:
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
   - name: HEALTH
-    typeName: 
+    typeName: System.Int32
     showInitialValue: 1
     intValue: 100
     floatValue: 0
@@ -475,25 +470,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2337152736176314f8b42c250d167c18, type: 3}
   m_Name: TreeTestB
   m_EditorClassIdentifier: BehaviourTree.Editor::BehaviourTree.Editor.BehaviourTreeAsset
+  root: {fileID: 6890838481705966299}
+  blackboardDefinition: {fileID: -2066152438107150607}
   nodesList:
   - {fileID: -1738120031703607826}
   - {fileID: -4003088083825054018}
   - {fileID: -5059039290753998693}
   - {fileID: -6847340617088800026}
   - {fileID: 7399971472411141622}
-  - {fileID: -6446956115568358721}
-  - {fileID: -2388626760523455919}
-  - {fileID: 6351010905527966408}
-  - {fileID: -5103446367343537540}
-  - {fileID: 7547983875321800468}
-  - {fileID: -6660082802888072172}
   - {fileID: -7465809883310531390}
   - {fileID: 2936590181940669852}
-  - {fileID: -7846093893695533572}
-  - {fileID: 3230286840277840150}
-  - {fileID: -6006508481934096675}
-  rootCopy: {fileID: -1738120031703607826}
-  blackboardDefinition: {fileID: -2066152438107150607}
+  - {fileID: 6890838481705966299}
 --- !u!114 &2936590181940669852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -506,9 +493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: PRIORITY
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: -5103446367343537540}
-  - {fileID: -7846093893695533572}
+  children: []
   firstChildIndex: 13
   lastChildIndex: 14
   guid: becee80c06d079f428ce570fa0e75b80
@@ -647,6 +632,24 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   BlackBoardTypeID: 0
+--- !u!114 &6890838481705966299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a38c03add90752d4c9baab04e36aaf6d, type: 3}
+  m_Name: ROOT
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.RootNode
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  guid: d2d01a46c630f914197ec231d52b1fed
+  graphPosition: {x: 0, y: 0}
+  runtimeIndex: -1
 --- !u!114 &7399971472411141622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -659,9 +662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: SEQUENCE
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: -6660082802888072172}
-  - {fileID: 7547983875321800468}
+  children: []
   firstChildIndex: 9
   lastChildIndex: 10
   guid: d5d00172589ec6542b6e68d9a241271a

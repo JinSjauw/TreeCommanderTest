@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using BehaviourTree.Core;
@@ -19,6 +20,7 @@ public class BehaviourTreeEditor : EditorWindow
     private ToolbarMenu assetBarMenu;
     private TabView tabView;
     private Tab inspectorTab;
+    private TreeSearchProvider treeSearchProvider;
 
     public static BlackboardDefinition currentBlackboardDef { get; private set; }
     public static BehaviourTreeAsset currentTree { get; private set; }
@@ -27,6 +29,8 @@ public class BehaviourTreeEditor : EditorWindow
     [MenuItem("BehaviourTree/Open Behaviour Tree Graph", priority = 29)]
     public static void OpenWindow()
     {
+        currentTree = null;
+        currentBlackboardDef = null;
         BehaviourTreeEditor wnd = GetWindow<BehaviourTreeEditor>();
         wnd.titleContent = new GUIContent("Behaviour Tree Editor");
     }
@@ -185,17 +189,12 @@ public class BehaviourTreeEditor : EditorWindow
 
     private void BrowseOpenTree(DropdownMenuAction action)
     {
-        string path = EditorUtility.OpenFilePanelWithFilters("Open Behaviour Tree", "Assets", new[] { "Behaviour Tree Asset", "asset" });
-        if (string.IsNullOrEmpty(path)) return;
+        if (treeSearchProvider == null)
+            treeSearchProvider = ScriptableObject.CreateInstance<TreeSearchProvider>();
 
-        // Convert absolute path to project-relative
-        string projectRelative = path.Replace(Application.dataPath, "Assets");
-        BehaviourTreeAsset asset = AssetDatabase.LoadAssetAtPath<BehaviourTreeAsset>(projectRelative);
-        if (asset != null)
-        {
-            Selection.activeObject = asset;
-            AssetDatabase.OpenAsset(asset);
-        }
+        Rect bounds = assetBarMenu.worldBound;
+        Vector2 screenPos = new Vector2(position.x + bounds.x + bounds.width, position.y + bounds.y + bounds.height);
+        SearchWindow.Open(new SearchWindowContext(screenPos), treeSearchProvider);
     }
 
     private void CreateNewTree(DropdownMenuAction action)
@@ -250,6 +249,8 @@ public class BehaviourTreeEditor : EditorWindow
         EditorApplication.projectChanged -= OnProjectChanged;
         EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         EditorApplication.update -= PollDebugState;
+
+        ClearGraph();
     }
 
     private void BakeTree(DropdownMenuAction dropdownMenuAction)
@@ -350,7 +351,7 @@ public class BehaviourTreeEditor : EditorWindow
             tabView.activeTab = inspectorTab;
     }
 
-    private void OnDestroy()
+    private void ClearGraph()
     {
         currentTree = null;
         currentBlackboardDef = null;
@@ -358,6 +359,13 @@ public class BehaviourTreeEditor : EditorWindow
         if (treeGraphView != null)
         {
             treeGraphView.OnNodeSelected = null;
+            treeGraphView.ClearView();
+        }
+
+        if (treeSearchProvider != null)
+        {
+            DestroyImmediate(treeSearchProvider);
+            treeSearchProvider = null;
         }
     }
 }
