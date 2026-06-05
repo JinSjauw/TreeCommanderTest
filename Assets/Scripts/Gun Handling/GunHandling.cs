@@ -23,7 +23,6 @@ public class GunHandling : MonoBehaviour
     [SerializeField] private float roundPerMinute;
 
     [Header("Aim Targeting")]
-    [SerializeField] private LayerMask obstructionLayers;
     [SerializeField] private float randomTargetRadius = 0.5f;
     private Transform aimOrigin;
 
@@ -36,6 +35,7 @@ public class GunHandling : MonoBehaviour
 
     private ObjectPool pool;
 
+    public LayerMask ObstructionLayers { get; set; }
     public bool OnTarget => turretController.UpdateOnTarget();
     public bool HasTrajectory => trajectory.HasTrajectory;
     public bool HasAimTarget => trajectory.HasAimTarget;
@@ -79,7 +79,7 @@ public class GunHandling : MonoBehaviour
         Vector3 randomFactor = Random.insideUnitSphere * randomTargetRadius;
         Vector3 overshootDirection = attackTarget.position - originPosition;
 
-        bool directLineOfSight = !Physics.Linecast( originPosition, attackTarget.position, obstructionLayers );
+        bool directLineOfSight = !Physics.Linecast( originPosition, attackTarget.position, ObstructionLayers );
 
         float overshootFactor = directLineOfSight ? 50f : 1.5f; //placeholder numbers
         
@@ -87,7 +87,7 @@ public class GunHandling : MonoBehaviour
             + (overshootDirection.normalized * overshootFactor)
             + randomFactor;
 
-        if (!directLineOfSight && Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100f, obstructionLayers))
+        if (!directLineOfSight && Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100f, ObstructionLayers))
         {
             randomPosition = hit.point;
         }

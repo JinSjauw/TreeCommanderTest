@@ -38,6 +38,7 @@ namespace BehaviourTree.Runtime
             Enemy_SelectPatrolPoint_NodeFields nodeFields = NodeFieldBindings.DeserializeEnemy_SelectPatrolPoint(fields, blackBoard);
             EnemyController controller = GetController(blackBoard);
             if (controller == null) return NodeState.FAILURE;
+            if (nodeFields.patrolPointsParent == null) return NodeState.FAILURE;
 
             Vector3 point = controller.SetNextPatrolPoint(nodeFields.patrolPointsParent);
             nodeFields.targetMovePosition = point;

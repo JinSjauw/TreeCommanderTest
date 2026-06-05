@@ -14,6 +14,12 @@ public class TrajectoryValidator
         this.positionAlpha = positionAlpha;
     }
 
+    public void SetMasks(LayerMask obstacle, LayerMask target)
+    {
+        obstacleMask = obstacle;
+        targetMask = target;
+    }
+
     public bool Validate(Vector3 start, Vector3 end, Vector3 controlPoint, bool hasLineOfSight, int segmentCountOverride = -1)
     {
         int segments = segmentCountOverride > 0 ? segmentCountOverride : segmentCount;

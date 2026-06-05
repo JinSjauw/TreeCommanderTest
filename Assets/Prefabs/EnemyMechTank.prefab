@@ -339,12 +339,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6863818105343673483}
   - component: {fileID: 3334882514279484221}
-  - component: {fileID: 1814040603280857123}
-  - component: {fileID: 6334780435883037533}
-  - component: {fileID: 3861370611912142669}
-  - component: {fileID: 8042593918175581147}
   m_Layer: 8
-  m_Name: Body
+  m_Name: Pathfinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -389,84 +385,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &1814040603280857123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 254959746806883276}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 352144a5f4ca0334ab5b8c74cd7b10fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  maxHealth: 210
-  health: 0
---- !u!65 &6334780435883037533
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 254959746806883276}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.3452415, y: 1, z: 1.825386}
-  m_Center: {x: 0, y: 0.8, z: 0}
---- !u!54 &3861370611912142669
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 254959746806883276}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!114 &8042593918175581147
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 254959746806883276}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 748cd77a37d278c49b13016ee2686bae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DeathHandler
-  transformToRemove: {fileID: 3167757399913710317}
-  meshRootTransform: {fileID: 1901510055390076121}
-  materialToApply: {fileID: 2100000, guid: c218e00d5b34a6f4698911d68cf491d4, type: 2}
-  corpsePrefab: {fileID: 7949673561649792230, guid: 68c66b1a7d987454a9d22dbfafe87d57, type: 3}
 --- !u!1 &268451971728499167
 GameObject:
   m_ObjectHideFlags: 0
@@ -1117,6 +1035,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1868966535197908441}
+  - component: {fileID: 8823604241521370589}
+  - component: {fileID: 2638803590184401113}
+  - component: {fileID: 2700983979354341586}
+  - component: {fileID: 7660191716299551350}
   m_Layer: 8
   m_Name: TurretBase
   m_TagString: Untagged
@@ -1141,6 +1063,84 @@ Transform:
   - {fileID: 889751783661561907}
   m_Father: {fileID: 1901510055390076121}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8823604241521370589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933271279130159258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 352144a5f4ca0334ab5b8c74cd7b10fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  maxHealth: 210
+  health: 0
+--- !u!114 &2638803590184401113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933271279130159258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 748cd77a37d278c49b13016ee2686bae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathHandler
+  transformToRemove: {fileID: 3167757399913710317}
+  meshRootTransform: {fileID: 1901510055390076121}
+  materialToApply: {fileID: 2100000, guid: c218e00d5b34a6f4698911d68cf491d4, type: 2}
+  corpsePrefab: {fileID: 7949673561649792230, guid: 68c66b1a7d987454a9d22dbfafe87d57, type: 3}
+--- !u!65 &2700983979354341586
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933271279130159258}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.58469296, z: 1.7007675}
+  m_Center: {x: 0, y: -0.023989439, z: -0.17606544}
+--- !u!54 &7660191716299551350
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 933271279130159258}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &944829832872436381
 GameObject:
   m_ObjectHideFlags: 0
@@ -2098,6 +2098,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2586127685016460624}
   - component: {fileID: 4220646159134981283}
+  - component: {fileID: 1976799646291516883}
   m_Layer: 8
   m_Name: Visuals
   m_TagString: Untagged
@@ -2136,6 +2137,33 @@ MonoBehaviour:
   followTarget: {fileID: 6863818105343673483}
   ignoreHeight: 1
   ignoreRotation: 0
+--- !u!54 &1976799646291516883
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2174035677635164874}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &2182979042250653251
 GameObject:
   m_ObjectHideFlags: 0
@@ -2740,15 +2768,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d816ee003a41c43bbbefdc83182aec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  enemySignID: ART_1
   <Detection>k__BackingField: {fileID: 6205309959877010527}
   <GunHandling>k__BackingField: {fileID: 3628266624396378776}
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 64
   maxConeHalfAngle: 45
   minDistance: 10
   maxDistance: 20
   maintainDistance: 8
   minimumPadding: 0.1
   agent: {fileID: 3334882514279484221}
+  visualBody: {fileID: 1868966535197908441}
 --- !u!114 &1504933653420949153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4923,9 +4957,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDetectionSystem
   detectionRadius: 45
   firingRadius: 35
-  targetLayers:
-    serializedVersion: 2
-    m_Bits: 128
   eyeTransform: {fileID: 7399623133651304055}
 --- !u!1 &5609637645397834638
 GameObject:
@@ -5512,9 +5543,6 @@ MonoBehaviour:
   projectilePrefab: {fileID: 8414172719971548377, guid: 680e5ee165c176a40b146b6a4d501732, type: 3}
   projectileDamage: 150
   roundPerMinute: 12
-  obstructionLayers:
-    serializedVersion: 2
-    m_Bits: 64
   randomTargetRadius: 1
 --- !u!114 &4949348071831475539
 MonoBehaviour:
@@ -5533,12 +5561,6 @@ MonoBehaviour:
   fireTarget: {fileID: 5280410286162686523}
   directFire: {fileID: 11400000, guid: 1a89faac5d4aa0546bf42fdab3213584, type: 2}
   indirectFire: {fileID: 11400000, guid: 9ac6cdd90d96c694ca77ece6ac78983f, type: 2}
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 64
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &7820496989027515737
 MonoBehaviour:
   m_ObjectHideFlags: 0

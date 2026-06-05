@@ -6,12 +6,14 @@ using Random = UnityEngine.Random;
 
 public class EnemyController : MonoBehaviour
 {
-    [Header("Identity")]
-    [SerializeField] private string enemySignID;
 
     [Header("Systems")]
     [field: SerializeField] public EnemyDetectionSystem Detection { get; private set; }
     [field: SerializeField] public GunHandling GunHandling { get; private set; }
+
+    [Header("Targeting")]
+    [SerializeField] private LayerMask targetLayers;
+    [SerializeField] private LayerMask obstacleLayers;
 
     [Header("Pathfinding")]
     [SerializeField] private float maxConeHalfAngle;
@@ -21,6 +23,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float minimumPadding = 0.15f;
 
     [SerializeField] private NavMeshAgent agent;
+    [SerializeField] private Transform visualBody;
 
     public bool CanMove { get; set; }
     public bool HasPath { get; private set; }
@@ -30,6 +33,52 @@ public class EnemyController : MonoBehaviour
     public EventHandler<EnemyController> OnDestructionEvent;
 
     private Transform selectedTarget;
+    private bool masksConfigured;
+
+    private void OnEnable()
+    {
+        if (!masksConfigured)
+        {
+            if (Detection != null)
+                Detection.TargetLayers = targetLayers;
+
+            if (GunHandling != null)
+            {
+                GunHandling.ObstructionLayers = obstacleLayers;
+
+                TrajectorySystem trajectory = GunHandling.Trajectory;
+                if (trajectory != null)
+                    trajectory.UpdateMasks(obstacleLayers, targetLayers);
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        masksConfigured = false;
+    }
+
+    public void SetMasks(int selfLayer, LayerMask targetLayers, LayerMask obstacleLayers)
+    {
+        gameObject.layer = selfLayer;
+        agent.gameObject.layer = selfLayer;
+        visualBody.gameObject.layer = selfLayer;
+        this.targetLayers = targetLayers;
+        this.obstacleLayers = obstacleLayers;
+        masksConfigured = true;
+
+        if (Detection != null)
+            Detection.TargetLayers = targetLayers;
+
+        if (GunHandling != null)
+        {
+            GunHandling.ObstructionLayers = obstacleLayers;
+
+            TrajectorySystem trajectory = GunHandling.Trajectory;
+            if (trajectory != null)
+                trajectory.UpdateMasks(obstacleLayers, targetLayers);
+        }
+    }
 
     public Transform SelectTarget(SelectionStrategy strategy)
     {
@@ -89,11 +138,6 @@ public class EnemyController : MonoBehaviour
             maxDist * clampedAlpha);
 
         return origin + (randomDirection.normalized * randomDistance);
-    }
-
-    public string GetID()
-    {
-        return enemySignID;
     }
 
     public void Die()

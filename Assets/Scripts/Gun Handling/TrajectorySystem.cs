@@ -10,10 +10,6 @@ public class TrajectorySystem : MonoBehaviour
     [SerializeField] private TrajectorySearchSettings indirectFire;
     private TrajectoryValidator validator;
 
-    [Header("Obstacle Settings")]
-    [SerializeField] private LayerMask obstacleMask;
-    [SerializeField] private LayerMask targetMask;
-
     private int attemptsTotal;
 
     private float curveHeight;
@@ -24,15 +20,22 @@ public class TrajectorySystem : MonoBehaviour
     private bool hasLineOfSight;
 
     private TrajectorySearchSettings currentSettings;
-
+    
+    public LayerMask ObstructionMask { get; set; }
+    public LayerMask targetMask { get; set; }
     public bool HasTrajectory => hasTrajectory;
     public bool HasAimTarget => hasAimTarget;
     public bool HasFailed => hasFailed;
     private void Awake()
     {
-        if (obstacleMask == 0)
+        Init();
+    }
+
+    private void Init()
+    {
+        if (ObstructionMask == 0)
         {
-            obstacleMask = LayerMask.GetMask("Ground");
+            ObstructionMask = LayerMask.GetMask("Ground");
         }
 
         if (directFire == null)
@@ -41,8 +44,9 @@ public class TrajectorySystem : MonoBehaviour
             return;
         }
 
-        validator = new TrajectoryValidator(directFire.segmentCount, obstacleMask, targetMask, fireCurve.GetPosition());
+        validator = new TrajectoryValidator(directFire.segmentCount, ObstructionMask, targetMask, fireCurve.GetPosition());
     }
+
     public void SetTrajectoryTarget(Vector3 position, bool losFlag = false)
     {
         if (fireTarget != null)
@@ -102,6 +106,16 @@ public class TrajectorySystem : MonoBehaviour
         }
 
         return TrajectorySearchState.Searching;
+    }
+
+    public void UpdateMasks(LayerMask obstructionMask, LayerMask targetMask)
+    {
+        ObstructionMask = obstructionMask;
+        this.targetMask = targetMask;
+
+        if(validator == null) Init(); 
+
+        validator.SetMasks(ObstructionMask, targetMask);
     }
 
     public void ResetTrajectory()

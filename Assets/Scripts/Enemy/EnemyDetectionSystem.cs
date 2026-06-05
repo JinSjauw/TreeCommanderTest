@@ -8,11 +8,11 @@ public class EnemyDetectionSystem : MonoBehaviour
     [Header("Detection Settings")]
     [SerializeField] private float detectionRadius = 30f;
     [SerializeField] private float firingRadius = 15f;
-    [SerializeField] private LayerMask targetLayers;
     [SerializeField] private Transform eyeTransform;
 
     private Collider[] detectBuffer = new Collider[32];
 
+    public LayerMask TargetLayers { get; set; }
     public List<Transform> DetectedTargets { get; private set; } = new List<Transform>();
     public float DetectionRadius => detectionRadius;
     public float FiringRadius => firingRadius;
@@ -23,7 +23,7 @@ public class EnemyDetectionSystem : MonoBehaviour
         DetectedTargets.Clear();
 
         int hitCount = Physics.OverlapSphereNonAlloc(
-            transform.position, detectionRadius, detectBuffer, targetLayers);
+            transform.position, detectionRadius, detectBuffer, TargetLayers);
 
         if (hitCount == 0)
         {
@@ -33,6 +33,10 @@ public class EnemyDetectionSystem : MonoBehaviour
         for (int i = 0; i < hitCount; i++)
         {
             Transform candidate = detectBuffer[i].transform;
+
+            if (candidate == transform || candidate.IsChildOf(transform))
+                continue;
+
             // if (!HasLineOfSight(candidate))
             //     continue;
 

@@ -37,6 +37,6 @@ public class DeathHandler : MonoBehaviour
 
         CloneMesh(meshRootTransform, corpseObject);
 
-        Destroy(transformToRemove.gameObject);
+        //Destroy(transformToRemove.gameObject);
     }
 }
