@@ -37,7 +37,7 @@ public class TurretController : MonoBehaviour
 
     private void UpdateRotations()
     {
-        Transform baseTarget = isAiming ? aimTarget : neutralTarget;
+        Transform baseTarget = isAiming ? barrelTarget : neutralTarget;
         Transform barrelLookTarget = isAiming ? barrelTarget : neutralBarrelTarget;
 
         targetBaseRot = RotateTurretBase(baseTarget);
@@ -46,18 +46,30 @@ public class TurretController : MonoBehaviour
 
     private Quaternion RotateTurretBase(Transform target)
     {
-        Vector3 localDir = turretPivot.parent.InverseTransformDirection(target.position - turretPivot.position);
-        Quaternion targetRot = Quaternion.LookRotation(localDir);
-        targetRot = Quaternion.Euler(0, targetRot.eulerAngles.y, 0);
+        Vector3 worldDir = (target.position - turretPivot.position).normalized;
+        Vector3 localTarget = turretOrigin.InverseTransformDirection(worldDir);
+        float azimuth = Mathf.Atan2(localTarget.x, localTarget.z) * Mathf.Rad2Deg;
+        Quaternion targetRot = Quaternion.Euler(0f, azimuth, 0f);
         turretPivot.localRotation = Quaternion.RotateTowards(turretPivot.localRotation, targetRot, turretTraverseSpeed * Time.deltaTime);
+
+        // Debug
+        Debug.DrawLine(turretPivot.position, target.position, Color.green);
+        Debug.DrawRay(turretPivot.position, turretPivot.forward * 5, Color.yellow);
+
         return targetRot;
     }
 
     private Quaternion RotateBarrelPivot(Transform target)
     {
-        Quaternion targetRot = Quaternion.LookRotation(target.position - barrelPivot.position);
-        targetRot = Quaternion.Euler(targetRot.eulerAngles.x, 0f, 0f);
+        Vector3 worldDir = (target.position - barrelPivot.position).normalized;
+        Vector3 localTarget = turretPivot.InverseTransformDirection(worldDir);
+        float elevation = Mathf.Atan2(-localTarget.y, new Vector2(localTarget.x, localTarget.z).magnitude) * Mathf.Rad2Deg;
+        Quaternion targetRot = Quaternion.Euler(elevation, 0f, 0f);
         barrelPivot.localRotation = Quaternion.RotateTowards(barrelPivot.localRotation, targetRot, barrelTraverseSpeed * Time.deltaTime);
+
+        // Debug
+        Debug.DrawRay(barrelPivot.position, barrelPivot.forward * 5, Color.blue);
+
         return targetRot;
     }
 

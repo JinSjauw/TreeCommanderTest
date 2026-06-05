@@ -5528,7 +5528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57c7a527842457c4c8f520292269ec68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrajectorySystem
-  trajectoryStart: {fileID: 7399623133651304055}
+  trajectoryStart: {fileID: 1868966535197908441}
   fireCurve: {fileID: 8128986377933661858}
   fireTarget: {fileID: 5280410286162686523}
   directFire: {fileID: 11400000, guid: 1a89faac5d4aa0546bf42fdab3213584, type: 2}
