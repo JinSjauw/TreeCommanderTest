@@ -67,6 +67,7 @@ namespace BehaviourTree.Runtime
     public partial struct Enemy_FireSequence_NodeFields
     {
         public float reloadDuration;
+        public float firingDelay;
         [SharedVar]
         public Transform selectedTarget;
     }

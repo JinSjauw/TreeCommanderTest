@@ -156,12 +156,7 @@ namespace BehaviourTree.Runtime
 
             GunHandling gunHandling = controller.GunHandling;
             gunHandling.SetFiringCooldown(nodeFields.reloadDuration);
-
-            // Phase: Reloading
-            if (gunHandling.IsReloading)
-            {
-                return NodeState.RUNNING;
-            }
+            gunHandling.SetFireDelay(nodeFields.firingDelay);
 
             // Phase: Select aim target
             if (!gunHandling.HasAimTarget && !gunHandling.HasFailed)
@@ -189,6 +184,12 @@ namespace BehaviourTree.Runtime
 
             // Phase: Wait for turret to aim
             if (gunHandling.HasTrajectory && !gunHandling.OnTarget)
+            {
+                return NodeState.RUNNING;
+            }
+
+            // Phase: Wait for firing delay
+            if (gunHandling.IsReloading || !gunHandling.TickFiringDelay(Time.deltaTime))
             {
                 return NodeState.RUNNING;
             }

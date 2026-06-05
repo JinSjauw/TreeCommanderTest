@@ -5,8 +5,6 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] private CameraEvents cameraEvents;
-
     [SerializeField] private Transform cameraTarget;
     [SerializeField] private CinemachineOrbitalFollow orbitalFollow;
 
@@ -66,16 +64,16 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        //Services.Input.OnZoomCameraEvent += OnCameraZoom;
+        Services.Input.OnZoomCameraEvent += OnCameraZoom;
     }
 
     private void Update()
     {
         float deltaTime = Time.unscaledDeltaTime;
 
-        // moveInput = Services.Input.Move;
-        // lookInput = Services.Input.Look;
-        // orbitCamera = Services.Input.OrbitCamera;
+        moveInput = Services.Input.Move;
+        lookInput = Services.Input.Look;
+        orbitCamera = Services.Input.OrbitCamera;
 
         UpdateMovement(deltaTime);
         UpdateOrbit(deltaTime);
@@ -121,14 +119,15 @@ public class CameraController : MonoBehaviour
         InputAxis horizontalAxis = orbitalFollow.HorizontalAxis;
         InputAxis verticalAxis = orbitalFollow.VerticalAxis;
 
-        //horizontalAxis.Value += orbitInput.x;
-        //verticalAxis.Value -= orbitInput.y;
+        horizontalAxis.Value += orbitInput.x;
+        verticalAxis.Value -= orbitInput.y;
 
         horizontalAxis.Value = Mathf.Lerp(horizontalAxis.Value, horizontalAxis.Value + orbitInput.x, orbitSmoothing * deltaTime);
         verticalAxis.Value = Mathf.Lerp(verticalAxis.Value, verticalAxis.Value - orbitInput.y, orbitSmoothing * deltaTime);
 
-        //horizontalAxis.Value = Mathf.Clamp(horizontalAxis.Value, horizontalAxis.Range.x, horizontalAxis.Range.y);
         verticalAxis.Value = Mathf.Clamp(verticalAxis.Value, verticalAxis.Range.x, verticalAxis.Range.y);
+
+        horizontalAxis.Value = Mathf.Repeat(horizontalAxis.Value, 360f);
 
         orbitalFollow.HorizontalAxis = horizontalAxis;
         orbitalFollow.VerticalAxis = verticalAxis;
@@ -153,8 +152,6 @@ public class CameraController : MonoBehaviour
         orbitalFollow.RadialAxis = axis;
 
         float zoomAlpha = (axis.Value - axis.Range.x) / (axis.Range.y - axis.Range.x);
-
-        cameraEvents.OnCameraZoomChanged(zoomAlpha);
     }
 
     #endregion

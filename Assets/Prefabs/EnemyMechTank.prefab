@@ -5499,7 +5499,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6444191560058168185}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68165a721b290a14884d47956e278e05, type: 3}
+  m_Script: {fileID: 11500000, guid: bba326c25958df44494a199a785acf3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GunHandling
   turretController: {fileID: 7820496989027515737}
@@ -5510,12 +5510,12 @@ MonoBehaviour:
   projectileVariables: {fileID: 11400000, guid: e5149bb87ea089448b5e193b3d5ad636, type: 2}
   projectileCollection: {fileID: 0}
   projectilePrefab: {fileID: 8414172719971548377, guid: 680e5ee165c176a40b146b6a4d501732, type: 3}
-  projectileDamage: 100
-  roundPerMinute: 24
+  projectileDamage: 150
+  roundPerMinute: 12
   obstructionLayers:
     serializedVersion: 2
     m_Bits: 64
-  randomTargetRadius: 0.5
+  randomTargetRadius: 1
 --- !u!114 &4949348071831475539
 MonoBehaviour:
   m_ObjectHideFlags: 0

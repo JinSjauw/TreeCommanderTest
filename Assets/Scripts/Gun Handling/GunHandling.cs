@@ -27,9 +27,13 @@ public class GunHandling : MonoBehaviour
     [SerializeField] private float randomTargetRadius = 0.5f;
     private Transform aimOrigin;
 
-    private float firingCooldown;
-    private float firingTimer;
+    private float reloadDuration;
+    private float reloadTimer;
     private bool isReloading;
+
+    private float fireDelay;
+    private float firingDelayTimer;
+
     private ObjectPool pool;
 
     public bool OnTarget => turretController.UpdateOnTarget();
@@ -43,7 +47,7 @@ public class GunHandling : MonoBehaviour
     {
         pool = FindFirstObjectByType<ObjectPool>();
         aimOrigin = turretController.GetTurretBase();
-        firingCooldown = 60f / roundPerMinute;
+        reloadDuration = 60f / roundPerMinute;
     }
 
     private void Update()
@@ -53,7 +57,12 @@ public class GunHandling : MonoBehaviour
 
     public void SetFiringCooldown(float cooldown)
     {
-        firingCooldown = cooldown;
+        reloadDuration = cooldown;
+    }
+
+    public void SetFireDelay(float delay)
+    {
+        fireDelay = delay;
     }
 
     public void SetAiming(bool aiming)
@@ -67,7 +76,7 @@ public class GunHandling : MonoBehaviour
         
         Vector3 originPosition = aimOrigin.position;
 
-        Vector2 randomFactor = Random.insideUnitCircle * randomTargetRadius;
+        Vector3 randomFactor = Random.insideUnitSphere * randomTargetRadius;
         Vector3 overshootDirection = attackTarget.position - originPosition;
 
         bool directLineOfSight = !Physics.Linecast( originPosition, attackTarget.position, obstructionLayers );
@@ -76,7 +85,7 @@ public class GunHandling : MonoBehaviour
         
         Vector3 randomPosition = attackTarget.position
             + (overshootDirection.normalized * overshootFactor)
-            + new Vector3(randomFactor.x, 0, randomFactor.y);
+            + randomFactor;
 
         if (!directLineOfSight && Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100f, obstructionLayers))
         {
@@ -116,7 +125,7 @@ public class GunHandling : MonoBehaviour
         }
 
         trajectory.ResetTrajectory();
-        firingTimer = 0f;
+        reloadTimer = 0f;
         isReloading = true;
     }
 
@@ -125,12 +134,28 @@ public class GunHandling : MonoBehaviour
         if (!isReloading)
             return false;
 
-        firingTimer += deltaTime;
+        reloadTimer += deltaTime;
 
-        if (firingTimer >= firingCooldown)
+        if (reloadTimer >= reloadDuration)
         {
-            firingTimer = 0f;
+            reloadTimer = 0f;
             isReloading = false;
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool TickFiringDelay(float deltaTime)
+    {
+        //if (!isTickingFireDelay) return false;
+
+        firingDelayTimer += deltaTime;
+
+        if (firingDelayTimer >= fireDelay)
+        {
+            firingDelayTimer = 0f;
+            //isTickingFireDelay = false;
             return true;
         }
 

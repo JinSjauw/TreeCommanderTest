@@ -17,7 +17,7 @@ namespace BehaviourTree.Runtime
             FieldReader reader = new FieldReader(fields, blackboard);
             return new Enemy_MoveTo_NodeFields
             {
-                // index 0: TargetMovePosition (blackboard variable)
+                // index 0: targetMovePosition (blackboard variable)
                 targetMovePosition = reader.GetVector3(0),
             };
         }
@@ -33,9 +33,9 @@ namespace BehaviourTree.Runtime
             FieldReader reader = new FieldReader(fields, blackboard);
             return new Enemy_SelectPatrolPoint_NodeFields
             {
-                // index 0: TargetMovePosition (blackboard variable)
+                // index 0: targetMovePosition (blackboard variable)
                 targetMovePosition = reader.GetVector3(0),
-                // index 1: PatrolPointsParent (blackboard variable)
+                // index 1: patrolPointsParent (blackboard variable)
                 patrolPointsParent = reader.GetTransform(1),
             };
         }
@@ -52,7 +52,7 @@ namespace BehaviourTree.Runtime
             FieldReader reader = new FieldReader(fields, blackboard);
             return new Enemy_SelectEngagePosition_NodeFields
             {
-                // index 0: TargetMovePosition (blackboard variable)
+                // index 0: targetMovePosition (blackboard variable)
                 targetMovePosition = reader.GetVector3(0),
             };
         }
@@ -130,14 +130,17 @@ namespace BehaviourTree.Runtime
             {
                 // index 0: reloadDuration (constant)
                 reloadDuration = reader.GetFloat(0),
-                // index 1: selectedTarget (blackboard variable)
-                selectedTarget = reader.GetTransform(1),
+                // index 1: firingDelay (constant)
+                firingDelay = reader.GetFloat(1),
+                // index 2: selectedTarget (blackboard variable)
+                selectedTarget = reader.GetTransform(2),
             };
         }
 
         public static void SerializeEnemy_FireSequence(Enemy_FireSequence_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
         {
             FieldReader writer = new FieldReader(fields, blackboard);
+            writer.SetTransform(2, p.selectedTarget);
         }
 
         public static INVERTER_NodeFields DeserializeINVERTER(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
