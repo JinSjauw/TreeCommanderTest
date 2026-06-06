@@ -7,7 +7,6 @@ public class LegController : MonoBehaviour
 {
     //Need to update the height for target for uneven terrain.
     [SerializeField] private Transform legTargetTransform;
-
     [SerializeField] private Transform currentLegTransform;
     [SerializeField] private Transform legTransform;
     [SerializeField] private AnimationCurve legHeightCurve;
@@ -33,12 +32,41 @@ public class LegController : MonoBehaviour
 
     public EventHandler<int> moveFinishedEvent;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnEnable()
     {
-        bodyTransform = GetComponentInParent<LegManager>().GetBodyTransform();
+        if(bodyTransform == null)
+        {
+            bodyTransform = GetComponentInParent<LegManager>().GetBodyTransform();
+        }
 
-        UpdateLegTarget(legTransform.position, currentLegTransform);
+        SnapToGround();
+    }
+
+    /// <summary>
+    /// Instantly snaps currentLegTransform and legTransform to the ground below legTargetTransform
+    /// without any animation. Call this on spawn or pool reuse to avoid the initial leg-slide.
+    /// </summary>
+    public void SnapToGround()
+    {
+        legIsMoving = false;
+        legMoveTimer = 0f;
+        distanceFromTarget = 0f;
+
+        Vector3 rayOrigin = legTargetTransform.position;
+        rayOrigin.y = 20f;
+
+        if(Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, float.MaxValue, LayerMask.GetMask("Ground")))
+        {
+            Vector3 groundPos = hit.point;
+
+            currentLegTransform.position = groundPos;
+            currentLegTransform.up = -hit.normal;
+
+            legTransform.position = groundPos;
+            legTransform.up = -hit.normal;
+        }
+
+        oldPosition = currentLegTransform.position;
     }
 
     // Update is called once per frame
@@ -110,7 +138,7 @@ public class LegController : MonoBehaviour
 
         Vector3 newPosition = Vector3.Lerp(oldPosition, legTargetTransform.position, moveAlpha);
         
-        newPosition.y += (legHeightApex * legHeightCurve.Evaluate(moveAlpha));
+        newPosition.y += legHeightApex * legHeightCurve.Evaluate(moveAlpha);
 
         currentLegTransform.position = newPosition;
 

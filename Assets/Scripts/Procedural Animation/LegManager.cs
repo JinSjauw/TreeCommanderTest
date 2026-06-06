@@ -29,9 +29,14 @@ public class LegManager : MonoBehaviour
     private Quaternion oldTilt;
     private Quaternion newTilt;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnEnable()
     {
+        // Unsubscribe first to avoid double-subscription on pool reuse
+        for (int i = 0; i < legGroupA.Length; i++)
+            legGroupA[i].moveFinishedEvent -= CheckLegs;
+        for (int i = 0; i < legGroupB.Length; i++)
+            legGroupB[i].moveFinishedEvent -= CheckLegs;
+
         allLegs = new List<LegController>();
 
         for (int i = 0; i < legGroupA.Length; i++) 
@@ -45,6 +50,10 @@ public class LegManager : MonoBehaviour
             legGroupB[i].moveFinishedEvent += CheckLegs;
             allLegs.Add(legGroupB[i]);
         }
+
+        // Reset state for pool reuse
+        legsMoved = 0;
+        groupToCheck = LegGroups.LEG_A;
 
         EnableLegGroup(LegGroups.LEG_A);
     }
@@ -60,7 +69,7 @@ public class LegManager : MonoBehaviour
         UpdateTimer();
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         for (int i = 0; i < legGroupA.Length; i++)
         {
@@ -75,53 +84,11 @@ public class LegManager : MonoBehaviour
 
     private void UpdateTimer() 
     {
-
-        //bodyTransform.position = Vector3.MoveTowards(bodyTransform.position, newHeight, heightSpeed * Time.deltaTime);
-        //bodyTransform.rotation = Quaternion.RotateTowards(bodyTransform.rotation, newTilt, rotationSpeed * Time.deltaTime);
-
         bodyTransform.rotation = Quaternion.RotateTowards(bodyTransform.rotation, newTilt, rotationSpeed * Time.deltaTime);
-
-        //if(updateTimer < timeToUpdate) 
-        //{
-        //    updateTimer += Time.deltaTime;
-
-        //    float updateAlpha = (updateTimer - 0) / (timeToUpdate - 0);
-
-        //    bodyTransform.position = Vector3.Lerp(bodyTransform.position, newHeight, updateAlpha);
-        //    bodyTransform.rotation = Quaternion.Lerp(bodyTransform.rotation, newTilt, updateAlpha);
-        //}
-        //else 
-        //{
-        //    updateTimer = 0;
-        //}
     }
 
     private void UpdateHeight() 
     {
-        //Height based on leg average -> should potentially be changed to planted height average
-        //float totalHeight = 0;
-        //int addedLegs = 0;
-
-        //for (int i = 0; i < allLegs.Count; i++)
-        //{
-        //    LegController leg = allLegs[i];
-        //    if (!leg.IsLegMoving()) 
-        //    {
-        //        totalHeight += allLegs[i].GetTargetPosition().y;
-        //        addedLegs++;
-        //    }
-        //}
-
-        //totalHeight = totalHeight / addedLegs;
-
-        //Vector3 newBodyPosition = bodyTransform.position;
-        //newBodyPosition.y = totalHeight + heightOffset;
-
-        //oldHeight = bodyTransform.position;
-        //newHeight = newBodyPosition;
-
-        //bodyTransform.position = newBodyPosition;
-
         //Directly apply height 
 
         Vector3 heightCheckPosition = bodyTransform.position;
@@ -189,10 +156,6 @@ public class LegManager : MonoBehaviour
         Quaternion tiltRotation = Quaternion.Euler(-rotationX, 0, rotationZ);
         oldTilt = bodyTransform.rotation;
         newTilt = Quaternion.Euler(0, bodyTransform.rotation.eulerAngles.y, 0) * tiltRotation;
-        
-        //bodyTransform.rotation = Quaternion.Euler(0, bodyTransform.rotation.eulerAngles.y, 0) * tiltRotation;
-        
-        //bodyTransform.rotation = Quaternion.Euler(0, bodyTransform.rotation.eulerAngles.y, 0) * tiltRotation;
     }
 
     private void CheckLegs(object sender, int legID)
@@ -201,7 +164,6 @@ public class LegManager : MonoBehaviour
         {
             for (int i = 0; i < legGroupA.Length; i++)
             {
-                //Debug.Log("LegID: " + legID + " " + legGroupA[i].GetID());
                 if (legID == legGroupA[i].GetID())
                 {
                     legsMoved++;
@@ -245,6 +207,31 @@ public class LegManager : MonoBehaviour
         for (int i = 0; i < legGroupB.Length; i++)
         {
             legGroupB[i].SetCanUpdate(groupToEnable == LegGroups.LEG_B);
+        }
+    }
+
+    /// <summary>
+    /// Force all legs to instantly snap to the ground below their targets.
+    /// </summary>
+    public void SyncAllLegs()
+    {
+        for (int i = 0; i < legGroupA.Length; i++)
+            legGroupA[i].SnapToGround();
+
+        for (int i = 0; i < legGroupB.Length; i++)
+            legGroupB[i].SnapToGround();
+    }
+
+    /// <summary>
+    /// Immediately raycasts from body position to set the body Y to ground + heightOffset.
+    /// </summary>
+    public void SnapBodyHeight()
+    {
+        if (Physics.Raycast(bodyTransform.position, Vector3.down, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
+        {
+            Vector3 heightApplied = bodyTransform.position;
+            heightApplied.y = hit.point.y + heightOffset;
+            bodyTransform.position = heightApplied;
         }
     }
 

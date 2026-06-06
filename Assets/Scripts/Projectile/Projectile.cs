@@ -28,6 +28,8 @@ public class Projectile : MonoBehaviour
     private float returnTimer;
     private float returnDelay = 3;
 
+    private static readonly Collider[] OverlapBuffer = new Collider[32];
+
     [SerializeField] private AnimationCurve damageFallOff;
     [SerializeField] private float damageRadius;
 
@@ -161,23 +163,14 @@ public class Projectile : MonoBehaviour
 
         pool.GetObject(explosionVFX.gameObject).transform.position = transform.position;
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, damageRadius);
-        if(hits.Length > 0) 
+        int numHits = Physics.OverlapSphereNonAlloc(transform.position, damageRadius, OverlapBuffer);
+        for (int i = 0; i < numHits; i++)
         {
-            for(int i = 0; i < hits.Length; i++) 
+            if (OverlapBuffer[i].TryGetComponent(out HealthComponent hit))
             {
-                if (hits[i].TryGetComponent(out HealthComponent hit)) 
-                {
-                    float distance = Vector3.Distance(hit.transform.position, transform.position);
-
-                    float distanceAlpha = (distance - 0) / (damageRadius - 0);
-
-                    hit.TakeDamage(damage * damageFallOff.Evaluate(distanceAlpha));
-                }
-                else 
-                {
-                    continue;
-                }
+                float distance = Vector3.Distance(hit.transform.position, transform.position);
+                float distanceAlpha = distance / damageRadius;
+                hit.TakeDamage(damage * damageFallOff.Evaluate(distanceAlpha));
             }
         }
     }

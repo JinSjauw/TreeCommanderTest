@@ -1,28 +1,33 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ReturnToPool : MonoBehaviour
 {
     private ObjectPool objectPool;
+
     private void Awake()
     {
         objectPool = FindFirstObjectByType<ObjectPool>();
     }
 
     [SerializeField] private float lifeTime;
-    private void Update()
+
+    private float timer;
+
+    private void OnEnable()
     {
-        StartCoroutine(TimeLife());
+        timer = 0f;
     }
 
-    private IEnumerator TimeLife()
+    private void Update()
     {
-        yield return new WaitForSeconds(lifeTime);
-        if (objectPool != null)
+        timer += Time.deltaTime;
+        if (timer >= lifeTime)
         {
-            this.gameObject.SetActive(false);
-            objectPool.ReturnGameObject(this.gameObject);
+            if (objectPool != null)
+            {
+                this.gameObject.SetActive(false);
+                objectPool.ReturnGameObject(this.gameObject);
+            }
         }
     }
 }

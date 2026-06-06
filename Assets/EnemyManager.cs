@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using BehaviourTree.Core;
 using BehaviourTree.Runtime;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -68,8 +69,19 @@ public class EnemyManager : MonoBehaviour
         Transform spawnPoint = spawnPoints[randomIndex];
         currentSpawnIndex++;
 
-        GameObject spawnedObj = objectPool.GetObject(enemyPrefab);
-        spawnedObj.transform.position = spawnPoint.position + Vector3.up * 3f;
+        GameObject spawnedObj = objectPool.GetObject(enemyPrefab, false);
+
+        // Sample navmesh to get correct spawn height instead of using arbitrary +3m offset
+        Vector3 spawnPosition = spawnPoint.position;
+        float navMeshHeight = spawnPoint.position.y;
+        if (NavMesh.SamplePosition(spawnPoint.position, out NavMeshHit navMeshHit, 10f, NavMesh.AllAreas))
+        {
+            navMeshHeight = navMeshHit.position.y;
+        }
+
+        Vector3 finalSpawnPos = new Vector3(spawnPosition.x, navMeshHeight + 0.5f, spawnPosition.z);
+        Debug.Log($"[EnemyManager] Spawning at index={randomIndex} spawnPoint={spawnPoint.position} finalPos={finalSpawnPos} objName={spawnedObj.name} activeSelf={spawnedObj.activeSelf}");
+        spawnedObj.transform.position = finalSpawnPos;
         spawnedObj.transform.rotation = spawnPoint.rotation;
 
         EnemyController controller = spawnedObj.GetComponent<EnemyController>();
@@ -94,7 +106,27 @@ public class EnemyManager : MonoBehaviour
         spawnedObj.GetComponent<TreeRunner>().Initialize();
         spawnedObj.GetComponent<BlackBoard>().Set("PatrolPoints", patrolPoints);
 
+        DeathHandler deathHandler = spawnedObj.GetComponentInChildren<DeathHandler>();
+        if (deathHandler != null)
+        {
+            deathHandler.SetPool(objectPool);
+        }
+
+        // Warp agent to navmesh surface and set initial destination
+        if (NavMesh.SamplePosition(spawnPoint.position, out NavMeshHit agentHit, 10f, NavMesh.AllAreas))
+        {
+            controller.Agent.Warp(agentHit.position);
+            //controller.Agent.SetDestination(agentHit.position);
+        }
+
         spawnedObj.SetActive(true);
+
+        LegManager legManager = spawnedObj.GetComponentInChildren<LegManager>();
+        if (legManager != null)
+        {
+            legManager.SnapBodyHeight();
+            legManager.SyncAllLegs();
+        }
 
         controller.OnDestructionEvent += ReturnEnemy;
 

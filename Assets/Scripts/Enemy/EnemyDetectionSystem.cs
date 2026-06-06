@@ -11,11 +11,17 @@ public class EnemyDetectionSystem : MonoBehaviour
     [SerializeField] private Transform eyeTransform;
 
     private Collider[] detectBuffer = new Collider[32];
+    private LayerMask groundLayer;
 
     public LayerMask TargetLayers { get; set; }
     public List<Transform> DetectedTargets { get; private set; } = new List<Transform>();
     public float DetectionRadius => detectionRadius;
     public float FiringRadius => firingRadius;
+
+    private void Awake()
+    {
+        groundLayer = LayerMask.GetMask("Ground");
+    }
 
 
     public bool DetectTargets()
@@ -43,10 +49,7 @@ public class EnemyDetectionSystem : MonoBehaviour
             DetectedTargets.Add(candidate);
         }
 
-        if (DetectedTargets.Count > 0)
-            return true;
-
-        return false;
+        return DetectedTargets.Count > 0;
     }
 
     public Transform GetTarget(SelectionStrategy strategy)
@@ -119,7 +122,7 @@ public class EnemyDetectionSystem : MonoBehaviour
             return false;
 
         return !Physics.Linecast(
-            eyeTransform.position, target.position, LayerMask.GetMask("Ground"));
+            eyeTransform.position, target.position, groundLayer);
     }
 
     public bool IsTargetInRange(Transform target, float range, bool log = false)
