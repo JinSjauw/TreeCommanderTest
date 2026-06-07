@@ -16,7 +16,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: b3e50f51676349d45972a5ca5bc54da2
-  graphPosition: {x: 158, y: 428}
+  graphPosition: {x: 131, y: 435}
   runtimeIndex: 2
   leafType: 4
   methodID: 44
@@ -35,76 +35,7 @@ MonoBehaviour:
     transformValue: {fileID: 0}
   comment: 
   BlackBoardTypeID: 0
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2337152736176314f8b42c250d167c18, type: 3}
-  m_Name: CoolDownTest
-  m_EditorClassIdentifier: BehaviourTree.Editor::BehaviourTree.Editor.BehaviourTreeAsset
-  root: {fileID: 8035090072775140310}
-  blackboardDefinition: {fileID: 3844713428325667316}
-  nodesList:
-  - {fileID: 8035090072775140310}
-  - {fileID: 1494308404943238675}
-  - {fileID: 6820032517611982991}
-  - {fileID: -3713732219854263741}
---- !u!114 &1494308404943238675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
-  m_Name: SEQUENCE
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: 6820032517611982991}
-  - {fileID: -3713732219854263741}
-  firstChildIndex: 0
-  lastChildIndex: 0
-  guid: ad5404fecf5702a4b98222adb0911142
-  graphPosition: {x: 8.000153, y: 228.51889}
-  runtimeIndex: 0
-  compositeType: 2
---- !u!114 &3844713428325667316
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
-  m_Name: CoolDownTest_BB_Definition
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
-  sharedVariables:
-  - name: TEST
-    typeName: System.Single
-    showInitialValue: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-  - name: TESTGO
-    typeName: UnityEngine.GameObject
-    showInitialValue: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
---- !u!114 &6820032517611982991
+--- !u!114 &-693835080277016412
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -119,9 +50,9 @@ MonoBehaviour:
   children: []
   firstChildIndex: 0
   lastChildIndex: 0
-  guid: 8c16d21318ed8e8499f4164fa3e7d612
-  graphPosition: {x: -123, y: 420}
-  runtimeIndex: 1
+  guid: 875232d3918ce3745aaf59b044c79914
+  graphPosition: {x: -112, y: 427}
+  runtimeIndex: -1
   leafType: 3
   methodID: 26
   fieldEntries:
@@ -175,6 +106,75 @@ MonoBehaviour:
     transformValue: {fileID: 0}
   comment: 
   BlackBoardTypeID: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2337152736176314f8b42c250d167c18, type: 3}
+  m_Name: CoolDownTest
+  m_EditorClassIdentifier: BehaviourTree.Editor::BehaviourTree.Editor.BehaviourTreeAsset
+  root: {fileID: 8035090072775140310}
+  blackboardDefinition: {fileID: 3844713428325667316}
+  nodesList:
+  - {fileID: 8035090072775140310}
+  - {fileID: 1494308404943238675}
+  - {fileID: -3713732219854263741}
+  - {fileID: -693835080277016412}
+--- !u!114 &1494308404943238675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
+  m_Name: SEQUENCE
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
+  children:
+  - {fileID: -693835080277016412}
+  - {fileID: -3713732219854263741}
+  firstChildIndex: 0
+  lastChildIndex: 0
+  guid: ad5404fecf5702a4b98222adb0911142
+  graphPosition: {x: 8.000153, y: 228.51889}
+  runtimeIndex: 0
+  compositeType: 2
+--- !u!114 &3844713428325667316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
+  m_Name: CoolDownTest_BB_Definition
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
+  sharedVariables:
+  - name: TEST
+    typeName: System.Single
+    showInitialValue: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+  - name: TESTGO
+    typeName: UnityEngine.GameObject
+    showInitialValue: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
 --- !u!114 &8035090072775140310
 MonoBehaviour:
   m_ObjectHideFlags: 0

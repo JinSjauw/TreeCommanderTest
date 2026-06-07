@@ -669,3 +669,40 @@ MonoBehaviour:
       description: 
     - fieldName: selectedTarget
       description: The target Transform to fire at (set upstream).
+  - nodeName: BB_SetVector2FromTransform
+    description: Extracts the X and Y position from a Transform and assigns it to
+      a Vector2 blackboard variable.
+    returnValues: 'SUCCESS;
+    
+      FAILURE if the source Transform is null.'
+    fieldDescriptions:
+    - fieldName: target
+      description: The Vector2 blackboard variable to write to (shared variable).
+    - fieldName: source
+      description: The Transform whose position (X,Y) is written to target (shared
+        variable).
+  - nodeName: BB_SetVector3FromTransform
+    description: Extracts the world position from a Transform and assigns it to a
+      Vector3 blackboard variable.
+    returnValues: 'SUCCESS;
+    
+      FAILURE if the source Transform is null.'
+    fieldDescriptions:
+    - fieldName: target
+      description: The Vector3 blackboard variable to write to (shared variable).
+    - fieldName: source
+      description: The Transform whose world position is written to target (shared
+        variable).
+  - nodeName: Enemy_MoveTo_Transform
+    description: Sets the NavMeshAgent destination to the world position of a Transform
+      and waits until arrival.
+    returnValues: 'SUCCESS when arrived;
+
+      RUNNING while moving;
+
+      FAILURE if EnemyController
+      missing or target is null.'
+    fieldDescriptions:
+    - fieldName: target
+      description: The Transform whose world position the agent navigates to (shared
+        variable).

@@ -72,4 +72,12 @@ namespace BehaviourTree.Runtime
         [SharedVar]
         public Transform selectedTarget;
     }
+
+    [GenerateNodeFieldBindings]
+    [StructLayout(LayoutKind.Sequential)]
+    public partial struct Enemy_MoveTo_Transform_NodeFields
+    {
+        [SharedVar]
+        public Transform target;
+    }
 }

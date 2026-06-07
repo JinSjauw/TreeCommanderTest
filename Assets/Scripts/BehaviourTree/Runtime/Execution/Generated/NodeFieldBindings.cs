@@ -38,7 +38,7 @@ namespace BehaviourTree.Runtime
                 // index 1: patrolPointsParent (blackboard variable)
                 patrolPointsParent = reader.GetTransform(1),
                 // index 2: selectionMode (constant)
-                selectionMode = reader.GetEnum<PatrolPointSelection>(2),
+                selectionMode = reader.GetEnum<global::BehaviourTree.Runtime.PatrolPointSelection>(2),
             };
         }
 
@@ -71,7 +71,7 @@ namespace BehaviourTree.Runtime
             return new Enemy_SelectDetectedTarget_NodeFields
             {
                 // index 0: strategy (constant)
-                strategy = reader.GetEnum<SelectionStrategy>(0),
+                strategy = reader.GetEnum<global::BehaviourTree.Runtime.SelectionStrategy>(0),
                 // index 1: selectedTarget (blackboard variable)
                 selectedTarget = reader.GetTransform(1),
             };
@@ -143,6 +143,22 @@ namespace BehaviourTree.Runtime
         {
             FieldReader writer = new FieldReader(fields, blackboard);
             writer.SetTransform(2, p.selectedTarget);
+        }
+
+        public static Enemy_MoveTo_Transform_NodeFields DeserializeEnemy_MoveTo_Transform(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader reader = new FieldReader(fields, blackboard);
+            return new Enemy_MoveTo_Transform_NodeFields
+            {
+                // index 0: target (blackboard variable)
+                target = reader.GetTransform(0),
+            };
+        }
+
+        public static void SerializeEnemy_MoveTo_Transform(Enemy_MoveTo_Transform_NodeFields p, ReadOnlySpan<FieldData> fields, BlackBoard blackboard)
+        {
+            FieldReader writer = new FieldReader(fields, blackboard);
+            writer.SetTransform(0, p.target);
         }
 
         public static INVERTER_NodeFields DeserializeINVERTER(ReadOnlySpan<FieldData> fields, BlackBoard blackboard)

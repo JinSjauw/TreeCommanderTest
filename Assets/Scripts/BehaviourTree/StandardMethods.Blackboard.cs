@@ -343,6 +343,26 @@ namespace BehaviourTree
             return NodeState.SUCCESS;
         }
 
+        [BTreeMethod(MethodID.BB_SetVector2FromTransform)]
+        public static NodeState BB_SetVector2FromTransform(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1)) return NodeState.FAILURE;
+            Transform source = blackBoard.Get<Transform>(fields[1].value);
+            if (source == null) return NodeState.FAILURE;
+            blackBoard.Set(fields[0].value, (Vector2)source.position);
+            return NodeState.SUCCESS;
+        }
+
+        [BTreeMethod(MethodID.BB_SetVector3FromTransform)]
+        public static NodeState BB_SetVector3FromTransform(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            if (!RequireVariable(fields, 0) || !RequireVariable(fields, 1)) return NodeState.FAILURE;
+            Transform source = blackBoard.Get<Transform>(fields[1].value);
+            if (source == null) return NodeState.FAILURE;
+            blackBoard.Set(fields[0].value, source.position);
+            return NodeState.SUCCESS;
+        }
+
         [BTreeMethod(MethodID.BB_ClearInt)]
         public static NodeState BB_ClearInt(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {

@@ -66,6 +66,23 @@ namespace BehaviourTree.Runtime
             return NodeState.SUCCESS;
         }
 
+        [BTreeMethod(MethodID.Enemy_MoveTo_Transform)]
+        public static NodeState Enemy_MoveTo_Transform(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
+        {
+            Enemy_MoveTo_Transform_NodeFields nodeFields = NodeFieldBindings.DeserializeEnemy_MoveTo_Transform(fields, blackBoard);
+            EnemyController controller = GetController(blackBoard);
+            if (controller == null) return NodeState.FAILURE;
+            if (nodeFields.target == null) return NodeState.FAILURE;
+
+            controller.Agent.SetDestination(nodeFields.target.position);
+            controller.Agent.isStopped = false;
+
+            if (controller.HasArrivedAtDestination())
+                return NodeState.SUCCESS;
+
+            return NodeState.RUNNING;
+        }
+
         [BTreeMethod(MethodID.Enemy_HasArrived)]
         public static NodeState Enemy_HasArrived(BlackBoard blackBoard, ReadOnlySpan<FieldData> fields)
         {
@@ -166,6 +183,8 @@ namespace BehaviourTree.Runtime
             gunHandling.SetFiringCooldown(nodeFields.reloadDuration);
             gunHandling.SetFireDelay(nodeFields.firingDelay);
 
+            if (gunHandling.IsReloading) return NodeState.RUNNING;
+
             // Phase: Select aim target
             if (!gunHandling.HasAimTarget && !gunHandling.HasFailed)
             {
@@ -197,7 +216,7 @@ namespace BehaviourTree.Runtime
             }
 
             // Phase: Wait for firing delay
-            if (gunHandling.IsReloading || !gunHandling.TickFiringDelay(Time.deltaTime))
+            if (!gunHandling.TickFiringDelay(Time.deltaTime))
             {
                 return NodeState.RUNNING;
             }

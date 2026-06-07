@@ -69,5 +69,8 @@ namespace BehaviourTree.Core
         [MethodCategory(BehaviourNodeType.CONDITION)]Enemy_HasLineOfSight = 63,
         [MethodCategory(BehaviourNodeType.ACTION)]Enemy_FireSequence = 64,
         #endregion
+        [MethodCategory(BehaviourNodeType.ACTION)]BB_SetVector2FromTransform = 65,
+        [MethodCategory(BehaviourNodeType.ACTION)]BB_SetVector3FromTransform = 66,
+        [MethodCategory(BehaviourNodeType.ACTION)]Enemy_MoveTo_Transform = 67,
     }
 }

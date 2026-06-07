@@ -153,6 +153,20 @@ namespace BehaviourTree.Runtime
     }
 
     [StructLayout(LayoutKind.Sequential)]
+    public partial struct BB_SetVector2FromTransform_NodeFields
+    {
+        [SharedVar] public Vector2 target;
+        [SharedVar] public Transform source;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public partial struct BB_SetVector3FromTransform_NodeFields
+    {
+        [SharedVar] public Vector3 target;
+        [SharedVar] public Transform source;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public partial struct BB_ClearInt_NodeFields
     {
         [SharedVar] public int target;
