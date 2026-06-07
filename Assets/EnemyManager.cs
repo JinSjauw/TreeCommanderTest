@@ -138,7 +138,7 @@ public class EnemyManager : MonoBehaviour
         if (enemy == null) return;
         activeEnemies.Remove(enemy);
         enemy.OnDestructionEvent = null;
-        objectPool?.ReturnGameObject(enemy.gameObject);
+        //objectPool?.ReturnGameObject(enemy.gameObject);
     }
 
     private static int GetLayerIndex(LayerMask mask)

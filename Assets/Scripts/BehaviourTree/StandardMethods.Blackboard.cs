@@ -214,12 +214,14 @@ namespace BehaviourTree
             if (!RequireVariable(fields, 0) || !RequireConstant(fields, 1)) return NodeState.FAILURE;
 
             GameObject value = blackBoard.Get<GameObject>(fields[0].value);
-            NullCheckOp op = (NullCheckOp)fields[1].GetInt();
+            ObjectCheckOp op = (ObjectCheckOp)fields[1].GetInt();
 
             bool result = op switch
             {
-                NullCheckOp.IsNull => value == null,
-                NullCheckOp.IsNotNull => value != null,
+                ObjectCheckOp.IsNull => value == null,
+                ObjectCheckOp.IsNotNull => value != null,
+                ObjectCheckOp.IsActive => value != null && value.activeInHierarchy,
+                ObjectCheckOp.IsInactive => value == null || !value.activeInHierarchy,
                 _ => false
             };
 
@@ -232,12 +234,14 @@ namespace BehaviourTree
             if (!RequireVariable(fields, 0) || !RequireConstant(fields, 1)) return NodeState.FAILURE;
 
             Transform value = blackBoard.Get<Transform>(fields[0].value);
-            NullCheckOp op = (NullCheckOp)fields[1].GetInt();
+            ObjectCheckOp op = (ObjectCheckOp)fields[1].GetInt();
 
             bool result = op switch
             {
-                NullCheckOp.IsNull => value == null,
-                NullCheckOp.IsNotNull => value != null,
+                ObjectCheckOp.IsNull => value == null,
+                ObjectCheckOp.IsNotNull => value != null,
+                ObjectCheckOp.IsActive => value != null && value.gameObject.activeInHierarchy,
+                ObjectCheckOp.IsInactive => value == null || !value.gameObject.activeInHierarchy,
                 _ => false
             };
 

@@ -1,40 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-9025896058572086401
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: BB_ClearVector3
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  guid: 03e9c794d4282624f96db77088803b39
-  graphPosition: {x: 1038.0001, y: 726}
-  runtimeIndex: 38
-  leafType: 4
-  methodID: 21
-  fieldEntries:
-  - fieldName: target
-    isVariable: 1
-    isToggleVariable: 0
-    variableName: MoveTarget
-    fieldType: 4
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  comment: 
-  BlackBoardTypeID: 0
 --- !u!114 &-8853859952736901636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52,14 +17,14 @@ MonoBehaviour:
   lastChildIndex: 0
   guid: a9f1a995b3cadbe4091e7b121d7d6883
   graphPosition: {x: 647, y: 718.00006}
-  runtimeIndex: 32
+  runtimeIndex: 34
   leafType: 4
   methodID: 48
   fieldEntries:
   - fieldName: targetMovePosition
     isVariable: 1
     isToggleVariable: 0
-    variableName: MoveTarget
+    variableName: PatrolMoveTarget
     fieldType: 4
     intValue: 0
     floatValue: 0
@@ -110,7 +75,7 @@ MonoBehaviour:
   lastChildIndex: 0
   guid: c12082983ec8e494ba25f240d5cc941a
   graphPosition: {x: 463, y: 718}
-  runtimeIndex: 31
+  runtimeIndex: 33
   compositeType: 2
 --- !u!114 &-8200087898634367029
 MonoBehaviour:
@@ -128,7 +93,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: f525187416ddf7045ba605ecb9ebd583
-  graphPosition: {x: 765.51746, y: 867}
+  graphPosition: {x: 839.55005, y: 714}
   runtimeIndex: 39
   leafType: 3
   methodID: 51
@@ -152,7 +117,7 @@ MonoBehaviour:
   lastChildIndex: 0
   guid: 13a99d5437757014ba165bcb107d4af2
   graphPosition: {x: 538, y: 857}
-  runtimeIndex: 34
+  runtimeIndex: 36
   leafType: 4
   methodID: 52
   fieldEntries: []
@@ -176,7 +141,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 9a74512a16995c5428b6afa0adc5d1be
-  graphPosition: {x: -945.35846, y: 702}
+  graphPosition: {x: -929.00037, y: 689.3001}
   runtimeIndex: 7
   compositeType: 2
 --- !u!114 &-7317123288389327252
@@ -195,7 +160,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 30748c6802b7923479f1c79e973e074a
-  graphPosition: {x: 1101.5176, y: 865}
+  graphPosition: {x: 1195, y: 715}
   runtimeIndex: 41
   leafType: 4
   methodID: 21
@@ -203,7 +168,7 @@ MonoBehaviour:
   - fieldName: target
     isVariable: 1
     isToggleVariable: 0
-    variableName: MoveTarget
+    variableName: PatrolMoveTarget
     fieldType: 4
     intValue: 0
     floatValue: 0
@@ -268,7 +233,7 @@ MonoBehaviour:
   lastChildIndex: 0
   guid: f0a5a47df02848741ac9ae91472c53a1
   graphPosition: {x: 380.17636, y: 857.5}
-  runtimeIndex: 33
+  runtimeIndex: 35
   compositeType: 1
 --- !u!114 &-6215260366311527030
 MonoBehaviour:
@@ -283,7 +248,7 @@ MonoBehaviour:
   m_Name: EnemyFireSequenceExample_BB_Definition
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
   sharedVariables:
-  - name: MoveTarget
+  - name: PatrolMoveTarget
     typeName: UnityEngine.Vector3
     showInitialValue: 0
     intValue: 0
@@ -382,8 +347,8 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 08f496f44924eef43a2852ed4b8870f6
-  graphPosition: {x: -294.99997, y: 857}
-  runtimeIndex: 24
+  graphPosition: {x: -186, y: 1005}
+  runtimeIndex: 26
   leafType: 4
   methodID: 64
   fieldEntries:
@@ -566,15 +531,15 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: fbc5db0afa384754f97aa49b5b9942ec
-  graphPosition: {x: 236.17642, y: 709.5}
-  runtimeIndex: 30
+  graphPosition: {x: 236.00008, y: 707}
+  runtimeIndex: 32
   leafType: 4
   methodID: 49
   fieldEntries:
   - fieldName: targetMovePosition
     isVariable: 1
     isToggleVariable: 0
-    variableName: MoveTarget
+    variableName: PatrolMoveTarget
     fieldType: 4
     intValue: 0
     floatValue: 0
@@ -589,6 +554,18 @@ MonoBehaviour:
     variableName: PatrolPoints
     fieldType: 6
     intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: selectionMode
+    isVariable: 0
+    isToggleVariable: 0
+    variableName: PatrolPoints
+    fieldType: 0
+    intValue: 1
     floatValue: 0
     boolValue: 0
     vector2Value: {x: 0, y: 0}
@@ -681,7 +658,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   children:
   - {fileID: 756912743096307609}
-  - {fileID: -4990077810436861040}
+  - {fileID: 5022084970427827743}
   - {fileID: 8625384691050022472}
   firstChildIndex: 0
   lastChildIndex: 0
@@ -706,7 +683,7 @@ MonoBehaviour:
   lastChildIndex: 0
   guid: c0f180951cad2c74a9eec771d9a41682
   graphPosition: {x: 264.17648, y: 996.5}
-  runtimeIndex: 35
+  runtimeIndex: 37
   leafType: 3
   methodID: 60
   fieldEntries: []
@@ -758,18 +735,18 @@ MonoBehaviour:
   - {fileID: 2281903824878722461}
   - {fileID: -7718768685654597241}
   - {fileID: -8853859952736901636}
-  - {fileID: 7036047356043409989}
   - {fileID: 5993570808163428735}
   - {fileID: -8200087898634367029}
   - {fileID: 3139751842399376965}
   - {fileID: -7317123288389327252}
-  - {fileID: -9025896058572086401}
   - {fileID: -2581396501968993575}
   - {fileID: -7525490043458829395}
   - {fileID: 8321463901507991346}
   - {fileID: 7174759150421843697}
   - {fileID: -4990077810436861040}
   - {fileID: 8625384691050022472}
+  - {fileID: 5137291946856326057}
+  - {fileID: 5022084970427827743}
 --- !u!114 &164294690475245395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -787,14 +764,14 @@ MonoBehaviour:
   lastChildIndex: 0
   guid: 62f928d0b4d99694399fae50022580fc
   graphPosition: {x: 68, y: 707}
-  runtimeIndex: 29
+  runtimeIndex: 31
   leafType: 3
   methodID: 47
   fieldEntries:
   - fieldName: value
     isVariable: 1
     isToggleVariable: 0
-    variableName: MoveTarget
+    variableName: PatrolMoveTarget
     fieldType: 4
     intValue: 0
     floatValue: 0
@@ -833,7 +810,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: efcf97c949e1db041b9e60962c90d029
-  graphPosition: {x: -472, y: 858}
+  graphPosition: {x: -502, y: 867}
   runtimeIndex: 22
   leafType: 4
   methodID: 52
@@ -891,8 +868,8 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 66d36b6af7bf72d4db80e2ede090462e
-  graphPosition: {x: 489.17642, y: 1000.5}
-  runtimeIndex: 36
+  graphPosition: {x: 488, y: 995}
+  runtimeIndex: 38
   leafType: 3
   methodID: 51
   fieldEntries: []
@@ -958,7 +935,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 40a2c1dc518773d49b4e0bf299498154
-  graphPosition: {x: 934.5175, y: 867}
+  graphPosition: {x: 1008.55005, y: 714}
   runtimeIndex: 40
   leafType: 4
   methodID: 25
@@ -1008,7 +985,7 @@ MonoBehaviour:
   lastChildIndex: 0
   guid: 2e57e36f7cbbc344f86e0fb4b60fc07c
   graphPosition: {x: 155.17636, y: 570.5}
-  runtimeIndex: 25
+  runtimeIndex: 27
   compositeType: 1
 --- !u!114 &4423030202751636695
 MonoBehaviour:
@@ -1092,8 +1069,8 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 63d07bd8a7ae7cd4d83e9cedc68568cd
-  graphPosition: {x: 356, y: 568}
-  runtimeIndex: 26
+  graphPosition: {x: 358.71005, y: 579}
+  runtimeIndex: 28
   leafType: 4
   methodID: 56
   fieldEntries:
@@ -1103,6 +1080,74 @@ MonoBehaviour:
     variableName: 
     fieldType: 2
     intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  comment: 
+  BlackBoardTypeID: 0
+--- !u!114 &5022084970427827743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
+  m_Name: PRIORITY
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
+  children:
+  - {fileID: 5137291946856326057}
+  - {fileID: -4990077810436861040}
+  firstChildIndex: 0
+  lastChildIndex: 0
+  guid: 349d2d549106ad147a916b8828683971
+  graphPosition: {x: -284, y: 865}
+  runtimeIndex: 23
+  compositeType: 7
+--- !u!114 &5137291946856326057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: BB_CheckTransform
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  guid: ce30acbff3a50674ba3545d3d7d1e2b6
+  graphPosition: {x: -344, y: 1005}
+  runtimeIndex: 25
+  leafType: 3
+  methodID: 38
+  fieldEntries:
+  - fieldName: value
+    isVariable: 1
+    isToggleVariable: 0
+    variableName: SelectedTarget
+    fieldType: 6
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: operation
+    isVariable: 0
+    isToggleVariable: 0
+    variableName: 
+    fieldType: 0
+    intValue: 3
     floatValue: 0
     boolValue: 0
     vector2Value: {x: 0, y: 0}
@@ -1130,7 +1175,7 @@ MonoBehaviour:
   lastChildIndex: 0
   guid: 14e68c6c6c84e1649b6f461611c3783b
   graphPosition: {x: 555.00006, y: 579}
-  runtimeIndex: 27
+  runtimeIndex: 29
   compositeType: 7
 --- !u!114 &5993570808163428735
 MonoBehaviour:
@@ -1151,8 +1196,8 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 2f700676108910949aed23c6c59acf03
-  graphPosition: {x: 871.51746, y: 732}
-  runtimeIndex: 37
+  graphPosition: {x: 1017.00006, y: 579.0001}
+  runtimeIndex: 30
   compositeType: 2
 --- !u!114 &6000059344955665721
 MonoBehaviour:
@@ -1191,34 +1236,13 @@ MonoBehaviour:
   - {fileID: 3212785947799052078}
   - {fileID: 4803692916382009533}
   - {fileID: 5207299460262652053}
-  - {fileID: 7036047356043409989}
+  - {fileID: 5993570808163428735}
   firstChildIndex: 0
   lastChildIndex: 0
   guid: f882b855b94e2c548adc89f820ecfe88
   graphPosition: {x: 398.1763, y: 386.5}
   runtimeIndex: 2
   compositeType: 2
---- !u!114 &7036047356043409989
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
-  m_Name: SELECTOR
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  children:
-  - {fileID: 5993570808163428735}
-  - {fileID: -9025896058572086401}
-  firstChildIndex: 0
-  lastChildIndex: 0
-  guid: b936fa73de7102e44b736b4a9f2a6eb4
-  graphPosition: {x: 955.0001, y: 587.5}
-  runtimeIndex: 28
-  compositeType: 1
 --- !u!114 &7142239279755374433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1382,8 +1406,8 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 1cb93504645664e41a442d0bfc93c75d
-  graphPosition: {x: -127, y: 849}
-  runtimeIndex: 23
+  graphPosition: {x: -52.699997, y: 865.0001}
+  runtimeIndex: 24
   leafType: 4
   methodID: 25
   fieldEntries:

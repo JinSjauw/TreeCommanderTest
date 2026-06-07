@@ -36,18 +36,24 @@ MonoBehaviour:
     fieldDescriptions: []
   parallelTooltip:
     nodeName: PARALLEL
-    description: Executes all children conceptually in parallel. Evaluates based
-      on configured success/failure thresholds.
-    returnValues: 'SUCCESS if enough children succeed;
+    description: Executes all incomplete children each tick in parallel. Returns
+      FAILURE immediately if any child fails. Stays RUNNING while any child is still
+      running. Returns SUCCESS only when all children have succeeded.
+    returnValues: 'SUCCESS if all children succeed;
 
-      FAILURE if enough fail.'
+      RUNNING while any child
+      is running;
+
+      FAILURE if any child fails.'
     fieldDescriptions: []
   priorityTooltip:
     nodeName: PRIORITY
-    description: Like a Selector but children are sorted by priority before evaluation.
+    description: Like a Selector but children get run every evaluation cycle regardless
+      of last node state.
     returnValues: 'SUCCESS from the first succeeding child;
 
-      FAILURE if none.'
+      FAILURE if none
+      succeed.'
     fieldDescriptions: []
   methodIdTooltips:
   - nodeName: NONE
@@ -419,7 +425,7 @@ MonoBehaviour:
     - fieldName: operation
       description: 
   - nodeName: BB_CheckGameObject
-    description: Checks if a GameObject blackboard variable is null or not null.
+    description: 
     returnValues: 'SUCCESS if condition met;
 
       FAILURE otherwise.'
@@ -429,7 +435,7 @@ MonoBehaviour:
     - fieldName: operation
       description: 
   - nodeName: BB_CheckTransform
-    description: Checks if a Transform blackboard variable is null or not null.
+    description: 
     returnValues: 'SUCCESS if condition met;
 
       FAILURE otherwise.'
@@ -520,9 +526,12 @@ MonoBehaviour:
       FAILURE if EnemyController missing.'
     fieldDescriptions:
     - fieldName: targetMovePosition
-      description: 
+      description: Blackboard variable that saves the result of the patrol point
+        selection
     - fieldName: patrolPointsParent
       description: Parent transform whose children act as patrol waypoints.
+    - fieldName: selectionMode
+      description: SEQUENTIAL or RANDOM patrol point selection
   - nodeName: Enemy_SelectEngagePosition
     description: Calculates a new path position to approach the current target and
       writes it to TargetMovePosition.
@@ -601,22 +610,22 @@ MonoBehaviour:
     fieldDescriptions: []
   - nodeName: Enemy_DetectTarget
     description: Runs the target detection system and checks if any targets were
-      found.
+      found. Current detections get saved
     returnValues: 'SUCCESS if target detected;
 
       FAILURE if none detected.'
     fieldDescriptions: []
   - nodeName: Enemy_SelectDetectedTarget
-    description: Selects a target from all detected targets using the specified strategy.
-      Writes result to selectedTarget.
+    description: Selects a target from currently detected targets collection using
+      the specified strategy. Writes result to selectedTarget.
     returnValues: 'SUCCESS if target selected;
 
       FAILURE if none available.'
     fieldDescriptions:
     - fieldName: strategy
-      description: 
+      description: Select for a target. NEAREST, FARTHEST, RANDOM
     - fieldName: selectedTarget
-      description: 
+      description: The blackboard variable to save the target transform into
   - nodeName: Enemy_IsInFiringRange
     description: Checks whether the selected target is within the weapon's firing
       range.
@@ -656,5 +665,7 @@ MonoBehaviour:
     fieldDescriptions:
     - fieldName: reloadDuration
       description: Cooldown between shots in seconds.
+    - fieldName: firingDelay
+      description: 
     - fieldName: selectedTarget
       description: The target Transform to fire at (set upstream).

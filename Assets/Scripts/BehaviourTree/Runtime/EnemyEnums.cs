@@ -7,5 +7,11 @@ namespace BehaviourTree.Runtime
         Farthest,
         Random
     }
+
+    public enum PatrolPointSelection
+    {
+        Random,
+        Sequential
+    }
 }
 

@@ -71,14 +71,14 @@ namespace BehaviourTree.Runtime
     public partial struct BB_CheckGameObject_NodeFields
     {
         [SharedVar] public GameObject value;
-        public NullCheckOp operation;
+        public ObjectCheckOp operation;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public partial struct BB_CheckTransform_NodeFields
     {
         [SharedVar] public Transform value;
-        public NullCheckOp operation;
+        public ObjectCheckOp operation;
     }
 
     [StructLayout(LayoutKind.Sequential)]

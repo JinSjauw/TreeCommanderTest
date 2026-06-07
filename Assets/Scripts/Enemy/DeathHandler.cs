@@ -58,6 +58,6 @@ public class DeathHandler : MonoBehaviour
 
         CloneMesh(meshRootTransform, corpseObject);
 
-        //Destroy(transformToRemove.gameObject);
+        pool.ReturnGameObject(transformToRemove.gameObject);
     }
 }

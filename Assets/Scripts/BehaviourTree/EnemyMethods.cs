@@ -40,8 +40,15 @@ namespace BehaviourTree.Runtime
             if (controller == null) return NodeState.FAILURE;
             if (nodeFields.patrolPointsParent == null) return NodeState.FAILURE;
 
-            Vector3 point = controller.SetNextPatrolPoint(nodeFields.patrolPointsParent);
+            Vector3 point = nodeFields.selectionMode switch
+            {
+                PatrolPointSelection.Random => controller.SetRandomPatrolPoint(nodeFields.patrolPointsParent),
+                PatrolPointSelection.Sequential => controller.SetNextPatrolPoint(nodeFields.patrolPointsParent),
+                _ => controller.SetRandomPatrolPoint(nodeFields.patrolPointsParent)
+            };
+
             nodeFields.targetMovePosition = point;
+            controller.Agent.SetDestination(point);
             NodeFieldBindings.SerializeEnemy_SelectPatrolPoint(nodeFields, fields, blackBoard);
             return NodeState.SUCCESS;
         }

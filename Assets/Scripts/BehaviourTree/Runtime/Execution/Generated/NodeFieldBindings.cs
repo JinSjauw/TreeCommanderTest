@@ -37,6 +37,8 @@ namespace BehaviourTree.Runtime
                 targetMovePosition = reader.GetVector3(0),
                 // index 1: patrolPointsParent (blackboard variable)
                 patrolPointsParent = reader.GetTransform(1),
+                // index 2: selectionMode (constant)
+                selectionMode = reader.GetEnum<PatrolPointSelection>(2),
             };
         }
 
@@ -69,7 +71,7 @@ namespace BehaviourTree.Runtime
             return new Enemy_SelectDetectedTarget_NodeFields
             {
                 // index 0: strategy (constant)
-                strategy = reader.GetEnum<global::BehaviourTree.Runtime.SelectionStrategy>(0),
+                strategy = reader.GetEnum<SelectionStrategy>(0),
                 // index 1: selectedTarget (blackboard variable)
                 selectedTarget = reader.GetTransform(1),
             };

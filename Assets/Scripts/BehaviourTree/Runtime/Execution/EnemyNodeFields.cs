@@ -20,6 +20,7 @@ namespace BehaviourTree.Runtime
         public Vector3 targetMovePosition;
         [SharedVar]
         public Transform patrolPointsParent;
+        public PatrolPointSelection selectionMode;
     }
 
     [GenerateNodeFieldBindings]
