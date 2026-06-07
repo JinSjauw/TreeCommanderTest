@@ -168,7 +168,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 657c35472f8522c40acb0d69a9e69fa8
-  graphPosition: {x: -50.000023, y: 549.0325}
+  graphPosition: {x: -39, y: 552}
   runtimeIndex: 4
   leafType: 4
   methodID: 64
@@ -179,7 +179,7 @@ MonoBehaviour:
     variableName: 
     fieldType: 1
     intValue: 0
-    floatValue: 1.5
+    floatValue: 1
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
@@ -191,7 +191,7 @@ MonoBehaviour:
     variableName: 
     fieldType: 1
     intValue: 0
-    floatValue: 0.3
+    floatValue: 0
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}

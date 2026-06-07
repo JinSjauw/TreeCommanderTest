@@ -147,7 +147,7 @@ public class LegController : MonoBehaviour
 
     private void UpdateLegTarget(Vector3 updatePosition, Transform updateTransform) 
     {
-        Debug.DrawRay(updatePosition, -bodyTransform.up, Color.blue, 10);
+        //Debug.DrawRay(updatePosition, -bodyTransform.up, Color.blue, 10);
 
         if(Physics.Raycast(updatePosition, Vector3.down, out RaycastHit hit, float.MaxValue, LayerMask.GetMask("Ground"))) 
         {
