@@ -42,13 +42,11 @@ public class TrajectoryValidator
 
             if(hasLineOfSight && Physics.Linecast(oldPosition, nextPosition, targetMask))
             {
-                Debug.Log("Has direct hit!");
                 hasDirectHit = true;
             }
 
             if (Physics.Linecast(oldPosition, nextPosition, obstacleMask))
             {
-                Debug.Log("Has obstacle hit!");
                 hasObstacleHit = true;
             }
 

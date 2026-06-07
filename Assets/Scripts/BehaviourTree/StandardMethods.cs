@@ -35,7 +35,6 @@ namespace BehaviourTree
             {
                 p.currentCount++;
                 NodeFieldBindings.SerializeREPEATER(p, fields, blackBoard);
-                Debug.Log($"Repeating! {p.currentCount}");
                 return NodeState.RUNNING;   // signals handler to re-push child
             }
 

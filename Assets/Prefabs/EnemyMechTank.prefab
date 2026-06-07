@@ -2788,7 +2788,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Runtime::BehaviourTree.Runtime.TreeRunner
   blackBoard: {fileID: 7737988351252046679}
   runtimeAsset: {fileID: 0}
-  authoringAsset: {fileID: 11400000, guid: a88d459d18d76ce4ba34954526359eb7, type: 2}
+  authoringAsset: {fileID: 11400000, guid: e75a8a9e36d138b4c9cfedea9964d06a, type: 2}
 --- !u!114 &7737988351252046679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2802,6 +2802,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackBoard
   serializedReferences:
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -5534,7 +5535,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 8414172719971548377, guid: 680e5ee165c176a40b146b6a4d501732, type: 3}
   projectileDamage: 60
   roundPerMinute: 6
-  randomTargetRadius: 8
+  randomTargetRadius: 1.5
 --- !u!114 &4949348071831475539
 MonoBehaviour:
   m_ObjectHideFlags: 0

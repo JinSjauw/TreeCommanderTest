@@ -2021,6 +2021,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7949673561649792230}
   - component: {fileID: 6301059307679616495}
+  - component: {fileID: 814286169367962140}
   m_Layer: 0
   m_Name: CorpsePrefab
   m_TagString: Untagged
@@ -2057,6 +2058,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   jointsToDisconnect: 5
+--- !u!114 &814286169367962140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2967982775390330769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 089b7ad09a844494d8d35f6d9d0252d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReturnToPool
+  lifeTime: 15
 --- !u!1 &3032437486513873800
 GameObject:
   m_ObjectHideFlags: 0

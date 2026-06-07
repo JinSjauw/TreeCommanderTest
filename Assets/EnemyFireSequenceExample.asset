@@ -16,7 +16,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 03e9c794d4282624f96db77088803b39
-  graphPosition: {x: 1034.5176, y: 740}
+  graphPosition: {x: 1038.0001, y: 726}
   runtimeIndex: 38
   leafType: 4
   methodID: 21
@@ -51,7 +51,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: a9f1a995b3cadbe4091e7b121d7d6883
-  graphPosition: {x: 622.1764, y: 717.50006}
+  graphPosition: {x: 647, y: 718.00006}
   runtimeIndex: 32
   leafType: 4
   methodID: 48
@@ -109,7 +109,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: c12082983ec8e494ba25f240d5cc941a
-  graphPosition: {x: 472.1763, y: 722.5}
+  graphPosition: {x: 463, y: 718}
   runtimeIndex: 31
   compositeType: 2
 --- !u!114 &-8200087898634367029
@@ -151,7 +151,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 13a99d5437757014ba165bcb107d4af2
-  graphPosition: {x: 586.1765, y: 865.5}
+  graphPosition: {x: 538, y: 857}
   runtimeIndex: 34
   leafType: 4
   methodID: 52
@@ -235,7 +235,7 @@ MonoBehaviour:
   leafType: 4
   methodID: 48
   fieldEntries:
-  - fieldName: TargetMovePosition
+  - fieldName: targetMovePosition
     isVariable: 1
     isToggleVariable: 0
     variableName: EngagePosition
@@ -681,8 +681,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   children:
   - {fileID: 756912743096307609}
-  - {fileID: 8625384691050022472}
   - {fileID: -4990077810436861040}
+  - {fileID: 8625384691050022472}
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 232d923e23a73864f87ee71816a42393
@@ -861,7 +861,7 @@ MonoBehaviour:
   leafType: 4
   methodID: 21
   fieldEntries:
-  - fieldName: Target
+  - fieldName: target
     isVariable: 1
     isToggleVariable: 0
     variableName: EngagePosition
@@ -1092,7 +1092,7 @@ MonoBehaviour:
   firstChildIndex: 0
   lastChildIndex: 0
   guid: 63d07bd8a7ae7cd4d83e9cedc68568cd
-  graphPosition: {x: 331.17636, y: 570.5}
+  graphPosition: {x: 356, y: 568}
   runtimeIndex: 26
   leafType: 4
   methodID: 56

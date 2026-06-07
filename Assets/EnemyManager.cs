@@ -16,18 +16,16 @@ public class EnemyManager : MonoBehaviour
 
     [Header("Spawning")]
     [SerializeField] private int initialSpawnCount = 2;
-    [SerializeField] private float minSpawnDelay;
-    [SerializeField] private float maxSpawnDelay = 1f;
 
     [Header("Target Layers")]
     [SerializeField] private LayerMask targetLayerA;
     [SerializeField] private LayerMask targetLayerB;
     [SerializeField] private LayerMask obstacleLayer;
 
-    private float nextSpawnTime;
     private readonly List<EnemyController> activeEnemies = new List<EnemyController>();
     private bool useLayerA = true;
     private int currentSpawnIndex;
+    private int maxPriorityDelta = 100;
 
     private void Start()
     {
@@ -67,6 +65,8 @@ public class EnemyManager : MonoBehaviour
 
         int randomIndex = currentSpawnIndex % spawnPoints.Count;
         Transform spawnPoint = spawnPoints[randomIndex];
+
+        int agentPriority = currentSpawnIndex % maxPriorityDelta;
         currentSpawnIndex++;
 
         GameObject spawnedObj = objectPool.GetObject(enemyPrefab, false);
@@ -90,6 +90,7 @@ public class EnemyManager : MonoBehaviour
             activeEnemies.Add(controller);
             controller.enabled = true;
             controller.Agent.transform.localPosition = Vector3.zero;
+            controller.Agent.avoidancePriority = agentPriority;
         }
         else
         {
@@ -116,7 +117,6 @@ public class EnemyManager : MonoBehaviour
         if (NavMesh.SamplePosition(spawnPoint.position, out NavMeshHit agentHit, 10f, NavMesh.AllAreas))
         {
             controller.Agent.Warp(agentHit.position);
-            //controller.Agent.SetDestination(agentHit.position);
         }
 
         spawnedObj.SetActive(true);

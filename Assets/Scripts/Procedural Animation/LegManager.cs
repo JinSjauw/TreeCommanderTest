@@ -227,7 +227,7 @@ public class LegManager : MonoBehaviour
     /// </summary>
     public void SnapBodyHeight()
     {
-        if (Physics.Raycast(bodyTransform.position, Vector3.down, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(bodyTransform.position + Vector3.up * 20, Vector3.down, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
         {
             Vector3 heightApplied = bodyTransform.position;
             heightApplied.y = hit.point.y + heightOffset;
