@@ -143,7 +143,10 @@ public class EnemyController : MonoBehaviour
 
     public void Die()
     {
-        agent.isStopped = true;
+        if(agent.isOnNavMesh)
+        {
+            agent.isStopped = true;
+        }
         OnDestructionEvent?.Invoke(this, this);
         this.enabled = false;
     }

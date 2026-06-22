@@ -10,8 +10,11 @@ public class HealthComponent : MonoBehaviour
     //[SerializeField] private float percentageHealth;
 
     private bool isPlayer;
+    private bool hasDied = false;
     private EnemyController enemyController;
     private DeathHandler deathHandler;
+
+    public bool HasDied => hasDied;
 
     private void Awake()
     {
@@ -23,6 +26,7 @@ public class HealthComponent : MonoBehaviour
     private void OnEnable()
     {
         health = maxHealth;
+        hasDied = false;
 
         EnemyController enemy = GetComponentInParent<EnemyController>();
         if (enemy)
@@ -70,6 +74,8 @@ public class HealthComponent : MonoBehaviour
 
     private void Die() 
     {
+        Debug.Log($"{gameObject.name} Has been died! hasDied? {hasDied}");
+        if(hasDied) return;
         //Disable Vehicle
         if (!isPlayer) 
         {
@@ -77,7 +83,6 @@ public class HealthComponent : MonoBehaviour
         }
 
         deathHandler.SpawnCorpse();
-
-        //Debug.Log(gameObject.name + " Has been Destroyed");
+        hasDied = true;
     }
 }
