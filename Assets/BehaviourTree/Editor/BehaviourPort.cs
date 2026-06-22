@@ -21,6 +21,18 @@ namespace BehaviourTree.Editor
             SetupBaseClasses();
         }
 
+        /// <summary>
+        /// Wires the EdgeConnector to the base Port's m_EdgeConnector field.
+        /// Required because Port.Create&lt;T&gt;() is not used — ports are instantiated
+        /// directly via new BehaviourPort(). Without this, EdgeManipulator crashes
+        /// with NullReferenceException when tearing off an edge (it accesses
+        /// m_ConnectedPort.edgeConnector.edgeDragHelper, but edgeConnector is null).
+        /// </summary>
+        public void SetEdgeConnector(EdgeConnector edgeConnector)
+        {
+            m_EdgeConnector = edgeConnector;
+        }
+
         public override void Connect(Edge edge)
         {
             base.Connect(edge);

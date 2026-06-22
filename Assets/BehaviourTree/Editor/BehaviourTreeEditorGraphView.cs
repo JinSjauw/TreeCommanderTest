@@ -234,10 +234,20 @@ namespace BehaviourTree.Editor
         private void SetupEdgeConnectors(BehaviourNodeView nodeView)
         {
             if (nodeView?.input != null)
-                nodeView.input.AddManipulator(new EdgeConnector<Edge>(edgeConnectorListener));
+            {
+                var inputEC = new EdgeConnector<Edge>(edgeConnectorListener);
+                nodeView.input.AddManipulator(inputEC);
+                if (nodeView.input is BehaviourPort bp)
+                    bp.SetEdgeConnector(inputEC);
+            }
 
             if (nodeView?.output != null)
-                nodeView.output.AddManipulator(new EdgeConnector<Edge>(edgeConnectorListener));
+            {
+                var outputEC = new EdgeConnector<Edge>(edgeConnectorListener);
+                nodeView.output.AddManipulator(outputEC);
+                if (nodeView.output is BehaviourPort bp)
+                    bp.SetEdgeConnector(outputEC);
+            }
         }
 
         private void OpenSearchWindowForEdgeDrop(Port startPort, Vector2 graphMousePosition)
@@ -398,9 +408,10 @@ namespace BehaviourTree.Editor
                 }
                 else if (elementsToRemove[i] is Edge edge)
                 {
-                    BehaviourNodeView parentView = edge.output.node as BehaviourNodeView;
-                    BehaviourNodeView childView = edge.input.node as BehaviourNodeView;
-                    tree.RemoveChild(parentView.NodeSO, childView.NodeSO);
+                    BehaviourNodeView parentView = edge.output?.node as BehaviourNodeView;
+                    BehaviourNodeView childView = edge.input?.node as BehaviourNodeView;
+                    if (parentView != null && childView != null)
+                        tree.RemoveChild(parentView.NodeSO, childView.NodeSO);
                 }
                 else if (elementsToRemove[i] is GraphNote graphNote)
                 {
