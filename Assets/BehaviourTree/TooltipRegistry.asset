@@ -1,0 +1,302 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bceb8b0e45effb48aee05e2162177d2, type: 3}
+  m_Name: TooltipRegistry
+  m_EditorClassIdentifier: BehaviourTree.Editor::BehaviourTree.Editor.TooltipRegistry
+  rootTooltip:
+    nodeName: Root
+    description: "The starting point of a behaviour tree. Every tree has one Root
+      node; it connects to the rest of the tree and holds the blackboard. The Root
+      itself is never executed \u2014 only its child runs."
+    returnValues: 
+    fieldDescriptions: []
+  subtreeTooltip:
+    nodeName: Subtree
+    description: Runs another behaviour tree as a reusable sub-tree. The subtree's
+      nodes are copied into the main tree at build time, keeping their own local
+      variables separate. Use to share common behaviour across multiple trees.
+    returnValues: Passes through the subtree's final result.
+    fieldDescriptions: []
+  methodTooltips:
+  - methodName: SELECTOR
+    data:
+      nodeName: Selector
+      description: Runs children from left to right, looking for one that succeeds.
+        Stops on the first SUCCESS; only moves to the next child if the current one
+        FAILS. If a child is still RUNNING, it picks up from where it left off next
+        frame.
+      returnValues: "SUCCESS \u2014 any child succeeds\nFAILURE \u2014 all children
+        fail\nRUNNING \u2014 current child is still running"
+      fieldDescriptions: []
+  - methodName: SEQUENCE
+    data:
+      nodeName: Sequence
+      description: Runs children from left to right in order. Stops on the first
+        FAILURE; only moves to the next child if the current one SUCCEEDS. If a child
+        is still RUNNING, it picks up from where it left off next frame.
+      returnValues: "SUCCESS \u2014 all children succeed\nFAILURE \u2014 any child
+        fails\nRUNNING \u2014 current child is still running"
+      fieldDescriptions: []
+  - methodName: PRIORITY
+    data:
+      nodeName: Priority
+      description: "Like a Selector, but always re-evaluates from the first child
+        every frame. Use this when a higher-priority option may become available
+        while a lower-priority child is still running \u2014 the tree will switch
+        back to the higher-priority path."
+      returnValues: "SUCCESS \u2014 any child succeeds\nFAILURE \u2014 all children
+        fail\nRUNNING \u2014 current child is still running"
+      fieldDescriptions: []
+  - methodName: PARALLEL
+    data:
+      nodeName: Parallel
+      description: Runs all children at the same time every frame. FAILS immediately
+        if any child fails. SUCCEEDS when all children have finished successfully.
+        Keeps running as long as any child is still active.
+      returnValues: "SUCCESS \u2014 all children succeed\nFAILURE \u2014 any child
+        fails\nRUNNING \u2014 any child still running"
+      fieldDescriptions: []
+  - methodName: ForEachRole
+    data:
+      nodeName: For Each Role
+      description: "Loops over all agents assigned to a specific role and runs the
+        children for each one. Other roles are skipped. Continues processing all
+        matching agents even if some succeed or fail \u2014 only pauses the loop
+        when a child is still running."
+      returnValues: "SUCCESS \u2014 all matching agents completed\nRUNNING \u2014
+        an agent is still running"
+      fieldDescriptions:
+      - fieldName: agentRoleSlot
+        description: 
+      - fieldName: targetRoleSlot
+        description: The role to filter agents by. Only agents assigned to this role
+          will be processed.
+  - methodName: ForEachAgent
+    data:
+      nodeName: For Each Agent
+      description: "Loops over every registered agent in the squad and runs the children
+        for each one. Each agent sees its own per-agent variables. Continues processing
+        all agents \u2014 only pauses when a child is still running."
+      returnValues: "SUCCESS \u2014 all agents completed\nRUNNING \u2014 an agent
+        is still running"
+      fieldDescriptions: []
+  - methodName: SelectAgent
+    data:
+      nodeName: Select Agent
+      description: Runs the children for a single specific agent, identified by an
+        agent ID variable. Each agent sees its own per-agent variables. If the agent
+        ID is invalid, it fails immediately without running children.
+      returnValues: "SUCCESS \u2014 child succeeds\nFAILURE \u2014 child fails or
+        agent ID is invalid\nRUNNING \u2014 child is still running"
+      fieldDescriptions:
+      - fieldName: targetAgentID
+        description: The ID of the agent to run children for.
+  - methodName: GetNearestAgent
+    data:
+      nodeName: Get Nearest Agent
+      description: Finds the agent closest to a reference position and runs the children
+        for that agent. Once an agent is selected, it is locked in until the children
+        finish (even if a closer agent appears). Fails if no agents are available.
+      returnValues: "SUCCESS \u2014 child succeeds\nFAILURE \u2014 child fails or
+        no agents found\nRUNNING \u2014 child is still running"
+      fieldDescriptions:
+      - fieldName: targetAgentIDSlot
+        description: Where to store the selected agent's ID.
+      - fieldName: agentPositionSlot
+        description: The variable holding each agent's position for distance checks.
+      - fieldName: referencePositionSlot
+        description: The reference point; the nearest agent to this position is selected.
+  - methodName: GetLowestAgent
+    data:
+      nodeName: Get Lowest Agent
+      description: Finds the agent with the lowest value on a numeric variable (e.g.
+        health, ammo) and runs the children for that agent. Once selected, the agent
+        is locked in until the children finish. Fails if no agents are available.
+      returnValues: "SUCCESS \u2014 child succeeds\nFAILURE \u2014 child fails or
+        no agents found\nRUNNING \u2014 child is still running"
+      fieldDescriptions:
+      - fieldName: targetAgentIDSlot
+        description: Where to store the selected agent's ID.
+      - fieldName: variableValueSlot
+        description: The per-agent variable to compare. The agent with the lowest
+          value wins.
+  - methodName: GetHighestAgent
+    data:
+      nodeName: Get Highest Agent
+      description: Finds the agent with the highest value on a numeric variable (e.g.
+        health, ammo) and runs the children for that agent. Once selected, the agent
+        is locked in until the children finish. Fails if no agents are available.
+      returnValues: "SUCCESS \u2014 child succeeds\nFAILURE \u2014 child fails or
+        no agents found\nRUNNING \u2014 child is still running"
+      fieldDescriptions:
+      - fieldName: targetAgentIDSlot
+        description: Where to store the selected agent's ID.
+      - fieldName: variableValueSlot
+        description: The per-agent variable to compare. The agent with the highest
+          value wins.
+  - methodName: Inverter
+    data:
+      nodeName: Inverter
+      description: 'Flips the child''s result: SUCCESS becomes FAILURE, FAILURE becomes
+        SUCCESS. While the child is still running, the result passes through unchanged.'
+      returnValues: Opposite of child result, or forced by Always Failure / Always
+        Success
+      fieldDescriptions:
+      - fieldName: alwaysFailure
+        description: When enabled, always returns FAILURE regardless of the child's
+          result.
+      - fieldName: alwaysSuccess
+        description: When enabled, always returns SUCCESS regardless of the child's
+          result.
+  - methodName: Repeater
+    data:
+      nodeName: Repeater
+      description: Runs the child multiple times. After each child SUCCESS it restarts
+        the child until the target number of repetitions is reached. If the child
+        FAILS, it stops immediately with FAILURE.
+      returnValues: "SUCCESS \u2014 child succeeded the required number of times\nFAILURE
+        \u2014 child failed\nRUNNING \u2014 still repeating"
+      fieldDescriptions:
+      - fieldName: targetCount
+        description: How many times the child must succeed before the Repeater itself
+          succeeds.
+  - methodName: SetVariable
+    data:
+      nodeName: Set Variable
+      description: Assigns a value to a blackboard variable. The value can be a constant
+        you type in, or copied from another variable. Works with all types (numbers,
+        positions, booleans, object references).
+      returnValues: 
+      fieldDescriptions: []
+  - methodName: ClearVariable
+    data:
+      nodeName: Clear Variable
+      description: Resets a blackboard variable to its default value (zero for numbers,
+        empty for objects).
+      returnValues: 
+      fieldDescriptions: []
+  - methodName: LogVariable
+    data:
+      nodeName: Log Variable
+      description: Prints the current value of a blackboard variable to the Unity
+        Console. Useful for debugging your tree during play mode.
+      returnValues: 
+      fieldDescriptions: []
+  - methodName: Toggle
+    data:
+      nodeName: Toggle
+      description: Flips a boolean variable on or off. If it was true, it becomes
+        false; if it was false, it becomes true.
+      returnValues: 
+      fieldDescriptions: []
+  - methodName: SetFromTransform
+    data:
+      nodeName: Set From Transform
+      description: Copies a GameObject's position into a Vector2 or Vector3 variable.
+        The output format is chosen automatically based on the variable's type.
+      returnValues: 
+      fieldDescriptions: []
+  - methodName: MoveTo
+    data:
+      nodeName: Move To
+      description: Tells the agent to move toward a target location using its NavMeshAgent.
+        The target can be a position or a Transform to follow. Keeps running until
+        the destination is reached.
+      returnValues: 
+      fieldDescriptions: []
+  - methodName: SendOrder
+    data:
+      nodeName: Send Order
+      description: Sends a command order to the current agent(s). Agent trees can
+        check for this order using the Check Order node. Only available in Commander
+        trees.
+      returnValues: 
+      fieldDescriptions:
+      - fieldName: ordersSlot
+        description: 
+      - fieldName: orderValue
+        description: The order to send. Agents receive this value and can react to
+          it.
+  - methodName: WaitSeconds
+    data:
+      nodeName: Wait
+      description: Pauses the tree for a set number of seconds, then continues. While
+        waiting, the node stays in the RUNNING state.
+      returnValues: 
+      fieldDescriptions:
+      - fieldName: duration
+        description: How many seconds to wait before continuing.
+  - methodName: CompareVariable
+    data:
+      nodeName: Compare Variable
+      description: Checks a variable against a value or another variable. Supports
+        equals, not equals, less than, greater than, and distance comparisons for
+        positions. SUCCEEDS when the comparison is true, FAILS otherwise.
+      returnValues: 
+      fieldDescriptions: []
+  - methodName: CheckVariable
+    data:
+      nodeName: Check Variable
+      description: 'Checks a variable''s state without needing a comparison value.
+        Booleans: is true / is false. Numbers: is zero / is not zero. Object references:
+        is null / is not null / is active / is inactive. SUCCEEDS when the condition
+        is met.'
+      returnValues: 
+      fieldDescriptions: []
+  - methodName: HasChanged
+    data:
+      nodeName: Has Changed
+      description: Detects when a variable's value has changed since the previous
+        frame. SUCCEEDS if the value is different. On the first check, it always
+        returns FAILURE (no previous value to compare against).
+      returnValues: 
+      fieldDescriptions: []
+  - methodName: EdgeDetect
+    data:
+      nodeName: Edge Detect
+      description: Detects when a boolean variable flips. Choose rising edge (off
+        to on) or falling edge (on to off). On the first check, it always returns
+        FAILURE (nothing to compare against).
+      returnValues: 
+      fieldDescriptions: []
+  - methodName: CheckOrder
+    data:
+      nodeName: Check Order
+      description: Checks whether the agent has received a specific order from the
+        Commander tree. SUCCEEDS when the received order matches, FAILS otherwise.
+        Only available in Agent trees.
+      returnValues: 
+      fieldDescriptions:
+      - fieldName: receivedOrderSlot
+        description: 
+      - fieldName: expectedOrder
+        description: The order to check for. Succeeds when the commander has sent
+          this order.
+  - methodName: Cooldown
+    data:
+      nodeName: Cooldown
+      description: A gate that only lets the tree pass once, then blocks for a set
+        time. SUCCEEDS on the first tick, then FAILS until the cooldown timer runs
+        out. After the timer elapses, it opens again for one tick.
+      returnValues: 
+      fieldDescriptions:
+      - fieldName: duration
+        description: How long the cooldown lasts before the gate opens again.
+      - fieldName: remaining
+        description: A variable that tracks the remaining cooldown time. Can be shared
+          between nodes.
+      - fieldName: useCustomTick
+        description: When enabled, uses a custom time value instead of real delta
+          time for the countdown.
+      - fieldName: customTickValue
+        description: How much time passes per tick when using a custom tick. Only
+          relevant when Use Custom Tick is enabled.

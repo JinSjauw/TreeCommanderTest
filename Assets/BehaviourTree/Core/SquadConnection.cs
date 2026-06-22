@@ -1,0 +1,25 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace BehaviourTree.Core
+{
+    /// <summary>
+    /// Stored on tree assets (BehaviourTreeAssetBase.squadConnections).
+    /// Links a tree to a squad and optionally assigns a role.
+    /// The actual variable bindings live on SquadDefinition, keyed by treeAsset.
+    /// </summary>
+    [Serializable]
+    public class SquadConnection
+    {
+        /// <summary>The squad this tree connects to.</summary>
+        public SquadDefinition squad;
+
+        /// <summary>
+        /// Agent-only. Roles this agent can play in the squad.
+        /// Picked from squad.availableRoles (e.g. "Scout", "Flanker").
+        /// Empty for commander trees.
+        /// </summary>
+        public List<string> assignedRoles = new List<string>();
+    }
+}

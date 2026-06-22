@@ -1,0 +1,285 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using BehaviourTree.Core;
+using UnityEditor;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine;
+
+namespace BehaviourTree.Editor
+{
+    [Serializable]
+    public class ClipBoardData
+    {
+        public List<SerializedNodeData> nodeDatas = new List<SerializedNodeData>();
+        public List<SerializedEdgeData> edgeDatas = new List<SerializedEdgeData>();
+    }
+
+    // <summary> Handles the copy paste actions. Contains the functions supposed to be bound to the graphView copy paste callbacks </summary>
+    public class CopyPasteHandler
+    {
+        private ClipBoardData clipBoard;
+        private BehaviourTreeEditorGraphView graphView;
+        private string lastPastedDataHash;
+
+        public CopyPasteHandler(BehaviourTreeEditorGraphView graphView)
+        {
+            this.graphView = graphView;
+
+            if (clipBoard == null)
+            {
+                clipBoard = new ClipBoardData();
+            }
+        }
+
+        //Copy
+        public void CopySelectedNodes()
+        {
+            List<BehaviourNodeView> selectedNodes = graphView.selection.OfType<BehaviourNodeView>().ToList();
+            if (selectedNodes.Count == 0) return;
+
+            ClipBoardData snapshot = BuildClipboardSnapshot(selectedNodes);
+            clipBoard = snapshot;
+        }
+
+        private ClipBoardData BuildClipboardSnapshot(List<BehaviourNodeView> selectedNodes)
+        {
+            ClipBoardData snapshot = new ClipBoardData();
+            HashSet<string> seenNodeGuids = new HashSet<string>();
+            HashSet<BehaviourNodeView> selectedNodeSet = new HashSet<BehaviourNodeView>(selectedNodes);
+
+            foreach (BehaviourNodeView nodeView in selectedNodes)
+            {
+                BehaviourNode node = nodeView.NodeSO;
+                if (node == null) continue;
+                if (node.NodeType == BehaviourNodeType.ROOT || node is RootNode) continue;
+                if (!seenNodeGuids.Add(node.guid)) continue;
+
+                SerializedNodeData serializedNode = SerializeNode(node);
+                if (serializedNode != null)
+                    snapshot.nodeDatas.Add(serializedNode);
+            }
+
+            // Now capture edges between selected nodes
+            HashSet<string> seenEdgeKeys = new HashSet<string>();
+            foreach (Edge edge in graphView.edges)
+            {
+                BehaviourNodeView sourceNodeView = edge.output.node as BehaviourNodeView;
+                BehaviourNodeView targetNodeView = edge.input.node as BehaviourNodeView;
+                if (sourceNodeView == null || targetNodeView == null) continue;
+                if (!selectedNodeSet.Contains(sourceNodeView) || !selectedNodeSet.Contains(targetNodeView)) continue;
+
+                string edgeKey = sourceNodeView.NodeSO.guid + "->" + targetNodeView.NodeSO.guid;
+                if (!seenEdgeKeys.Add(edgeKey)) continue;
+
+                snapshot.edgeDatas.Add(new SerializedEdgeData
+                {
+                    sourceNodeGUID = sourceNodeView.NodeSO.guid,
+                    targetNodeGUID = targetNodeView.NodeSO.guid
+                });
+            }
+
+            return snapshot;
+        }
+
+        //Paste
+        public void PasteNodes(BaseEditorTreeAsset treeAsset)
+        {
+            if (clipBoard.nodeDatas.Count == 0) return;
+
+            // Track last pasted hash to prevent duplicate pastes from system clipboard
+            string currentHash = HashClipboardData();
+            if (currentHash == lastPastedDataHash)
+            {
+                clipBoard.nodeDatas.Clear();
+                clipBoard.edgeDatas.Clear();
+                return;
+            }
+            lastPastedDataHash = currentHash;
+
+            // Map old GUIDs to new GUIDs
+            Dictionary<string, string> guidMap = new Dictionary<string, string>();
+            List<BehaviourNodeView> pastedViews = new List<BehaviourNodeView>();
+
+            foreach (SerializedNodeData serializedNode in clipBoard.nodeDatas)
+            {
+                string newGuid = GUID.Generate().ToString();
+                guidMap[serializedNode.guid] = newGuid;
+
+                BehaviourNode newNode = CreateNodeDataFromSerialized(serializedNode, treeAsset);
+                if (newNode == null)
+                {
+                    Debug.LogWarning($"Failed to create node from serialized data for GUID {serializedNode.guid}");
+                    continue;
+                }
+
+                newNode.guid = newGuid;
+                newNode.graphPosition = serializedNode.graphPosition + new Vector2(30, 30); // offset
+
+                BehaviourNodeView nodeView = graphView.CreateNodeView(newNode);
+
+                if (!pastedViews.Contains(nodeView))
+                {
+                    pastedViews.Add(nodeView);
+                }
+            }
+
+            //Use GUID to recreate edges
+            foreach (SerializedEdgeData serializedEdge in clipBoard.edgeDatas)
+            {
+                if (guidMap.TryGetValue(serializedEdge.sourceNodeGUID, out string newSourceGuid) &&
+                    guidMap.TryGetValue(serializedEdge.targetNodeGUID, out string newTargetGuid))
+                {
+                    BehaviourNodeView sourceView = pastedViews.FirstOrDefault(nodeView => nodeView.NodeSO.guid == newSourceGuid);
+                    BehaviourNodeView targetView = pastedViews.FirstOrDefault(nodeView => nodeView.NodeSO.guid == newTargetGuid);
+
+                    if (sourceView != null && targetView != null)
+                    {
+                        // Assuming each node has one output port and one input port
+                        Port outputPort = sourceView.output;   // you need to expose this
+                        Port inputPort = targetView.input;     // and this
+
+                        treeAsset.AddChild(sourceView.NodeSO, targetView.NodeSO);
+
+                        Edge edge = outputPort.ConnectTo(inputPort);
+                        graphView.AddElement(edge);
+                    }
+                }
+            }
+
+            foreach (BehaviourNodeView view in pastedViews)
+                view.SortChildren();
+
+            clipBoard.nodeDatas.Clear();
+            clipBoard.edgeDatas.Clear();
+
+            graphView.ClearSelection();
+            foreach (BehaviourNodeView view in pastedViews)
+            {
+                graphView.AddToSelection(view);
+            }
+        }
+
+
+        #region Helpers
+
+        private string HashClipboardData()
+        {
+            if (clipBoard.nodeDatas.Count == 0) return string.Empty;
+            // Use JSON as a simple content hash — sufficient for detecting identical pastes
+            return JsonUtility.ToJson(clipBoard, prettyPrint: false);
+        }
+
+        private BehaviourNode CreateNodeDataFromSerialized(SerializedNodeData data, BaseEditorTreeAsset treeAsset)
+        {
+            //Instantiate correct node type based on data.nodeType
+            BehaviourNode node = null;
+            switch (data.nodeType)
+            {
+                case BehaviourNodeType.ACTION:
+                case BehaviourNodeType.CONDITION:
+                    LeafNode actionNode = ScriptableObject.CreateInstance<LeafNode>();
+                    actionNode.SetLeafType(data.nodeType);
+                    actionNode.name = data.methodName ?? data.nodeType.ToString();
+                    actionNode.methodName = data.methodName;
+                    actionNode.fieldEntries = data.fieldEntries;
+                    actionNode.BlackBoardTypeID = data.BlackBoardTypeID;
+                    node = actionNode;
+                    break;
+                case BehaviourNodeType.DECORATOR:
+                    DecoratorNode decoratorNode = ScriptableObject.CreateInstance<DecoratorNode>();
+                    decoratorNode.name = data.methodName ?? data.nodeType.ToString();
+                    decoratorNode.methodName = data.methodName;
+                    decoratorNode.fieldEntries = data.fieldEntries;
+                    decoratorNode.BlackBoardTypeID = data.BlackBoardTypeID;
+                    node = decoratorNode;
+                    break;
+                case BehaviourNodeType.COMPOSITE:
+                    CompositeNode compositeNode = ScriptableObject.CreateInstance<CompositeNode>();
+                    compositeNode.SetCompositeType(BehaviourNodeType.COMPOSITE);
+                    compositeNode.name = data.methodName ?? data.nodeType.ToString();
+                    compositeNode.methodName = data.methodName ?? data.nodeType.ToString();
+                    compositeNode.fieldEntries = data.fieldEntries;
+                    compositeNode.abortType = data.abortType;
+                    node = compositeNode;
+                    break;
+                case BehaviourNodeType.SUBTREE:
+                    SubtreeNode subtreeNode = ScriptableObject.CreateInstance<SubtreeNode>();
+                    subtreeNode.name = "SUBTREE";
+                    subtreeNode.bindings = data.bindings ?? new List<SubtreeBinding>();
+                    if (!string.IsNullOrEmpty(data.subtreeAssetGUID))
+                    {
+                        string assetPath = AssetDatabase.GUIDToAssetPath(data.subtreeAssetGUID);
+                        subtreeNode.subTreeAsset = AssetDatabase.LoadAssetAtPath<BehaviourTreeAssetBase>(assetPath);
+                    }
+                    node = subtreeNode;
+                    break;
+                default:
+                    return null;
+            }
+
+            treeAsset.RegisterNode(node);
+
+            return node;
+        }
+
+        // Convert the current clipboard to a JSON string
+        public string SerializeClipboard()
+        {
+            if (clipBoard.nodeDatas.Count == 0) return null;
+            return JsonUtility.ToJson(clipBoard, prettyPrint: false);
+        }
+
+        // Overwrite the static clipboard from a JSON string
+        public void DeserializeClipboard(string json)
+        {
+            clipBoard = JsonUtility.FromJson<ClipBoardData>(json);
+        }
+
+        private SerializedNodeData SerializeNode(BehaviourNode node)
+        {
+            SerializedNodeData serializedNode = new SerializedNodeData
+            {
+                nodeType = node.NodeType,
+                guid = node.guid,
+                graphPosition = node.graphPosition
+            };
+
+            if (node.NodeType == BehaviourNodeType.ACTION || node.NodeType == BehaviourNodeType.CONDITION)
+            {
+                LeafNode actionNode = (LeafNode)node;
+                serializedNode.methodName = actionNode.methodName;
+                serializedNode.fieldEntries = actionNode.fieldEntries;
+                serializedNode.BlackBoardTypeID = actionNode.BlackBoardTypeID;
+            }
+            else if (node.NodeType == BehaviourNodeType.DECORATOR)
+            {
+                DecoratorNode decoratorNode = (DecoratorNode)node;
+                serializedNode.methodName = decoratorNode.methodName;
+                serializedNode.fieldEntries = decoratorNode.fieldEntries;
+                serializedNode.BlackBoardTypeID = decoratorNode.BlackBoardTypeID;
+            }
+            else if (node.NodeType == BehaviourNodeType.COMPOSITE)
+            {
+                CompositeNode compositeNode = (CompositeNode)node;
+                serializedNode.methodName = compositeNode.methodName;
+                serializedNode.fieldEntries = compositeNode.fieldEntries;
+                serializedNode.abortType = compositeNode.abortType;
+            }
+            else if (node.NodeType == BehaviourNodeType.SUBTREE)
+            {
+                SubtreeNode subtreeNode = (SubtreeNode)node;
+                serializedNode.bindings = subtreeNode.bindings != null ? new List<SubtreeBinding>(subtreeNode.bindings) : new List<SubtreeBinding>();
+                if (subtreeNode.subTreeAsset != null)
+                {
+                    string assetPath = AssetDatabase.GetAssetPath(subtreeNode.subTreeAsset);
+                    serializedNode.subtreeAssetGUID = AssetDatabase.AssetPathToGUID(assetPath);
+                }
+            }
+
+            return serializedNode;
+        }
+
+        #endregion
+    }
+}

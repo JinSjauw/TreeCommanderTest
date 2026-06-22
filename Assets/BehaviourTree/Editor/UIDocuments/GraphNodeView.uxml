@@ -1,0 +1,20 @@
+<engine:UXML xmlns:engine="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Scripts/BehaviourTree/Editor/UIDocuments/GraphNodeViewStyle.uss?fileID=7433441132597879392&amp;guid=6a8fb5d391da0ba47a76e2c532511c3c&amp;type=3#GraphNodeViewStyle"/>
+    <engine:VisualElement name="status-border" picking-mode="Ignore"/>
+    <engine:VisualElement name="node-body" class="node-running" style="transition-property: all; transition-duration: 0.0001s; transition-timing-function: ease-out-bounce;">
+        <engine:VisualElement name="input"/>
+        <engine:VisualElement name="text-container" style="flex-grow: 1; white-space: normal; flex-direction: column;">
+            <engine:TextField name="node-title-field" picking-mode="Position" focusable="true" class="node-title-field"/>
+            <engine:Label name="sub-title-label" text="" style="-unity-font-style: italic; font-size: 10px;"/>
+        </engine:VisualElement>
+        <engine:VisualElement name="output" picking-mode="Position"/>
+    </engine:VisualElement>
+    <engine:VisualElement name="icon-container" style="flex-grow: 1; position: absolute; top: 2px; left: -30px; min-height: 10px; min-width: 10px; height: auto; width: 30px;">
+        <engine:VisualElement name="warning-icon" tooltip="WARNING" style="flex-grow: 1; padding-top: 2px; padding-right: 2px; padding-bottom: 2px; padding-left: 2px; height: 28px; width: 28px; margin-top: 2px; margin-bottom: 2px; background-image: none; -unity-background-image-tint-color: rgb(0, 0, 0); background-color: rgb(255, 150, 0); -unity-slice-type: sliced; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; overflow: visible; background-size: 100% 100%; border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-left-color: rgb(255, 197, 0); border-right-color: rgb(255, 197, 0); border-top-color: rgb(255, 197, 0); border-bottom-color: rgb(255, 197, 0); display: none;">
+            <engine:Label text="!" name="warning-label" picking-mode="Ignore" style="-unity-text-align: middle-center; -unity-font-style: bold; padding-left: 3px; margin-right: 2px; margin-top: 2px; padding-bottom: 4px; padding-top: 2px; align-self: center; align-items: center; align-content: center; display: flex; font-size: 18px;"/>
+        </engine:VisualElement>
+        <engine:VisualElement name="abort-type-icon" tooltip="ABORT" style="flex-grow: 1; padding-top: 2px; padding-right: 2px; padding-bottom: 2px; padding-left: 2px; height: 28px; width: 28px; margin-top: 2px; margin-bottom: 2px; justify-content: flex-start; align-items: stretch; align-self: auto; background-image: none; background-size: 100% 100%; background-color: rgb(255, 0, 0); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-left-color: rgb(200, 200, 200); border-right-color: rgb(200, 200, 200); border-top-color: rgb(200, 200, 200); border-bottom-color: rgb(200, 200, 200); display: none;">
+            <engine:Label text="LP" name="abort-label" picking-mode="Ignore" style="-unity-text-align: middle-center; -unity-font-style: bold; padding-left: 3px; margin-right: 2px; margin-top: 2px; padding-bottom: 4px; padding-top: 2px; align-self: center; align-items: center; align-content: center; display: flex; font-size: 16px;"/>
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

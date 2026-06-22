@@ -1,0 +1,22 @@
+{
+    "name": "BehaviourTree.Runtime.Tests",
+    "rootNamespace": "BehaviourTree.Runtime.Tests",
+    "references": [
+        "BehaviourTree.Core",
+        "BehaviourTree.Runtime",
+        "UnityEngine.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

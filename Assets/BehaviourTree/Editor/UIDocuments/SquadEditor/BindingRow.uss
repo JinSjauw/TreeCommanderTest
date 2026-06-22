@@ -1,0 +1,22 @@
+:root {
+}
+
+.unity-popup-field {
+    flex-grow: 1;
+    width: 20%;
+    max-width: none;
+}
+
+.unity-enum-field {
+    flex-grow: 1;
+    width: 10%;
+    max-width: none;
+}
+
+/* Target inner text elements for ellipsis */
+.unity-popup-field__input > *,
+.unity-enum-field__input > * {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

@@ -104,7 +104,7 @@ public class EnemyManager : MonoBehaviour
         controller.SetMasks(selfLayer, targetLayer, obstacleLayer);
         useLayerA = !useLayerA;
 
-        spawnedObj.GetComponent<TreeRunner>().Initialize();
+        spawnedObj.GetComponent<AgentTreeRunner>().Initialize();
         spawnedObj.GetComponent<BlackBoard>().Set("PatrolPoints", patrolPoints);
 
         DeathHandler deathHandler = spawnedObj.GetComponentInChildren<DeathHandler>();

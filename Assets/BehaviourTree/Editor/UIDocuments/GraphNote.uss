@@ -1,0 +1,153 @@
+.graph-note-container {
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.25);
+    padding: 8px;
+    flex-direction: column;
+    min-width: 120px;
+    min-height: 80px;
+}
+
+.graph-note-header {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.graph-note-title {
+    flex-grow: 1;
+    font-size: 13px;
+    -unity-font-style: bold;
+    padding: 0;
+    margin: 0;
+}
+
+.graph-note-title > .unity-text-field__input {
+    background-color: transparent;
+    border-width: 0;
+    padding: 0;
+}
+
+.graph-note-color {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-left: 4px;
+}
+
+.graph-note-color > .unity-base-field__label {
+    display: none;
+}
+
+.graph-note-color > .unity-color-field__color-input {
+    width: 18px;
+    height: 18px;
+}
+
+.graph-note-divider {
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.12);
+    margin-bottom: 4px;
+    flex-shrink: 0;
+}
+
+.graph-note-contents {
+    flex-grow: 1;
+    font-size: 12px;
+}
+
+.graph-note-contents > .unity-text-field__input {
+    background-color: transparent;
+    border-width: 0;
+    padding: 0;
+    white-space: normal;
+}
+
+.graph-note-text-color {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    margin-left: 4px;
+}
+
+.graph-note-text-color > .unity-base-field__label {
+    display: none;
+}
+
+.graph-note-text-color > .unity-color-field__color-input {
+    width: 18px;
+    height: 18px;
+}
+
+.resizer {
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+}
+
+.resizer:hover {
+    border-color: rgba(30, 80, 180, 0.6);
+    border-width: 2px;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+}
+
+.resizer-icon {
+    display: flex;
+    visibility: visible;
+    flex-grow: 1;
+    background-image: url("project://database/Assets/Scripts/BehaviourTree/Editor/UITextures/resize-icon.png?fileID=2800000&guid=ea61ec00adf709341b5733c080f62387&type=3#resize-icon");
+    background-color: rgba(255, 255, 255, 0);
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    bottom: 0;
+    right: 0;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    -unity-background-image-tint-color: rgb(200, 200, 200);
+}
+
+:hover#note-selection-indicator {
+    border-top-width: 3px;
+    border-left-color: rgb(197, 197, 197);
+    border-right-color: rgb(197, 197, 197);
+    border-top-color: rgb(197, 197, 197);
+    border-bottom-color: rgb(197, 197, 197);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
+
+.selected-indicator#note-selection-indicator {
+    border-top-width: 4px;
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
+
+.selected-indicator:hover#note-selection-indicator {
+    border-top-width: 4px;
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
