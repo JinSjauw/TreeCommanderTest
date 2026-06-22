@@ -159,3 +159,8 @@ x86/
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# Unity package manifest (overrides NuGet **/[Pp]ackages/* patterns above)
+!/Packages/manifest.json
+!/Packages/packages-lock.json
+!/Packages/*.meta
