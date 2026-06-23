@@ -1,6 +1,7 @@
 using System;
 using BehaviourTree.Core;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace BehaviourTree.Runtime.Methods
 {
@@ -43,10 +44,8 @@ namespace BehaviourTree.Runtime.Methods
         private float radius;
         private RangeCheckOp operation;
         private bool checkLineOfSight;
-        private EnemyController cachedController;
-        private EnemyDetectionSystem cachedDetectionSystem;
+        private EnemyDetectionSystem cachedDetection;
         private Transform cachedAgentTransform;
-        private bool controllerResolved;
 
         public override void DeserializeParameters(
             ReadOnlySpan<FieldData> fields,
@@ -65,37 +64,41 @@ namespace BehaviourTree.Runtime.Methods
                 checkLineOfSight = fields[fieldIndex].GetBool();
         }
 
+        protected override void OnInitialize()
+        {
+            MonoBehaviour mb = (MonoBehaviour)BB;
+            cachedDetection = mb.GetComponent<EnemyDetectionSystem>();
+            if (cachedDetection == null)
+                cachedDetection = mb.GetComponentInChildren<EnemyDetectionSystem>();
+            NavMeshAgent agent = mb.GetComponent<NavMeshAgent>();
+            if(agent == null)
+                agent = mb.GetComponentInChildren<NavMeshAgent>();
+            if (agent != null)
+                cachedAgentTransform = agent.transform;
+        }
+
         public override NodeState Execute()
         {
-            if (!controllerResolved)
+            if (cachedDetection == null || cachedAgentTransform == null)
             {
-                BlackBoard bb = BB as BlackBoard;
-                if (bb != null)
-                    cachedController = bb.GetComponent<EnemyController>();
-                controllerResolved = true;
-            }
-            if (cachedController == null) return NodeState.FAILURE;
-
-            if (cachedDetectionSystem == null)
-            {
-                cachedDetectionSystem = cachedController.Detection;
-            }
-
-            if (cachedAgentTransform == null)
-            {
-                cachedAgentTransform = cachedController.Agent.transform;
-            }
-
-            if (cachedDetectionSystem == null || cachedAgentTransform == null) return NodeState.FAILURE;
-
-            if (!cachedDetectionSystem.DetectTargets(radius))
+                Debug.LogWarning($"[Enemy_Detected] {(cachedDetection == null ? "EnemyDetectionSystem" : "NavMeshAgent")} not found on {((MonoBehaviour)BB).name}");
                 return NodeState.FAILURE;
+            }
+
+            if (!cachedDetection.DetectTargets(radius))
+            {
+                Debug.Log($"[Enemy_Detected] DetectTargets(radius={radius}) returned no targets");
+                return NodeState.FAILURE;
+            }
 
             Vector2 agentPos = new Vector2(
                 cachedAgentTransform.position.x,
                 cachedAgentTransform.position.z);
 
-            foreach (Transform target in cachedDetectionSystem.DetectedTargets)
+            int targetCount = cachedDetection.DetectedTargets.Count;
+            int rangeSkipped = 0;
+            int losSkipped = 0;
+            foreach (Transform target in cachedDetection.DetectedTargets)
             {
                 float distance = Vector2.Distance(
                     agentPos,
@@ -108,14 +111,24 @@ namespace BehaviourTree.Runtime.Methods
                     _ => false
                 };
 
-                if (!inRange) continue;
-
-                if (checkLineOfSight && !cachedController.HasLineOfSightToTarget(target))
+                if (!inRange)
+                {
+                    rangeSkipped++;
                     continue;
+                }
+
+                if (checkLineOfSight && !cachedDetection.HasLineOfSightToTarget(target))
+                {
+                    losSkipped++;
+                    continue;
+                }
 
                 return NodeState.SUCCESS;
             }
 
+            Debug.Log($"[Enemy_Detected] FAILURE: {targetCount} target(s) detected, " +
+                      $"{rangeSkipped} failed range (op={operation}, radius={radius}), " +
+                      $"{(checkLineOfSight ? $"{losSkipped} failed LOS" : "LOS check disabled")}");
             return NodeState.FAILURE;
         }
     }

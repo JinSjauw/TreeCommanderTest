@@ -1,5 +1,6 @@
 using BehaviourTree.Core;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace BehaviourTree.Runtime.Methods
 {
@@ -10,21 +11,22 @@ namespace BehaviourTree.Runtime.Methods
     [NodeMethod("Enemy_HasArrived", allowedTreeType = AllowedTreeType.Agent)]
     public sealed class Enemy_HasArrived : ConditionMethod
     {
-        private EnemyController cachedController;
-        private bool controllerResolved;
+        private NavMeshAgent cachedAgent;
+        private bool agentResolved;
 
         public override NodeState Execute()
         {
-            if (!controllerResolved)
+            if (!agentResolved)
             {
-                BlackBoard bb = BB as BlackBoard;
-                if (bb != null)
-                    cachedController = bb.GetComponent<EnemyController>();
-                controllerResolved = true;
+                cachedAgent = ((MonoBehaviour)BB).GetComponent<NavMeshAgent>();
+                if (cachedAgent == null)
+                    cachedAgent = ((MonoBehaviour)BB).GetComponentInChildren<NavMeshAgent>();
+                agentResolved = true;
             }
-            if (cachedController == null) return NodeState.FAILURE;
+            if (cachedAgent == null) return NodeState.FAILURE;
 
-            return cachedController.HasArrivedAtDestination()
+            return !cachedAgent.pathPending
+                && cachedAgent.remainingDistance <= cachedAgent.stoppingDistance + 0.1f
                 ? NodeState.SUCCESS
                 : NodeState.FAILURE;
         }

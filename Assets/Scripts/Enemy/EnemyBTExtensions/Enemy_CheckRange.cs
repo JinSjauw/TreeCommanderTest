@@ -1,6 +1,7 @@
 using System;
 using BehaviourTree.Core;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace BehaviourTree.Runtime.Methods
 {
@@ -46,8 +47,8 @@ namespace BehaviourTree.Runtime.Methods
         
         private float constantRadius;
         private bool hasConstantRadius;
-        private EnemyController cachedController;
-        private bool controllerResolved;
+        private Transform cachedAgentTransform;
+        private bool agentResolved;
 
         public override void DeserializeParameters(
             ReadOnlySpan<FieldData> fields,
@@ -81,14 +82,16 @@ namespace BehaviourTree.Runtime.Methods
         {
             if (targetSlot < 0) return NodeState.FAILURE;
 
-            if (!controllerResolved)
+            if (!agentResolved)
             {
-                BlackBoard bb = BB as BlackBoard;
-                if (bb != null)
-                    cachedController = bb.GetComponent<EnemyController>();
-                controllerResolved = true;
+                NavMeshAgent agent = ((MonoBehaviour)BB).GetComponent<NavMeshAgent>();
+                if (agent == null)
+                    agent = ((MonoBehaviour)BB).GetComponentInChildren<NavMeshAgent>();
+                if (agent != null)
+                    cachedAgentTransform = agent.transform;
+                agentResolved = true;
             }
-            if (cachedController == null) return NodeState.FAILURE;
+            if (cachedAgentTransform == null) return NodeState.FAILURE;
 
             object targetObj = BB.GetBoxed(targetSlot);
             Vector3 target;
@@ -117,7 +120,7 @@ namespace BehaviourTree.Runtime.Methods
             }
 
             float distance = Vector2.Distance(
-                new Vector2(cachedController.Agent.transform.position.x, cachedController.Agent.transform.position.z),
+                new Vector2(cachedAgentTransform.position.x, cachedAgentTransform.position.z),
                 new Vector2(target.x, target.z));
 
             bool result = operation switch

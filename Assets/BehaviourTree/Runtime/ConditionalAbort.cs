@@ -38,7 +38,11 @@ namespace BehaviourTree.Runtime
             // Re-evaluates this composite's own children's conditions every tick.
             // If any condition transitions (true→false or false→true) while a later
             // sibling is RUNNING, abort the running sibling and restart from here.
-            if (parentAbortType == AbortType.Self || parentAbortType == AbortType.Both)
+            // Skipped entirely when no child is RUNNING — abort is impossible and
+            // lastConditionResult tracking is not needed (next running tick will
+            // compare against the last evaluated state regardless).
+            if ((parentAbortType == AbortType.Self || parentAbortType == AbortType.Both)
+                && runningChildLocal >= 0)
             {
                 for (int c = 0; c < childCount; c++)
                 {
@@ -46,9 +50,9 @@ namespace BehaviourTree.Runtime
                     ref NodeData childNode = ref ctx.nodeDatas[childIndex];
 
                     bool conditionMet;
-                    if (ctx.methodInstances[childIndex] != null)
+                    if (ctx.methodInstances[childIndex] is ConditionMethod)
                     {
-                        // Direct condition leaf — evaluate it
+                        // Direct condition leaf — evaluate for transition detection
                         conditionMet = EvaluateLeafCondition(childIndex, ref ctx);
                     }
                     else if (childNode.nodeType == BehaviourNodeType.SUBTREE
@@ -59,6 +63,9 @@ namespace BehaviourTree.Runtime
                     }
                     else
                     {
+                        // Composites are logic gates — their internal conditions are
+                        // their own responsibility, not the parent's abort concern.
+                        // ActionMethods are not conditions.
                         continue;
                     }
 
@@ -160,11 +167,13 @@ namespace BehaviourTree.Runtime
 
             NodeState result = NodeState.SUCCESS;
             if (method is ConditionMethod condition)
+            {
                 result = condition.Execute();
+                //Debug.Log($"[ConditionalAbort] NAME: {method.MethodName} nodeIndex={nodeIndex} result={result}");
+            }
             // ActionMethod: don't execute (side effects)
             // DecoratorMethod: not supported yet (would need child evaluation)
 
-            method.WriteOutputsGeneric(ctx.blackBoard);
             return result == NodeState.SUCCESS;
         }
 

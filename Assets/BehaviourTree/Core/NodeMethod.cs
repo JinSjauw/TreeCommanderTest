@@ -255,6 +255,7 @@ namespace BehaviourTree.Core
         internal FieldBinding[] bindings;
         internal object[] boxedConstants;
         private IBlackBoardAccess bbAccess;
+        private bool bbInitialized;
 
         /// <summary>Blackboard accessor. Available during Execute().</summary>
         protected IBlackBoardAccess BB => bbAccess;
@@ -414,6 +415,11 @@ namespace BehaviourTree.Core
         public void ResolveInputsGeneric(IBlackBoardAccess bb)
         {
             bbAccess = bb;
+            if (!bbInitialized)
+            {
+                bbInitialized = true;
+                OnInitialize();
+            }
             FieldBinding[] b = bindings;
             if (b == null) return;
             for (int i = 0; i < b.Length; i++)
@@ -441,6 +447,13 @@ namespace BehaviourTree.Core
             for (int i = 0; i < b.Length; i++)
                 b[i]?.WriteToBBGeneric(this, bb);
         }
+
+        /// <summary>
+        /// Called once when BB becomes available for the first time (first tick).
+        /// Override to resolve components, cache references, or perform one-time setup
+        /// that requires access to the blackboard / agent GameObject.
+        /// </summary>
+        protected virtual void OnInitialize() { }
 
         /// <summary>
         /// Called by AbortSubtree before resetting this node's state to INACTIVE.

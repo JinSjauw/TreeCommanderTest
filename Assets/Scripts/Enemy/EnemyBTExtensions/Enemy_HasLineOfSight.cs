@@ -25,8 +25,8 @@ namespace BehaviourTree.Runtime.Methods
         };
 
         private int targetSlot = -1;
-        private EnemyController cachedController;
-        private bool controllerResolved;
+        private EnemyDetectionSystem cachedDetection;
+        private bool detectionResolved;
 
         public override void DeserializeParameters(
             ReadOnlySpan<FieldData> fields,
@@ -41,20 +41,20 @@ namespace BehaviourTree.Runtime.Methods
         {
             if (targetSlot < 0) return NodeState.FAILURE;
 
-            if (!controllerResolved)
+            if (!detectionResolved)
             {
-                BlackBoard bb = BB as BlackBoard;
-                if (bb != null)
-                    cachedController = bb.GetComponent<EnemyController>();
-                controllerResolved = true;
+                cachedDetection = ((MonoBehaviour)BB).GetComponent<EnemyDetectionSystem>();
+                if (cachedDetection == null)
+                    cachedDetection = ((MonoBehaviour)BB).GetComponentInChildren<EnemyDetectionSystem>();
+                detectionResolved = true;
             }
-            if (cachedController == null) return NodeState.FAILURE;
+            if (cachedDetection == null) return NodeState.FAILURE;
 
             object targetObj = BB.GetBoxed(targetSlot);
             Transform target = targetObj as Transform;
             if (target == null) return NodeState.FAILURE;
 
-            return cachedController.HasLineOfSightToTarget(target)
+            return cachedDetection.HasLineOfSightToTarget(target)
                 ? NodeState.SUCCESS
                 : NodeState.FAILURE;
         }

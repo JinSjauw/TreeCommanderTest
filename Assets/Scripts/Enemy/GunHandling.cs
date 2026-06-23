@@ -49,6 +49,15 @@ public class GunHandling : MonoBehaviour
         reloadDuration = 60f / roundPerMinute;
     }
 
+    /// <summary>Called by EnemyInitializer to push config values.</summary>
+    public void SetFireConfig(float damage, float roundsPerMin, float randomTargetRad)
+    {
+        projectileDamage = damage;
+        roundPerMinute = roundsPerMin;
+        randomTargetRadius = randomTargetRad;
+        reloadDuration = 60f / roundPerMinute;
+    }
+
     private void Update()
     {
         TickFiringCooldown(Time.deltaTime);

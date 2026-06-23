@@ -36,8 +36,8 @@ namespace BehaviourTree.Runtime.Methods
         private SelectionStrategy strategy;
         private int targetSlot = -1;
         private Type outputType;
-        private EnemyController cachedController;
-        private bool controllerResolved;
+        private EnemyDetectionSystem cachedDetection;
+        private bool detectionResolved;
 
         public override void DeserializeParameters(
             ReadOnlySpan<FieldData> fields,
@@ -61,16 +61,19 @@ namespace BehaviourTree.Runtime.Methods
         {
             if (targetSlot < 0 || outputType == null) return NodeState.FAILURE;
 
-            if (!controllerResolved)
+            if (!detectionResolved)
             {
-                BlackBoard bb = BB as BlackBoard;
-                if (bb != null)
-                    cachedController = bb.GetComponent<EnemyController>();
-                controllerResolved = true;
+                cachedDetection = ((MonoBehaviour)BB).GetComponent<EnemyDetectionSystem>();
+                if (cachedDetection == null)
+                    cachedDetection = ((MonoBehaviour)BB).GetComponentInChildren<EnemyDetectionSystem>();
+                detectionResolved = true;
             }
-            if (cachedController == null) return NodeState.FAILURE;
+            if (cachedDetection == null) return NodeState.FAILURE;
 
-            Transform selected = cachedController.SelectTarget(strategy);
+            if (!cachedDetection.DetectTargets())
+                return NodeState.FAILURE;
+
+            Transform selected = cachedDetection.GetTarget(strategy);
             if (selected == null) return NodeState.FAILURE;
 
             object result = outputType == typeof(GameObject)

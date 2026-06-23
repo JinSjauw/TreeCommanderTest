@@ -8,28 +8,27 @@ public class EnemyManager : MonoBehaviour
 {
     [Header("Pooling")]
     [SerializeField] private ObjectPool objectPool;
-    [SerializeField] private GameObject enemyPrefab;
 
-    [Header("Spawn Points")]
+    [Header("Config")]
+    [SerializeField] private EnemySpawnConfig config;
+
+    [Header("Spawn Points (scene-specific)")]
     [SerializeField] private List<Transform> spawnPoints = new List<Transform>();
     [SerializeField] private Transform patrolPoints;
-
-    [Header("Spawning")]
-    [SerializeField] private int initialSpawnCount = 2;
-
-    [Header("Target Layers")]
-    [SerializeField] private LayerMask targetLayerA;
-    [SerializeField] private LayerMask targetLayerB;
-    [SerializeField] private LayerMask obstacleLayer;
 
     private readonly List<EnemyController> activeEnemies = new List<EnemyController>();
     private bool useLayerA = true;
     private int currentSpawnIndex;
-    private int maxPriorityDelta = 100;
 
     private void Start()
     {
-        for (int i = 0; i < initialSpawnCount; i++)
+        if (config == null)
+        {
+            Debug.LogError($"[EnemyManager] EnemySpawnConfig not assigned on {name}");
+            return;
+        }
+
+        for (int i = 0; i < config.initialSpawnCount; i++)
         {
             SpawnEnemy();
         }
@@ -37,7 +36,6 @@ public class EnemyManager : MonoBehaviour
 
     private void Update()
     {
-        // Clean up destroyed enemies
         for (int i = activeEnemies.Count - 1; i >= 0; i--)
         {
             if (activeEnemies[i] == null)
@@ -51,9 +49,9 @@ public class EnemyManager : MonoBehaviour
     /// </summary>
     public EnemyController SpawnEnemy()
     {
-        if (objectPool == null || enemyPrefab == null)
+        if (objectPool == null || config == null || config.enemyPrefab == null)
         {
-            Debug.LogWarning($"[EnemyManager] ObjectPool or EnemyPrefab not assigned on {name}");
+            Debug.LogWarning($"[EnemyManager] ObjectPool or SpawnConfig not assigned on {name}");
             return null;
         }
 
@@ -66,12 +64,11 @@ public class EnemyManager : MonoBehaviour
         int randomIndex = currentSpawnIndex % spawnPoints.Count;
         Transform spawnPoint = spawnPoints[randomIndex];
 
-        int agentPriority = currentSpawnIndex % maxPriorityDelta;
+        int agentPriority = currentSpawnIndex % config.avoidancePriorityRange;
         currentSpawnIndex++;
 
-        GameObject spawnedObj = objectPool.GetObject(enemyPrefab, false);
+        GameObject spawnedObj = objectPool.GetObject(config.enemyPrefab, false);
 
-        // Sample navmesh to get correct spawn height instead of using arbitrary +3m offset
         Vector3 spawnPosition = spawnPoint.position;
         float navMeshHeight = spawnPoint.position.y;
         if (NavMesh.SamplePosition(spawnPoint.position, out NavMeshHit navMeshHit, 10f, NavMesh.AllAreas))
@@ -80,12 +77,11 @@ public class EnemyManager : MonoBehaviour
         }
 
         Vector3 finalSpawnPos = new Vector3(spawnPosition.x, navMeshHeight + 0.5f, spawnPosition.z);
-        // Debug.Log($"[EnemyManager] Spawning at index={randomIndex} spawnPoint={spawnPoint.position} finalPos={finalSpawnPos} objName={spawnedObj.name} activeSelf={spawnedObj.activeSelf}");
         spawnedObj.transform.position = finalSpawnPos;
         spawnedObj.transform.rotation = spawnPoint.rotation;
 
         EnemyController controller = spawnedObj.GetComponent<EnemyController>();
-        if (controller != null) 
+        if (controller != null)
         {
             activeEnemies.Add(controller);
             controller.enabled = true;
@@ -94,14 +90,13 @@ public class EnemyManager : MonoBehaviour
         }
         else
         {
-
             Debug.LogError($"[EnemyManager] EnemyController not found on spawned {name}");
             return null;
         }
 
-        LayerMask targetLayer = useLayerA ? targetLayerA : targetLayerB;
-        int selfLayer = GetLayerIndex(useLayerA ? targetLayerB : targetLayerA);
-        controller.SetMasks(selfLayer, targetLayer, obstacleLayer);
+        LayerMask targetLayer = useLayerA ? config.targetLayerA : config.targetLayerB;
+        int selfLayer = GetLayerIndex(useLayerA ? config.targetLayerB : config.targetLayerA);
+        controller.SetMasks(selfLayer, targetLayer, config.obstacleLayer);
         useLayerA = !useLayerA;
 
         spawnedObj.GetComponent<AgentTreeRunner>().Initialize();
@@ -113,7 +108,6 @@ public class EnemyManager : MonoBehaviour
             deathHandler.SetPool(objectPool);
         }
 
-        // Warp agent to navmesh surface and set initial destination
         if (NavMesh.SamplePosition(spawnPoint.position, out NavMeshHit agentHit, 10f, NavMesh.AllAreas))
         {
             controller.Agent.Warp(agentHit.position);
@@ -138,7 +132,6 @@ public class EnemyManager : MonoBehaviour
         if (enemy == null) return;
         activeEnemies.Remove(enemy);
         enemy.OnDestructionEvent = null;
-        //objectPool?.ReturnGameObject(enemy.gameObject);
     }
 
     private static int GetLayerIndex(LayerMask mask)

@@ -3,9 +3,14 @@ using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
+/// <summary>
+/// Core enemy component. Handles layer masking, holds shared system references,
+/// pathfinding math, and death. Tuning values come from EnemyInitializer (on spawn)
+/// and mask configuration from EnemyManager. BT nodes resolve specific systems
+/// (EnemyDetectionSystem, NavMeshAgent, GunHandling) directly — no middleman.
+/// </summary>
 public class EnemyController : MonoBehaviour
 {
-
     [Header("Systems")]
     [field: SerializeField] public EnemyDetectionSystem Detection { get; private set; }
     [field: SerializeField] public GunHandling GunHandling { get; private set; }
@@ -15,11 +20,9 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private LayerMask obstacleLayers;
 
     [Header("Pathfinding")]
-    [SerializeField] private float maxConeHalfAngle;
-    [SerializeField] private float minDistance;
-    [SerializeField] private float maxDistance;
-    [SerializeField] private float maintainDistance;
     [SerializeField] private float minimumPadding = 0.15f;
+
+    private float maintainDistance;
 
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform visualBody;
@@ -31,7 +34,6 @@ public class EnemyController : MonoBehaviour
     public NavMeshAgent Agent => agent;
     public EventHandler<EnemyController> OnDestructionEvent;
 
-    private Transform selectedTarget;
     private bool masksConfigured;
 
     private void OnEnable()
@@ -79,41 +81,17 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    public Transform SelectTarget(SelectionStrategy strategy)
+    /// <summary>Called by EnemyInitializer to push config values.</summary>
+    public void SetMovementConfig(float coneHalfAngle, float minPathDist,
+        float maxPathDist, float maintainDist)
     {
-        if (!Detection.DetectTargets())
-            return null;
-
-        selectedTarget = Detection.GetTarget(strategy);
-        return selectedTarget;
+        maintainDistance = maintainDist;
     }
 
-    public bool SelectAimTarget()
-    {
-        if (selectedTarget == null) return false;
-        return GunHandling.SelectAimTarget(selectedTarget);
-    }
-
-    public TrajectorySearchState SearchTrajectory()
-    {
-        return GunHandling.SearchTrajectory();
-    }
-
-    public void Fire()
-    {
-        GunHandling.Fire();
-    }
-
-    public Vector3 CalculateNewPathToTarget()
-    {
-        if (selectedTarget == null)
-            return Vector3.zero;
-
-        Vector3 nextPosition = CalculateTargetPosition(selectedTarget.position, maxConeHalfAngle, minDistance, maxDistance);
-        agent.SetDestination(nextPosition);
-        return nextPosition;
-    }
-
+    /// <summary>
+    /// Calculates a random position around a target using a cone spread.
+    /// Used by pathfinding BT nodes to generate next waypoints.
+    /// </summary>
     public Vector3 CalculateTargetPosition(Vector3 target, float maxAngle, float minDist, float maxDist)
     {
         Vector3 origin = agent.transform.position;
@@ -141,31 +119,11 @@ public class EnemyController : MonoBehaviour
 
     public void Die()
     {
-        if(agent.isOnNavMesh)
+        if (agent.isOnNavMesh)
         {
             agent.isStopped = true;
         }
         OnDestructionEvent?.Invoke(this, this);
         this.enabled = false;
-    }
-
-    public bool HasArrivedAtDestination()
-    {
-        return !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.1f;
-    }
-
-    public void StopMoving()
-    {
-        agent.isStopped = true;
-    }
-
-    public bool TargetInFiringRange(Transform target)
-    {
-        return Detection.TargetInFiringRange(target);
-    }
-
-    public bool HasLineOfSightToTarget(Transform target)
-    {
-        return Detection.HasLineOfSightToTarget(target);
     }
 }

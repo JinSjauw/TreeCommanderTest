@@ -23,6 +23,13 @@ public class EnemyDetectionSystem : MonoBehaviour
         groundLayer = LayerMask.GetMask("Ground");
     }
 
+    /// <summary>Called by EnemyInitializer to push config values.</summary>
+    public void SetDetectionConfig(float detectRadius, float fireRadius)
+    {
+        lastDetectionRadius = detectRadius;
+        firingRadius = fireRadius;
+    }
+
     public bool DetectTargets()
     {
         return DetectTargets(lastDetectionRadius);

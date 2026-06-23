@@ -18,9 +18,9 @@ MonoBehaviour:
   minPathDistance: 3
   maxPathDistance: 8
   maxConeHalfAngle: 30
-  detectionRadius: 25
+  detectionRadius: 150
   firingRadius: 15
-  requireLineOfSight: 1
+  requireLineOfSight: 0
   targetLayers:
     serializedVersion: 2
     m_Bits: 256
