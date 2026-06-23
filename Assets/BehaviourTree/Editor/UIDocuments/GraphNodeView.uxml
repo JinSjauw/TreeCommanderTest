@@ -1,7 +1,8 @@
 <engine:UXML xmlns:engine="UnityEngine.UIElements" xmlns:ui="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/Scripts/BehaviourTree/Editor/UIDocuments/GraphNodeViewStyle.uss?fileID=7433441132597879392&amp;guid=6a8fb5d391da0ba47a76e2c532511c3c&amp;type=3#GraphNodeViewStyle"/>
+    <Style src="project://database/Assets/BehaviourTree/Editor/UIDocuments/GraphNodeViewStyle.uss?fileID=7433441132597879392&amp;guid=6a8fb5d391da0ba47a76e2c532511c3c&amp;type=3#GraphNodeViewStyle"/>
     <engine:VisualElement name="status-border" picking-mode="Ignore"/>
     <engine:VisualElement name="node-body" class="node-running" style="transition-property: all; transition-duration: 0.0001s; transition-timing-function: ease-out-bounce;">
+        <engine:Label text="10" name="node-order-number" class="node-order-number" style="display: none; min-width: 20px; -unity-text-align: middle-center;"/>
         <engine:VisualElement name="input"/>
         <engine:VisualElement name="text-container" style="flex-grow: 1; white-space: normal; flex-direction: column;">
             <engine:TextField name="node-title-field" picking-mode="Position" focusable="true" class="node-title-field"/>

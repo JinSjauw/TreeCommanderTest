@@ -28,6 +28,7 @@ namespace BehaviourTree.Editor
         private VisualElement statusborder;
         private TextField titleField;
         private Label subTitleLabel;
+        private Label nodeOrderNumberLabel;
 
         private VisualElement abortTypeIcon;
         private VisualElement warningIcon;
@@ -58,6 +59,8 @@ namespace BehaviourTree.Editor
 
             // Create abort text label as child of abort icon
             abortLabel = this.Q<Label>("abort-label");
+
+            nodeOrderNumberLabel = this.Q<Label>("node-order-number");
 
             SetNodeColor();
             CreateInputPorts();
@@ -350,8 +353,30 @@ namespace BehaviourTree.Editor
             if (NodeSO.NodeType == BehaviourNodeType.COMPOSITE)
             {
                 NodeSO.children.Sort(SortByHorizontalPosition);
+
+                for (int i = 0; i < NodeSO.children.Count; i++)
+                {
+                    BehaviourNodeView childView = GraphView.FindNodeView(NodeSO.children[i]);
+                    childView?.SetOrderNumber(i + 1);
+                }
+
                 EditorUtility.SetDirty(NodeSO);
             }
+        }
+
+        public void SetOrderNumber(int order)
+        {
+            if (nodeOrderNumberLabel != null)
+            {
+                nodeOrderNumberLabel.text = order.ToString();
+                nodeOrderNumberLabel.style.display = DisplayStyle.Flex;
+            }
+        }
+
+        public void HideOrderNumber()
+        {
+            if (nodeOrderNumberLabel != null)
+                nodeOrderNumberLabel.style.display = DisplayStyle.None;
         }
 
         private int SortByHorizontalPosition(BehaviourNode left, BehaviourNode right)

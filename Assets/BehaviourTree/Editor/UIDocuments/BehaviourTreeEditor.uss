@@ -36,8 +36,6 @@ GridBackground {
     width: auto;
 }
 
-
-
 .unity-tab {
     margin-top: 8px;
     padding-top: 6px;
@@ -67,6 +65,15 @@ GridBackground {
     white-space: nowrap;
     flex-direction: row;
     flex-shrink: 0;
+    padding-right: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 6px;
+    background-color: rgba(37, 37, 37, 0.5);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
 }
 
 #InspectorTitle {
@@ -81,8 +88,8 @@ GridBackground {
 #InspectorSeparator {
 }
 
-
-
 .tab-container-styling {
     flex-grow: 1;
 }
+
+

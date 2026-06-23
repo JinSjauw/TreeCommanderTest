@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: SELECTOR
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  nodeName: 
+  nodeName: SELECTOR
   children:
   - {fileID: -7057239054950564937}
   - {fileID: 6767648677244204698}
@@ -26,76 +26,6 @@ MonoBehaviour:
   methodName: SELECTOR
   fieldEntries: []
   abortType: 0
---- !u!114 &-7459926910050526954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: Enemy_CheckRange
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: 
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: 26c097ea4ee5cb249a01d46439b751e3
-  graphPosition: {x: -233, y: 890}
-  runtimeIndex: -1
-  leafType: 2
-  methodName: Enemy_CheckRange
-  fieldEntries:
-  - fieldName: target
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: AttackTarget
-    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: radius
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: 
-    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: operation
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: 
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  BlackBoardTypeID: 0
 --- !u!114 &-7258022147211080315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -302,7 +232,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 1b832aeb6d3938b4aafa4a1ba85c1bb1
-  graphPosition: {x: -350, y: 735}
+  graphPosition: {x: -490, y: 735}
   runtimeIndex: 4
   leafType: 3
   methodName: Enemy_SelectDetectedTarget
@@ -352,7 +282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
   m_Name: WaitSeconds
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: 
+  nodeName: WaitSeconds
   children: []
   firstChildIndex: 0
   lastChildIndex: 0
@@ -410,7 +340,6 @@ MonoBehaviour:
   - {fileID: -1365354133396207245}
   - {fileID: 1256753395779555130}
   - {fileID: 3800750207177095848}
-  - {fileID: -7459926910050526954}
   - {fileID: 6767648677244204698}
   editorNotes: []
 --- !u!114 &212400733712462643
@@ -431,7 +360,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 0613a94e1e5a0c54ba9c5d13297bd9b7
-  graphPosition: {x: 105, y: 735}
+  graphPosition: {x: 48, y: 735}
   runtimeIndex: 6
   leafType: 3
   methodName: Enemy_FireSequence
@@ -516,7 +445,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 7f24e7d04b80a674aa89dd5b715ef5c4
-  graphPosition: {x: 735, y: 700}
+  graphPosition: {x: 770, y: 700}
   runtimeIndex: 8
   leafType: 3
   methodName: MoveTo
@@ -556,7 +485,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 83a8d89b23e9fc24899de64a8111d70b
-  graphPosition: {x: -105, y: 735}
+  graphPosition: {x: -190, y: 735}
   runtimeIndex: 5
   leafType: 3
   methodName: Enemy_StopMovement
@@ -604,7 +533,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 71d7e53fdf55dbb4aa69057b9ed97d4c
-  graphPosition: {x: -560, y: 735}
+  graphPosition: {x: -715, y: 735}
   runtimeIndex: 3
   leafType: 2
   methodName: Enemy_Detected

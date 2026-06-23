@@ -304,13 +304,21 @@ namespace BehaviourTree.Editor
             if (input.capacity == Port.Capacity.Single)
             {
                 foreach (Edge e in input.connections)
+                {
+                    if (e.input?.node is BehaviourNodeView child)
+                        child.HideOrderNumber();
                     edgesToRemove.Add(e);
+                }
             }
 
             if (output.capacity == Port.Capacity.Single)
             {
                 foreach (Edge e in output.connections)
+                {
+                    if (e.input?.node is BehaviourNodeView child)
+                        child.HideOrderNumber();
                     edgesToRemove.Add(e);
+                }
             }
 
             if (edgesToRemove.Count > 0)
@@ -411,7 +419,10 @@ namespace BehaviourTree.Editor
                     BehaviourNodeView parentView = edge.output?.node as BehaviourNodeView;
                     BehaviourNodeView childView = edge.input?.node as BehaviourNodeView;
                     if (parentView != null && childView != null)
+                    {
                         tree.RemoveChild(parentView.NodeSO, childView.NodeSO);
+                        childView.HideOrderNumber();
+                    }
                 }
                 else if (elementsToRemove[i] is GraphNote graphNote)
                 {
@@ -487,7 +498,7 @@ namespace BehaviourTree.Editor
                 Debug.LogWarning($"Duplicate GUID in graph view: {nodeView.Guid}");
         }
 
-        private BehaviourNodeView FindNodeView(BehaviourNode node) 
+        public BehaviourNodeView FindNodeView(BehaviourNode node) 
         {
             if(nodeViewDict.TryGetValue(node.guid, out BehaviourNodeView nodeView)) 
             {
@@ -667,6 +678,10 @@ namespace BehaviourTree.Editor
             EnsureRootNodeExists();
             CleanupAndCreateViews();
             CleanupAndWireEdges();
+
+            // Initialize child order number labels
+            foreach (BehaviourNodeView nodeView in nodeViewDict.Values)
+                nodeView.SortChildren();
 
             // Icons depend on edges being wired (parent traversal)
             RefreshAllNodeIcons();
