@@ -53,8 +53,8 @@ public class TurretController : MonoBehaviour
         turretPivot.localRotation = Quaternion.RotateTowards(turretPivot.localRotation, targetRot, turretTraverseSpeed * Time.deltaTime);
 
         // Debug
-        Debug.DrawLine(turretPivot.position, target.position, Color.green);
-        Debug.DrawRay(turretPivot.position, turretPivot.forward * 5, Color.yellow);
+        //Debug.DrawLine(turretPivot.position, target.position, Color.green);
+        //Debug.DrawRay(turretPivot.position, turretPivot.forward * 5, Color.yellow);
 
         return targetRot;
     }
@@ -68,7 +68,7 @@ public class TurretController : MonoBehaviour
         barrelPivot.localRotation = Quaternion.RotateTowards(barrelPivot.localRotation, targetRot, barrelTraverseSpeed * Time.deltaTime);
 
         // Debug
-        Debug.DrawRay(barrelPivot.position, barrelPivot.forward * 5, Color.blue);
+        //Debug.DrawRay(barrelPivot.position, barrelPivot.forward * 5, Color.blue);
 
         return targetRot;
     }

@@ -35,6 +35,7 @@ public class BehaviourTreeEditor : EditorWindow
     {
         currentTree = null;
         currentBlackboardDef = null;
+        currentRunner = null;
         BehaviourTreeEditor wnd = GetWindow<BehaviourTreeEditor>();
         wnd.titleContent = new GUIContent("Behaviour Tree Editor");
     }
@@ -346,6 +347,7 @@ public class BehaviourTreeEditor : EditorWindow
                     authoringProp.objectReferenceValue = treeAsset;
                     so.ApplyModifiedProperties();
                 }
+                currentRunner = newRunner;
                 Debug.Log($"[BehaviourTreeEditor] Added {runnerType.Name} to '{selectedGO.name}' and assigned '{treeAsset.name}'.");
             }
             else if (existingRunner.GetSourceTree() == null)
@@ -358,6 +360,7 @@ public class BehaviourTreeEditor : EditorWindow
                     authoringProp.objectReferenceValue = treeAsset;
                     so.ApplyModifiedProperties();
                 }
+                currentRunner = existingRunner;
                 Debug.Log($"[BehaviourTreeEditor] Assigned '{treeAsset.name}' to existing {existingRunner.GetType().Name} on '{selectedGO.name}'.");
             }
         }
@@ -393,20 +396,26 @@ public class BehaviourTreeEditor : EditorWindow
 
     private BaseEditorTreeAsset OnSelectTree()
     {
+        // When the user directly selects a tree asset in the Project window,
+        // prioritise it over any GameObject runner that may also be selected.
+        if (Selection.activeObject is BaseEditorTreeAsset treeAsset)
+        {
+            currentRunner = null;
+            trackedVariablesView?.Refresh(null);
+            return treeAsset;
+        }
+
         GameObject selected = Selection.activeGameObject;
 
         if (selected != null && selected.TryGetComponent(out BehaviourTreeRunnerBase runner))
         {
             currentRunner = runner;
             trackedVariablesView?.Refresh(runner);
-
             return runner.GetSourceTree() as BaseEditorTreeAsset;
         }
-        else
-        {
-            trackedVariablesView?.Refresh(null);
-            return Selection.activeObject as BaseEditorTreeAsset;
-        }
+
+        trackedVariablesView?.Refresh(null);
+        return null;
     }
 
     private void OnDisable()
@@ -560,6 +569,7 @@ public class BehaviourTreeEditor : EditorWindow
         {
             currentTree = null;
             currentBlackboardDef = null;
+            currentRunner = null;
             treeGraphView?.ClearView();
             return;
         }
@@ -578,6 +588,7 @@ public class BehaviourTreeEditor : EditorWindow
     {
         currentTree = null;
         currentBlackboardDef = null;
+        currentRunner = null;
 
         if (treeGraphView != null)
         {

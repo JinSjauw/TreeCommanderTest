@@ -21,7 +21,7 @@ MonoBehaviour:
   comment: 
   guid: e112d026ed6c0944d8bdd767d49aebba
   graphPosition: {x: 420, y: 700}
-  runtimeIndex: 7
+  runtimeIndex: 8
   compositeType: 1
   methodName: SELECTOR
   fieldEntries: []
@@ -40,18 +40,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   nodeName: 
   children:
+  - {fileID: 7262323178222563111}
   - {fileID: -2050717670034485329}
   - {fileID: -2829970061995693400}
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
   guid: b74a5bfd75d54ae4aa3e253c5ab259cc
-  graphPosition: {x: -0, y: 280}
+  graphPosition: {x: 0, y: 280}
   runtimeIndex: 0
   compositeType: 1
   methodName: SELECTOR
   fieldEntries: []
-  abortType: 0
+  abortType: 1
 --- !u!114 &-7057239054950564937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,7 +73,7 @@ MonoBehaviour:
   comment: 
   guid: 5b3881f1be73d8247ae59c88c1a6dd06
   graphPosition: {x: 315, y: 945}
-  runtimeIndex: 11
+  runtimeIndex: 12
   methodName: Inverter
   fieldEntries:
   - fieldName: alwaysFailure
@@ -122,6 +123,7 @@ MonoBehaviour:
   - rid: 3017916940597854307
   - rid: 3017916940597854308
   - rid: 3017916940597854309
+  - rid: 3017916964380082405
   references:
     version: 2
     RefIds:
@@ -158,6 +160,17 @@ MonoBehaviour:
         isSystemVariable: 0
         singleValue: {x: 0, y: 0, z: 0}
         arrayValues: []
+    - rid: 3017916964380082405
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: HEALTH
+        variableStride: 1
+        variableTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: []
 --- !u!114 &-2829970061995693400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,7 +194,7 @@ MonoBehaviour:
   comment: 
   guid: 45de8f323845c644586ca2176fffe25c
   graphPosition: {x: 595, y: 525}
-  runtimeIndex: 2
+  runtimeIndex: 3
   compositeType: 1
   methodName: SEQUENCE
   fieldEntries: []
@@ -209,7 +222,7 @@ MonoBehaviour:
   comment: 
   guid: 4a663c6f269049340b6bfc4635bdf850
   graphPosition: {x: -385, y: 490}
-  runtimeIndex: 1
+  runtimeIndex: 2
   compositeType: 1
   methodName: SEQUENCE
   fieldEntries: []
@@ -233,7 +246,7 @@ MonoBehaviour:
   comment: 
   guid: 1b832aeb6d3938b4aafa4a1ba85c1bb1
   graphPosition: {x: -490, y: 735}
-  runtimeIndex: 4
+  runtimeIndex: 5
   leafType: 3
   methodName: Enemy_SelectDetectedTarget
   fieldEntries:
@@ -289,7 +302,7 @@ MonoBehaviour:
   comment: 
   guid: 203cda37fbf5b434eb71fce58b8f391e
   graphPosition: {x: 1225, y: 700}
-  runtimeIndex: 10
+  runtimeIndex: 11
   leafType: 3
   methodName: WaitSeconds
   fieldEntries:
@@ -341,6 +354,7 @@ MonoBehaviour:
   - {fileID: 1256753395779555130}
   - {fileID: 3800750207177095848}
   - {fileID: 6767648677244204698}
+  - {fileID: 7262323178222563111}
   editorNotes: []
 --- !u!114 &212400733712462643
 MonoBehaviour:
@@ -361,7 +375,7 @@ MonoBehaviour:
   comment: 
   guid: 0613a94e1e5a0c54ba9c5d13297bd9b7
   graphPosition: {x: 48, y: 735}
-  runtimeIndex: 6
+  runtimeIndex: 7
   leafType: 3
   methodName: Enemy_FireSequence
   fieldEntries:
@@ -401,7 +415,7 @@ MonoBehaviour:
   comment: 
   guid: 98fe59578d944fd4cb41e595f8b2cf82
   graphPosition: {x: 980, y: 700}
-  runtimeIndex: 9
+  runtimeIndex: 10
   leafType: 3
   methodName: Enemy_StopMovement
   fieldEntries: []
@@ -446,7 +460,7 @@ MonoBehaviour:
   comment: 
   guid: 7f24e7d04b80a674aa89dd5b715ef5c4
   graphPosition: {x: 770, y: 700}
-  runtimeIndex: 8
+  runtimeIndex: 9
   leafType: 3
   methodName: MoveTo
   fieldEntries:
@@ -486,7 +500,7 @@ MonoBehaviour:
   comment: 
   guid: 83a8d89b23e9fc24899de64a8111d70b
   graphPosition: {x: -190, y: 735}
-  runtimeIndex: 5
+  runtimeIndex: 6
   leafType: 3
   methodName: Enemy_StopMovement
   fieldEntries: []
@@ -510,7 +524,7 @@ MonoBehaviour:
   comment: 
   guid: f984a73681fca2c428d686a437912539
   graphPosition: {x: 315, y: 1139}
-  runtimeIndex: 13
+  runtimeIndex: 14
   leafType: 2
   methodName: Enemy_HasArrived
   fieldEntries: []
@@ -534,7 +548,7 @@ MonoBehaviour:
   comment: 
   guid: 71d7e53fdf55dbb4aa69057b9ed97d4c
   graphPosition: {x: -715, y: 735}
-  runtimeIndex: 3
+  runtimeIndex: 4
   leafType: 2
   methodName: Enemy_Detected
   fieldEntries:
@@ -603,7 +617,7 @@ MonoBehaviour:
   comment: 
   guid: 3eb42b0b1800a674e9cfab38095d0fe7
   graphPosition: {x: 525, y: 945}
-  runtimeIndex: 12
+  runtimeIndex: 13
   leafType: 3
   methodName: ExtractPosition
   fieldEntries:
@@ -648,6 +662,75 @@ MonoBehaviour:
     stringValue: 
     isOrderConstant: 0
     intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
+--- !u!114 &7262323178222563111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: CompareVariable
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: 
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 816baa12cc9947e4b8b68f9fa03d26e5
+  graphPosition: {x: -840, y: 490}
+  runtimeIndex: 1
+  leafType: 2
+  methodName: CompareVariable
+  fieldEntries:
+  - fieldName: operanda
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: HEALTH
+    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: comparewith
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    intValue: 50
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: operation
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    intValue: 3
     floatValue: 0
     boolValue: 0
     vector2Value: {x: 0, y: 0}

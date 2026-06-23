@@ -142,7 +142,7 @@ namespace BehaviourTree.Editor
                     if (memberEntries.Count == 0) continue;
 
                     // Component group
-                    searchList.Add(new SearchTreeGroupEntry(new GUIContent(componentType.Name), 2));
+                    searchList.Add(new SearchTreeGroupEntry(new GUIContent($"[{go.name}] {componentType.Name}"), 2));
 
                     // Add all member entries
                     memberEntries.Sort((a, b) =>

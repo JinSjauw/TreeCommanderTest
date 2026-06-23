@@ -56,9 +56,11 @@ namespace BehaviourTree.Core
         public bool IsCompiled => readDelegate != null && writeDelegate != null;
 
         /// <summary>
-        /// Attempts to compile typed read/write delegates via Expression trees.
+        /// TEMPORARY: Attempts to compile typed read/write delegates via Expression trees.
         /// Called once during tree init, after <see cref="bbSlotIndex"/> is assigned.
         /// Falls back silently — existing reflection path handles unsupported platforms.
+        /// This (and the similar code in TrackedBinding) gets deleted when we move to DOTS
+        /// with typed NativeArray&lt;T&gt; storage — no type-erased object[] to bridge across.
         /// </summary>
         public void CompileAccessors(Type declaringType)
         {
@@ -96,7 +98,8 @@ namespace BehaviourTree.Core
             }
             catch
             {
-                // IL2CPP AOT or unsupported type — delegates remain null, reflection fallback handles it.
+                // AOT / IL2CPP — delegates remain null, reflection fallback handles it.
+                // TEMPORARY: this entire try/catch goes away with DOTS typed storage.
             }
         }
 
@@ -208,6 +211,13 @@ namespace BehaviourTree.Core
         /// Null means any type is allowed. Ignored for non-Variable / non-Toggle kinds.
         /// </summary>
         public Type[] allowedTypes;
+
+        /// <summary>
+        /// When set, this entry's type will automatically sync to match the resolved
+        /// type of the entry at the specified index. The editor propagates type changes
+        /// from the source entry to this entry whenever the source type is updated.
+        /// </summary>
+        public int? syncTypeFromIndex;
 
         /// <summary>
         /// For Operation kind: the enum type to render as a dropdown.

@@ -241,6 +241,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157636871}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &225122618 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8371409264156481875, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
+  m_PrefabInstance: {fileID: 2255274407135747596}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 352144a5f4ca0334ab5b8c74cd7b10fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!1 &272425002
 GameObject:
   m_ObjectHideFlags: 0
@@ -1638,7 +1649,7 @@ PrefabInstance:
     - target: {fileID: 1504933653420949153, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
       propertyPath: authoringAsset
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 11400000, guid: fc6f99a1c74a15e40b3b76db3809940f, type: 2}
     - target: {fileID: 1512668401160827212, guid: 9a0813f5121c70f479e72eb03664241b, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -2148,6 +2159,38 @@ PrefabInstance:
       propertyPath: authoringAsset
       value: 
       objectReference: {fileID: 11400000, guid: 4dc03925a20e52e4fbe504492aada19c, type: 2}
+    - target: {fileID: 7495416829960762019, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
+      propertyPath: trackedBindingGroups.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7495416829960762019, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
+      propertyPath: trackedBindingGroups.Array.data[0].targetTree
+      value: 
+      objectReference: {fileID: 11400000, guid: 4dc03925a20e52e4fbe504492aada19c, type: 2}
+    - target: {fileID: 7495416829960762019, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
+      propertyPath: trackedBindingGroups.Array.data[0].targetTreeGuid
+      value: 4dc03925a20e52e4fbe504492aada19c
+      objectReference: {fileID: 0}
+    - target: {fileID: 7495416829960762019, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
+      propertyPath: trackedBindingGroups.Array.data[0].bindings.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7495416829960762019, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
+      propertyPath: trackedBindingGroups.Array.data[0].bindings.Array.data[0].memberName
+      value: health
+      objectReference: {fileID: 0}
+    - target: {fileID: 7495416829960762019, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
+      propertyPath: trackedBindingGroups.Array.data[0].bindings.Array.data[0].memberTypeName
+      value: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+      objectReference: {fileID: 0}
+    - target: {fileID: 7495416829960762019, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
+      propertyPath: trackedBindingGroups.Array.data[0].bindings.Array.data[0].targetComponent
+      value: 
+      objectReference: {fileID: 225122618}
+    - target: {fileID: 7495416829960762019, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
+      propertyPath: trackedBindingGroups.Array.data[0].bindings.Array.data[0].blackboardVariableName
+      value: HEALTH
+      objectReference: {fileID: 0}
     - target: {fileID: 7675388319297404932, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
       propertyPath: detectionRadius
       value: 100
@@ -2158,7 +2201,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9025605514317147064, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
       propertyPath: serializedReferences.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 9025605514317147064, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
       propertyPath: 'serializedReferences.Array.data[0]'

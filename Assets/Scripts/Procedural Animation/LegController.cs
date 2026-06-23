@@ -32,8 +32,12 @@ public class LegController : MonoBehaviour
 
     public EventHandler<int> moveFinishedEvent;
 
+    private LayerMask groundMask;
+
     private void OnEnable()
     {
+        groundMask = LayerMask.GetMask("Ground");
+
         if(bodyTransform == null)
         {
             bodyTransform = GetComponentInParent<LegManager>().GetBodyTransform();
@@ -55,7 +59,7 @@ public class LegController : MonoBehaviour
         Vector3 rayOrigin = legTargetTransform.position;
         rayOrigin.y = 20f;
 
-        if(Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, float.MaxValue, LayerMask.GetMask("Ground")))
+        if(Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, float.MaxValue, groundMask))
         {
             Vector3 groundPos = hit.point;
 
@@ -105,7 +109,7 @@ public class LegController : MonoBehaviour
 
     private bool CheckGrounded() 
     {
-        return Physics.Raycast(legTransform.position, legTransform.up, legTransform.position.y + legHeightOffset + 0.05f);
+        return Physics.Raycast(legTransform.position, legTransform.up, legTransform.position.y + legHeightOffset + 0.05f, groundMask);
     }
 
     private void FixLeg() 
@@ -149,7 +153,7 @@ public class LegController : MonoBehaviour
     {
         //Debug.DrawRay(updatePosition, -bodyTransform.up, Color.blue, 10);
 
-        if(Physics.Raycast(updatePosition, Vector3.down, out RaycastHit hit, float.MaxValue, LayerMask.GetMask("Ground"))) 
+        if(Physics.Raycast(updatePosition, Vector3.down, out RaycastHit hit, float.MaxValue, groundMask)) 
         {
             updateTransform.position = hit.point + new Vector3(0, legHeightOffset, 0);
             updateTransform.up = -hit.normal;

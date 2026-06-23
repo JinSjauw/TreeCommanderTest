@@ -43,7 +43,7 @@ public class DeathHandler : MonoBehaviour
     {
         if (pool == null)
         {
-            pool = FindFirstObjectByType<ObjectPool>();
+            pool = ObjectPool.Instance;
         }
 
         if (pool == null)

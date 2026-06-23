@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using BehaviourTree.Core;
 using UnityEngine;
@@ -157,6 +158,12 @@ namespace BehaviourTree.Runtime
                 int varIndex = blackboardDefinition.GetVariableIndex(binding.blackboardVariableName);
                 binding.variableIndex = ComputeSlotOffset(blackboardDefinition, varIndex);
 
+                // TEMPORARY: Compile a delegate to avoid PropertyInfo.GetValue / FieldInfo.GetValue
+                // reflection on every PushTrackedBindings() call. This (and the similar code in
+                // FieldBinding) gets deleted when we move to DOTS — typed NativeArray<T> storage
+                // eliminates the need for any bridging between typed C# fields and type-erased storage.
+                CompileTrackedBindingDelegate(binding);
+
                 trackedBindingsToPush.Add(binding);
             }
         }
@@ -176,9 +183,11 @@ namespace BehaviourTree.Runtime
                 TrackedBinding binding = trackedBindingsToPush[i];
                 if (binding.variableIndex < 0 || binding.targetComponent == null) continue;
 
-                object value = binding.isProperty
-                    ? binding.cachedPropertyInfo?.GetValue(binding.targetComponent)
-                    : binding.cachedFieldInfo?.GetValue(binding.targetComponent);
+                // TEMPORARY: Uses a Func<object> delegate compiled at resolve time instead of
+                // PropertyInfo.GetValue / FieldInfo.GetValue. The boxing on the return path is
+                // acceptable — the point is to avoid per-frame reflection, not per-frame boxing.
+                // Deleted when DOTS typed storage arrives.
+                object value = binding.readDelegate?.Invoke();
 
                 blackBoard.SetBoxed(binding.variableIndex, value);
             }
@@ -200,6 +209,47 @@ namespace BehaviourTree.Runtime
                 slotOffset += (stride > 1) ? stride : 1;
             }
             return slotOffset;
+        }
+
+        // TEMPORARY: Compiles a Func<object> delegate to read the component member without
+        // per-frame reflection. Uses Expression trees (same pattern as FieldBinding.CompileAccessors).
+        // Falls back silently on AOT platforms where Expression.Compile throws — the binding
+        // simply won't push, which matches the existing PropertyInfo/FieldInfo null-guard behavior.
+        // Entire method deleted when DOTS typed storage arrives.
+        private static void CompileTrackedBindingDelegate(TrackedBinding binding)
+        {
+            Component comp = binding.targetComponent;
+            if (comp == null) return;
+
+            try
+            {
+                Type compType = comp.GetType();
+                ParameterExpression compParam = Expression.Parameter(typeof(Component), "comp");
+                UnaryExpression castComp = Expression.Convert(compParam, compType);
+
+                MemberExpression memberAccess;
+                if (binding.isProperty && binding.cachedPropertyInfo != null)
+                    memberAccess = Expression.Property(castComp, binding.cachedPropertyInfo);
+                else if (!binding.isProperty && binding.cachedFieldInfo != null)
+                    memberAccess = Expression.Field(castComp, binding.cachedFieldInfo);
+                else
+                    return;
+
+                UnaryExpression castResult = Expression.Convert(memberAccess, typeof(object));
+                Expression<Func<Component, object>> lambda =
+                    Expression.Lambda<Func<Component, object>>(castResult, compParam);
+
+                Func<Component, object> typedDelegate = lambda.Compile();
+
+                // Close over the specific component instance
+                Component captured = comp;
+                binding.readDelegate = () => typedDelegate(captured);
+            }
+            catch
+            {
+                // AOT / IL2CPP — Expression.Compile is not available.
+                // readDelegate remains null; PushTrackedBindings skips this binding via null-guard.
+            }
         }
 
         protected virtual void OnDestroy()

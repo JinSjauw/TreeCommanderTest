@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using BehaviourTree.Core;
 using UnityEngine;
@@ -34,6 +35,11 @@ namespace BehaviourTree.Runtime
         [NonSerialized] public FieldInfo cachedFieldInfo;
         [NonSerialized] public PropertyInfo cachedPropertyInfo;
         [NonSerialized] public int variableIndex = -1;
+
+        // TEMPORARY: Compiled delegate to avoid PropertyInfo.GetValue() reflection per frame.
+        // This (and Expression.Compile in FieldBinding) gets deleted when we move to DOTS
+        // with typed NativeArray<T> storage — then there's no type-erased object[] to bridge across.
+        [NonSerialized] public Func<object> readDelegate;
     }
 
     /// <summary>

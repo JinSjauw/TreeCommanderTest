@@ -3,7 +3,12 @@ using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
+    public static ObjectPool Instance { get; private set; }
+
     private Dictionary<string, Queue<GameObject>> objectPool = new Dictionary<string, Queue<GameObject>>();
+
+    private void OnEnable()  => Instance = this;
+    private void OnDisable() => Instance = null;
 
     public GameObject GetObject(GameObject gameObject, bool active = true) 
     {

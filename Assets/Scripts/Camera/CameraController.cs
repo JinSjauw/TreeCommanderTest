@@ -19,6 +19,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float zoomSmoothing;
 
     private float currentZoomSpeed;
+    private Camera mainCamera;
 
     public float ZoomLevel 
     {
@@ -64,6 +65,7 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
+        mainCamera = Camera.main;
         Services.Input.OnZoomCameraEvent += OnCameraZoom;
     }
 
@@ -86,11 +88,11 @@ public class CameraController : MonoBehaviour
 
     private void UpdateMovement(float deltaTime)
     {
-        Vector3 forward = Camera.main.transform.forward;
+        Vector3 forward = mainCamera.transform.forward;
         forward.y = 0f;
         forward.Normalize();
 
-        Vector3 right = Camera.main.transform.right;
+        Vector3 right = mainCamera.transform.right;
         right.y = 0f;
         right.Normalize();
 

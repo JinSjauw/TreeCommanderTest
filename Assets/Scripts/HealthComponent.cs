@@ -6,7 +6,7 @@ public class HealthComponent : MonoBehaviour
 {
     //[SerializeField] private UIEvents uiEvents;
     [SerializeField] private float maxHealth;
-    [SerializeField] private float health;
+    public float health;
     //[SerializeField] private float percentageHealth;
 
     private bool isPlayer;

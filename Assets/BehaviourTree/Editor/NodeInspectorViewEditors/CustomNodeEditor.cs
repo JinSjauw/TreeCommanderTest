@@ -24,6 +24,7 @@ namespace BehaviourTree.Editor
         private SerializedProperty nodeNameProp;
         private SerializedProperty methodNameProp;
         private SerializedProperty fieldEntriesProp;
+        private DynamicParamDescriptor[] currentDescriptors;
         private SerializedProperty childrenProp;
         private SerializedProperty commentProp;
         private SerializedProperty abortTypeProp;
@@ -538,6 +539,7 @@ namespace BehaviourTree.Editor
         {
             NodeMethod temp = MethodRegistry.CreateInstance(methodName);
             DynamicParamDescriptor[] descriptors = temp?.GetDynamicParamDescriptors();
+            currentDescriptors = descriptors;
             if (descriptors == null || descriptors.Length == 0)
             {
                 // No descriptors — this is a legacy [SharedVar]-based node, not dynamic
@@ -559,6 +561,9 @@ namespace BehaviourTree.Editor
                 while (fieldEntriesProp.arraySize > realCount)
                     fieldEntriesProp.DeleteArrayElementAtIndex(fieldEntriesProp.arraySize - 1);
             }
+
+            // Sync linked entry types from their source indices
+            SyncLinkedEntryTypes();
 
             if (fieldEntriesProp.arraySize < realCount)
                 return;
@@ -633,6 +638,30 @@ namespace BehaviourTree.Editor
             // so each field carries its own type independently.
             if (desc.allowedTypes != null && desc.allowedTypes.Length > 0)
                 entry.FindPropertyRelative("fieldTypeName").stringValue = desc.allowedTypes[0].AssemblyQualifiedName;
+        }
+
+        /// <summary>
+        /// Propagates types from source entries to any entry whose
+        /// <see cref="DynamicParamDescriptor.syncTypeFromIndex"/> points to a source.
+        /// Called after initialisation and after any type-change callback (S/F buttons).
+        /// </summary>
+        private void SyncLinkedEntryTypes()
+        {
+            if (currentDescriptors == null) return;
+            for (int i = 0; i < currentDescriptors.Length; i++)
+            {
+                int? srcIndex = currentDescriptors[i].syncTypeFromIndex;
+                if (srcIndex == null || srcIndex.Value >= fieldEntriesProp.arraySize) continue;
+
+                string srcTypeName = fieldEntriesProp.GetArrayElementAtIndex(srcIndex.Value)
+                    .FindPropertyRelative("fieldTypeName")?.stringValue;
+                if (string.IsNullOrEmpty(srcTypeName)) continue;
+
+                SerializedProperty ftProp = fieldEntriesProp.GetArrayElementAtIndex(i)
+                    .FindPropertyRelative("fieldTypeName");
+                if (ftProp != null && ftProp.stringValue != srcTypeName)
+                    ftProp.stringValue = srcTypeName;
+            }
         }
 
         // ── Row helpers — one per DynamicParamKind ──
@@ -903,6 +932,7 @@ namespace BehaviourTree.Editor
                             .FindPropertyRelative("isArray").boolValue = chosen.Stride > 1;
                         variableNameProp.stringValue = chosen.Name;
                         fieldEntriesProp.serializedObject.ApplyModifiedProperties();
+                        SyncLinkedEntryTypes();
                         nodeVisualsChangedThisFrame = true;
                     }, isSquadContext: squadCtx);
                 PopupWindow.Show(
@@ -929,6 +959,7 @@ namespace BehaviourTree.Editor
                             .FindPropertyRelative("variableName");
                         if (varProp != null) varProp.stringValue = string.Empty;
                         fieldEntriesProp.serializedObject.ApplyModifiedProperties();
+                        SyncLinkedEntryTypes();
                         nodeVisualsChangedThisFrame = true;
                     }, allowedTypes, squadCtx);
                 PopupWindow.Show(

@@ -80,7 +80,7 @@ public class EnemyManager : MonoBehaviour
         }
 
         Vector3 finalSpawnPos = new Vector3(spawnPosition.x, navMeshHeight + 0.5f, spawnPosition.z);
-        Debug.Log($"[EnemyManager] Spawning at index={randomIndex} spawnPoint={spawnPoint.position} finalPos={finalSpawnPos} objName={spawnedObj.name} activeSelf={spawnedObj.activeSelf}");
+        // Debug.Log($"[EnemyManager] Spawning at index={randomIndex} spawnPoint={spawnPoint.position} finalPos={finalSpawnPos} objName={spawnedObj.name} activeSelf={spawnedObj.activeSelf}");
         spawnedObj.transform.position = finalSpawnPos;
         spawnedObj.transform.rotation = spawnPoint.rotation;
 

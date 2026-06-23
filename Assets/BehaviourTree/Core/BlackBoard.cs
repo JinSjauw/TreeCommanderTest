@@ -426,7 +426,7 @@ namespace BehaviourTree.Core
         public void Set<T>(string keyName, T value)
         {
             int index = FindVariableIndex(keyName);
-            Debug.Log($"[Blackboard] Setting {keyName} to {value} at {index}");
+            // Debug.Log($"[Blackboard] Setting {keyName} to {value} at {index}");
             if (index >= 0)
             {   
                 Set(index, value);

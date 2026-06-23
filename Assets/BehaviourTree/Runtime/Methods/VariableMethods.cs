@@ -77,7 +77,7 @@ namespace BehaviourTree.Runtime.Methods
             else
                 return NodeState.FAILURE;
 
-            Debug.Log($"[SetVariable] slot={targetSlot} value={value ?? "null"} (type={value?.GetType().Name ?? "null"})");
+            // Debug.Log($"[SetVariable] slot={targetSlot} value={value ?? "null"} (type={value?.GetType().Name ?? "null"})");
             BB.SetBoxed(targetSlot, value);
             return NodeState.SUCCESS;
         }
@@ -152,11 +152,11 @@ namespace BehaviourTree.Runtime.Methods
                 object[] values = new object[stride];
                 for (int i = 0; i < stride; i++)
                     values[i] = BB.GetBoxed(variableSlot + i);
-                Debug.Log($"[LogVariable] [{string.Join(", ", values)}]");
+                // Debug.Log($"[LogVariable] [{string.Join(", ", values)}]");
             }
             else
             {
-                Debug.Log($"[LogVariable] {BB.GetBoxed(variableSlot)}");
+                // Debug.Log($"[LogVariable] {BB.GetBoxed(variableSlot)}");
             }
 
             return NodeState.SUCCESS;
@@ -180,7 +180,7 @@ namespace BehaviourTree.Runtime.Methods
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {
             new DynamicParamDescriptor { titleLabel = "Operand A", label = "Operand A", kind = DynamicParamKind.Variable, index = 0 },
-            new DynamicParamDescriptor { titleLabel = "Compare With", label = "Compare With", kind = DynamicParamKind.Toggle, index = 1 },
+            new DynamicParamDescriptor { titleLabel = "Compare With", label = "Compare With", kind = DynamicParamKind.Toggle, index = 1, syncTypeFromIndex = 0 },
             new DynamicParamDescriptor
             {
                 titleLabel = "Operation", label = "Operation", kind = DynamicParamKind.Operation, index = 2,
@@ -650,6 +650,12 @@ namespace BehaviourTree.Runtime.Methods
                 return NodeState.SUCCESS;
 
             return NodeState.RUNNING;
+        }
+
+        public override void OnAbort(IBlackBoardAccess bbAccess)
+        {
+            if (agent != null && agent.isOnNavMesh)
+                agent.isStopped = true;
         }
     }
 

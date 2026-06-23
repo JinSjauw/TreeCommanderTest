@@ -44,7 +44,7 @@ public class GunHandling : MonoBehaviour
 
     private void Start()
     {
-        pool = FindFirstObjectByType<ObjectPool>();
+        pool = ObjectPool.Instance;
         aimOrigin = turretController.GetTurretBase();
         reloadDuration = 60f / roundPerMinute;
     }

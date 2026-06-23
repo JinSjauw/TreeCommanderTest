@@ -407,10 +407,14 @@ public partial class TrackedVariablesView : VisualElement
 
         result.Add(currentRunner.gameObject);
 
-        Transform runnerTransform = currentRunner.transform;
-        for (int i = 0; i < runnerTransform.childCount; i++)
-            result.Add(runnerTransform.GetChild(i).gameObject);
-
+        // Include all descendants (not just direct children)
+        Transform[] allChildren = currentRunner.GetComponentsInChildren<Transform>();
+        for (int i = 0; i < allChildren.Length; i++)
+        {
+            GameObject childGO = allChildren[i].gameObject;
+            if (childGO != currentRunner.gameObject && !result.Contains(childGO))
+                result.Add(childGO);
+        }
 
         return result;
     }

@@ -29,8 +29,12 @@ public class LegManager : MonoBehaviour
     private Quaternion oldTilt;
     private Quaternion newTilt;
 
+    private LayerMask groundMask;
+
     private void OnEnable()
     {
+        groundMask = LayerMask.GetMask("Ground");
+
         // Unsubscribe first to avoid double-subscription on pool reuse
         for (int i = 0; i < legGroupA.Length; i++)
             legGroupA[i].moveFinishedEvent -= CheckLegs;
@@ -94,7 +98,7 @@ public class LegManager : MonoBehaviour
         Vector3 heightCheckPosition = bodyTransform.position;
         heightCheckPosition.y = 20;
 
-        if (Physics.Raycast(bodyTransform.position, Vector3.down, out RaycastHit hit, 100, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(bodyTransform.position, Vector3.down, out RaycastHit hit, 100, groundMask))
         {
             Vector3 heightApplied = bodyTransform.position;
             heightApplied.y = hit.point.y + heightOffset;
@@ -227,7 +231,7 @@ public class LegManager : MonoBehaviour
     /// </summary>
     public void SnapBodyHeight()
     {
-        if (Physics.Raycast(bodyTransform.position + Vector3.up * 20, Vector3.down, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(bodyTransform.position + Vector3.up * 20, Vector3.down, out RaycastHit hit, 100f, groundMask))
         {
             Vector3 heightApplied = bodyTransform.position;
             heightApplied.y = hit.point.y + heightOffset;

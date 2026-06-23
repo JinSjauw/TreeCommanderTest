@@ -6,7 +6,7 @@ public class ReturnToPool : MonoBehaviour
 
     private void Awake()
     {
-        objectPool = FindFirstObjectByType<ObjectPool>();
+        objectPool = ObjectPool.Instance;
     }
 
     [SerializeField] private float lifeTime;
