@@ -18,7 +18,7 @@ namespace BehaviourTree.Runtime.Methods
             {
                 titleLabel = "Radius",
                 label = "Radius",
-                kind = DynamicParamKind.Constant,
+                kind = DynamicParamKind.ScriptableObjectConstant,
                 index = 0,
                 allowedTypes = new[] { typeof(float) }
             },

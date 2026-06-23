@@ -611,6 +611,9 @@ namespace BehaviourTree.Editor
                     case DynamicParamKind.Operation:
                         DrawOperationParamRow(entry, desc, paramType);
                         break;
+                    case DynamicParamKind.ScriptableObjectConstant:
+                        DrawSOConstantParamRow(entry, desc, paramType, isArray, hasTitle);
+                        break;
                 }
                 EditorGUILayout.Space(4f);
             }
@@ -632,6 +635,11 @@ namespace BehaviourTree.Editor
             entry.FindPropertyRelative("fieldName").stringValue = desc.label.ToLowerInvariant().Replace(" ", "");
             entry.FindPropertyRelative("isVariable").boolValue =
                 desc.kind == DynamicParamKind.Variable || desc.kind == DynamicParamKind.Toggle;
+            entry.FindPropertyRelative("isConfigConstant").boolValue =
+                desc.kind == DynamicParamKind.ScriptableObjectConstant;
+            // SO constants start with empty selection — user picks a field via the "..." button
+            entry.FindPropertyRelative("configSourceGuid").stringValue = "";
+            entry.FindPropertyRelative("configFieldName").stringValue = "";
             if (desc.kind == DynamicParamKind.Operation && desc.operationEnumType != null)
                 entry.FindPropertyRelative("fieldTypeName").stringValue = typeof(int).AssemblyQualifiedName;
             // Set fieldTypeName from allowedTypes for Constant, Variable, and Toggle kinds
@@ -752,6 +760,209 @@ namespace BehaviourTree.Editor
             // Map display index back to enum value
             if (newDisplayIndex >= 0 && newDisplayIndex < displayNames.Length)
                 intValueProp.intValue = hasFilter ? availableIndices[newDisplayIndex] : newDisplayIndex;
+        }
+
+        // ── ScriptableObject constant row (C/V/SO three-way toggle) ──────────────────
+
+        private void DrawSOConstantParamRow(SerializedProperty entry, DynamicParamDescriptor desc,
+            Type paramType, bool isArray, bool hasTitle)
+        {
+            SerializedProperty isVarProp = entry.FindPropertyRelative("isVariable");
+            SerializedProperty isConfigProp = entry.FindPropertyRelative("isConfigConstant");
+            SerializedProperty configGuidProp = entry.FindPropertyRelative("configSourceGuid");
+            SerializedProperty configFieldProp = entry.FindPropertyRelative("configFieldName");
+
+            string currentConfigGuid = configGuidProp.stringValue;
+            bool isVar = isVarProp.boolValue;
+            bool isConfig = isConfigProp.boolValue || !string.IsNullOrEmpty(currentConfigGuid);
+
+            // Determine the next mode on button click: C → V → SO → C
+            string nextLabel;
+            if (!isVar && !isConfig)      nextLabel = "V";
+            else if (isVar)               nextLabel = "SO";
+            else                          nextLabel = "C";
+
+            // ── Row: label + value + toggle button ────────────────────────────────────
+            EditorGUILayout.BeginHorizontal();
+
+            string typedLabel = hasTitle ? desc.titleLabel : BuildTypedLabel(desc.label, paramType, desc.allowedTypes);
+            EditorGUILayout.LabelField(typedLabel, GUILayout.Width(FieldLabelWidth));
+            GUILayout.FlexibleSpace();
+
+            if (isConfig)
+            {
+                string configName;
+                if (!string.IsNullOrEmpty(configFieldProp.stringValue))
+                {
+                    ScriptableObject so = GetConfigSourceByGuid(currentConfigGuid);
+                    configName = so != null
+                        ? $"{so.name}.{configFieldProp.stringValue}"
+                        : $"(missing).{configFieldProp.stringValue}";
+                }
+                else
+                {
+                    configName = "(no field selected)";
+                }
+
+                // Popup button — shows selected field, click to re-pick.
+                // Toggle back to C or V to clear the selection.
+                if (GUILayout.Button(configName, EditorStyles.popup, GUILayout.Width(InputFieldWidth)))
+                    ShowConfigFieldPicker(entry, paramType, configGuidProp, configFieldProp);
+            }
+            else if (isVar)
+            {
+                DrawVariableDropdownWithSquadFilter(
+                    entry.FindPropertyRelative("variableName"), paramType, isArray);
+            }
+            else
+            {
+                DrawConstantFieldForType(entry, paramType, null, showLabel: false);
+            }
+
+            // Three-way toggle button
+            {
+                string toggleTooltip = nextLabel == "V" ? "Switch to variable" :
+                                       nextLabel == "SO" ? "Switch to SO constant" : "Switch to constant";
+                if (GUILayout.Button(new GUIContent(nextLabel, toggleTooltip),
+                    GUILayout.Width(SmallButtonWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight)))
+                {
+                    EditorUtility.SetDirty(target);
+                    nodeVisualsChangedThisFrame = true;
+
+                    if (!isVar && !isConfig)
+                    {
+                        isVarProp.boolValue = true;
+                        isConfigProp.boolValue = false;
+                        configGuidProp.stringValue = "";
+                        configFieldProp.stringValue = "";
+                    }
+                    else if (isVar)
+                    {
+                        isVarProp.boolValue = false;
+                        isConfigProp.boolValue = true;
+                        configGuidProp.stringValue = "";
+                        configFieldProp.stringValue = "";
+                    }
+                    else
+                    {
+                        isVarProp.boolValue = false;
+                        isConfigProp.boolValue = false;
+                        configGuidProp.stringValue = "";
+                        configFieldProp.stringValue = "";
+                    }
+                }
+            }
+
+            GUILayout.Space(SmallButtonsMargin / 2); // pad to 2×SmallButtonWidth margin
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// Opens a GenericMenu listing fields from every SO in the tree's
+        /// <see cref="BehaviourTreeAssetBase.availableConfigs"/> whose type
+        /// is compatible with the expected parameter type.
+        /// Selecting a field stores the SO reference (GUID + field name) as metadata;
+        /// the actual value is resolved at bake time by TreeBaker.
+        /// </summary>
+        private void ShowConfigFieldPicker(SerializedProperty entry, Type paramType,
+            SerializedProperty configGuidProp, SerializedProperty configFieldProp)
+        {
+            var treeAsset = BehaviourTreeEditor.currentTree;
+            if (treeAsset == null) return;
+
+            GenericMenu menu = new GenericMenu();
+
+            foreach (ScriptableObject so in treeAsset.availableConfigs)
+            {
+                if (so == null) continue;
+
+                string soPath = AssetDatabase.GetAssetPath(so);
+                string soGuid = AssetDatabase.AssetPathToGUID(soPath);
+                if (string.IsNullOrEmpty(soGuid)) continue;
+
+                System.Reflection.FieldInfo[] fields = so.GetType()
+                    .GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                System.Reflection.PropertyInfo[] properties = so.GetType()
+                    .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+                foreach (var f in fields)
+                {
+                    if (IsTypeCompatible(f.FieldType, paramType))
+                    {
+                        string itemPath = $"{so.name}/{f.Name}  ({f.FieldType.Name})";
+                        string capturedGuid = soGuid;
+                        string capturedField = f.Name;
+                        ScriptableObject capturedSO = so;
+                        menu.AddItem(new GUIContent(itemPath), false, () =>
+                        {
+                            ApplySOFieldSelection(entry, configGuidProp, configFieldProp,
+                                capturedSO, capturedGuid, capturedField);
+                        });
+                    }
+                }
+
+                foreach (var p in properties)
+                {
+                    if (p.CanRead && IsTypeCompatible(p.PropertyType, paramType))
+                    {
+                        string itemPath = $"{so.name}/{p.Name}  ({p.PropertyType.Name})";
+                        string capturedGuid = soGuid;
+                        string capturedField = p.Name;
+                        ScriptableObject capturedSO = so;
+                        menu.AddItem(new GUIContent(itemPath), false, () =>
+                        {
+                            ApplySOFieldSelection(entry, configGuidProp, configFieldProp,
+                                capturedSO, capturedGuid, capturedField);
+                        });
+                    }
+                }
+            }
+
+            if (menu.GetItemCount() == 0)
+                menu.AddDisabledItem(new GUIContent("No compatible fields in config sources"));
+
+            menu.ShowAsContext();
+        }
+
+        /// <summary>
+        /// Stores the SO reference metadata (GUID + field name) on the entry so the
+        /// popup button can display which field is selected. The actual value is
+        /// resolved at bake time by <see cref="TreeBaker.ResolveSOConstantEntry"/>
+        /// which re-reads the current SO field value — so SO changes are always picked up.
+        /// </summary>
+        private void ApplySOFieldSelection(SerializedProperty entry,
+            SerializedProperty configGuidProp, SerializedProperty configFieldProp,
+            ScriptableObject so, string guid, string fieldName)
+        {
+            SerializedProperty isConfig = entry.FindPropertyRelative("isConfigConstant");
+            if (isConfig != null) isConfig.boolValue = true;
+            configGuidProp.stringValue = guid;
+            configFieldProp.stringValue = fieldName;
+
+            entry.serializedObject.ApplyModifiedProperties();
+            EditorUtility.SetDirty(target);
+            nodeVisualsChangedThisFrame = true;
+        }
+
+        private static bool IsTypeCompatible(Type sourceType, Type targetType)
+        {
+            if (targetType == null) return true;
+            return targetType.IsAssignableFrom(sourceType);
+        }
+
+        private ScriptableObject GetConfigSourceByGuid(string guid)
+        {
+            var treeAsset = BehaviourTreeEditor.currentTree;
+            if (treeAsset == null) return null;
+            foreach (var so in treeAsset.availableConfigs)
+            {
+                if (so == null) continue;
+                string soPath = AssetDatabase.GetAssetPath(so);
+                string soGuid = AssetDatabase.AssetPathToGUID(soPath);
+                if (soGuid == guid) return so;
+            }
+            return null;
         }
 
         /// <summary>

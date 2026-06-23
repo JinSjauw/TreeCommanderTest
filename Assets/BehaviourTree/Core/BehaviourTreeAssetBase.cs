@@ -15,6 +15,13 @@ namespace BehaviourTree.Core
         /// </summary>
         public List<SquadConnection> squadConnections = new List<SquadConnection>();
 
+        /// <summary>
+        /// ScriptableObject config sources available to nodes in this tree.
+        /// Nodes with <see cref="DynamicParamKind.ScriptableObjectConstant"/> parameters
+        /// can select fields from these SOs. Resolved at bake time into baked constants.
+        /// </summary>
+        [HideInInspector] public List<ScriptableObject> availableConfigs = new List<ScriptableObject>();
+
         public BehaviourNode Root => root;
         public BlackboardDefinition BlackboardDefinition => blackboardDefinition;
         public BlackboardDefinition CommanderBlackboardDefinition => commanderBlackboardDefinition;

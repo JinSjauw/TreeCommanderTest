@@ -583,6 +583,15 @@ namespace BehaviourTree.Runtime
 
         private static FieldData PackFieldEntry(NodeFieldEntry entry, Dictionary<string, int> varIndexByName, BlackboardDefinition runtimeBbDef, List<object> boxedConstantsList, List<string> fieldTypeNamesList)
         {
+            // Resolve SO constant at bake time. If this entry references a
+            // ScriptableObject field, the resolved FieldData is returned immediately
+            // — no mutation, no branching into the constant path below.
+#if UNITY_EDITOR
+            FieldData? soResult = ResolveSOConstantEntry(entry, boxedConstantsList);
+            if (soResult.HasValue)
+                return soResult.Value;
+#endif
+
             if (entry.isVariable)
             {
                 int varIndex = -1;
@@ -698,5 +707,83 @@ namespace BehaviourTree.Runtime
             if (type == typeof(Transform)) return entry.transformValue;
             return null;
         }
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// Resolves a ScriptableObject field reference at bake time and returns the
+        /// value as a FieldData directly. No mutation — the caller uses the returned
+        /// FieldData or falls through to the normal constant path.
+        /// Editor-only: uses AssetDatabase to load SO by GUID.
+        /// </summary>
+        private static FieldData? ResolveSOConstantEntry(NodeFieldEntry entry, List<object> boxedConstantsList)
+        {
+            if (string.IsNullOrEmpty(entry.configSourceGuid) || string.IsNullOrEmpty(entry.configFieldName))
+                return null;
+
+            string assetPath = UnityEditor.AssetDatabase.GUIDToAssetPath(entry.configSourceGuid);
+            if (string.IsNullOrEmpty(assetPath))
+            {
+                Debug.LogWarning($"[TreeBaker] Config SO GUID '{entry.configSourceGuid}' not found for field '{entry.configFieldName}'");
+                return null;
+            }
+
+            ScriptableObject so = UnityEditor.AssetDatabase.LoadAssetAtPath<ScriptableObject>(assetPath);
+            if (so == null)
+            {
+                Debug.LogWarning($"[TreeBaker] Failed to load config SO at '{assetPath}' for field '{entry.configFieldName}'");
+                return null;
+            }
+
+            Type soType = so.GetType();
+            var flags = System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+
+            object value = null;
+            Type valueType = null;
+
+            var field = soType.GetField(entry.configFieldName, flags);
+            if (field != null)
+            {
+                value = field.GetValue(so);
+                valueType = field.FieldType;
+            }
+            else
+            {
+                var prop = soType.GetProperty(entry.configFieldName, flags);
+                if (prop != null && prop.CanRead)
+                {
+                    value = prop.GetValue(so);
+                    valueType = prop.PropertyType;
+                }
+            }
+
+            if (value == null || valueType == null)
+            {
+                Debug.LogWarning($"[TreeBaker] Field/property '{entry.configFieldName}' not found on '{so.name}' ({soType.Name})");
+                return null;
+            }
+
+            // Primitive types → pack directly into FieldData constant
+            if (valueType == typeof(int) || valueType == typeof(uint))
+                return FieldData.FromConstant((int)value);
+            if (valueType == typeof(float))
+                return FieldData.FromConstant((float)value);
+            if (valueType == typeof(bool))
+                return FieldData.FromConstant((bool)value);
+            if (valueType == typeof(LayerMask))
+                return FieldData.FromConstant((int)(LayerMask)value);
+            if (valueType.IsEnum)
+                return FieldData.FromConstant((int)value);
+
+            // Non-primitive types (Vector2, Vector3, GameObject, Transform, etc.) → boxed constant
+            if (boxedConstantsList != null)
+            {
+                int boxedIndex = boxedConstantsList.Count;
+                boxedConstantsList.Add(value);
+                return FieldData.FromBoxedConstant(boxedIndex);
+            }
+
+            return null;
+        }
+#endif
     }
 }

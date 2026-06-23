@@ -184,6 +184,12 @@ namespace BehaviourTree.Core
         Constant,
         /// <summary>Enum dropdown for operation selection (e.g. Equal, Less, Greater).</summary>
         Operation,
+        /// <summary>
+        /// Constant value sourced from a field on a ScriptableObject in the tree's config sources list.
+        /// Renders as a three-way C/V/SO toggle: constant / variable / SO-field constant.
+        /// Resolved at bake time and packed as a regular FieldData constant — zero runtime overhead.
+        /// </summary>
+        ScriptableObjectConstant,
     }
 
     /// <summary>

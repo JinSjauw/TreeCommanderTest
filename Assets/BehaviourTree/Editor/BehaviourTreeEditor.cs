@@ -121,6 +121,18 @@ public class BehaviourTreeEditor : EditorWindow
             BuildAssetBarMenu();
         }
 
+        // Add Config Sources toolbar button
+        ToolbarButton configSourcesBtn = new ToolbarButton();
+        configSourcesBtn.text = "Config Sources";
+        configSourcesBtn.tooltip = "Manage ScriptableObject config sources for SO-field node parameters";
+        configSourcesBtn.clicked += () =>
+        {
+            if (currentTree != null)
+                ConfigSourcesWindow.Show(currentTree);
+        };
+        if (assetBarMenu?.parent != null)
+            assetBarMenu.parent.Add(configSourcesBtn);
+
         OnSelectionChange();
 
         EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
@@ -391,6 +403,7 @@ public class BehaviourTreeEditor : EditorWindow
 
     private void PollDebugState()
     {
+        if (BuildPipeline.isBuildingPlayer) return;
         treeGraphView?.RefreshDebugVisuals(currentRunner);
     }
 
