@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
-using BehaviourTree.Runtime;
 using Random = UnityEngine.Random;
 
 public class EnemyController : MonoBehaviour
@@ -34,7 +33,6 @@ public class EnemyController : MonoBehaviour
 
     private Transform selectedTarget;
     private bool masksConfigured;
-    private int lastPatrolPointIndex = 0;
 
     private void OnEnable()
     {
@@ -149,29 +147,6 @@ public class EnemyController : MonoBehaviour
         }
         OnDestructionEvent?.Invoke(this, this);
         this.enabled = false;
-    }
-
-    public Vector3 SetRandomPatrolPoint(Transform patrolPointsParent)
-    {
-        int randomIndex = Random.Range(0, patrolPointsParent.childCount);
-        lastPatrolPointIndex = randomIndex;
-
-        return patrolPointsParent.GetChild(randomIndex).position;
-    }
-
-    public Vector3 SetNextPatrolPoint(Transform patrolPointsParent)
-    {
-        lastPatrolPointIndex = (lastPatrolPointIndex + 1) % patrolPointsParent.childCount;
-
-        Debug.Log($"[EnemyController] Setting next patrol point to index {lastPatrolPointIndex} : {patrolPointsParent.childCount}");
-
-        if (lastPatrolPointIndex < 0)
-        {
-            Debug.LogError($"[EnemyController] Last patrol point index is negative. Cannot set next patrol point.");
-            return Vector3.zero;
-        }
-
-        return patrolPointsParent.GetChild(lastPatrolPointIndex).position;
     }
 
     public bool HasArrivedAtDestination()

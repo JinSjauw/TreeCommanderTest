@@ -191,7 +191,10 @@ namespace BehaviourTree.Core
     /// </summary>
     public struct DynamicParamDescriptor
     {
-        /// <summary>UI label shown in the inspector.</summary>
+        /// <summary>Bold header shown above the control row. When non-null, rendered as "TitleLabel : Type".</summary>
+        public string titleLabel;
+
+        /// <summary>UI label shown next to the control in the inspector.</summary>
         public string label;
 
         /// <summary>Controls what UI is rendered for this parameter.</summary>

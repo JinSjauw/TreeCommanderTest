@@ -15,7 +15,7 @@ MonoBehaviour:
   nodeName: 
   children:
   - {fileID: -7057239054950564937}
-  - {fileID: 4526940735053728871}
+  - {fileID: 6767648677244204698}
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
@@ -26,6 +26,76 @@ MonoBehaviour:
   methodName: SELECTOR
   fieldEntries: []
   abortType: 0
+--- !u!114 &-7459926910050526954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: Enemy_CheckRange
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: 
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 26c097ea4ee5cb249a01d46439b751e3
+  graphPosition: {x: -233, y: 890}
+  runtimeIndex: -1
+  leafType: 2
+  methodName: Enemy_CheckRange
+  fieldEntries:
+  - fieldName: target
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: AttackTarget
+    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    stringValue: 
+    isOrderConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: radius
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: operation
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
 --- !u!114 &-7258022147211080315
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,7 +327,7 @@ MonoBehaviour:
     isVariable: 0
     isToggleVariable: 0
     isArray: 0
-    variableName: 
+    variableName: AttackTarget
     fieldTypeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     stringValue: 
@@ -288,7 +358,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 203cda37fbf5b434eb71fce58b8f391e
-  graphPosition: {x: 1295, y: 700}
+  graphPosition: {x: 1225, y: 700}
   runtimeIndex: 10
   leafType: 3
   methodName: WaitSeconds
@@ -328,7 +398,6 @@ MonoBehaviour:
   nodesList:
   - {fileID: 1933259350137673011}
   - {fileID: -7258022147211080315}
-  - {fileID: 4526940735053728871}
   - {fileID: 3726128092538056133}
   - {fileID: -2050717670034485329}
   - {fileID: -1681865192695334735}
@@ -341,6 +410,8 @@ MonoBehaviour:
   - {fileID: -1365354133396207245}
   - {fileID: 1256753395779555130}
   - {fileID: 3800750207177095848}
+  - {fileID: -7459926910050526954}
+  - {fileID: 6767648677244204698}
   editorNotes: []
 --- !u!114 &212400733712462643
 MonoBehaviour:
@@ -360,7 +431,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 0613a94e1e5a0c54ba9c5d13297bd9b7
-  graphPosition: {x: 94, y: 735}
+  graphPosition: {x: 105, y: 735}
   runtimeIndex: 6
   leafType: 3
   methodName: Enemy_FireSequence
@@ -400,7 +471,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 98fe59578d944fd4cb41e595f8b2cf82
-  graphPosition: {x: 1050, y: 700}
+  graphPosition: {x: 980, y: 700}
   runtimeIndex: 9
   leafType: 3
   methodName: Enemy_StopMovement
@@ -439,13 +510,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
   m_Name: MoveTo
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: 
+  nodeName: MoveTo
   children: []
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
   guid: 7f24e7d04b80a674aa89dd5b715ef5c4
-  graphPosition: {x: 805, y: 700}
+  graphPosition: {x: 735, y: 700}
   runtimeIndex: 8
   leafType: 3
   methodName: MoveTo
@@ -491,78 +562,6 @@ MonoBehaviour:
   methodName: Enemy_StopMovement
   fieldEntries: []
   BlackBoardTypeID: 0
---- !u!114 &4526940735053728871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: Enemy_SelectPatrolPoint
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: Enemy_SelectPatrolPoint
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: 3eb511a89b907cb42af4a191e19e9216
-  graphPosition: {x: 525, y: 945}
-  runtimeIndex: 12
-  leafType: 3
-  methodName: Enemy_SelectPatrolPoint
-  fieldEntries:
-  - fieldName: patrolpointsparent
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: PatrolPoints
-    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: outputposition
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: MoveTarget
-    fieldTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: mode
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: MoveTarget
-    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  BlackBoardTypeID: 0
 --- !u!114 &4641382295522759650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -575,7 +574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
   m_Name: Enemy_HasArrived
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: 
+  nodeName: Enemy_HasArrived
   children: []
   firstChildIndex: 0
   lastChildIndex: 0
@@ -633,7 +632,7 @@ MonoBehaviour:
     fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
     stringValue: 
     isOrderConstant: 0
-    intValue: 0
+    intValue: 1
     floatValue: 0
     boolValue: 0
     vector2Value: {x: 0, y: 0}
@@ -646,6 +645,77 @@ MonoBehaviour:
     isArray: 0
     variableName: 
     fieldTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
+--- !u!114 &6767648677244204698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: ExtractPosition
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: 
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 3eb42b0b1800a674e9cfab38095d0fe7
+  graphPosition: {x: 525, y: 945}
+  runtimeIndex: 12
+  leafType: 3
+  methodName: ExtractPosition
+  fieldEntries:
+  - fieldName: collection
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: PatrolPoints
+    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    stringValue: 
+    isOrderConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: output
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: MoveTarget
+    fieldTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    stringValue: 
+    isOrderConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: mode
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
     stringValue: 
     isOrderConstant: 0
     intValue: 0

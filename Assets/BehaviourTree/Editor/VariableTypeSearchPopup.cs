@@ -23,6 +23,7 @@ namespace BehaviourTree.Editor
 
         private readonly Action<Type, bool, int, bool> onTypeSelected;
         private readonly bool isSquadContext;
+        private readonly Type[] allowedTypes;
 
         private TextField searchField;
         private RadioButton radioSingular;
@@ -36,19 +37,30 @@ namespace BehaviourTree.Editor
         private List<Type> filteredTypes;
 
         public VariableTypeSearchPopup(Action<Type, bool, int> onTypeSelected)
-            : this((type, isArray, stride, isSquad) => onTypeSelected(type, isArray, stride), false)
+            : this((type, isArray, stride, isSquad) => onTypeSelected(type, isArray, stride), null, false)
         {
         }
 
         public VariableTypeSearchPopup(Action<Type, bool, int, bool> onTypeSelected, bool isSquadContext = false)
+            : this(onTypeSelected, null, isSquadContext)
+        {
+        }
+
+        public VariableTypeSearchPopup(Action<Type, bool, int, bool> onTypeSelected, Type[] allowedTypes, bool isSquadContext = false)
         {
             this.onTypeSelected = onTypeSelected;
+            this.allowedTypes = allowedTypes;
             this.isSquadContext = isSquadContext;
         }
 
         public override VisualElement CreateGUI()
         {
             allTypes = VariableTypeRegistry.Types.ToList();
+
+            // Apply allowedTypes filter if specified
+            if (allowedTypes != null && allowedTypes.Length > 0)
+                allTypes = allTypes.Where(t => Array.IndexOf(allowedTypes, t) >= 0).ToList();
+
             filteredTypes = new List<Type>(allTypes);
 
             // Load UXML layout

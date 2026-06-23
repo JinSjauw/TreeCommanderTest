@@ -36,8 +36,8 @@ namespace BehaviourTree.Runtime.Methods
     {
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {
-            new DynamicParamDescriptor { label = "Target", kind = DynamicParamKind.Variable, index = 0 },
-            new DynamicParamDescriptor { label = "Value",  kind = DynamicParamKind.Toggle,   index = 1 },
+            new DynamicParamDescriptor { titleLabel = "Target", label = "Target", kind = DynamicParamKind.Variable, index = 0 },
+            new DynamicParamDescriptor { titleLabel = "Value",  label = "Value",  kind = DynamicParamKind.Toggle,   index = 1 },
         };
 
         private int targetSlot = -1;
@@ -93,7 +93,7 @@ namespace BehaviourTree.Runtime.Methods
     {
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {
-            new DynamicParamDescriptor { label = "Target", kind = DynamicParamKind.Variable, index = 0 },
+            new DynamicParamDescriptor { titleLabel = "Target", label = "Target", kind = DynamicParamKind.Variable, index = 0 },
         };
 
         private int targetSlot = -1;
@@ -127,8 +127,8 @@ namespace BehaviourTree.Runtime.Methods
     {
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {
-            new DynamicParamDescriptor { label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
-        };
+            new DynamicParamDescriptor { titleLabel = "Variable", label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
+        };  // LogVariable
 
         private int variableSlot = -1;
         private int stride = 1;
@@ -179,11 +179,11 @@ namespace BehaviourTree.Runtime.Methods
 
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {
-            new DynamicParamDescriptor { label = "Operand A",   kind = DynamicParamKind.Variable,  index = 0 },
-            new DynamicParamDescriptor { label = "Compare With", kind = DynamicParamKind.Toggle,   index = 1 },
+            new DynamicParamDescriptor { titleLabel = "Operand A", label = "Operand A", kind = DynamicParamKind.Variable, index = 0 },
+            new DynamicParamDescriptor { titleLabel = "Compare With", label = "Compare With", kind = DynamicParamKind.Toggle, index = 1 },
             new DynamicParamDescriptor
             {
-                label = "Operation", kind = DynamicParamKind.Operation, index = 2,
+                titleLabel = "Operation", label = "Operation", kind = DynamicParamKind.Operation, index = 2,
                 operationEnumType = typeof(VariableCompareOp),
                 getAvailableOpIndices = (type) =>
                 {
@@ -343,10 +343,10 @@ namespace BehaviourTree.Runtime.Methods
 
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {
-            new DynamicParamDescriptor { label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
+            new DynamicParamDescriptor { titleLabel = "Variable", label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
             new DynamicParamDescriptor
             {
-                label = "Condition", kind = DynamicParamKind.Operation, index = 1,
+                titleLabel = "Condition", label = "Condition", kind = DynamicParamKind.Operation, index = 1,
                 operationEnumType = typeof(VariableCheckOp),
                 getAvailableOpIndices = (type) =>
                 {
@@ -417,11 +417,11 @@ namespace BehaviourTree.Runtime.Methods
     {
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {
-            new DynamicParamDescriptor { label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
+            new DynamicParamDescriptor { titleLabel = "Variable", label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
         };
 
         private int variableSlot = -1;
-        private object previousValue;
+        private object previousValue;  // HasChanged
         private bool hasPrevious;
 
         public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
@@ -457,16 +457,16 @@ namespace BehaviourTree.Runtime.Methods
     {
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {
-            new DynamicParamDescriptor { label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
+            new DynamicParamDescriptor { titleLabel = "Variable", label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
             new DynamicParamDescriptor
             {
-                label = "Edge", kind = DynamicParamKind.Operation, index = 1,
+                titleLabel = "Edge", label = "Edge", kind = DynamicParamKind.Operation, index = 1,
                 operationEnumType = typeof(EdgeDetectOp),
             },
         };
 
         private int variableSlot = -1;
-        private EdgeDetectOp operation;
+        private EdgeDetectOp operation;  // EdgeDetect
         private bool previous;
         private bool hasPrevious;
 
@@ -546,10 +546,10 @@ namespace BehaviourTree.Runtime.Methods
     {
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {
-            new DynamicParamDescriptor { label = "Target", kind = DynamicParamKind.Variable, index = 0 },
+            new DynamicParamDescriptor { titleLabel = "Target", label = "Target", kind = DynamicParamKind.Variable, index = 0 },
             new DynamicParamDescriptor
             {
-                label = "Source", kind = DynamicParamKind.Variable, index = 1,
+                titleLabel = "Source", label = "Source", kind = DynamicParamKind.Variable, index = 1,
                 allowedTypes = new[] { typeof(Transform) }
             },
         };

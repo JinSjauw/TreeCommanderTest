@@ -2148,6 +2148,10 @@ PrefabInstance:
       propertyPath: authoringAsset
       value: 
       objectReference: {fileID: 11400000, guid: 4dc03925a20e52e4fbe504492aada19c, type: 2}
+    - target: {fileID: 7675388319297404932, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
+      propertyPath: detectionRadius
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 8194683220789307221, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
       propertyPath: m_Name
       value: MechTankTest

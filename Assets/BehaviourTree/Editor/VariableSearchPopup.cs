@@ -19,7 +19,7 @@ namespace BehaviourTree.Editor
         private const float WindowHeight = 320f;
 
         private readonly BlackboardDefinition definition;
-        private readonly Type filterType;
+        private readonly Type[] allowedTypes;
         private readonly bool isSquadContext;
         private readonly Action<BlackboardVariableBase, bool> onVariableSelected;
         private readonly bool defaultToArray;
@@ -35,10 +35,10 @@ namespace BehaviourTree.Editor
         private List<BlackboardVariableBase> allVariables;
         private List<BlackboardVariableBase> filteredVariables;
 
-        public VariableSearchPopup(BlackboardDefinition definition, Type filterType, Action<BlackboardVariableBase, bool> onVariableSelected, bool defaultToArray = false, bool isSquadContext = false)
+        public VariableSearchPopup(BlackboardDefinition definition, Type[] allowedTypes, Action<BlackboardVariableBase, bool> onVariableSelected, bool defaultToArray = false, bool isSquadContext = false)
         {
             this.definition = definition;
-            this.filterType = filterType;
+            this.allowedTypes = allowedTypes;
             this.isSquadContext = isSquadContext;
             this.onVariableSelected = onVariableSelected;
             this.defaultToArray = defaultToArray;
@@ -163,11 +163,11 @@ namespace BehaviourTree.Editor
                     if (showArrays != isArray) continue;
                 }
 
-                // Type filter — only show variables whose value type matches the member type
-                if (filterType != null)
+                // Type filter — only show variables whose value type is in the allowed set
+                if (allowedTypes != null && allowedTypes.Length > 0)
                 {
                     Type varType = variable.GetValueType();
-                    if (varType != filterType)
+                    if (Array.IndexOf(allowedTypes, varType) < 0)
                         continue;
                 }
 

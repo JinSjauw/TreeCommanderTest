@@ -1,9 +1,8 @@
 using BehaviourTree.Core;
-using UnityEngine;
 
 namespace BehaviourTree.Runtime
 {
-    public class Inverter : BehaviourTree.Core.DecoratorMethod
+    public class Inverter : DecoratorMethod
     {
         public bool alwaysFailure;
         public bool alwaysSuccess;
@@ -22,7 +21,7 @@ namespace BehaviourTree.Runtime
         }
     }
 
-    public class Repeater : BehaviourTree.Core.DecoratorMethod
+    public class Repeater : DecoratorMethod
     {
         public int targetCount;
         private int currentCount;

@@ -332,7 +332,7 @@ public partial class TrackedVariablesView : VisualElement
 
         Type filterType = ResolveTrackedBindingMemberType(binding);
 
-        VariableSearchPopup popup = new VariableSearchPopup(blackboardDefinition, filterType, (selectedVariable, isArray) =>
+        VariableSearchPopup popup = new VariableSearchPopup(blackboardDefinition, filterType != null ? new[] { filterType } : null, (selectedVariable, isArray) =>
         {
             if (currentRunner == null) return;
 

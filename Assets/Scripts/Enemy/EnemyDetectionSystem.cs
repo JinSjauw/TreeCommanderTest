@@ -6,7 +6,7 @@ using UnityEngine;
 public class EnemyDetectionSystem : MonoBehaviour
 {
     [Header("Detection Settings")]
-    [SerializeField] private float detectionRadius = 30f;
+    [SerializeField] private float lastDetectionRadius = 30f;
     [SerializeField] private float firingRadius = 15f;
     [SerializeField] private Transform eyeTransform;
 
@@ -15,7 +15,7 @@ public class EnemyDetectionSystem : MonoBehaviour
 
     public LayerMask TargetLayers { get; set; }
     public List<Transform> DetectedTargets { get; private set; } = new List<Transform>();
-    public float DetectionRadius => detectionRadius;
+    public float DetectionRadius => lastDetectionRadius;
     public float FiringRadius => firingRadius;
 
     private void Awake()
@@ -23,13 +23,19 @@ public class EnemyDetectionSystem : MonoBehaviour
         groundLayer = LayerMask.GetMask("Ground");
     }
 
-
     public bool DetectTargets()
     {
+        return DetectTargets(lastDetectionRadius);
+    }
+
+    public bool DetectTargets(float radius)
+    {
+        lastDetectionRadius = radius;
+
         DetectedTargets.Clear();
 
         int hitCount = Physics.OverlapSphereNonAlloc(
-            transform.position, detectionRadius, detectBuffer, TargetLayers);
+            transform.position, radius, detectBuffer, TargetLayers);
 
         if (hitCount == 0)
         {
@@ -42,9 +48,6 @@ public class EnemyDetectionSystem : MonoBehaviour
 
             if (candidate == transform || candidate.IsChildOf(transform))
                 continue;
-
-            // if (!HasLineOfSight(candidate))
-            //     continue;
 
             DetectedTargets.Add(candidate);
         }
@@ -143,7 +146,7 @@ public class EnemyDetectionSystem : MonoBehaviour
 
     public bool TargetInDetectionRange(Transform target)
     {
-        return IsTargetInRange(target, detectionRadius);
+        return IsTargetInRange(target, lastDetectionRadius);
     }
 
     public bool HasLineOfSightToTarget(Transform target)

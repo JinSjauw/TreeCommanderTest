@@ -12,9 +12,10 @@ namespace BehaviourTree.Editor
     [CustomEditor(typeof(BehaviourNode), true)]
     public class CustomNodeEditor : UnityEditor.Editor
     {
-        private const float SmallButtonWidth = 22f;
-        private const float FieldLabelWidth = 100f;
-        private const float DropdownFieldWidth = 150f;
+        private const float SmallButtonWidth = 20f;
+        private const float SmallButtonsMargin = SmallButtonWidth * 2f + 6f;
+        private const float FieldLabelWidth = 140f;
+        private const float InputFieldWidth = 130f;
 
         public bool nodeNameChangedThisFrame;
         public bool nodeVisualsChangedThisFrame;
@@ -296,40 +297,40 @@ namespace BehaviourTree.Editor
                 SerializedProperty prop = entryProp.FindPropertyRelative("intValue");
                 int currentRaw = prop.intValue;
                 Enum current = (Enum)Enum.ToObject(fieldType, currentRaw);
-                Enum next = EditorGUILayout.EnumPopup("Value", current, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                Enum next = EditorGUILayout.EnumPopup("Value", current, GUILayout.Width(FieldLabelWidth + InputFieldWidth));
                 prop.intValue = Convert.ToInt32(next);
             }
             else if (fieldType == typeof(int) || fieldType == typeof(uint))
             {
                 SerializedProperty prop = entryProp.FindPropertyRelative("intValue");
-                prop.intValue = EditorGUILayout.IntField("Value", prop.intValue, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.intValue = EditorGUILayout.IntField("Value", prop.intValue, GUILayout.Width(FieldLabelWidth + InputFieldWidth));
             }
             else if (fieldType == typeof(float))
             {
                 SerializedProperty prop = entryProp.FindPropertyRelative("floatValue");
-                prop.floatValue = EditorGUILayout.FloatField("Value", prop.floatValue, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.floatValue = EditorGUILayout.FloatField("Value", prop.floatValue, GUILayout.Width(FieldLabelWidth + InputFieldWidth));
             }
             else if (fieldType == typeof(bool))
             {
                 SerializedProperty prop = entryProp.FindPropertyRelative("boolValue");
-                prop.boolValue = EditorGUILayout.Toggle("Value", prop.boolValue, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.boolValue = GUILayout.Toggle(prop.boolValue, prop.boolValue ? "True" : "False", "Button", GUILayout.Width(InputFieldWidth));
             }
             else if (fieldType == typeof(Vector2))
             {
                 SerializedProperty prop = entryProp.FindPropertyRelative("vector2Value");
-                prop.vector2Value = EditorGUILayout.Vector2Field("Value", prop.vector2Value, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.vector2Value = EditorGUILayout.Vector2Field("Value", prop.vector2Value, GUILayout.Width(FieldLabelWidth + InputFieldWidth));
             }
             else if (fieldType == typeof(Vector3))
             {
                 SerializedProperty prop = entryProp.FindPropertyRelative("vector3Value");
-                prop.vector3Value = EditorGUILayout.Vector3Field("Value", prop.vector3Value, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.vector3Value = EditorGUILayout.Vector3Field("Value", prop.vector3Value, GUILayout.Width(FieldLabelWidth + InputFieldWidth));
             }
             else if (typeof(UnityEngine.Object).IsAssignableFrom(fieldType))
             {
                 SerializedProperty prop = fieldType == typeof(GameObject)
                     ? entryProp.FindPropertyRelative("gameObjectValue")
                     : entryProp.FindPropertyRelative("transformValue");
-                prop.objectReferenceValue = EditorGUILayout.ObjectField("Value", prop.objectReferenceValue, fieldType, true, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.objectReferenceValue = EditorGUILayout.ObjectField("Value", prop.objectReferenceValue, fieldType, true, GUILayout.Width(FieldLabelWidth + InputFieldWidth));
             }
             else
             {
@@ -415,7 +416,7 @@ namespace BehaviourTree.Editor
             else
             {
                 string previousVal = variableNameProp.stringValue;
-                selectedIndex = EditorGUILayout.Popup("Shared Variable", selectedIndex, matchingVars.ToArray(), GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                selectedIndex = EditorGUILayout.Popup("Shared Variable", selectedIndex, matchingVars.ToArray(), GUILayout.Width(FieldLabelWidth + InputFieldWidth));
                 variableNameProp.stringValue = matchingVarNames[selectedIndex];
                 if (variableNameProp.stringValue != previousVal)
                     nodeVisualsChangedThisFrame = true;
@@ -465,7 +466,7 @@ namespace BehaviourTree.Editor
             }
             else
             {
-                int newIndex = EditorGUILayout.Popup("Role", currentIndex, roleNames, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                int newIndex = EditorGUILayout.Popup("Role", currentIndex, roleNames, GUILayout.Width(FieldLabelWidth + InputFieldWidth));
                 intValueProp.intValue = newIndex;
             }
         }
@@ -509,7 +510,7 @@ namespace BehaviourTree.Editor
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel("Value");
                 string buttonLabel = !string.IsNullOrEmpty(currentName) ? currentName : "Select Order...";
-                if (GUILayout.Button(buttonLabel, EditorStyles.popup, GUILayout.Width(DropdownFieldWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight)))
+                if (GUILayout.Button(buttonLabel, EditorStyles.popup, GUILayout.Width(InputFieldWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight)))
                 {
                     OrderSearchProvider provider = ScriptableObject.CreateInstance<OrderSearchProvider>();
                     provider.registry = registry;
@@ -562,18 +563,11 @@ namespace BehaviourTree.Editor
             if (fieldEntriesProp.arraySize < realCount)
                 return;
 
-            // Read the shared type from entry 0's fieldTypeName
-            Type selectedType = ResolveEntryType(0);
+            // isArray tracks whether the first entry is array-mode (stride > 1)
             bool isArray = fieldEntriesProp.arraySize > 0
-                ? fieldEntriesProp.GetArrayElementAtIndex(0).FindPropertyRelative("isArray").boolValue
-                : false;
+                ? fieldEntriesProp.GetArrayElementAtIndex(0).FindPropertyRelative("isArray").boolValue : false;
 
             EditorGUILayout.BeginVertical("box");
-
-            // ── Type header ──
-            string typeLabel = selectedType != null ? selectedType.Name : "(none)";
-            EditorGUILayout.LabelField($"<b>Variable Type</b> : <color=lightblue>{typeLabel}</color>", RichTextLabelStyle);
-            EditorGUILayout.Space();
 
             // ── Generic parameter rows ──
             for (int i = 0; i < realCount; i++)
@@ -582,21 +576,38 @@ namespace BehaviourTree.Editor
                 SerializedProperty entry = fieldEntriesProp.GetArrayElementAtIndex(i);
                 Type paramType = ResolveEntryType(i);
 
+                bool hasTitle = !string.IsNullOrEmpty(desc.titleLabel);
+
+                // ── Title header ──
+                if (hasTitle)
+                {
+                    string typeName = paramType != null ? paramType.Name
+                        : (desc.allowedTypes != null && desc.allowedTypes.Length == 1 ? desc.allowedTypes[0].Name : null);
+                    string header = typeName != null ? $"<b>{desc.titleLabel}</b> : {typeName}" : $"<b>{desc.titleLabel}</b>";
+                    EditorGUILayout.LabelField(header, RichTextLabelStyle);
+                }
+
                 switch (desc.kind)
                 {
                     case DynamicParamKind.Variable:
-                        DrawVariableParamRow(entry, desc, paramType, isArray);
+                        DrawVariableParamRow(entry, desc, paramType, isArray, i, hasTitle);
                         break;
                     case DynamicParamKind.Toggle:
-                        DrawToggleParamRow(entry, desc, paramType, isArray);
+                        DrawToggleParamRow(entry, desc, paramType, isArray, hasTitle);
                         break;
                     case DynamicParamKind.Constant:
-                        DrawConstantFieldForType(entry, paramType, desc.label);
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.LabelField(desc.label, GUILayout.Width(FieldLabelWidth));
+                        GUILayout.FlexibleSpace();
+                        DrawConstantFieldForType(entry, paramType, desc.label, showLabel: false);
+                        GUILayout.Space(SmallButtonsMargin);
+                        EditorGUILayout.EndHorizontal();
                         break;
                     case DynamicParamKind.Operation:
                         DrawOperationParamRow(entry, desc, paramType);
                         break;
                 }
+                EditorGUILayout.Space(4f);
             }
             EditorGUILayout.EndVertical();
         }
@@ -627,21 +638,33 @@ namespace BehaviourTree.Editor
         // ── Row helpers — one per DynamicParamKind ──
 
         /// <summary>Variable picker row: dropdown + S (search) + F (filter) buttons inline.</summary>
-        private void DrawVariableParamRow(SerializedProperty entry, DynamicParamDescriptor desc, Type paramType, bool isArray)
+        private void DrawVariableParamRow(SerializedProperty entry, DynamicParamDescriptor desc, Type paramType, bool isArray, int entryIndex, bool hasTitle)
         {
             SerializedProperty variableNameProp = entry.FindPropertyRelative("variableName");
-            DrawDynamicVariableField(variableNameProp, paramType, isArray, desc.label, desc.allowedTypes);
+            string displayLabel = hasTitle ? desc.label : BuildTypedLabel(desc.label, paramType, desc.allowedTypes);
+            DrawDynamicVariableField(variableNameProp, paramType, isArray, displayLabel, desc.allowedTypes, entryIndex);
+        }
+
+        private static string BuildTypedLabel(string baseLabel, Type resolvedType, Type[] allowedTypes)
+        {
+            if (resolvedType != null)
+                return $"{baseLabel} ({resolvedType.Name})";
+            if (allowedTypes != null && allowedTypes.Length == 1)
+                return $"{baseLabel} ({allowedTypes[0].Name})";
+            return baseLabel;
         }
 
         /// <summary>Toggle row: variable dropdown OR constant field + C/V toggle button.</summary>
-        private void DrawToggleParamRow(SerializedProperty entry, DynamicParamDescriptor desc, Type paramType, bool isArray)
+        private void DrawToggleParamRow(SerializedProperty entry, DynamicParamDescriptor desc, Type paramType, bool isArray, bool hasTitle)
         {
             SerializedProperty isVarProp = entry.FindPropertyRelative("isVariable");
             SerializedProperty variableNameProp = entry.FindPropertyRelative("variableName");
 
-            EditorGUILayout.LabelField($"<b>{desc.label}</b>", RichTextLabelStyle);
+            string typedLabel = hasTitle ? desc.label : BuildTypedLabel(desc.label, paramType, desc.allowedTypes);
 
             EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(typedLabel, GUILayout.Width(FieldLabelWidth));
+            GUILayout.FlexibleSpace();
 
             if (isVarProp.boolValue)
             {
@@ -649,10 +672,8 @@ namespace BehaviourTree.Editor
             }
             else
             {
-                DrawConstantFieldForType(entry, paramType, desc.label);
+                DrawConstantFieldForType(entry, paramType, desc.label, showLabel: false);
             }
-
-            GUILayout.FlexibleSpace();
 
             // C/V toggle button
             {
@@ -665,6 +686,8 @@ namespace BehaviourTree.Editor
                     nodeVisualsChangedThisFrame = true;
                 }
             }
+
+            GUILayout.Space(SmallButtonsMargin / 2); // pad to 2×SmallButtonWidth margin
 
             EditorGUILayout.EndHorizontal();
         }
@@ -690,7 +713,12 @@ namespace BehaviourTree.Editor
                 : currentVal;
             if (displayIndex < 0 || displayIndex >= displayNames.Length) displayIndex = 0;
 
-            int newDisplayIndex = EditorGUILayout.Popup(desc.label, displayIndex, displayNames, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(desc.label, GUILayout.Width(FieldLabelWidth));
+            GUILayout.FlexibleSpace();
+            int newDisplayIndex = EditorGUILayout.Popup(displayIndex, displayNames, GUILayout.Width(InputFieldWidth));
+            GUILayout.Space(SmallButtonsMargin);
+            EditorGUILayout.EndHorizontal();
 
             // Map display index back to enum value
             if (newDisplayIndex >= 0 && newDisplayIndex < displayNames.Length)
@@ -751,8 +779,7 @@ namespace BehaviourTree.Editor
             {
                 string modeLabel = isArray ? "array" : "singular";
                 EditorGUILayout.HelpBox(
-                    $"No {modeLabel} variable of type '{expectedType.Name}' in Blackboard. " +
-                    "Use the 'F' (filter) button to change the type or array/singular mode.",
+                    $"No {modeLabel} variable of type '{expectedType.Name}' in Blackboard. ",
                     MessageType.Info);
                 variableNameProp.stringValue = "";
                 return;
@@ -767,12 +794,12 @@ namespace BehaviourTree.Editor
 
             if (InspectorView.IsRenderingReadOnly)
             {
-                EditorGUILayout.LabelField("Variable", currentVal);
+                EditorGUILayout.LabelField(currentVal);
             }
             else
             {
                 string previousVal = variableNameProp.stringValue;
-                selectedIndex = EditorGUILayout.Popup("Variable", selectedIndex, matchingVars.ToArray(), GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                selectedIndex = EditorGUILayout.Popup(selectedIndex, matchingVars.ToArray(), GUILayout.Width(InputFieldWidth));
                 variableNameProp.stringValue = matchingVarNames[selectedIndex];
                 if (variableNameProp.stringValue != previousVal)
                     nodeVisualsChangedThisFrame = true;
@@ -783,7 +810,7 @@ namespace BehaviourTree.Editor
         /// Draws the primary variable field for dynamic-type nodes with two inline
         /// buttons: a search button (variable by name) and a filter button (change type).
         /// </summary>
-        private void DrawDynamicVariableField(SerializedProperty variableNameProp, Type selectedType, bool isArray, string label, Type[] allowedTypes = null)
+        private void DrawDynamicVariableField(SerializedProperty variableNameProp, Type selectedType, bool isArray, string label, Type[] allowedTypes = null, int entryIndex = 0)
         {
             if (InspectorView.IsRenderingReadOnly)
             {
@@ -795,9 +822,10 @@ namespace BehaviourTree.Editor
             bool squadCtx = BehaviourTreeEditor.currentTree is CommanderTreeAsset;
 
             float savedLabelWidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = FieldLabelWidth;
+            EditorGUIUtility.labelWidth = 0;
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.PrefixLabel(label);
+            EditorGUILayout.LabelField(label, GUILayout.Width(FieldLabelWidth));
+            GUILayout.FlexibleSpace();
 
             if (blackboardDef != null)
             {
@@ -840,29 +868,27 @@ namespace BehaviourTree.Editor
                     int selectedIndex = matchingVarNames.IndexOf(currentVal);
                     if (selectedIndex < 0) selectedIndex = 0;
                     string previousVal = currentVal;
-                    selectedIndex = EditorGUILayout.Popup(selectedIndex, matchingVars.ToArray(), GUILayout.Width(DropdownFieldWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight));
+                    selectedIndex = EditorGUILayout.Popup(selectedIndex, matchingVars.ToArray(), GUILayout.Width(InputFieldWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight));
                     variableNameProp.stringValue = matchingVarNames[selectedIndex];
                     if (variableNameProp.stringValue != previousVal)
                         nodeVisualsChangedThisFrame = true;
                 }
                 else
                 {
-                    EditorGUILayout.LabelField("(no matches)", GUILayout.Width(DropdownFieldWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight));
+                    EditorGUILayout.LabelField("(no matches)", GUILayout.Width(InputFieldWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight));
                 }
             }
             else
             {
-                EditorGUILayout.LabelField("[ Pick a variable/type --> ]", GUILayout.Width(DropdownFieldWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight));
+                EditorGUILayout.LabelField("[ Pick a variable/type --> ]", GUILayout.Width(InputFieldWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight));
             }
-
-            GUILayout.FlexibleSpace();
 
             // ── S + F buttons ──
             Rect searchButtonRect = EditorGUILayout.GetControlRect(GUILayout.Width(SmallButtonWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight));
             if (GUI.Button(searchButtonRect, new GUIContent("S", "Search for a variable by name")))
             {
                 GUI.FocusControl(null);
-                VariableSearchPopup popup = new VariableSearchPopup(blackboardDef, null,
+                VariableSearchPopup popup = new VariableSearchPopup(blackboardDef, allowedTypes,
                     (BlackboardVariableBase chosen, bool chosenIsArray) =>
                     {
                         if (chosen == null) return;
@@ -870,21 +896,17 @@ namespace BehaviourTree.Editor
                         // Auto-configure type and array mode from chosen variable
                         Type varType = chosen.GetValueType();
                         string newTypeName = varType?.AssemblyQualifiedName ?? string.Empty;
-                        for (int i = 0; i < fieldEntriesProp.arraySize; i++)
-                        {
-                            SerializedProperty ftProp = fieldEntriesProp.GetArrayElementAtIndex(i)
-                                .FindPropertyRelative("fieldTypeName");
-                            if (ftProp != null) ftProp.stringValue = newTypeName;
-                        }
-                        fieldEntriesProp.GetArrayElementAtIndex(0)
+                        SerializedProperty ftProp = fieldEntriesProp.GetArrayElementAtIndex(entryIndex)
+                            .FindPropertyRelative("fieldTypeName");
+                        if (ftProp != null) ftProp.stringValue = newTypeName;
+                        fieldEntriesProp.GetArrayElementAtIndex(entryIndex)
                             .FindPropertyRelative("isArray").boolValue = chosen.Stride > 1;
                         variableNameProp.stringValue = chosen.Name;
                         fieldEntriesProp.serializedObject.ApplyModifiedProperties();
                         nodeVisualsChangedThisFrame = true;
                     }, isSquadContext: squadCtx);
-                // IMGUI is in the editor window's GUI space; only scroll offset needs correction
-                UnityEditor.PopupWindow.Show(
-                    new Rect(searchButtonRect.x, searchButtonRect.yMax - InspectorView.InspectorScrollOffset.y, 0, 0),
+                PopupWindow.Show(
+                    new Rect(searchButtonRect.x, searchButtonRect.yMax, 0, 0),
                     popup);
             }
 
@@ -898,25 +920,19 @@ namespace BehaviourTree.Editor
                     {
                         EditorUtility.SetDirty(target);
                         string newTypeName = varType?.AssemblyQualifiedName ?? string.Empty;
-                        for (int i = 0; i < fieldEntriesProp.arraySize; i++)
-                        {
-                            SerializedProperty ftProp = fieldEntriesProp.GetArrayElementAtIndex(i)
-                                .FindPropertyRelative("fieldTypeName");
-                            if (ftProp != null) ftProp.stringValue = newTypeName;
-                        }
-                        fieldEntriesProp.GetArrayElementAtIndex(0)
+                        SerializedProperty ftProp = fieldEntriesProp.GetArrayElementAtIndex(entryIndex)
+                            .FindPropertyRelative("fieldTypeName");
+                        if (ftProp != null) ftProp.stringValue = newTypeName;
+                        fieldEntriesProp.GetArrayElementAtIndex(entryIndex)
                             .FindPropertyRelative("isArray").boolValue = varIsArray || isSquadData;
-                        for (int i = 0; i < fieldEntriesProp.arraySize; i++)
-                        {
-                            SerializedProperty varProp = fieldEntriesProp.GetArrayElementAtIndex(i)
-                                .FindPropertyRelative("variableName");
-                            if (varProp != null) varProp.stringValue = string.Empty;
-                        }
+                        SerializedProperty varProp = fieldEntriesProp.GetArrayElementAtIndex(entryIndex)
+                            .FindPropertyRelative("variableName");
+                        if (varProp != null) varProp.stringValue = string.Empty;
                         fieldEntriesProp.serializedObject.ApplyModifiedProperties();
                         nodeVisualsChangedThisFrame = true;
-                    }, isSquadContext: squadCtx);
+                    }, allowedTypes, squadCtx);
                 PopupWindow.Show(
-                    new Rect(filterButtonRect.x, filterButtonRect.yMax - InspectorView.InspectorScrollOffset.y, 0, 0),
+                    new Rect(filterButtonRect.x, filterButtonRect.yMax, 0, 0),
                     popup);
             }
 
@@ -928,7 +944,7 @@ namespace BehaviourTree.Editor
         /// Renders a constant field appropriate for the given type,
         /// reading/writing to the NodeFieldEntry's typed value properties.
         /// </summary>
-        private void DrawConstantFieldForType(SerializedProperty entryProp, Type fieldType, string label)
+        private void DrawConstantFieldForType(SerializedProperty entryProp, Type fieldType, string label, bool showLabel = true)
         {
             if (fieldType == null)
             {
@@ -936,45 +952,54 @@ namespace BehaviourTree.Editor
                 return;
             }
 
+            float savedWidth = EditorGUIUtility.labelWidth;
+            if (showLabel)
+            {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUIUtility.labelWidth = 0;
+                EditorGUILayout.LabelField(label, GUILayout.Width(FieldLabelWidth));
+                GUILayout.FlexibleSpace();
+            }
+
             if (fieldType.IsEnum)
             {
                 SerializedProperty prop = entryProp.FindPropertyRelative("intValue");
                 int currentRaw = prop.intValue;
                 Enum current = (Enum)Enum.ToObject(fieldType, currentRaw);
-                Enum next = EditorGUILayout.EnumPopup(label, current, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                Enum next = EditorGUILayout.EnumPopup(current, GUILayout.Width(InputFieldWidth));
                 prop.intValue = Convert.ToInt32(next);
             }
             else if (fieldType == typeof(int) || fieldType == typeof(uint))
             {
                 SerializedProperty prop = entryProp.FindPropertyRelative("intValue");
-                prop.intValue = EditorGUILayout.IntField(label, prop.intValue, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.intValue = EditorGUILayout.IntField(prop.intValue, GUILayout.Width(InputFieldWidth));
             }
             else if (fieldType == typeof(float))
             {
                 SerializedProperty prop = entryProp.FindPropertyRelative("floatValue");
-                prop.floatValue = EditorGUILayout.FloatField(label, prop.floatValue, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.floatValue = EditorGUILayout.FloatField(prop.floatValue, GUILayout.Width(InputFieldWidth));
             }
             else if (fieldType == typeof(bool))
             {
                 SerializedProperty prop = entryProp.FindPropertyRelative("boolValue");
-                prop.boolValue = EditorGUILayout.Toggle(label, prop.boolValue, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.boolValue = GUILayout.Toggle(prop.boolValue, prop.boolValue ? "True" : "False", "Button", GUILayout.Width(InputFieldWidth));
             }
             else if (fieldType == typeof(Vector2))
             {
                 SerializedProperty prop = entryProp.FindPropertyRelative("vector2Value");
-                prop.vector2Value = EditorGUILayout.Vector2Field(label, prop.vector2Value, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.vector2Value = EditorGUILayout.Vector2Field(GUIContent.none, prop.vector2Value, GUILayout.Width(InputFieldWidth));
             }
             else if (fieldType == typeof(Vector3))
             {
                 SerializedProperty prop = entryProp.FindPropertyRelative("vector3Value");
-                prop.vector3Value = EditorGUILayout.Vector3Field(label, prop.vector3Value, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.vector3Value = EditorGUILayout.Vector3Field(GUIContent.none, prop.vector3Value, GUILayout.Width(InputFieldWidth));
             }
             else if (typeof(UnityEngine.Object).IsAssignableFrom(fieldType))
             {
                 SerializedProperty prop = fieldType == typeof(GameObject)
                     ? entryProp.FindPropertyRelative("gameObjectValue")
                     : entryProp.FindPropertyRelative("transformValue");
-                prop.objectReferenceValue = EditorGUILayout.ObjectField("Value", prop.objectReferenceValue, fieldType, true, GUILayout.Width(FieldLabelWidth + DropdownFieldWidth));
+                prop.objectReferenceValue = EditorGUILayout.ObjectField(prop.objectReferenceValue, fieldType, true, GUILayout.Width(InputFieldWidth));
             }
             else
             {
@@ -982,6 +1007,13 @@ namespace BehaviourTree.Editor
                     $"Type '{fieldType.Name}' is not supported for constant values. Use a variable source instead.",
                     MessageType.Warning);
             }
+
+            if (showLabel)
+            {
+                GUILayout.Space(SmallButtonWidth * 2f);
+                EditorGUILayout.EndHorizontal();
+            }
+            EditorGUIUtility.labelWidth = savedWidth;
         }
 
         /// <summary>
