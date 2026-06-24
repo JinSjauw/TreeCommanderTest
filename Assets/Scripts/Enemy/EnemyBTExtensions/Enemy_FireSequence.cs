@@ -102,10 +102,7 @@ namespace BehaviourTree.Runtime.Methods
 
         protected override void OnInitialize()
         {
-            MonoBehaviour mb = (MonoBehaviour)BB;
-            cachedGunHandling = mb.GetComponent<GunHandling>();
-            if (cachedGunHandling == null)
-                cachedGunHandling = mb.GetComponentInChildren<GunHandling>();
+            cachedGunHandling = GetComponentFromBB<GunHandling>();
         }
 
         public override NodeState Execute()

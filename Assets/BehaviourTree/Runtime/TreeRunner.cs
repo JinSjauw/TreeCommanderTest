@@ -18,10 +18,10 @@ namespace BehaviourTree.Runtime
         /// Populated via RegisterSquad() during spawn or by the commander.</summary>
         [System.NonSerialized] public List<SquadInstance> registeredSquads = new List<SquadInstance>();
 
-        /// <summary>The commander that owns this agent. Set by SquadSpawner or scene setup.</summary>
+        /// <summary>The commander that owns this agent. Set by SquadManager or scene setup.</summary>
         [SerializeField] public CommanderTreeRunner commander;
 
-        /// <summary>The squad instance this agent is part of. Set by SquadSpawner or scene setup.</summary>
+        /// <summary>The squad instance this agent is part of. Set by SquadManager or scene setup.</summary>
         [SerializeField] public SquadInstance squadInstance;
 
         private void Start()

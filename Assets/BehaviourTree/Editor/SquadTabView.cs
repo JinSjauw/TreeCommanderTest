@@ -209,8 +209,12 @@ public partial class SquadTabView : VisualElement
             if (connection.squad != null)
             {
                 SquadBindingGroup bindingGroup = connection.squad.GetOrCreateBindingGroup(currentTree);
+                bool isNewGroup = bindingGroup.bindings == null || bindingGroup.bindings.Count == 0;
                 if (bindingGroup.bindings == null)
                     bindingGroup.bindings = new List<VariableBinding>();
+
+                if (isNewGroup)
+                    connection.squad.EnsureAutoBindings(bindingGroup);
 
                 SquadDefinition capturedSquad = connection.squad;
                 BindingGroupEditor bindingsEditor = new BindingGroupEditor(

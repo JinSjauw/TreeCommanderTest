@@ -136,6 +136,27 @@ namespace BehaviourTree.Editor
         public override void OnOpen() { }
         public override void OnClose() { }
 
+        /// <summary>
+        /// Checks whether <paramref name="varType"/> passes the <paramref name="allowedTypes"/> filter.
+        /// Supports element types (Vector3 matches Vector3) and array types
+        /// (Vector3[] matches a Vector3 variable with stride > 1 or isSquadData).
+        /// </summary>
+        internal static bool IsTypeAllowed(Type varType, bool isArrayLike, Type[] allowedTypes)
+        {
+            if (allowedTypes == null || allowedTypes.Length == 0)
+                return true;
+
+            for (int i = 0; i < allowedTypes.Length; i++)
+            {
+                Type filter = allowedTypes[i];
+                if (filter == varType)
+                    return true;
+                if (filter.IsArray && filter.GetElementType() == varType && isArrayLike)
+                    return true;
+            }
+            return false;
+        }
+
         private void ApplyFilters()
         {
             string query = (searchField?.value ?? string.Empty).Trim();
@@ -163,11 +184,12 @@ namespace BehaviourTree.Editor
                     if (showArrays != isArray) continue;
                 }
 
-                // Type filter — only show variables whose value type is in the allowed set
+                // Type filter — supports element types (Vector3) and array types (Vector3[])
                 if (allowedTypes != null && allowedTypes.Length > 0)
                 {
                     Type varType = variable.GetValueType();
-                    if (Array.IndexOf(allowedTypes, varType) < 0)
+                    bool isArrayLike = variable.Stride > 1 || variable.isSquadData;
+                    if (!IsTypeAllowed(varType, isArrayLike, allowedTypes))
                         continue;
                 }
 

@@ -1099,19 +1099,16 @@ namespace BehaviourTree.Editor
                     if (bbType == null) continue;
                     if (filterTypes != null)
                     {
-                        bool typeMatch = false;
-                        for (int ft = 0; ft < filterTypes.Length; ft++)
-                        {
-                            if (filterTypes[ft] == bbType) { typeMatch = true; break; }
-                        }
-                        if (!typeMatch) continue;
+                        bool isArrayLike = bv.Stride > 1 || bv.isSquadData;
+                        if (!VariableSearchPopup.IsTypeAllowed(bbType, isArrayLike, filterTypes))
+                            continue;
                     }
                     else if (selectedType != null && bbType != selectedType)
                     {
                         continue;
                     }
                     if (isArray) { if (bv.Stride <= 1) continue; matchingVars.Add($"{bv.Name} [{bv.Stride}]"); }
-                    else { if (bv.Stride > 1) continue; matchingVars.Add(bv.Name); }
+                    else { if (bv.Stride > 1 && !bv.isSquadData) continue; matchingVars.Add(bv.Name); }
                     matchingVarNames.Add(bv.Name);
                 }
 

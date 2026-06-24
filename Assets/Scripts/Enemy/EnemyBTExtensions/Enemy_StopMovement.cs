@@ -14,10 +14,7 @@ namespace BehaviourTree.Runtime.Methods
 
         protected override void OnInitialize()
         {
-            MonoBehaviour mb = (MonoBehaviour)BB;
-            cachedAgent = mb.GetComponent<NavMeshAgent>();
-            if (cachedAgent == null)
-                cachedAgent = mb.GetComponentInChildren<NavMeshAgent>();
+            cachedAgent = GetComponentFromBB<NavMeshAgent>();
         }
 
         public override NodeState Execute()

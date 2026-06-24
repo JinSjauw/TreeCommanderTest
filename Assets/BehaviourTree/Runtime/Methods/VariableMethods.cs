@@ -630,13 +630,7 @@ namespace BehaviourTree.Runtime.Methods
 
             if (!agentResolved)
             {
-                BehaviourTree.Core.BlackBoard bb = BB as BehaviourTree.Core.BlackBoard;
-                if (bb != null)
-                {
-                    agent = bb.GetComponent<NavMeshAgent>();
-                    if (agent == null)
-                        agent = bb.GetComponentInChildren<NavMeshAgent>();
-                }
+                agent = GetComponentFromBB<NavMeshAgent>();
                 agentResolved = true;
             }
 

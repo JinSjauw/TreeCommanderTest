@@ -122,7 +122,13 @@ namespace BehaviourTree.Runtime
                 int treeVarIndex = treeDef.GetVariableIndex(binding.treeVariableName);
 
                 if (squadVarIndex < 0 || treeVarIndex < 0)
+                {
+                    if (squadVarIndex < 0)
+                        Debug.LogWarning($"[SquadInstance] Binding skipped: squad variable '{binding.squadVariableName}' not found on squad '{definition.name}'.");
+                    else
+                        Debug.LogWarning($"[SquadInstance] Binding skipped: tree variable '{binding.treeVariableName}' not found on tree '{treeDef.name}'. Add it to the tree blackboard or ignore this warning.");
                     continue;
+                }
 
                 int squadBaseSlot = ComputeBaseSlot(squadDef, squadVarIndex);
                 int treeBaseSlot = ComputeBaseSlot(treeDef, treeVarIndex);

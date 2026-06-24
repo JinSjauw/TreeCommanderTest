@@ -23,11 +23,8 @@ namespace BehaviourTree.Editor
             BlackboardDefinition bbDef = blackboardDefinition;
             if (bbDef == null) return;
 
-            if (BlackboardDefinition.EnsureBaseChannel<int>(bbDef, "AgentAssignedRole", isSquadData: false)
-                | BlackboardDefinition.EnsureBaseChannel<int>(bbDef, "AgentReceivedOrder", isSquadData: false))
-            {
+            if (SquadChannelHelper.EnsureAgentSystemChannels(bbDef))
                 EditorUtility.SetDirty(bbDef);
-            }
         }
     }
 }

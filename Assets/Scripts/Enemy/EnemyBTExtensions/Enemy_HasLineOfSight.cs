@@ -37,10 +37,7 @@ namespace BehaviourTree.Runtime.Methods
 
         protected override void OnInitialize()
         {
-            MonoBehaviour mb = (MonoBehaviour)BB;
-            cachedDetection = mb.GetComponent<EnemyDetectionSystem>();
-            if (cachedDetection == null)
-                cachedDetection = mb.GetComponentInChildren<EnemyDetectionSystem>();
+            cachedDetection = GetComponentFromBB<EnemyDetectionSystem>();
         }
 
         public override NodeState Execute()

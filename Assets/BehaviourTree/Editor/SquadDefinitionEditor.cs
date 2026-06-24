@@ -356,6 +356,7 @@ namespace BehaviourTree.Editor
             bbDef.name = squad.name + "_BB_Definition";
             AssetDatabase.AddObjectToAsset(bbDef, path);
             squad.blackboardDefinition = bbDef;
+            squad.EnsureAllBaseChannels();
             EditorUtility.SetDirty(squad);
             EditorUtility.SetDirty(bbDef);
             AssetDatabase.SaveAssets();
@@ -402,6 +403,7 @@ namespace BehaviourTree.Editor
             bbDef.name = squad.name + "_Schema";
             AssetDatabase.AddObjectToAsset(bbDef, path);
             squad.blackboardDefinition = bbDef;
+            squad.EnsureAllBaseChannels();
 
             EditorUtility.SetDirty(squad);
             EditorUtility.SetDirty(bbDef);
@@ -544,8 +546,12 @@ namespace BehaviourTree.Editor
             provider.onTreeSelected = tree =>
             {
                 SquadBindingGroup group = currentSquad.GetOrCreateBindingGroup(tree);
+                bool isNewGroup = group.bindings == null || group.bindings.Count == 0;
                 if (group.bindings == null)
                     group.bindings = new List<VariableBinding>();
+
+                if (isNewGroup)
+                    currentSquad.EnsureAutoBindings(group);
 
                 EditorUtility.SetDirty(currentSquad);
                 BuildBindingGroupsUI();

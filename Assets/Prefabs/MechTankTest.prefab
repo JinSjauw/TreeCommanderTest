@@ -1176,7 +1176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60384b9c3820e0746ba7b82cff206170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDetectionSystem
-  detectionRadius: 38
+  lastDetectionRadius: 30
   firingRadius: 27
   eyeTransform: {fileID: 7767639728334688673}
 --- !u!1 &1405023140728339571
@@ -1511,7 +1511,7 @@ Transform:
   m_GameObject: {fileID: 1984201533840763856}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.4, y: 0.2, z: -0.880002}
+  m_LocalPosition: {x: 1.25, y: 0.2, z: -0.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1542,7 +1542,7 @@ Transform:
   m_GameObject: {fileID: 2005603298222719668}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.4000001, y: 0.2, z: 0.49999988}
+  m_LocalPosition: {x: 1.25, y: 0.2, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2548,7 +2548,7 @@ Transform:
   m_GameObject: {fileID: 3750108048971249210}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.4, y: 0.2, z: 0.53}
+  m_LocalPosition: {x: -1.25, y: 0.2, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3418,7 +3418,7 @@ Transform:
   m_GameObject: {fileID: 4608143639989514257}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.4, y: 0.2, z: -0.84}
+  m_LocalPosition: {x: -1.25, y: 0.2, z: -0.8000022}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5848,10 +5848,6 @@ MonoBehaviour:
   obstacleLayers:
     serializedVersion: 2
     m_Bits: 64
-  maxConeHalfAngle: 45
-  minDistance: 10
-  maxDistance: 20
-  maintainDistance: 8
   minimumPadding: 0.1
   agent: {fileID: 8320783797638168429}
   visualBody: {fileID: 8900191231688931968}
@@ -5870,6 +5866,9 @@ MonoBehaviour:
   blackBoard: {fileID: 9025605514317147064}
   runtimeAsset: {fileID: 0}
   authoringAsset: {fileID: 11400000, guid: 8c764cd4fa834424ca8a5e7fa7f11fd0, type: 2}
+  trackedBindingGroups: []
+  commander: {fileID: 0}
+  squadInstance: {fileID: 0}
 --- !u!114 &9025605514317147064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5882,8 +5881,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de84ed8973a25ae4a9ee5f6fb88c2f85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackBoard
-  serializedReferences:
-  - {fileID: 0}
+  serializedReferences: []
+  valueOverrides: []
+  overriddenReferenceSlots: 
 --- !u!1 &8206244553404064589
 GameObject:
   m_ObjectHideFlags: 0

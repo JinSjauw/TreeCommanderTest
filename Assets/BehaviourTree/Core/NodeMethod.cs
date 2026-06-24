@@ -277,6 +277,20 @@ namespace BehaviourTree.Core
         }
 
         /// <summary>
+        /// Resolves a component of type <typeparamref name="T"/> from the BlackBoard's GameObject.
+        /// Tries GetComponent first, falls back to GetComponentInChildren.
+        /// Returns null if BB is not a BlackBoard MonoBehaviour or the component is not found.
+        /// </summary>
+        protected T GetComponentFromBB<T>() where T : Component
+        {
+            BlackBoard bb = BB as BlackBoard;
+            if (bb == null) return null;
+            T comp = bb.GetComponent<T>();
+            if (comp == null) comp = bb.GetComponentInChildren<T>();
+            return comp;
+        }
+
+        /// <summary>
         /// Number of parameter slots this method expects. Default 0 means
         /// "determine from [SharedVar] field count". Override to a positive
         /// number for dynamic-type nodes that receive FieldData directly

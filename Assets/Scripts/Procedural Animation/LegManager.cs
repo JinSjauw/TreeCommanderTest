@@ -181,8 +181,7 @@ public class LegManager : MonoBehaviour
                 EnableLegGroup(groupToCheck);
             }
         }
-        
-        if(groupToCheck == LegGroups.LEG_B)
+        else if(groupToCheck == LegGroups.LEG_B)
         {
             for (int i = 0; i < legGroupB.Length; i++)
             {

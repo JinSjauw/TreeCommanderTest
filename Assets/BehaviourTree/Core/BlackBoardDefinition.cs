@@ -95,7 +95,7 @@ namespace BehaviourTree.Core
         /// Returns true if a new variable was created (caller should SetDirty).
         /// </summary>
         public static bool EnsureBaseChannel<T>(
-            BlackboardDefinition bbDef, string name, bool isSquadData)
+            BlackboardDefinition bbDef, string name, bool isSquadData, bool isSystemVariable = true)
         {
             if (bbDef == null || bbDef.sharedVariables == null)
                 return false;
@@ -112,13 +112,13 @@ namespace BehaviourTree.Core
                         $"(expected {typeof(T).Name}, got {existing.GetValueType()?.Name ?? "null"}).");
                 }
 
-                if (!existing.isSystemVariable)
+                if (!existing.isSystemVariable && isSystemVariable)
                 {
                     existing.isSystemVariable = true;
                     changed = true;
                 }
 
-                if (!existing.isSquadData)
+                if (!existing.isSquadData && isSquadData)
                 {
                     existing.isSquadData = isSquadData;
                     changed = true;
@@ -134,7 +134,7 @@ namespace BehaviourTree.Core
             if (created != null)
             {
                 created.isSquadData = isSquadData;
-                created.isSystemVariable = true;
+                created.isSystemVariable = isSystemVariable;
             }
 
             return true;

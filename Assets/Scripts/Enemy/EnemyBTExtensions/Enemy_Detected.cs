@@ -65,12 +65,8 @@ namespace BehaviourTree.Runtime.Methods
 
         protected override void OnInitialize()
         {
-            MonoBehaviour mb = (MonoBehaviour)BB;
-            cachedDetection = mb.GetComponent<EnemyDetectionSystem>();
-            if (cachedDetection == null) cachedDetection = mb.GetComponentInChildren<EnemyDetectionSystem>();
-            NavMeshAgent agent = mb.GetComponent<NavMeshAgent>();
-            if (agent == null) agent = mb.GetComponentInChildren<NavMeshAgent>();
-
+            cachedDetection = GetComponentFromBB<EnemyDetectionSystem>();
+            NavMeshAgent agent = GetComponentFromBB<NavMeshAgent>();
             if (agent != null) cachedAgentTransform = agent.transform;
         }
 

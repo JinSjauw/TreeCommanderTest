@@ -52,11 +52,12 @@ public class DeathHandler : MonoBehaviour
             return;
         }
 
-        Transform corpseObject = Instantiate(corpsePrefab);
-        corpseObject.localScale = meshRootTransform.localScale;
-        corpseObject.position = meshRootTransform.position;
+        GameObject corpseObject = pool.GetObject(corpsePrefab.gameObject);
+        Transform corpseTransform = corpseObject.transform;
+        corpseTransform.localScale = meshRootTransform.localScale;
+        corpseTransform.position = meshRootTransform.position;
 
-        CloneMesh(meshRootTransform, corpseObject);
+        CloneMesh(meshRootTransform, corpseTransform);
 
         pool.ReturnGameObject(transformToRemove.gameObject);
     }

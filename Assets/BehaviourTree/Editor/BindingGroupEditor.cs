@@ -276,6 +276,9 @@ namespace BehaviourTree.Editor
                     binding.treeVariableName, binding.squadVariableName);
 
                 // ── Remove binding button ──
+                bool isSystemBinding = IsSystemVariable(squadDef, binding.squadVariableName)
+                                    || IsSystemVariable(treeDef, binding.treeVariableName);
+
                 Button removeBindingButton = bindingRow.Q<Button>("binding-remove-button");
                 if (removeBindingButton == null)
                 {
@@ -283,12 +286,16 @@ namespace BehaviourTree.Editor
                     removeBindingButton.AddToClassList("binding-remove-button");
                     bindingRow.Add(removeBindingButton);
                 }
-                removeBindingButton.clicked += () =>
+                removeBindingButton.SetEnabled(!isSystemBinding);
+                if (!isSystemBinding)
                 {
-                    bindingGroup.bindings.RemoveAt(capturedBindingIndex);
-                    onChanged?.Invoke();
-                    BuildBindingRows();
-                };
+                    removeBindingButton.clicked += () =>
+                    {
+                        bindingGroup.bindings.RemoveAt(capturedBindingIndex);
+                        onChanged?.Invoke();
+                        BuildBindingRows();
+                    };
+                }
 
                 rowsContainer.Add(bindingRow);
             }
@@ -358,6 +365,13 @@ namespace BehaviourTree.Editor
             return t;
         }
 
+        private static bool IsSystemVariable(BlackboardDefinition def, string variableName)
+        {
+            if (def == null || string.IsNullOrEmpty(variableName)) return false;
+            BlackboardVariableBase variable = def.FindVariable(variableName);
+            return variable != null && variable.isSystemVariable;
+        }
+
         private static void ReplacePlaceholder(VisualElement parent, string placeholderName, VisualElement replacement)
         {
             VisualElement placeholder = parent.Q<VisualElement>(placeholderName);
@@ -397,10 +411,11 @@ namespace BehaviourTree.Editor
             BlackboardVariableBase variable = def.FindVariable(variableName);
             if (variable == null) return;
 
-            if (variable.isSquadData)
-                ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.squadDataRow, new Color(0.15f, 0.45f, 0.50f, 0.30f)));
-            else if (variable.isSystemVariable)
+            // System variable takes priority over squad data for styling
+            if (variable.isSystemVariable)
                 ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.systemVariableRow, new Color(0.70f, 0.40f, 0.10f, 0.30f)));
+            else if (variable.isSquadData)
+                ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.squadDataRow, new Color(0.15f, 0.45f, 0.50f, 0.30f)));
 
             if (variable.isSystemVariable)
                 element.SetEnabled(false);
@@ -408,7 +423,7 @@ namespace BehaviourTree.Editor
 
         /// <summary>
         /// Overload that checks both tree and squad definitions.
-        /// Squad-data teal takes priority, system variables are always disabled.
+        /// System variable tint takes priority, system variables are always disabled.
         /// </summary>
         private static void ApplySystemVariableStyle(VisualElement element,
             BlackboardDefinition treeDef, BlackboardDefinition squadDef,
@@ -424,10 +439,10 @@ namespace BehaviourTree.Editor
 
             if (variable == null) return;
 
-            if (variable.isSquadData)
-                ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.squadDataRow, new Color(0.15f, 0.45f, 0.50f, 0.30f)));
-            else if (variable.isSystemVariable)
+            if (variable.isSystemVariable)
                 ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.systemVariableRow, new Color(0.70f, 0.40f, 0.10f, 0.30f)));
+            else if (variable.isSquadData)
+                ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.squadDataRow, new Color(0.15f, 0.45f, 0.50f, 0.30f)));
 
             if (variable.isSystemVariable)
                 element.SetEnabled(false);

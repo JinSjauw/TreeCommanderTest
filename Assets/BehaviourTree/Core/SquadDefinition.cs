@@ -126,37 +126,54 @@ namespace BehaviourTree.Core
             }
         }
 
+        public void EnsureAllBaseChannels()
+        {
+            SquadChannelHelper.EnsureSquadSystemChannels(blackboardDefinition);
+        }
+
+        /// <summary>
+        /// Creates the pre-defined system bindings for a binding group.
+        /// Commander and agent trees get different sets of bindings.
+        /// Called from OnValidate and from editor UIs when a new group is created.
+        /// </summary>
+        public void EnsureAutoBindings(SquadBindingGroup group)
+        {
+            if (group?.treeAsset == null) return;
+
+            bool isCommander = group.treeAsset.CommanderBlackboardDefinition != null;
+            string roleTreeVar = isCommander ? "AgentRoles" : "AgentAssignedRole";
+            string orderTreeVar = isCommander ? "AgentOrders" : "AgentReceivedOrder";
+
+            // Commander: receives roles from agents (FromSquad), pushes orders (ToSquad)
+            // Agent:    pushes its role to squad (ToSquad), receives orders (FromSquad)
+            BindingDirection roleDir = isCommander ? BindingDirection.FromSquad : BindingDirection.ToSquad;
+            BindingDirection orderDir = isCommander ? BindingDirection.ToSquad : BindingDirection.FromSquad;
+
+            // ── System variable bindings (grouped first) ──
+            EnsureBinding(group, "AgentRoles", roleTreeVar, roleDir);
+            EnsureBinding(group, "AgentOrders", orderTreeVar, orderDir);
+
+            if (isCommander) EnsureBinding(group, "LeaderIndex", "LeaderIndex", BindingDirection.FromSquad);
+
+            // AgentStatus: agent writes it (ToSquad), commander reads it (FromSquad)
+            BindingDirection statusDir = isCommander ? BindingDirection.FromSquad : BindingDirection.ToSquad;
+            EnsureBinding(group, "AgentStatus", "AgentStatus", statusDir);
+        }
+
+        private void OnEnable()
+        {
+            SquadChannelHelper.EnsureSquadSystemChannels(blackboardDefinition);
+        }
+
         private void OnValidate()
         {
-            // Ensure squad BB has base channel variables
-            if (blackboardDefinition != null)
-            {
-                BlackboardDefinition.EnsureBaseChannel<int>(blackboardDefinition, "AgentRoles",
-                    isSquadData: true);
-                BlackboardDefinition.EnsureBaseChannel<int>(blackboardDefinition, "AgentOrders",
-                    isSquadData: true);
-            }
+            EnsureAllBaseChannels();
 
             // Ensure auto-bindings for each connected tree
             if (bindingGroups != null)
             {
                 for (int groupIndex = 0; groupIndex < bindingGroups.Count; groupIndex++)
-                {
-                    SquadBindingGroup group = bindingGroups[groupIndex];
-                    if (group?.treeAsset == null) continue;
-
-                    bool isCommander = group.treeAsset.CommanderBlackboardDefinition != null;
-                    string roleTreeVar = isCommander ? "AgentRoles" : "AgentAssignedRole";
-                    string orderTreeVar = isCommander ? "AgentOrders" : "AgentReceivedOrder";
-
-                    // Commander: receives roles from agents (FromSquad), pushes orders (ToSquad)
-                    // Agent:    pushes its role to squad (ToSquad), receives orders (FromSquad)
-                    BindingDirection roleDir = isCommander ? BindingDirection.FromSquad : BindingDirection.ToSquad;
-                    BindingDirection orderDir = isCommander ? BindingDirection.ToSquad : BindingDirection.FromSquad;
-
-                    EnsureBinding(group, "AgentRoles", roleTreeVar, roleDir);
-                    EnsureBinding(group, "AgentOrders", orderTreeVar, orderDir);
-                }
+                    EnsureAutoBindings(bindingGroups[groupIndex]);
             }
 
 #if UNITY_EDITOR

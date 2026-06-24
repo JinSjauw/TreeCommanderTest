@@ -68,11 +68,7 @@ namespace BehaviourTree.Editor
             BlackboardDefinition bbDef = blackboardDefinition ?? commanderBlackboardDefinition;
             if (bbDef == null) return;
 
-            if (BlackboardDefinition.EnsureBaseChannel<int>(bbDef, "AgentRoles", isSquadData: true)
-                | BlackboardDefinition.EnsureBaseChannel<int>(bbDef, "AgentOrders", isSquadData: true))
-            {
-                EditorUtility.SetDirty(bbDef);
-            }
+            EnsureCommanderChannels(bbDef);
 
             SyncStrideToBlackboard();
         }
@@ -103,9 +99,8 @@ namespace BehaviourTree.Editor
 
         private static void EnsureCommanderChannels(BlackboardDefinition bbDef)
         {
-            BlackboardDefinition.EnsureBaseChannel<int>(bbDef, "AgentRoles", isSquadData: true);
-            BlackboardDefinition.EnsureBaseChannel<int>(bbDef, "AgentOrders", isSquadData: true);
-            EditorUtility.SetDirty(bbDef);
+            if (Core.SquadChannelHelper.EnsureCommanderSystemChannels(bbDef))
+                EditorUtility.SetDirty(bbDef);
         }
     }
 }

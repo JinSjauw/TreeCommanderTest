@@ -125,8 +125,12 @@ public partial class CommanderTabView : VisualElement
             {
                 SquadDefinition squad = commanderTree.commanderSquad;
                 SquadBindingGroup bindingGroup = squad.GetOrCreateBindingGroup(currentTree);
+                bool isNewGroup = bindingGroup.bindings == null || bindingGroup.bindings.Count == 0;
                 if (bindingGroup.bindings == null)
                     bindingGroup.bindings = new List<VariableBinding>();
+
+                if (isNewGroup)
+                    squad.EnsureAutoBindings(bindingGroup);
 
                 SquadDefinition capturedSquad = squad;
                 BindingGroupEditor bindingsEditor = new BindingGroupEditor(
