@@ -1,0 +1,289 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-2931618205324402912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a38c03add90752d4c9baab04e36aaf6d, type: 3}
+  m_Name: ROOT
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.RootNode
+  nodeName: RootNode
+  children:
+  - {fileID: 2621421763608430943}
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 2acbbea98a9e13142b9e98ba77425c06
+  graphPosition: {x: 0, y: 0}
+  runtimeIndex: -1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2337152736176314f8b42c250d167c18, type: 3}
+  m_Name: EngageSubtree
+  m_EditorClassIdentifier: BehaviourTree.Editor::BehaviourTree.Editor.AgentTreeAsset
+  root: {fileID: -2931618205324402912}
+  blackboardDefinition: {fileID: 7511051816404479701}
+  commanderBlackboardDefinition: {fileID: 0}
+  squadConnections: []
+  availableConfigs: []
+  nodesList:
+  - {fileID: -2931618205324402912}
+  - {fileID: 6578901652455574401}
+  - {fileID: 2621421763608430943}
+  - {fileID: 8365485319640831808}
+  editorNotes: []
+--- !u!114 &2621421763608430943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
+  m_Name: SEQUENCE
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
+  nodeName: CompositeNode
+  children:
+  - {fileID: 8365485319640831808}
+  - {fileID: 6578901652455574401}
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 69cfa63cf5cc37c429980618c73bd094
+  graphPosition: {x: 0, y: 200}
+  runtimeIndex: -1
+  compositeType: 1
+  methodName: SEQUENCE
+  fieldEntries: []
+  abortType: 0
+--- !u!114 &6578901652455574401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: MoveTo
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: LeafNode
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 7e96471f5bd7dd14d90234442e4b6fc3
+  graphPosition: {x: 140, y: 420}
+  runtimeIndex: -1
+  leafType: 3
+  methodName: MoveTo
+  fieldEntries:
+  - fieldName: target
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: EngagePosition
+    fieldTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
+--- !u!114 &7511051816404479701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
+  m_Name: EngageSubtree_BB_Definition
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
+  sharedVariables:
+  - rid: 3017916964380082428
+  - rid: 3017916964380082429
+  references:
+    version: 2
+    RefIds:
+    - rid: 3017916964380082428
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: EngagePosition
+        variableStride: 1
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []
+    - rid: 3017916964380082429
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AttackTarget
+        variableStride: 1
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+--- !u!114 &8365485319640831808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: Enemy_EngagePosition
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: LeafNode
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 2bb60a8e9b7e3c94eb56d1c4034b1578
+  graphPosition: {x: -140, y: 420}
+  runtimeIndex: -1
+  leafType: 3
+  methodName: Enemy_EngagePosition
+  fieldEntries:
+  - fieldName: target
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: EngagePosition
+    fieldTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: conehalfangle
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: AttackTarget
+    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 45
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: mindistance
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 25
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: maxdistance
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 12
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: maintaindistance
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 20
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: maintaindistance
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 8
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0

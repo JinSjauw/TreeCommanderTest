@@ -560,6 +560,21 @@ namespace BehaviourTree.Editor
                 }
                 while (fieldEntriesProp.arraySize > realCount)
                     fieldEntriesProp.DeleteArrayElementAtIndex(fieldEntriesProp.arraySize - 1);
+
+                // Sync isVariable from descriptors for non-Toggle kinds.
+                // Existing entries may carry stale isVariable after descriptor layout changes
+                // (e.g. a Variable param replacing a Constant at the same index).
+                // Toggle-kind entries are user-controlled via C/V button — don't overwrite.
+                int syncCount = Mathf.Min(fieldEntriesProp.arraySize, realCount);
+                for (int i = 0; i < syncCount; i++)
+                {
+                    DynamicParamDescriptor desc = descriptors[i];
+                    if (desc.kind == DynamicParamKind.Toggle)
+                        continue;
+                    SerializedProperty entry = fieldEntriesProp.GetArrayElementAtIndex(i);
+                    entry.FindPropertyRelative("isVariable").boolValue =
+                        desc.kind == DynamicParamKind.Variable;
+                }
             }
 
             // Sync linked entry types from their source indices

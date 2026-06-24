@@ -6,9 +6,7 @@ namespace BehaviourTree.Runtime.Methods
 {
     /// <summary>
     /// Runs target detection and selects one target by strategy.
-    /// Writes the selected target to a blackboard variable (Transform or GameObject,
-    /// depending on the output variable's type).
-    /// Returns SUCCESS if a target was found and selected, FAILURE if none.
+    /// Writes the selected target to a blackboard variable (Transform or GameObject).
     /// </summary>
     [NodeMethod("Enemy_SelectDetectedTarget", allowedTreeType = AllowedTreeType.Agent)]
     public sealed class Enemy_SelectDetectedTarget : ActionMethod
@@ -37,7 +35,6 @@ namespace BehaviourTree.Runtime.Methods
         private int targetSlot = -1;
         private Type outputType;
         private EnemyDetectionSystem cachedDetection;
-        private bool detectionResolved;
 
         public override void DeserializeParameters(
             ReadOnlySpan<FieldData> fields,
@@ -57,18 +54,18 @@ namespace BehaviourTree.Runtime.Methods
                 strategy = (SelectionStrategy)fields[fieldIndex].value;
         }
 
+        protected override void OnInitialize()
+        {
+            MonoBehaviour mb = (MonoBehaviour)BB;
+            cachedDetection = mb.GetComponent<EnemyDetectionSystem>();
+            if (cachedDetection == null)
+                cachedDetection = mb.GetComponentInChildren<EnemyDetectionSystem>();
+        }
+
         public override NodeState Execute()
         {
-            if (targetSlot < 0 || outputType == null) return NodeState.FAILURE;
-
-            if (!detectionResolved)
-            {
-                cachedDetection = ((MonoBehaviour)BB).GetComponent<EnemyDetectionSystem>();
-                if (cachedDetection == null)
-                    cachedDetection = ((MonoBehaviour)BB).GetComponentInChildren<EnemyDetectionSystem>();
-                detectionResolved = true;
-            }
-            if (cachedDetection == null) return NodeState.FAILURE;
+            if (targetSlot < 0 || outputType == null || cachedDetection == null)
+                return NodeState.FAILURE;
 
             if (!cachedDetection.DetectTargets())
                 return NodeState.FAILURE;

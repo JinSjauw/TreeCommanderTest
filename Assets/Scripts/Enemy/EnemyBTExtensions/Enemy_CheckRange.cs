@@ -6,9 +6,8 @@ using UnityEngine.AI;
 namespace BehaviourTree.Runtime.Methods
 {
     /// <summary>
-    /// Checks whether the 2D distance between the enemy's NavMeshAgent and a target
-    /// Transform satisfies the given comparison against a radius.
-    /// Radius can be a constant float or a blackboard float variable (C/V toggle).
+    /// Checks whether the 2D distance between the enemy's position and a target
+    /// satisfies the given comparison against a radius (constant or BB variable).
     /// </summary>
     [NodeMethod("Enemy_CheckRange", allowedTreeType = AllowedTreeType.Agent)]
     public sealed class Enemy_CheckRange : ConditionMethod
@@ -27,7 +26,7 @@ namespace BehaviourTree.Runtime.Methods
             {
                 titleLabel = "Radius",
                 label = "Value",
-                kind = DynamicParamKind.Toggle,
+                kind = DynamicParamKind.ScriptableObjectConstant,
                 index = 1,
                 allowedTypes = new[] { typeof(float) }
             },
@@ -44,11 +43,10 @@ namespace BehaviourTree.Runtime.Methods
         private int targetSlot = -1;
         private int radiusSlot = -1;
         private RangeCheckOp operation;
-        
+
         private float constantRadius;
         private bool hasConstantRadius;
         private Transform cachedAgentTransform;
-        private bool agentResolved;
 
         public override void DeserializeParameters(
             ReadOnlySpan<FieldData> fields,
@@ -78,20 +76,19 @@ namespace BehaviourTree.Runtime.Methods
                 operation = (RangeCheckOp)fields[fieldIndex].value;
         }
 
+        protected override void OnInitialize()
+        {
+            MonoBehaviour mb = (MonoBehaviour)BB;
+            NavMeshAgent agent = mb.GetComponent<NavMeshAgent>();
+            if (agent == null) agent = mb.GetComponentInChildren<NavMeshAgent>();
+
+            if (agent != null)
+                cachedAgentTransform = agent.transform;
+        }
+
         public override NodeState Execute()
         {
-            if (targetSlot < 0) return NodeState.FAILURE;
-
-            if (!agentResolved)
-            {
-                NavMeshAgent agent = ((MonoBehaviour)BB).GetComponent<NavMeshAgent>();
-                if (agent == null)
-                    agent = ((MonoBehaviour)BB).GetComponentInChildren<NavMeshAgent>();
-                if (agent != null)
-                    cachedAgentTransform = agent.transform;
-                agentResolved = true;
-            }
-            if (cachedAgentTransform == null) return NodeState.FAILURE;
+            if (targetSlot < 0 || cachedAgentTransform == null) return NodeState.FAILURE;
 
             object targetObj = BB.GetBoxed(targetSlot);
             Vector3 target;

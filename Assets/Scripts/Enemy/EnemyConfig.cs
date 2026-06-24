@@ -61,4 +61,17 @@ public class EnemyConfig : ScriptableObject
     [Header("Pathfinding")]
     [Tooltip("NavMeshAgent avoidance priority (lower = higher priority).")]
     public int avoidancePriority = 50;
+
+    [Header("Engagement")]
+    [Tooltip("Half-angle (degrees) for the engagement cone. Small (~15-30) = aggressive narrow cone, large (~90-180) = defensive near-circular spread.")]
+    public float engageConeHalfAngle = 30f;
+
+    [Tooltip("Minimum random offset distance when picking an engage position.")]
+    public float engageMinDistance = 3f;
+
+    [Tooltip("Maximum random offset distance when picking an engage position.")]
+    public float engageMaxDistance = 8f;
+
+    [Tooltip("Ideal distance from target during engagement; affects how pushed-out the position is when close.")]
+    public float engageMaintainDistance = 10f;
 }

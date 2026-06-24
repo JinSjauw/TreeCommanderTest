@@ -58,6 +58,12 @@ public class GunHandling : MonoBehaviour
         reloadDuration = 60f / roundPerMinute;
     }
 
+    /// <summary>Sets spread (random target radius) for aim scatter.</summary>
+    public void SetSpread(float radius) => randomTargetRadius = radius;
+
+    /// <summary>Sets projectile damage.</summary>
+    public void SetDamage(float damage) => projectileDamage = damage;
+
     private void Update()
     {
         TickFiringCooldown(Time.deltaTime);

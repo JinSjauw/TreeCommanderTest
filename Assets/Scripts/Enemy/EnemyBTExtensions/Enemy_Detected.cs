@@ -6,9 +6,8 @@ using UnityEngine.AI;
 namespace BehaviourTree.Runtime.Methods
 {
     /// <summary>
-    /// Runs the enemy's internal detection system and checks whether any detected
-    /// target satisfies the range check (and optionally line-of-sight).
-    /// Returns SUCCESS if at least one target passes all active checks.
+    /// Runs the enemy's detection system and checks whether any detected target
+    /// satisfies the range check (and optionally line-of-sight).
     /// </summary>
     [NodeMethod("Enemy_Detected", allowedTreeType = AllowedTreeType.Agent)]
     public sealed class Enemy_Detected : ConditionMethod
@@ -68,36 +67,28 @@ namespace BehaviourTree.Runtime.Methods
         {
             MonoBehaviour mb = (MonoBehaviour)BB;
             cachedDetection = mb.GetComponent<EnemyDetectionSystem>();
-            if (cachedDetection == null)
-                cachedDetection = mb.GetComponentInChildren<EnemyDetectionSystem>();
+            if (cachedDetection == null) cachedDetection = mb.GetComponentInChildren<EnemyDetectionSystem>();
             NavMeshAgent agent = mb.GetComponent<NavMeshAgent>();
-            if(agent == null)
-                agent = mb.GetComponentInChildren<NavMeshAgent>();
-            if (agent != null)
-                cachedAgentTransform = agent.transform;
+            if (agent == null) agent = mb.GetComponentInChildren<NavMeshAgent>();
+
+            if (agent != null) cachedAgentTransform = agent.transform;
         }
 
         public override NodeState Execute()
         {
-            if (cachedDetection == null || cachedAgentTransform == null)
-            {
-                Debug.LogWarning($"[Enemy_Detected] {(cachedDetection == null ? "EnemyDetectionSystem" : "NavMeshAgent")} not found on {((MonoBehaviour)BB).name}");
-                return NodeState.FAILURE;
-            }
+            if (cachedDetection == null || cachedAgentTransform == null) return NodeState.FAILURE;
 
             if (!cachedDetection.DetectTargets(radius))
             {
-                Debug.Log($"[Enemy_Detected] DetectTargets(radius={radius}) returned no targets");
+                //Debug.LogError($"[Enemy_Detected] FAILURE: {cachedAgentTransform.name} failed to detect targets in radius {radius}");
                 return NodeState.FAILURE;
             }
+
 
             Vector2 agentPos = new Vector2(
                 cachedAgentTransform.position.x,
                 cachedAgentTransform.position.z);
 
-            int targetCount = cachedDetection.DetectedTargets.Count;
-            int rangeSkipped = 0;
-            int losSkipped = 0;
             foreach (Transform target in cachedDetection.DetectedTargets)
             {
                 float distance = Vector2.Distance(
@@ -111,24 +102,14 @@ namespace BehaviourTree.Runtime.Methods
                     _ => false
                 };
 
-                if (!inRange)
-                {
-                    rangeSkipped++;
-                    continue;
-                }
+                if (!inRange) continue;
 
                 if (checkLineOfSight && !cachedDetection.HasLineOfSightToTarget(target))
-                {
-                    losSkipped++;
                     continue;
-                }
 
                 return NodeState.SUCCESS;
             }
 
-            Debug.Log($"[Enemy_Detected] FAILURE: {targetCount} target(s) detected, " +
-                      $"{rangeSkipped} failed range (op={operation}, radius={radius}), " +
-                      $"{(checkLineOfSight ? $"{losSkipped} failed LOS" : "LOS check disabled")}");
             return NodeState.FAILURE;
         }
     }

@@ -5,10 +5,9 @@ using UnityEngine;
 namespace BehaviourTree.Runtime.Methods
 {
     /// <summary>
-    /// Full fire pipeline: aim turret → search trajectory → fire.
-    /// Returns RUNNING during each phase, SUCCESS when the full cycle completes,
-    /// FAILURE if the trajectory search fails.
-    /// State resets on SUCCESS, FAILURE, or abort.
+    /// Full fire pipeline: aim turret → search trajectory → fire delay → fire.
+    /// Returns RUNNING during each phase, SUCCESS when complete, FAILURE on trajectory fail.
+    /// All timing/damage values are ScriptableObjectConstant fields resolved from EnemyConfig at bake time.
     /// </summary>
     [NodeMethod("Enemy_FireSequence", allowedTreeType = AllowedTreeType.Agent)]
     public sealed class Enemy_FireSequence : ActionMethod
@@ -23,28 +22,95 @@ namespace BehaviourTree.Runtime.Methods
                 index = 0,
                 allowedTypes = new[] { typeof(Transform) }
             },
+            new DynamicParamDescriptor
+            {
+                titleLabel = "Fire Delay",
+                label = "Fire Delay",
+                kind = DynamicParamKind.ScriptableObjectConstant,
+                index = 1,
+                allowedTypes = new[] { typeof(float) }
+            },
+            new DynamicParamDescriptor
+            {
+                titleLabel = "Spread",
+                label = "Spread",
+                kind = DynamicParamKind.ScriptableObjectConstant,
+                index = 2,
+                allowedTypes = new[] { typeof(float) }
+            },
+            new DynamicParamDescriptor
+            {
+                titleLabel = "Reload",
+                label = "Reload Duration",
+                kind = DynamicParamKind.ScriptableObjectConstant,
+                index = 3,
+                allowedTypes = new[] { typeof(float) }
+            },
+            new DynamicParamDescriptor
+            {
+                titleLabel = "Damage",
+                label = "Damage",
+                kind = DynamicParamKind.ScriptableObjectConstant,
+                index = 4,
+                allowedTypes = new[] { typeof(int) }
+            },
         };
 
-        private enum FirePhase { Aiming, Trajectory, Firing }
+        private enum FirePhase { Aiming, Trajectory, FireDelay, Firing }
 
         private int targetSlot = -1;
+        private float fireDelay;
+        private float spread;
+        private float reloadDuration;
+
+        // projectileDamage is int in the node (from EnemyConfig) but GunHandling uses float
+        private int projectileDamage;
+
         private FirePhase phase;
         private bool initialized;
-        private GunHandling gunHandling;
+        private GunHandling cachedGunHandling;
         private Transform target;
+        private float fireDelayTimer;
 
         public override void DeserializeParameters(
             ReadOnlySpan<FieldData> fields,
             string[] fieldTypeNames,
             object[] boxedConstants)
         {
-            if (fields.Length >= 1 && fields[0].IsVariable)
-                targetSlot = fields[0].value;
+            int fieldIndex = 0;
+
+            // Target (variable)
+            if (fieldIndex < fields.Length && fields[fieldIndex].IsVariable)
+                targetSlot = fields[fieldIndex++].value;
+
+            // Fire Delay (ScriptableObjectConstant → float)
+            if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
+                fireDelay = fields[fieldIndex++].GetFloat();
+
+            // Spread (ScriptableObjectConstant → float)
+            if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
+                spread = fields[fieldIndex++].GetFloat();
+
+            // Reload Duration (ScriptableObjectConstant → float)
+            if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
+                reloadDuration = fields[fieldIndex++].GetFloat();
+
+            // Projectile Damage (ScriptableObjectConstant → int)
+            if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
+                projectileDamage = fields[fieldIndex].GetInt();
+        }
+
+        protected override void OnInitialize()
+        {
+            MonoBehaviour mb = (MonoBehaviour)BB;
+            cachedGunHandling = mb.GetComponent<GunHandling>();
+            if (cachedGunHandling == null)
+                cachedGunHandling = mb.GetComponentInChildren<GunHandling>();
         }
 
         public override NodeState Execute()
         {
-            if (targetSlot < 0) return NodeState.FAILURE;
+            if (targetSlot < 0 || cachedGunHandling == null) return NodeState.FAILURE;
 
             if (!initialized)
             {
@@ -52,34 +118,31 @@ namespace BehaviourTree.Runtime.Methods
                 target = targetObj as Transform;
                 if (target == null) return NodeState.FAILURE;
 
-                BlackBoard bb = BB as BlackBoard;
-                if (bb != null)
-                {
-                    gunHandling = bb.GetComponent<GunHandling>();
-                    if (gunHandling == null)
-                        gunHandling = bb.GetComponentInChildren<GunHandling>();
-                }
-                if (gunHandling == null) return NodeState.FAILURE;
+                // Push config values to GunHandling (only once per fire cycle)
+                cachedGunHandling.SetSpread(spread);
+                cachedGunHandling.SetDamage(projectileDamage);
+                cachedGunHandling.SetFiringCooldown(reloadDuration);
 
-                gunHandling.SelectAimTarget(target);
+                cachedGunHandling.SelectAimTarget(target);
                 phase = FirePhase.Aiming;
-                gunHandling.SetAiming(true);
+                cachedGunHandling.SetAiming(true);
                 initialized = true;
             }
 
             switch (phase)
             {
                 case FirePhase.Aiming:
-                    if (gunHandling.OnTarget)
+                    if (cachedGunHandling.OnTarget)
                         phase = FirePhase.Trajectory;
                     return NodeState.RUNNING;
 
                 case FirePhase.Trajectory:
                 {
-                    TrajectorySearchState state = gunHandling.SearchTrajectory();
+                    TrajectorySearchState state = cachedGunHandling.SearchTrajectory();
                     if (state == TrajectorySearchState.Found)
                     {
-                        phase = FirePhase.Firing;
+                        fireDelayTimer = 0f;
+                        phase = FirePhase.FireDelay;
                     }
                     else if (state == TrajectorySearchState.Failed)
                     {
@@ -89,10 +152,19 @@ namespace BehaviourTree.Runtime.Methods
                     return NodeState.RUNNING;
                 }
 
+                case FirePhase.FireDelay:
+                    fireDelayTimer += Time.deltaTime;
+                    if (fireDelayTimer >= fireDelay)
+                    {
+                        fireDelayTimer = 0f;
+                        phase = FirePhase.Firing;
+                    }
+                    return NodeState.RUNNING;
+
                 case FirePhase.Firing:
-                    if (gunHandling.IsReloading)
+                    if (cachedGunHandling.IsReloading)
                         return NodeState.RUNNING;
-                    gunHandling.Fire();
+                    cachedGunHandling.Fire();
                     Reset();
                     return NodeState.SUCCESS;
 
@@ -108,10 +180,10 @@ namespace BehaviourTree.Runtime.Methods
 
         private void Reset()
         {
-            gunHandling.SetAiming(false);
+            cachedGunHandling?.SetAiming(false);
             initialized = false;
             target = null;
-            gunHandling = null;
+            fireDelayTimer = 0f;
             phase = FirePhase.Aiming;
         }
     }

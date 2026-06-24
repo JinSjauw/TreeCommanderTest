@@ -5,25 +5,24 @@ using UnityEngine.AI;
 namespace BehaviourTree.Runtime.Methods
 {
     /// <summary>
-    /// Stops the NavMeshAgent immediately (sets isStopped = true).
+    /// Stops the NavMeshAgent immediately.
     /// </summary>
     [NodeMethod("Enemy_StopMovement", allowedTreeType = AllowedTreeType.Agent)]
     public sealed class Enemy_StopMovement : ActionMethod
     {
         private NavMeshAgent cachedAgent;
-        private bool agentResolved;
+
+        protected override void OnInitialize()
+        {
+            MonoBehaviour mb = (MonoBehaviour)BB;
+            cachedAgent = mb.GetComponent<NavMeshAgent>();
+            if (cachedAgent == null)
+                cachedAgent = mb.GetComponentInChildren<NavMeshAgent>();
+        }
 
         public override NodeState Execute()
         {
-            if (!agentResolved)
-            {
-                cachedAgent = ((MonoBehaviour)BB).GetComponent<NavMeshAgent>();
-                if (cachedAgent == null)
-                    cachedAgent = ((MonoBehaviour)BB).GetComponentInChildren<NavMeshAgent>();
-                agentResolved = true;
-            }
             if (cachedAgent == null) return NodeState.FAILURE;
-
             cachedAgent.isStopped = true;
             return NodeState.SUCCESS;
         }

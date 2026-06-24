@@ -5,9 +5,8 @@ using UnityEngine;
 namespace BehaviourTree.Runtime.Methods
 {
     /// <summary>
-    /// Checks whether there is a clear line of sight (no obstacles) between
-    /// the enemy's eye transform and the target Transform.
-    /// Uses Physics.Linecast against the Ground layer.
+    /// Checks whether there is a clear line of sight between the enemy's eye
+    /// transform and the target Transform via Physics.Linecast.
     /// </summary>
     [NodeMethod("Enemy_HasLineOfSight", allowedTreeType = AllowedTreeType.Agent)]
     public sealed class Enemy_HasLineOfSight : ConditionMethod
@@ -26,7 +25,6 @@ namespace BehaviourTree.Runtime.Methods
 
         private int targetSlot = -1;
         private EnemyDetectionSystem cachedDetection;
-        private bool detectionResolved;
 
         public override void DeserializeParameters(
             ReadOnlySpan<FieldData> fields,
@@ -37,18 +35,17 @@ namespace BehaviourTree.Runtime.Methods
                 targetSlot = fields[0].value;
         }
 
+        protected override void OnInitialize()
+        {
+            MonoBehaviour mb = (MonoBehaviour)BB;
+            cachedDetection = mb.GetComponent<EnemyDetectionSystem>();
+            if (cachedDetection == null)
+                cachedDetection = mb.GetComponentInChildren<EnemyDetectionSystem>();
+        }
+
         public override NodeState Execute()
         {
-            if (targetSlot < 0) return NodeState.FAILURE;
-
-            if (!detectionResolved)
-            {
-                cachedDetection = ((MonoBehaviour)BB).GetComponent<EnemyDetectionSystem>();
-                if (cachedDetection == null)
-                    cachedDetection = ((MonoBehaviour)BB).GetComponentInChildren<EnemyDetectionSystem>();
-                detectionResolved = true;
-            }
-            if (cachedDetection == null) return NodeState.FAILURE;
+            if (targetSlot < 0 || cachedDetection == null) return NodeState.FAILURE;
 
             object targetObj = BB.GetBoxed(targetSlot);
             Transform target = targetObj as Transform;

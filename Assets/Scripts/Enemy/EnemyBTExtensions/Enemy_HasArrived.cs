@@ -6,23 +6,22 @@ namespace BehaviourTree.Runtime.Methods
 {
     /// <summary>
     /// Checks whether the NavMeshAgent has reached its current destination.
-    /// Returns SUCCESS when arrived, FAILURE while still moving.
     /// </summary>
     [NodeMethod("Enemy_HasArrived", allowedTreeType = AllowedTreeType.Agent)]
     public sealed class Enemy_HasArrived : ConditionMethod
     {
         private NavMeshAgent cachedAgent;
-        private bool agentResolved;
+
+        protected override void OnInitialize()
+        {
+            MonoBehaviour mb = (MonoBehaviour)BB;
+            cachedAgent = mb.GetComponent<NavMeshAgent>();
+            if (cachedAgent == null)
+                cachedAgent = mb.GetComponentInChildren<NavMeshAgent>();
+        }
 
         public override NodeState Execute()
         {
-            if (!agentResolved)
-            {
-                cachedAgent = ((MonoBehaviour)BB).GetComponent<NavMeshAgent>();
-                if (cachedAgent == null)
-                    cachedAgent = ((MonoBehaviour)BB).GetComponentInChildren<NavMeshAgent>();
-                agentResolved = true;
-            }
             if (cachedAgent == null) return NodeState.FAILURE;
 
             return !cachedAgent.pathPending

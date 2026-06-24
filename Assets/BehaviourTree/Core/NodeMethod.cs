@@ -449,6 +449,25 @@ namespace BehaviourTree.Core
         }
 
         /// <summary>
+        /// Reads a variable slot from the baked FieldData span and advances the index.
+        /// Handles the optional trailing stride marker that TreeBaker emits for variables
+        /// with stride > 1. Returns -1 if no variable is found at the current position.
+        /// </summary>
+        protected static int ReadVariableSlot(ReadOnlySpan<FieldData> fields, ref int fieldIndex)
+        {
+            if (fieldIndex >= fields.Length || !fields[fieldIndex].IsVariable)
+                return -1;
+
+            int slot = fields[fieldIndex].value;
+            fieldIndex++;
+
+            if (fieldIndex < fields.Length && fields[fieldIndex].IsStrideMarker)
+                fieldIndex++;
+
+            return slot;
+        }
+
+        /// <summary>
         /// Called once when BB becomes available for the first time (first tick).
         /// Override to resolve components, cache references, or perform one-time setup
         /// that requires access to the blackboard / agent GameObject.
