@@ -1270,7 +1270,7 @@ PrefabInstance:
     - target: {fileID: 7495416829960762019, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
       propertyPath: authoringAsset
       value: 
-      objectReference: {fileID: 11400000, guid: ba7cb0344e5410045861c4815aad6afe, type: 2}
+      objectReference: {fileID: 11400000, guid: 6f657e5519dbc4f49902a218fe2b824f, type: 2}
     - target: {fileID: 7495416829960762019, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
       propertyPath: trackedBindingGroups.Array.size
       value: 1
@@ -1325,7 +1325,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9025605514317147064, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
       propertyPath: serializedReferences.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 9025605514317147064, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
       propertyPath: 'serializedReferences.Array.data[0]'
@@ -1333,6 +1333,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9025605514317147064, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
       propertyPath: 'serializedReferences.Array.data[1]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025605514317147064, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
+      propertyPath: 'serializedReferences.Array.data[3]'
       value: 
       objectReference: {fileID: 1739893802}
     - target: {fileID: 9025605514317147064, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
@@ -1345,7 +1349,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9025605514317147064, guid: 2a17c0623bc1a664b9c0351d68d0c6a0, type: 3}
       propertyPath: 'overriddenReferenceSlots.Array.data[0]'
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -292,7 +292,7 @@ MonoBehaviour:
   nodeName: SEQUENCE
   children:
   - {fileID: -46431691913445213}
-  - {fileID: -1681865192695334735}
+  - {fileID: 694763035862303155}
   - {fileID: 3675667151907241093}
   firstChildIndex: 0
   lastChildIndex: 0
@@ -330,68 +330,6 @@ MonoBehaviour:
     parentVariableName: EngagePosition
   - subtreeVariableName: AttackTarget
     parentVariableName: AttackTarget
---- !u!114 &-1681865192695334735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: Enemy_SelectDetectedTarget
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: Enemy_SelectDetectedTarget
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: 1b832aeb6d3938b4aafa4a1ba85c1bb1
-  graphPosition: {x: -490, y: 735}
-  runtimeIndex: 4
-  leafType: 3
-  methodName: Enemy_SelectDetectedTarget
-  fieldEntries:
-  - fieldName: target
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: AttackTarget
-    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: strategy
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: AttackTarget
-    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  BlackBoardTypeID: 0
 --- !u!114 &-1362772815977292859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -437,7 +375,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 1b63b4674d911f149abe638043166764
-  graphPosition: {x: -745.4128, y: 1190}
+  graphPosition: {x: -770, y: 1190}
   runtimeIndex: 8
   leafType: 2
   methodName: Enemy_CheckRange
@@ -473,7 +411,7 @@ MonoBehaviour:
     configFieldName: 
     isConfigConstant: 0
     intValue: 0
-    floatValue: 18
+    floatValue: 22
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
@@ -599,7 +537,6 @@ MonoBehaviour:
   - {fileID: 1933259350137673011}
   - {fileID: -7258022147211080315}
   - {fileID: -2050717670034485329}
-  - {fileID: -1681865192695334735}
   - {fileID: 212400733712462643}
   - {fileID: -46431691913445213}
   - {fileID: -3121343897300977442}
@@ -612,6 +549,7 @@ MonoBehaviour:
   - {fileID: -1362772815977292859}
   - {fileID: -1935775192314149628}
   - {fileID: 6701800541932754409}
+  - {fileID: 694763035862303155}
   editorNotes: []
 --- !u!114 &212400733712462643
 MonoBehaviour:
@@ -721,6 +659,67 @@ MonoBehaviour:
     configFieldName: 
     isConfigConstant: 0
     intValue: 10
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
+--- !u!114 &694763035862303155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: Enemy_SelectDetectedTarget
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: 
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: fb07be6482283094a93fe373d270a08a
+  graphPosition: {x: -477, y: 735}
+  runtimeIndex: 4
+  leafType: 3
+  methodName: Enemy_SelectDetectedTarget
+  fieldEntries:
+  - fieldName: outputslot
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: AttackTarget
+    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: selectionstrategy
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
     floatValue: 0
     boolValue: 0
     vector2Value: {x: 0, y: 0}

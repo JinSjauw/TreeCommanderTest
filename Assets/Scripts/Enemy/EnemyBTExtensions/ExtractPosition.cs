@@ -105,6 +105,8 @@ namespace BehaviourTree.Runtime.Methods
 
         private static int GetCount(object collection)
         {
+            if (collection == null) return 0;
+
             return collection switch
             {
                 Transform t          => t.childCount,

@@ -68,7 +68,20 @@ public class TrajectorySystem : MonoBehaviour
         Vector3 controlPosition = fireCurve.transform.position;
 
         if (attemptsTotal == 0)
-            curveHeight = currentSettings.trajectorySearchStartHeight;
+        {
+            float heightOffset = 0;
+
+            if(hasLineOfSight)
+            {
+                float heightDifference = startPosition.y - trajectoryTargetPosition.y;
+                if(heightDifference > 0)
+                {
+                    heightOffset = heightDifference;
+                }
+            }
+
+            curveHeight = currentSettings.trajectorySearchStartHeight - heightOffset;
+        }
 
         for (int i = 0; i < currentSettings.attemptsPerFrame && !hasTrajectory; i++)
         {

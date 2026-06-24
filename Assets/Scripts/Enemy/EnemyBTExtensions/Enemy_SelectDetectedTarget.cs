@@ -15,19 +15,19 @@ namespace BehaviourTree.Runtime.Methods
         {
             new DynamicParamDescriptor
             {
-                titleLabel = "Selection Strategy",
-                label = "Selection Strategy",
-                kind = DynamicParamKind.Operation,
-                index = 0,
-                operationEnumType = typeof(SelectionStrategy)
-            },
-            new DynamicParamDescriptor
-            {
                 titleLabel = "Output",
                 label = "Output Slot",
                 kind = DynamicParamKind.Variable,
-                index = 1,
+                index = 0,
                 allowedTypes = new[] { typeof(Transform), typeof(GameObject) }
+            },
+            new DynamicParamDescriptor
+            {
+                titleLabel = "Selection Strategy",
+                label = "Selection Strategy",
+                kind = DynamicParamKind.Operation,
+                index = 1,
+                operationEnumType = typeof(SelectionStrategy)
             },
         };
 
@@ -43,12 +43,11 @@ namespace BehaviourTree.Runtime.Methods
         {
             int fieldIndex = 0;
 
+            // Read fieldTypeNames BEFORE ReadVariableSlot, since it advances fieldIndex
             if (fieldIndex < fields.Length && fields[fieldIndex].IsVariable)
-            {
-                targetSlot = fields[fieldIndex].value;
                 FieldTypeHelper.TryGetSystemTypeFromName(fieldTypeNames[fieldIndex], out outputType);
-                fieldIndex++;
-            }
+
+            targetSlot = ReadVariableSlot(fields, ref fieldIndex);
 
             if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
                 strategy = (SelectionStrategy)fields[fieldIndex].value;
@@ -65,16 +64,25 @@ namespace BehaviourTree.Runtime.Methods
         public override NodeState Execute()
         {
             if (targetSlot < 0 || outputType == null || cachedDetection == null)
+            {
+                Debug.LogError($"Enemy_SelectDetectedTarget: Invalid parameters {targetSlot}, {outputType}, {cachedDetection}");
                 return NodeState.FAILURE;
+            }
 
             if (!cachedDetection.DetectTargets())
+            {
+                Debug.Log($"No targets detected for {strategy}");
                 return NodeState.FAILURE;
+            }
 
             Transform selected = cachedDetection.GetTarget(strategy);
-            if (selected == null) return NodeState.FAILURE;
-
+            if (selected == null) 
+            {
+                Debug.LogError($"Enemy_SelectDetectedTarget: No target selected for {strategy}");
+                return NodeState.FAILURE;
+            }
             object result = outputType == typeof(GameObject)
-                ? (object)selected.gameObject
+                ? selected.gameObject
                 : selected;
 
             BB.SetBoxed(targetSlot, result);
