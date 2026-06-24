@@ -74,4 +74,20 @@ public class EnemyConfig : ScriptableObject
 
     [Tooltip("Ideal distance from target during engagement; affects how pushed-out the position is when close.")]
     public float engageMaintainDistance = 10f;
+
+    [Header("Flank")]
+    [Tooltip("Base rotation from perpendicular toward target. 0° = pure side flank, 90° = direct approach.")]
+    public float flankAngle = 60f;
+
+    [Tooltip("Random spread half-angle around the flank direction.")]
+    public float flankConeHalfAngle = 15f;
+
+    [Tooltip("Minimum random offset distance for flanking.")]
+    public float flankMinDistance = 3f;
+
+    [Tooltip("Maximum random offset distance for flanking.")]
+    public float flankMaxDistance = 8f;
+
+    [Tooltip("Ideal distance from target during flank; offset shrinks when closer.")]
+    public float flankMaintainDistance = 10f;
 }

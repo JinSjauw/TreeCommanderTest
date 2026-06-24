@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
-  m_Name: BasicExample_BB_Definition
+  m_Name: BasicExampleFlank_BB_Definition
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
   sharedVariables:
   - rid: 3017916940597854307
@@ -304,6 +304,32 @@ MonoBehaviour:
   methodName: SEQUENCE
   fieldEntries: []
   abortType: 3
+--- !u!114 &-1935775192314149628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 096724a717d406f41b69975887de3619, type: 3}
+  m_Name: SUBTREE
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.SubtreeNode
+  nodeName: FLANK
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 77d58edd753094840955fb3f7e577407
+  graphPosition: {x: -124, y: 980}
+  runtimeIndex: 7
+  subTreeAsset: {fileID: 11400000, guid: b134c62016a39dd4895ce453ced16c32, type: 2}
+  bindings:
+  - subtreeVariableName: EngagePosition
+    parentVariableName: EngagePosition
+  - subtreeVariableName: AttackTarget
+    parentVariableName: AttackTarget
 --- !u!114 &-1681865192695334735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -382,7 +408,7 @@ MonoBehaviour:
   children:
   - {fileID: -1038799231490863662}
   - {fileID: 212400733712462643}
-  - {fileID: 1122349390890482637}
+  - {fileID: 6701800541932754409}
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
@@ -560,7 +586,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2337152736176314f8b42c250d167c18, type: 3}
-  m_Name: BasicExample
+  m_Name: BasicExampleFlank
   m_EditorClassIdentifier: BehaviourTree.Editor::BehaviourTree.Editor.AgentTreeAsset
   root: {fileID: 1933259350137673011}
   blackboardDefinition: {fileID: -2868960182940414169}
@@ -584,8 +610,8 @@ MonoBehaviour:
   - {fileID: -1038799231490863662}
   - {fileID: 3675667151907241093}
   - {fileID: -1362772815977292859}
-  - {fileID: 1122349390890482637}
-  - {fileID: 1801318158235353223}
+  - {fileID: -1935775192314149628}
+  - {fileID: 6701800541932754409}
   editorNotes: []
 --- !u!114 &212400733712462643
 MonoBehaviour:
@@ -745,58 +771,6 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   BlackBoardTypeID: 0
---- !u!114 &1122349390890482637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 096724a717d406f41b69975887de3619, type: 3}
-  m_Name: Subtree
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.SubtreeNode
-  nodeName: Engage
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: 97415cd722fd76542bdb33ad9d581c11
-  graphPosition: {x: -280, y: 1190}
-  runtimeIndex: 10
-  subTreeAsset: {fileID: 11400000, guid: 117f4455c2f62e94faa0d2eea9f4d4a0, type: 2}
-  bindings:
-  - subtreeVariableName: EngagePosition
-    parentVariableName: EngagePosition
-  - subtreeVariableName: AttackTarget
-    parentVariableName: AttackTarget
---- !u!114 &1801318158235353223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 096724a717d406f41b69975887de3619, type: 3}
-  m_Name: SUBTREE
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.SubtreeNode
-  nodeName: Engage
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: eb5b3842cf325114fa97d8515c983bd3
-  graphPosition: {x: 140, y: 980}
-  runtimeIndex: 7
-  subTreeAsset: {fileID: 11400000, guid: 117f4455c2f62e94faa0d2eea9f4d4a0, type: 2}
-  bindings:
-  - subtreeVariableName: EngagePosition
-    parentVariableName: EngagePosition
-  - subtreeVariableName: AttackTarget
-    parentVariableName: AttackTarget
 --- !u!114 &1933259350137673011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -833,7 +807,7 @@ MonoBehaviour:
   nodeName: 
   children:
   - {fileID: -1362772815977292859}
-  - {fileID: 1801318158235353223}
+  - {fileID: -1935775192314149628}
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
@@ -844,3 +818,29 @@ MonoBehaviour:
   methodName: SELECTOR
   fieldEntries: []
   abortType: 0
+--- !u!114 &6701800541932754409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 096724a717d406f41b69975887de3619, type: 3}
+  m_Name: SUBTREE
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.SubtreeNode
+  nodeName: FLANK
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: af67ab7f4514bad4db5e9f073380243f
+  graphPosition: {x: -280, y: 1190}
+  runtimeIndex: 10
+  subTreeAsset: {fileID: 11400000, guid: b134c62016a39dd4895ce453ced16c32, type: 2}
+  bindings:
+  - subtreeVariableName: EngagePosition
+    parentVariableName: EngagePosition
+  - subtreeVariableName: AttackTarget
+    parentVariableName: AttackTarget
