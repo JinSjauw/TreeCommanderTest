@@ -141,6 +141,11 @@ namespace BehaviourTree.Runtime
                     squadStride = (squadVar.Stride > 1) ? squadVar.Stride : 1;
                 }
 
+                Debug.Log($"[SquadInstance.EnsureResolved] squad='{definition.name}' tree='{treeDef.name}' " +
+                          $"binding='{binding.squadVariableName}' dir={binding.direction} " +
+                          $"squadBaseSlot={squadBaseSlot} treeBaseSlot={treeBaseSlot} " +
+                          $"squadStride={squadStride} isSquadData={squadVars[squadVarIndex].isSquadData}");
+
                 // FromSquad: squad → tree (triplet: srcSlot, dstSlot, stride)
                 if (binding.direction == BindingDirection.FromSquad || binding.direction == BindingDirection.Both)
                 {
@@ -185,7 +190,12 @@ namespace BehaviourTree.Runtime
                 {
                     // Per-agent copy: offset only the squad-side slot
                     int offset = (stride > 1 && agentOffset < stride) ? agentOffset : 0;
-                    treeBB.SetBoxed(dstSlot, blackBoard.GetBoxed(srcSlot + offset));
+                    int actualSrc = srcSlot + offset;
+                    object value = blackBoard.GetBoxed(actualSrc);
+                    treeBB.SetBoxed(dstSlot, value);
+                    // Debug.Log($"[SquadInstance.CopyToBB] agentOffset={agentOffset} stride={stride} offset={offset} " +
+                    //           $"srcSlot={srcSlot} actualSrc={actualSrc} dstSlot={dstSlot} value={value ?? "null"} " +
+                    //           $"treeDef='{treeDef.name}'");
                 }
                 else if (stride > 1)
                 {

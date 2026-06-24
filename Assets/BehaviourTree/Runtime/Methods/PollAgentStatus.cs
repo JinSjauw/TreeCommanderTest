@@ -23,10 +23,11 @@ namespace BehaviourTree.Runtime.Methods
         {
             new DynamicParamDescriptor
             {
-                label = "Status Array",
+                titleLabel = "Status Array",
+                label = "Input",
                 kind = DynamicParamKind.Variable,
                 index = 0,
-                allowedTypes = new[] { typeof(int), typeof(int[]) },
+                allowedTypes = new[] { typeof(int[]) },
             },
         };
 

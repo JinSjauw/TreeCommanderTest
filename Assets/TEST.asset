@@ -78,4 +78,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.SquadDefinition
   blackboardDefinition: {fileID: -4406987790733134047}
   availableRoles: []
-  bindingGroups: []
+  bindingGroups:
+  - treeAsset: {fileID: 11400000, guid: f925db3be8ac89e41afebf7f2ee89cf2, type: 2}
+    treeAssetGuid: f925db3be8ac89e41afebf7f2ee89cf2
+    bindings:
+    - treeVariableName: AgentRoles
+      squadVariableName: AgentRoles
+      direction: 1
+    - treeVariableName: AgentOrders
+      squadVariableName: AgentOrders
+      direction: 0
+    - treeVariableName: LeaderIndex
+      squadVariableName: LeaderIndex
+      direction: 1
+    - treeVariableName: SquadMovePosition
+      squadVariableName: SquadMovePosition
+      direction: 1
+    - treeVariableName: AgentMovePosition
+      squadVariableName: AgentMovePosition
+      direction: 0
+    - treeVariableName: AgentMoveSpeed
+      squadVariableName: AgentMoveSpeed
+      direction: 1
+    - treeVariableName: AgentStatus
+      squadVariableName: AgentStatus
+      direction: 1

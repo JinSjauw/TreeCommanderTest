@@ -102,6 +102,7 @@ namespace BehaviourTree.Runtime.Methods
                 if (fieldIndex < fields.Length && fields[fieldIndex].IsStrideMarker)
                 {
                     agentCount = fields[fieldIndex].value;
+                    Debug.Log($"CalculateFormation: agentCount: {agentCount}");
                     fieldIndex++;
                 }
             }
@@ -124,29 +125,52 @@ namespace BehaviourTree.Runtime.Methods
         public override NodeState Execute()
         {
             if (posSlot < 0 || agentCount <= 0)
+            {
+                Debug.LogWarning($"[CalculateFormation] FAILED — posSlot={posSlot}, agentCount={agentCount}");
                 return NodeState.FAILURE;
-
-            // Read center (variable or constant)
-            Vector3 center = hasCenterConstant
-                ? centerConstant
-                : (centerSlot >= 0 ? (Vector3)(BB.GetBoxed(centerSlot) ?? Vector3.zero) : Vector3.zero);
+            }
 
             // Get current agent offset (set by ForEachRole/ForEachAgent)
             BlackBoard bb = BB as BlackBoard;
             int agentOffset = bb != null ? bb.currentAgentOffset : 0;
 
+            // Read center (variable or constant)
+            // centerSlot is a shared/commander-level variable — use GetBoxedRaw
+            // to avoid applying currentAgentOffset (which is for per-agent squad data).
+            Vector3 center = Vector3.zero;
+
+            if(hasCenterConstant)
+            {
+                center = centerConstant;
+            }
+            else if(centerSlot >= 0)
+            {
+                object targetObj = BB.GetBoxedRaw(centerSlot);
+                center = targetObj is Vector3 v3 ? v3 : Vector3.zero;
+            }
+
             Vector3 position = center;
+
+            if(agentOffset == 0)
+            {
+                BB.SetBoxed(posSlot, position);
+                return NodeState.SUCCESS;
+            }
 
             switch (formationType)
             {
                 case FormationType.Circle:
                 default:
-                    float angle = (agentOffset / (float)agentCount) * 360f * Mathf.Deg2Rad;
+                    float angle = (agentOffset / (float)(agentCount - 1)) * 360f * Mathf.Deg2Rad;
+                    Debug.Log($"CalculateFormation: angle: {angle:F2} {agentCount}");
                     position = center + new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * radius;
                     break;
             }
 
-            BB.SetBoxed(posSlot + agentOffset, position);
+            Debug.Log($"CalculateFormation: position: {position:F2} agentOffset={agentOffset}");
+            // BB.SetBoxed internally adds currentAgentOffset, so pass posSlot directly.
+            // Adding agentOffset manually would double-offset (posSlot + 2*agentOffset),
+            BB.SetBoxed(posSlot, position);
             return NodeState.SUCCESS;
         }
     }

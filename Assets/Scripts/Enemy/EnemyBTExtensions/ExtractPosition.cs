@@ -18,7 +18,7 @@ namespace BehaviourTree.Runtime.Methods
     /// Always outputs a Vector3.
     /// Supports Sequential and Random modes.
     /// </summary>
-    [NodeMethod("ExtractPosition", allowedTreeType = AllowedTreeType.Agent)]
+    [NodeMethod("ExtractPosition", allowedTreeType = AllowedTreeType.Any)]
     public sealed class ExtractPosition : ActionMethod
     {
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]

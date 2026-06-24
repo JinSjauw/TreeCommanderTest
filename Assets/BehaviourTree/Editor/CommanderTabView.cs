@@ -56,6 +56,14 @@ public partial class CommanderTabView : VisualElement
         RebuildUI();
     }
 
+    private void EnsureTreeBlackboardChannels(CommanderTreeAsset commanderTree)
+    {
+        BlackboardDefinition bbDef = commanderTree?.BlackboardDefinition;
+        if (bbDef == null) return;
+        if (SquadChannelHelper.EnsureCommanderSystemChannels(bbDef))
+            EditorUtility.SetDirty(bbDef);
+    }
+
     private void RebuildUI()
     {
         commanderContent.Clear();
@@ -70,6 +78,8 @@ public partial class CommanderTabView : VisualElement
 
         CommanderTreeAsset commanderTree = currentTree as CommanderTreeAsset;
         if (commanderTree == null) return;
+
+        EnsureTreeBlackboardChannels(commanderTree);
 
         commanderContent.style.display = DisplayStyle.Flex;
         emptyStateLabel.style.display = DisplayStyle.None;

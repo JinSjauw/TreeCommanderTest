@@ -496,6 +496,15 @@ namespace BehaviourTree.Core
             return storage.GetBoxed(index + currentAgentOffset);
         }
 
+        /// <summary>Get a boxed value WITHOUT applying currentAgentOffset.
+        /// Use for shared/commander-level variables that are not per-agent squad data.</summary>
+        public object GetBoxedRaw(int index)
+        {
+            if (storage == null)
+                return null;
+            return storage.GetBoxed(index);
+        }
+
         /// <summary>Set a boxed value by slot index. Used by the bridge for type-agnostic copying.</summary>
         public void SetBoxed(int index, object value)
         {
@@ -529,6 +538,7 @@ namespace BehaviourTree.Core
         void IBlackBoardAccess.Set<T>(int slot, T value) => Set(slot, value);
         object IBlackBoardAccess.GetBoxed(int slot) => GetBoxed(slot);
         void IBlackBoardAccess.SetBoxed(int slot, object value) => SetBoxed(slot, value);
+        object IBlackBoardAccess.GetBoxedRaw(int slot) => GetBoxedRaw(slot);
 
         // ── Value-Type Override Management ─────────────────────────────
 

@@ -154,6 +154,8 @@ namespace BehaviourTree.Core
             EnsureBinding(group, "AgentOrders", orderTreeVar, orderDir);
 
             if (isCommander) EnsureBinding(group, "LeaderIndex", "LeaderIndex", BindingDirection.FromSquad);
+            // if (isCommander) EnsureBinding(group, "SquadMovePosition", "SquadMovePosition", BindingDirection.FromSquad);
+            // if (isCommander) EnsureBinding(group, "AgentMoveSpeed", "AgentMoveSpeed", BindingDirection.FromSquad);
 
             // AgentStatus: agent writes it (ToSquad), commander reads it (FromSquad)
             BindingDirection statusDir = isCommander ? BindingDirection.FromSquad : BindingDirection.ToSquad;

@@ -161,10 +161,24 @@ namespace BehaviourTree.Editor
 
         private void BuildBindingRows()
         {
+            // Preserve parent foldout state — clearing rows can cause
+            // UIToolkit foldouts to collapse
+            Foldout parentFoldout = FindParentFoldout();
+            bool wasExpanded = parentFoldout != null && parentFoldout.value;
+
             rowsContainer.Clear();
 
             if (bindingGroup.bindings == null || bindingGroup.bindings.Count == 0)
+            {
+                if (parentFoldout != null)
+                    parentFoldout.value = wasExpanded;
                 return;
+            }
+
+            // Pre-compute system variable names to exclude from dropdown choices
+            // (system vars are pre-created and locked — they should not be selectable as new bindings)
+            HashSet<string> treeSystemVarNames = BuildSystemVarNameSet(treeDef);
+            HashSet<string> squadSystemVarNames = BuildSystemVarNameSet(squadDef);
 
             for (int bindingIndex = 0; bindingIndex < bindingGroup.bindings.Count; bindingIndex++)
             {
@@ -184,8 +198,10 @@ namespace BehaviourTree.Editor
                 Type selectedTreeType = GetVarType(treeVarTypes, binding.treeVariableName);
                 Type selectedSquadType = GetVarType(squadVarTypes, binding.squadVariableName);
 
-                // ── Tree variable dropdown (filtered by squad type) ──
-                List<string> treeChoices = BuildFilteredChoices(treeVarNames, treeVarTypes, selectedSquadType);
+                // ── Tree variable dropdown (filtered by squad type, exclude system vars for non-system rows) ──
+                bool currentTreeIsSystem = IsSystemVariable(treeDef, binding.treeVariableName);
+                HashSet<string> treeExclude = currentTreeIsSystem ? null : treeSystemVarNames;
+                List<string> treeChoices = BuildFilteredChoices(treeVarNames, treeVarTypes, selectedSquadType, treeExclude);
                 int treeIndex = GetSelectedIndex(treeChoices, binding.treeVariableName);
                 PopupField<string> treeVarPopup = new PopupField<string>(treeChoices, treeIndex);
                 treeVarPopup.AddToClassList("binding-tree-var");
@@ -226,8 +242,10 @@ namespace BehaviourTree.Editor
                 arrowLabel.text = binding.direction == BindingDirection.ToSquad ? "→" :
                     binding.direction == BindingDirection.FromSquad ? "←" : "↔";
 
-                // ── Squad variable dropdown (filtered by tree type) ──
-                List<string> squadChoices = BuildFilteredChoices(squadVarNames, squadVarTypes, selectedTreeType);
+                // ── Squad variable dropdown (filtered by tree type, exclude system vars for non-system rows) ──
+                bool currentSquadIsSystem = IsSystemVariable(squadDef, binding.squadVariableName);
+                HashSet<string> squadExclude = currentSquadIsSystem ? null : squadSystemVarNames;
+                List<string> squadChoices = BuildFilteredChoices(squadVarNames, squadVarTypes, selectedTreeType, squadExclude);
                 int squadIndex = GetSelectedIndex(squadChoices, binding.squadVariableName);
                 PopupField<string> squadVarPopup = new PopupField<string>(squadChoices, squadIndex);
                 squadVarPopup.AddToClassList("binding-squad-var");
@@ -299,6 +317,9 @@ namespace BehaviourTree.Editor
 
                 rowsContainer.Add(bindingRow);
             }
+
+            if (parentFoldout != null)
+                parentFoldout.value = wasExpanded;
         }
 
         private void OnAddBindingClicked()
@@ -319,22 +340,39 @@ namespace BehaviourTree.Editor
         /// <summary>
         /// Builds a dropdown choices list prepended with the placeholder, optionally
         /// filtered to only variables whose type matches <paramref name="matchType"/>.
+        /// Variables in <paramref name="excludeNames"/> are omitted.
         /// </summary>
-        private static List<string> BuildFilteredChoices(List<string> allNames, Dictionary<string, Type> types, Type matchType)
+        private static List<string> BuildFilteredChoices(List<string> allNames, Dictionary<string, Type> types,
+            Type matchType, HashSet<string> excludeNames = null)
         {
             List<string> choices = new List<string> { PlaceholderText };
 
-            if (matchType == null)
+            if (excludeNames == null || excludeNames.Count == 0)
             {
-                choices.AddRange(allNames);
+                if (matchType == null)
+                {
+                    choices.AddRange(allNames);
+                }
+                else
+                {
+                    for (int i = 0; i < allNames.Count; i++)
+                    {
+                        string name = allNames[i];
+                        if (types.TryGetValue(name, out Type t) && t == matchType)
+                            choices.Add(name);
+                    }
+                }
             }
             else
             {
                 for (int i = 0; i < allNames.Count; i++)
                 {
                     string name = allNames[i];
-                    if (types.TryGetValue(name, out Type t) && t == matchType)
-                        choices.Add(name);
+                    if (excludeNames.Contains(name))
+                        continue;
+                    if (matchType != null && (!types.TryGetValue(name, out Type t) || t != matchType))
+                        continue;
+                    choices.Add(name);
                 }
             }
 
@@ -372,6 +410,29 @@ namespace BehaviourTree.Editor
             return variable != null && variable.isSystemVariable;
         }
 
+        private Foldout FindParentFoldout()
+        {
+            VisualElement current = this.hierarchy.parent;
+            while (current != null)
+            {
+                if (current is Foldout foldout)
+                    return foldout;
+                current = current.hierarchy.parent;
+            }
+            return null;
+        }
+
+        private static HashSet<string> BuildSystemVarNameSet(BlackboardDefinition def)
+        {
+            HashSet<string> set = new HashSet<string>();
+            if (def == null) return set;
+            IReadOnlyList<BlackboardVariableBase> vars = def.GetAllVariables();
+            for (int i = 0; i < vars.Count; i++)
+                if (vars[i].isSystemVariable)
+                    set.Add(vars[i].Name);
+            return set;
+        }
+
         private static void ReplacePlaceholder(VisualElement parent, string placeholderName, VisualElement replacement)
         {
             VisualElement placeholder = parent.Q<VisualElement>(placeholderName);
@@ -401,8 +462,8 @@ namespace BehaviourTree.Editor
 
         /// <summary>
         /// Disables the element if the selected variable is a system variable,
-        /// and tints it with the squad-data or system colour from GraphEditorTheme
-        /// (squad-data teal takes priority over system orange-brown).
+        /// and tints it with the system or squad-data colour from GraphEditorTheme.
+        /// System variable orange takes priority; squadData-only gets teal.
         /// </summary>
         private static void ApplySystemVariableStyle(VisualElement element, BlackboardDefinition def, string variableName)
         {
@@ -411,19 +472,22 @@ namespace BehaviourTree.Editor
             BlackboardVariableBase variable = def.FindVariable(variableName);
             if (variable == null) return;
 
-            // System variable takes priority over squad data for styling
+            // System variable orange takes priority; squadData-only gets teal
             if (variable.isSystemVariable)
+            {
                 ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.systemVariableRow, new Color(0.70f, 0.40f, 0.10f, 0.30f)));
-            else if (variable.isSquadData)
-                ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.squadDataRow, new Color(0.15f, 0.45f, 0.50f, 0.30f)));
-
-            if (variable.isSystemVariable)
                 element.SetEnabled(false);
+            }
+            
+            if (variable.isSquadData && !variable.isSystemVariable)
+            {
+                ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.squadDataRow, new Color(0.15f, 0.45f, 0.50f, 0.30f)));
+            }
         }
 
         /// <summary>
         /// Overload that checks both tree and squad definitions.
-        /// System variable tint takes priority, system variables are always disabled.
+        /// System variable orange takes priority, system variables are always disabled.
         /// </summary>
         private static void ApplySystemVariableStyle(VisualElement element,
             BlackboardDefinition treeDef, BlackboardDefinition squadDef,
@@ -439,13 +503,17 @@ namespace BehaviourTree.Editor
 
             if (variable == null) return;
 
+            // System variable orange takes priority; squadData-only gets teal
             if (variable.isSystemVariable)
+            {
                 ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.systemVariableRow, new Color(0.70f, 0.40f, 0.10f, 0.30f)));
-            else if (variable.isSquadData)
-                ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.squadDataRow, new Color(0.15f, 0.45f, 0.50f, 0.30f)));
-
-            if (variable.isSystemVariable)
                 element.SetEnabled(false);
+            }
+            
+            if (variable.isSquadData && !variable.isSystemVariable)
+            {
+                ApplyTintStyle(element, GetThemeColor(GraphEditorTheme.instance?.squadDataRow, new Color(0.15f, 0.45f, 0.50f, 0.30f)));
+            }
         }
 
         private static Color GetThemeColor(Color? themeColor, Color fallback)
@@ -455,7 +523,13 @@ namespace BehaviourTree.Editor
 
         private static void ApplyTintStyle(VisualElement element, Color color)
         {
-            element.style.backgroundColor = color;
+            // Apply to the inner PopupField input element so the tint isn't covered
+            // by the default USS background on the child container
+            VisualElement inner = element.Q<VisualElement>(className: "unity-popup-field__input")
+                              ?? element.Q<VisualElement>(className: "unity-base-popup-field__input");
+            VisualElement target = inner ?? element;
+            
+            target.style.backgroundColor = color;
         }
     }
 }

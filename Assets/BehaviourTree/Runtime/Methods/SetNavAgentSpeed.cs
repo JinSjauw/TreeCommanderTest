@@ -17,9 +17,11 @@ namespace BehaviourTree.Runtime.Methods
         {
             new DynamicParamDescriptor
             {
-                label = "Speed",
-                kind = DynamicParamKind.Toggle,
+                titleLabel = "Move Speed",
+                label = "Value",
+                kind = DynamicParamKind.ScriptableObjectConstant,
                 index = 0,
+                allowedTypes = new Type[] { typeof(float) }
             },
         };
 

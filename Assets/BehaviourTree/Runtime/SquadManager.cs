@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using BehaviourTree.Core;
 using UnityEngine;
@@ -42,6 +43,9 @@ namespace BehaviourTree.Runtime
         [SerializeField, Tooltip("Spawn automatically in Start().")]
         private bool spawnOnStart = true;
 
+        [SerializeField, Tooltip("The patrolpoints collection")]
+        private Transform patrolpointsParent;
+
         [Header("Leader")]
         [SerializeField, Tooltip("Agent index (in managed list) that starts as leader. 0 = first agent.")]
         private int initialLeaderIndex;
@@ -57,11 +61,12 @@ namespace BehaviourTree.Runtime
         private int currentLeaderIndex = -1;
         private bool hasInitialized;
 
-        // ── Squad BB slots (cached for fast write) ────────────────────
+        // ── BB slots (cached for fast write) ────────────────────
 
         private int leaderSlot = -1;
         private int squadMovePosSlot = -1;
         private int agentMoveSpeedSlot = -1;
+        private int patrolpointsParentSlot = -1;
 
         // ── Public accessors ────────────────────────────────────────────
 
@@ -273,6 +278,8 @@ namespace BehaviourTree.Runtime
 
             // Cache squad BB slot info
             CacheSquadSlots();
+            
+            WritePatrolPoints();
 
             // 4 — Register commander with squad
             commanderRunner.RegisterSquad(squadInstance);
@@ -452,14 +459,17 @@ namespace BehaviourTree.Runtime
             leaderSlot = -1;
             squadMovePosSlot = -1;
             agentMoveSpeedSlot = -1;
+            patrolpointsParentSlot = -1;
 
             if (squadInstance?.BlackBoard?.Definition == null) return;
 
             BlackboardDefinition squadDef = squadInstance.BlackBoard.Definition;
-
             leaderSlot = ComputeSlotForVariable(squadDef, "LeaderIndex");
-            squadMovePosSlot = ComputeSlotForVariable(squadDef, "SquadMovePosition");
             agentMoveSpeedSlot = ComputeSlotForVariable(squadDef, "AgentMoveSpeed");
+
+            BlackboardDefinition commanderDef = commanderRunner.BlackBoard.Definition;
+            squadMovePosSlot = ComputeSlotForVariable(commanderDef, "SquadMovePosition");
+            patrolpointsParentSlot = ComputeSlotForVariable(commanderDef, "PatrolPoints");
         }
 
         private static int ComputeSlotForVariable(BlackboardDefinition def, string varName)
@@ -467,6 +477,8 @@ namespace BehaviourTree.Runtime
             if (def == null) return -1;
             int varIndex = def.GetVariableIndex(varName);
             if (varIndex < 0) return -1;
+
+            Debug.Log($"[SquadManager.ComputeSlotForVariable] def={def} | varName={varName} | varIndex={varIndex}");
 
             IReadOnlyList<BlackboardVariableBase> vars = def.GetAllVariables();
             int slot = 0;
@@ -497,13 +509,23 @@ namespace BehaviourTree.Runtime
             currentLeaderIndex = -1;
         }
 
-        /// <summary>Writes the current leader's transform position into SquadMovePosition on the squad BB.</summary>
+        /// <summary>Writes the current leader's transform position into SquadMovePosition on the commander BB.</summary>
         private void WriteSquadMovePosition()
         {
-            if (squadMovePosSlot < 0 || squadInstance?.BlackBoard == null) return;
+            if (squadMovePosSlot < 0 || commanderRunner?.BlackBoard == null) return;
             AgentTreeRunner leader = Leader;
+            Debug.Log($"[SquadManager.WriteSquadMovePosition] leader={leader.name}");
             if (leader == null) return;
-            squadInstance.BlackBoard.SetBoxed(squadMovePosSlot, leader.transform.position);
+            commanderRunner.BlackBoard.SetBoxed(squadMovePosSlot, leader.transform.position);
+            Debug.Log($"[SquadManager.WriteSquadMovePosition] leader={leader.name} pos={leader.transform.position:F2}");
+        }
+
+        private void WritePatrolPoints()
+        {
+            if (patrolpointsParentSlot < 0 || commanderRunner?.BlackBoard == null) return;
+            
+            commanderRunner.BlackBoard.SetBoxed(patrolpointsParentSlot, patrolpointsParent);
+            Debug.Log($"[SquadManager.WritePatrolPoints]"); 
         }
 
         /// <summary>

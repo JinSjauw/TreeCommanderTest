@@ -37,7 +37,7 @@ namespace BehaviourTree.Runtime.Methods
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {
             new DynamicParamDescriptor { titleLabel = "Target", label = "Target", kind = DynamicParamKind.Variable, index = 0 },
-            new DynamicParamDescriptor { titleLabel = "Value",  label = "Value",  kind = DynamicParamKind.Toggle,   index = 1 },
+            new DynamicParamDescriptor { titleLabel = "Value",  label = "Value",  kind = DynamicParamKind.Toggle,   index = 1, syncTypeFromIndex = 0 },
         };
 
         private int targetSlot = -1;
@@ -152,11 +152,11 @@ namespace BehaviourTree.Runtime.Methods
                 object[] values = new object[stride];
                 for (int i = 0; i < stride; i++)
                     values[i] = BB.GetBoxed(variableSlot + i);
-                // Debug.Log($"[LogVariable] [{string.Join(", ", values)}]");
+                Debug.Log($"[LogVariable] [{string.Join(", ", values)}]");
             }
             else
             {
-                // Debug.Log($"[LogVariable] {BB.GetBoxed(variableSlot)}");
+                Debug.Log($"[LogVariable] {BB.GetBoxed(variableSlot)}");
             }
 
             return NodeState.SUCCESS;
@@ -617,6 +617,8 @@ namespace BehaviourTree.Runtime.Methods
 
             object target = BB.GetBoxed(targetSlot);
             if (target == null) return NodeState.FAILURE;
+
+            //Debug.Log("HELE");
 
             Vector3 destination;
             if (target is Transform t)
