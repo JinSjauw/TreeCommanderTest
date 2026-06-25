@@ -67,6 +67,7 @@ namespace BehaviourTree.Runtime
         private int squadMovePosSlot = -1;
         private int agentMoveSpeedSlot = -1;
         private int patrolpointsParentSlot = -1;
+        private int agentCountSlot = -1;
 
         // ── Public accessors ────────────────────────────────────────────
 
@@ -280,6 +281,7 @@ namespace BehaviourTree.Runtime
             CacheSquadSlots();
             
             WritePatrolPoints();
+            WriteAgentCount();
 
             // 4 — Register commander with squad
             commanderRunner.RegisterSquad(squadInstance);
@@ -328,6 +330,7 @@ namespace BehaviourTree.Runtime
             agent.squadInstance = squadInstance;
             agent.Initialize();
             agent.RunIndependently = false;
+            agent.GetComponentInChildren<NavMeshAgent>().avoidancePriority += agentIndex;
 
             commanderRunner.RegisterAgent(agent);
 
@@ -470,6 +473,8 @@ namespace BehaviourTree.Runtime
             BlackboardDefinition commanderDef = commanderRunner.BlackBoard.Definition;
             squadMovePosSlot = ComputeSlotForVariable(commanderDef, "SquadMovePosition");
             patrolpointsParentSlot = ComputeSlotForVariable(commanderDef, "PatrolPoints");
+            agentCountSlot = ComputeSlotForVariable(commanderDef, "AgentCount");
+            Debug.Log($"[SquadManager.CacheSquadSlots] agentCountSlot={agentCountSlot}");
         }
 
         private static int ComputeSlotForVariable(BlackboardDefinition def, string varName)
@@ -528,6 +533,14 @@ namespace BehaviourTree.Runtime
             Debug.Log($"[SquadManager.WritePatrolPoints]"); 
         }
 
+        private void WriteAgentCount()
+        {
+            if (agentCountSlot < 0 || commanderRunner?.BlackBoard == null) return;
+            
+            commanderRunner.BlackBoard.SetBoxed(agentCountSlot, agentCount);
+            Debug.Log($"[SquadManager.WriteAgentCount] agentCount={agentCount}");
+        }
+
         /// <summary>
         /// Reads the agent's NavMeshAgent.speed and writes it to AgentMoveSpeed[index] on the squad BB.
         /// </summary>
@@ -537,7 +550,7 @@ namespace BehaviourTree.Runtime
             if (agentIndex < 0) return;
 
             NavMeshAgent navAgent = agent.GetComponent<NavMeshAgent>();
-            float speed = navAgent != null ? navAgent.speed : 3.5f;
+            float speed = navAgent != null ? navAgent.speed : 1f;
             squadInstance.BlackBoard.SetBoxed(agentMoveSpeedSlot + agentIndex, speed);
         }
 

@@ -30,7 +30,7 @@ namespace BehaviourTree.Runtime
 
         /// <summary>User-curated list of tracked bindings grouped by tree asset.
         /// Only the group matching the currently active tree is resolved and pushed.</summary>
-        [HideInInspector][SerializeField] public List<TrackedBindingGroup> trackedBindingGroups = new();
+        [SerializeField] public List<TrackedBindingGroup> trackedBindingGroups = new();
 
         /// <summary>Runtime cache of resolved bindings for the active tree group. Populated in Initialize().</summary>
         [NonSerialized] private List<TrackedBinding> trackedBindingsToPush;

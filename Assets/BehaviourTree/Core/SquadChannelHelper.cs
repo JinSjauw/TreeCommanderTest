@@ -40,6 +40,7 @@ namespace BehaviourTree.Core
             changed |= BlackboardDefinition.EnsureBaseChannel<int>(bbDef, "AgentOrders", isSquadData: true);
             changed |= BlackboardDefinition.EnsureBaseChannel<int>(bbDef, "LeaderIndex", isSquadData: false);
             changed |= BlackboardDefinition.EnsureBaseChannel<int>(bbDef, "AgentStatus", isSquadData: true);
+            changed |= BlackboardDefinition.EnsureBaseChannel<int>(bbDef, "AgentCount", isSquadData: false);
             return changed;
         }
 

@@ -839,6 +839,7 @@ GameObject:
   - component: {fileID: 2361824818594539459}
   - component: {fileID: 4096845100476099490}
   - component: {fileID: 2802647565752943484}
+  - component: {fileID: 964266579338726739}
   m_Layer: 0
   m_Name: EnemyFormationTank
   m_TagString: Untagged
@@ -925,8 +926,22 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
   valueOverrides: []
   overriddenReferenceSlots: 
+--- !u!114 &964266579338726739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2381881914486876084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d872315f968c7a14fa209802266e55db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyInitializer
+  config: {fileID: 11400000, guid: db52ab1eb1cf68548a209eae7caa8a75, type: 2}
 --- !u!1 &2393272621384156623
 GameObject:
   m_ObjectHideFlags: 0

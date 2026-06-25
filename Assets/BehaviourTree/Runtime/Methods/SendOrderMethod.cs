@@ -1,4 +1,5 @@
 using BehaviourTree.Core;
+using UnityEngine;
 
 namespace BehaviourTree.Runtime.Methods
 {
@@ -21,9 +22,18 @@ namespace BehaviourTree.Runtime.Methods
         [SharedVar(isToggleVariable: true, IsOrderDropdown = true)]
         public int orderValue;
 
+        private OrderRegistry orderRegistry;
+
+        protected override void OnInitialize()
+        {
+            orderRegistry = OrderRegistry.FindInstance();
+        }
+
         public override NodeState Execute()
         {
             ordersSlot = orderValue;
+            Debug.Log($"SendOrderMethod: sentOrder: {orderRegistry.orderNames[orderValue]}");
+
             return NodeState.SUCCESS;
         }
     }

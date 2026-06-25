@@ -1,4 +1,5 @@
 using BehaviourTree.Core;
+using UnityEngine;
 
 namespace BehaviourTree.Runtime.Methods
 {
@@ -21,8 +22,16 @@ namespace BehaviourTree.Runtime.Methods
         [SharedVar(isToggleVariable: true, IsOrderDropdown = true)]
         public int expectedOrder;
 
+        private OrderRegistry orderRegistry;
+
+        protected override void OnInitialize()
+        {
+            orderRegistry = OrderRegistry.FindInstance();
+        }
+
         public override NodeState Execute()
         {
+            Debug.Log($"CheckOrderMethod: receivedOrder: {orderRegistry.orderNames[receivedOrderSlot]}, expectedOrder: {orderRegistry.orderNames[expectedOrder]}");
             return receivedOrderSlot == expectedOrder ? NodeState.SUCCESS : NodeState.FAILURE;
         }
     }

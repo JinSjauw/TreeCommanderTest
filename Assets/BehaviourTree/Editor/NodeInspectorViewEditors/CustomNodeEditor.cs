@@ -657,10 +657,12 @@ namespace BehaviourTree.Editor
             entry.FindPropertyRelative("configFieldName").stringValue = "";
             if (desc.kind == DynamicParamKind.Operation && desc.operationEnumType != null)
                 entry.FindPropertyRelative("fieldTypeName").stringValue = typeof(int).AssemblyQualifiedName;
-            // Set fieldTypeName from allowedTypes for Constant, Variable, and Toggle kinds
-            // so each field carries its own type independently.
-            if (desc.allowedTypes != null && desc.allowedTypes.Length > 0)
-                entry.FindPropertyRelative("fieldTypeName").stringValue = desc.allowedTypes[0].AssemblyQualifiedName;
+            // Set fieldTypeName from allowedTypes for Variable and Toggle kinds.
+            // If no allowedTypes specified, default to int.
+            Type firstType = desc.allowedTypes != null && desc.allowedTypes.Length > 0
+                ? desc.allowedTypes[0]
+                : typeof(int);
+            entry.FindPropertyRelative("fieldTypeName").stringValue = firstType.AssemblyQualifiedName;
         }
 
         /// <summary>

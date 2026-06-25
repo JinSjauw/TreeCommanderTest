@@ -71,7 +71,11 @@ namespace BehaviourTree.Editor
                     if (nodeView?.NodeSO == null) continue;
 
                     int runtimeIdx = nodeView.NodeSO.runtimeIndex;
-                    if (runtimeIdx < 0 || runtimeIdx >= states.Length) continue;
+                    if (runtimeIdx < 0 || runtimeIdx >= states.Length)
+                    {
+                        nodeView.SetDebugState(NodeState.NONE, false);
+                        continue;
+                    }
 
                     NodeState state = states[runtimeIdx];
                     bool isActive = runtimeIdx == activeIndex;

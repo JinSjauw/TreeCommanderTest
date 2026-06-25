@@ -16,3 +16,6 @@ MonoBehaviour:
   - ATTACK
   - MOVE
   - PATROL
+  - FLANK
+  - ASSAULT
+  - SUPPRESS

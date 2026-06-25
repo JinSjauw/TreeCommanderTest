@@ -105,6 +105,9 @@ namespace BehaviourTree.Runtime
                 return;
             }
 
+            // Reset all node states to NONE each tick so only freshly-ticked nodes show a debug state
+            Array.Fill(nodeStates, NodeState.NONE);
+
             tickContext.nodeDatas = nodeDatas;
             tickContext.methodInstances = methodInstances;
             tickContext.nodeStates = nodeStates;

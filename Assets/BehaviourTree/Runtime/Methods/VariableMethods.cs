@@ -151,7 +151,14 @@ namespace BehaviourTree.Runtime.Methods
             {
                 object[] values = new object[stride];
                 for (int i = 0; i < stride; i++)
+                {
                     values[i] = BB.GetBoxed(variableSlot + i);
+                    if(values[i] == null)
+                    {
+                        Debug.Log($"[LogVariable] slot={variableSlot + i} is null");
+                    }
+                }
+
                 Debug.Log($"[LogVariable] [{string.Join(", ", values)}]");
             }
             else
@@ -346,7 +353,7 @@ namespace BehaviourTree.Runtime.Methods
             new DynamicParamDescriptor { titleLabel = "Variable", label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
             new DynamicParamDescriptor
             {
-                titleLabel = "Condition", label = "Condition", kind = DynamicParamKind.Operation, index = 1,
+                titleLabel = "Condition", label = "Condition", kind = DynamicParamKind.Operation, index = 1, syncTypeFromIndex = 0,
                 operationEnumType = typeof(VariableCheckOp),
                 getAvailableOpIndices = (type) =>
                 {
