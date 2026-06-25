@@ -40,7 +40,7 @@ namespace BehaviourTree.Runtime.Methods
             cachedDetection = GetComponentFromBB<EnemyDetectionSystem>();
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (targetSlot < 0 || cachedDetection == null) return NodeState.FAILURE;
 

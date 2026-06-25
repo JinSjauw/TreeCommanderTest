@@ -75,7 +75,7 @@ namespace BehaviourTree.Runtime.Methods
                 operation = (ArrayCheckOp)fields[opFieldIndex].value;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (variableSlot < 0)
                 return NodeState.FAILURE;

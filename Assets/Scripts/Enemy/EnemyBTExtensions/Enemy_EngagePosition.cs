@@ -116,7 +116,7 @@ namespace BehaviourTree.Runtime.Methods
             cachedOrigin = agent?.transform;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (outputSlot < 0 || targetSlot < 0)
             {

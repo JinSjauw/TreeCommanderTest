@@ -83,7 +83,7 @@ namespace BehaviourTree.Runtime.Methods
                 cachedAgentTransform = agent.transform;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (targetSlot < 0 || cachedAgentTransform == null) return NodeState.FAILURE;
 

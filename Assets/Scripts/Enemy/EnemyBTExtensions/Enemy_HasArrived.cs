@@ -17,7 +17,7 @@ namespace BehaviourTree.Runtime.Methods
             cachedAgent = GetComponentFromBB<NavMeshAgent>();
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (cachedAgent == null) return NodeState.FAILURE;
 

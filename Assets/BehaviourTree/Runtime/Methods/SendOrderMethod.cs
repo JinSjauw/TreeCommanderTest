@@ -29,7 +29,7 @@ namespace BehaviourTree.Runtime.Methods
             orderRegistry = OrderRegistry.FindInstance();
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             ordersSlot = orderValue;
             Debug.Log($"SendOrderMethod: sentOrder: {orderRegistry.orderNames[orderValue]}");

@@ -168,7 +168,7 @@ namespace BehaviourTree.Runtime
             NodeState result = NodeState.SUCCESS;
             if (method is ConditionMethod condition)
             {
-                result = condition.Execute();
+                result = condition.Execute(ctx);
                 //Debug.Log($"[ConditionalAbort] NAME: {method.MethodName} nodeIndex={nodeIndex} result={result}");
             }
             // ActionMethod: don't execute (side effects)

@@ -62,7 +62,7 @@ namespace BehaviourTree.Runtime.Methods
             }
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (targetSlot < 0) return NodeState.FAILURE;
 

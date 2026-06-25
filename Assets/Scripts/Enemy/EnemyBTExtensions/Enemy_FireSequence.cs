@@ -105,7 +105,7 @@ namespace BehaviourTree.Runtime.Methods
             cachedGunHandling = GetComponentFromBB<GunHandling>();
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (targetSlot < 0 || cachedGunHandling == null) return NodeState.FAILURE;
 

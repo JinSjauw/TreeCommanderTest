@@ -72,7 +72,7 @@ namespace BehaviourTree.Runtime.Methods
                 mode = (PatrolMode)fields[fieldIndex].value;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (inputSlot < 0 || outputSlot < 0) return NodeState.FAILURE;
 

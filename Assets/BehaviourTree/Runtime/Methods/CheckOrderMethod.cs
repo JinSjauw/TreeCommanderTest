@@ -29,7 +29,7 @@ namespace BehaviourTree.Runtime.Methods
             orderRegistry = OrderRegistry.FindInstance();
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             Debug.Log($"CheckOrderMethod: receivedOrder: {orderRegistry.orderNames[receivedOrderSlot]}, expectedOrder: {orderRegistry.orderNames[expectedOrder]}");
             return receivedOrderSlot == expectedOrder ? NodeState.SUCCESS : NodeState.FAILURE;

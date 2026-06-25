@@ -8,7 +8,7 @@ namespace BehaviourTree.Runtime
         public float duration;
         private float elapsed;
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             elapsed += Time.deltaTime;
             if (elapsed >= duration)
@@ -27,7 +27,7 @@ namespace BehaviourTree.Runtime
         public bool useCustomTick;
         public float customTickValue;
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             float tickAmount = useCustomTick ? customTickValue : Time.deltaTime;
 

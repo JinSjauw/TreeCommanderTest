@@ -1,6 +1,5 @@
 using System;
 using BehaviourTree.Core;
-using UnityEngine;
 
 namespace BehaviourTree.Runtime.Methods
 {
@@ -13,8 +12,9 @@ namespace BehaviourTree.Runtime.Methods
     ///   FAILURE — any agent reports 1 (failed / blocked)
     ///   RUNNING — at least one agent reports 2 (still running / moving)
     ///
-    /// Slots with value -1 or 0 that correspond to unregistered agents are
-    /// treated as not-participating (neutral).
+    /// Agent count is read dynamically from ctx.agentCount (set by
+    /// CommanderTreeRunner each frame). Slots with value -1 or 0 that
+    /// correspond to unregistered agents are treated as neutral.
     /// </summary>
     [NodeMethod("PollAgentStatus", allowedTreeType = AllowedTreeType.Commander)]
     public sealed class PollAgentStatus : ConditionMethod
@@ -32,23 +32,23 @@ namespace BehaviourTree.Runtime.Methods
         };
 
         private int statusSlot = -1;
-        private int agentCount = 1;
 
         public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
         {
+            // Stride marker (fields[1]) is consumed by field index but ignored —
+            // agentCount comes from ctx each frame.
             if (fields.Length >= 1 && fields[0].IsVariable)
             {
                 statusSlot = fields[0].value;
-                if (fields.Length >= 2 && fields[1].IsStrideMarker)
-                    agentCount = fields[1].value;
             }
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (statusSlot < 0)
                 return NodeState.FAILURE;
 
+            int agentCount = ctx.agentCount;
             bool anyRunning = false;
 
             for (int i = 0; i < agentCount; i++)

@@ -31,9 +31,9 @@ namespace BehaviourTree.Runtime
 
             NodeState result;
             if (nodeType == BehaviourNodeType.ACTION)
-                result = ((ActionMethod)method).Execute();
+                result = ((ActionMethod)method).Execute(ctx);
             else if (nodeType == BehaviourNodeType.CONDITION)
-                result = ((ConditionMethod)method).Execute();
+                result = ((ConditionMethod)method).Execute(ctx);
             else
                 result = NodeState.FAILURE;
 

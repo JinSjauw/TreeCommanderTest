@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using BehaviourTree.Core;
 using UnityEngine;
@@ -34,15 +35,17 @@ namespace BehaviourTree.Runtime
 
         protected override void OnDisable()
         {
-            // Deregister all agents — they may outlive the commander
+            // Deregister all agents — they may outlive the commander.
+            // Remove from the end so each removal doesn't require shifting
+            // subsequent slots (compaction is still called for invalidation).
             for (int i = registeredAgents.Count - 1; i >= 0; i--)
             {
                 AgentTreeRunner agent = registeredAgents[i];
                 if (agent != null)
                 {
-                    // Clear the agent's commander reference to break the cycle
                     agent.commander = null;
                 }
+                CompactAndInvalidateSquadSlots(i);
                 registeredAgents.RemoveAt(i);
             }
         }
@@ -194,14 +197,21 @@ namespace BehaviourTree.Runtime
         }
 
         /// <summary>
-        /// Unregisters an agent. With fixed strides, no compaction is needed —
-        /// the slot for the removed agent becomes unused and will not be accessed
-        /// (ForEachAgent limits iteration to agentCount).
+        /// Unregisters an agent. Before removing from the list, invalidates the
+        /// agent's squad-data slots (-1 for ints, zero for floats/vectors) and
+        /// compacts all subsequent slots down by one to keep indices contiguous
+        /// with the remaining agent list.
         /// </summary>
         public void UnregisterAgent(AgentTreeRunner agent)
         {
             if (agent == null) return;
-            registeredAgents.Remove(agent);
+
+            int removedIndex = registeredAgents.IndexOf(agent);
+            if (removedIndex >= 0)
+            {
+                CompactAndInvalidateSquadSlots(removedIndex);
+                registeredAgents.RemoveAt(removedIndex);
+            }
         }
 
         /// <summary>
@@ -218,6 +228,66 @@ namespace BehaviourTree.Runtime
                     return vars[i].Stride;
             }
             return 0;
+        }
+
+        /// <summary>
+        /// Invalidates the squad-data slots for the agent at removedIndex by writing
+        /// sentinel values (-1 for ints, zero for floats/Vector3), then shifts all
+        /// subsequent active per-agent slots down by one to keep indices contiguous
+        /// with the compacted agent list.
+        /// Must be called BEFORE the agent is removed from registeredAgents.
+        /// 
+        /// Active range is [0, registeredAgents.Count). Slots beyond that (up to the
+        /// configured stride) are uninitialized garbage and are neither read nor shifted.
+        /// After the shift, the ex-last slot in the active range becomes unreferenced
+        /// — harmless since agentCount will drop by one on the next frame.
+        /// </summary>
+        private void CompactAndInvalidateSquadSlots(int removedIndex)
+        {
+            int activeCount = registeredAgents.Count; // snapshot before removal
+
+            for (int s = 0; s < registeredSquads.Count; s++)
+            {
+                SquadInstance squad = registeredSquads[s];
+                if (squad?.BlackBoard?.Definition == null) continue;
+
+                BlackboardDefinition squadDef = squad.BlackBoard.Definition;
+                IReadOnlyList<BlackboardVariableBase> vars = squadDef.GetAllVariables();
+
+                int currentSlot = 0;
+                for (int v = 0; v < vars.Count; v++)
+                {
+                    int varStride = vars[v].Stride > 1 ? vars[v].Stride : 1;
+
+                    if (vars[v].isSquadData && varStride > 1)
+                    {
+                        Type varType = vars[v].GetValueType();
+
+                        // 1) Invalidate the removed agent's slot
+                        if (varType == typeof(int))
+                            squad.BlackBoard.SetBoxedRaw(currentSlot + removedIndex, -1);
+                        else if (varType == typeof(float))
+                            squad.BlackBoard.SetBoxedRaw(currentSlot + removedIndex, 0f);
+                        else if (varType == typeof(Vector3))
+                            squad.BlackBoard.SetBoxedRaw(currentSlot + removedIndex, Vector3.zero);
+                        else if (varType == typeof(bool))
+                            squad.BlackBoard.SetBoxedRaw(currentSlot + removedIndex, false);
+                        else
+                            squad.BlackBoard.SetBoxedRaw(currentSlot + removedIndex, -1);
+
+                        // 2) Shift subsequent active slots down by one.
+                        //    Stops at activeCount-1 so garbage beyond the active range
+                        //    is never shifted into the active range.
+                        for (int slot = removedIndex; slot < activeCount - 1; slot++)
+                        {
+                            object val = squad.BlackBoard.GetBoxedRaw(currentSlot + slot + 1);
+                            squad.BlackBoard.SetBoxedRaw(currentSlot + slot, val);
+                        }
+                    }
+
+                    currentSlot += varStride;
+                }
+            }
         }
 
         /// <summary>

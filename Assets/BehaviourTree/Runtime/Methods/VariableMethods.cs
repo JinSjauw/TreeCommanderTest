@@ -65,7 +65,7 @@ namespace BehaviourTree.Runtime.Methods
             }
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (targetSlot < 0) return NodeState.FAILURE;
 
@@ -104,7 +104,7 @@ namespace BehaviourTree.Runtime.Methods
                 targetSlot = fields[0].value;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (targetSlot < 0) return NodeState.FAILURE;
 
@@ -143,7 +143,7 @@ namespace BehaviourTree.Runtime.Methods
                 stride = fields[1].value;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (variableSlot < 0) return NodeState.FAILURE;
 
@@ -232,7 +232,7 @@ namespace BehaviourTree.Runtime.Methods
                 operation = (VariableCompareOp)fields[fieldIndex].value;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (slotA < 0) return NodeState.FAILURE;
 
@@ -377,7 +377,7 @@ namespace BehaviourTree.Runtime.Methods
                 operation = (VariableCheckOp)fields[1].value;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (variableSlot < 0) return NodeState.FAILURE;
 
@@ -437,7 +437,7 @@ namespace BehaviourTree.Runtime.Methods
                 variableSlot = fields[0].value;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (variableSlot < 0) return NodeState.FAILURE;
 
@@ -485,7 +485,7 @@ namespace BehaviourTree.Runtime.Methods
                 operation = (EdgeDetectOp)fields[1].value;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (variableSlot < 0) return NodeState.FAILURE;
 
@@ -533,7 +533,7 @@ namespace BehaviourTree.Runtime.Methods
                 variableSlot = fields[0].value;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (variableSlot < 0) return NodeState.FAILURE;
 
@@ -571,7 +571,7 @@ namespace BehaviourTree.Runtime.Methods
             sourceSlot = VariableMethodHelper.ReadVariableSlot(fields, ref fieldIndex);
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (targetSlot < 0 || sourceSlot < 0) return NodeState.FAILURE;
 
@@ -618,7 +618,7 @@ namespace BehaviourTree.Runtime.Methods
                 targetSlot = fields[0].value;
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
             if (targetSlot < 0) return NodeState.FAILURE;
 

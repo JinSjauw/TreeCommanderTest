@@ -68,7 +68,6 @@ namespace BehaviourTree.Runtime.Methods
         private bool hasCenterConstant;
 
         private int posSlot = -1;
-        private int agentCount = 1;
 
         private FormationType formationType;
 
@@ -98,13 +97,9 @@ namespace BehaviourTree.Runtime.Methods
             {
                 posSlot = fields[fieldIndex].value;
                 fieldIndex++;
-                // TreeBaker emits a stride marker after squad-data variables
+                // Stride marker is skipped — agentCount is read dynamically from ctx each frame.
                 if (fieldIndex < fields.Length && fields[fieldIndex].IsStrideMarker)
-                {
-                    agentCount = fields[fieldIndex].value;
-                    Debug.Log($"CalculateFormation: agentCount: {agentCount}");
                     fieldIndex++;
-                }
             }
 
             // ── Field 2: Formation Type (constant enum) ───────────────
@@ -122,8 +117,10 @@ namespace BehaviourTree.Runtime.Methods
             }
         }
 
-        public override NodeState Execute()
+        public override NodeState Execute(TickContext ctx)
         {
+            int agentCount = ctx.agentCount;
+
             if (posSlot < 0 || agentCount <= 0)
             {
                 Debug.LogWarning($"[CalculateFormation] FAILED — posSlot={posSlot}, agentCount={agentCount}");

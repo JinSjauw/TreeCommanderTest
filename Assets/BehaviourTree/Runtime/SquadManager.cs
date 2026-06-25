@@ -170,6 +170,8 @@ namespace BehaviourTree.Runtime
         /// <summary>
         /// Unregisters an agent from the squad. Does NOT destroy the GameObject.
         /// If this was the leader, triggers leader death behavior.
+        /// Squad BB slot compaction and invalidation are handled by
+        /// CommanderTreeRunner.UnregisterAgent.
         /// </summary>
         public void UnregisterAgent(AgentTreeRunner agent)
         {
@@ -180,11 +182,9 @@ namespace BehaviourTree.Runtime
             bool wasLeader = (removedIndex == currentLeaderIndex);
 
             agent.UnregisterSquad(squadInstance);
-            commanderRunner.UnregisterAgent(agent);
+            commanderRunner.UnregisterAgent(agent);  // handles BB slot compaction & invalidation
             agent.commander = null;
             agent.squadInstance = null;
-
-            InvalidateAgentMoveSpeed(removedIndex);
 
             managedAgents.RemoveAt(removedIndex);
 
