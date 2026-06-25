@@ -22,7 +22,7 @@ namespace BehaviourTree.Editor
         /// </summary>
         public SquadDefinition commanderSquad;
 
-        /// <summary>Maximum number of agents this commander can lead. Drives stride on squad-data variables.</summary>
+        /// <summary>Maximum number of agents this commander can lead. Auto-synced from commanderSquad.TotalAgentSlots.</summary>
         [SerializeField, Min(1)] private int maxSquadSize = 8;
         public int MaxSquadSize
         {
@@ -64,6 +64,10 @@ namespace BehaviourTree.Editor
         private void OnValidate()
         {
             maxSquadSize = Mathf.Max(1, maxSquadSize);
+
+            // Auto-sync stride from squad role composition
+            if (commanderSquad != null && commanderSquad.TotalAgentSlots > 0)
+                maxSquadSize = commanderSquad.TotalAgentSlots;
 
             BlackboardDefinition bbDef = blackboardDefinition ?? commanderBlackboardDefinition;
             if (bbDef == null) return;

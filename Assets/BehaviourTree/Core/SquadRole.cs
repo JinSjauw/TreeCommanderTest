@@ -20,5 +20,8 @@ namespace BehaviourTree.Core
 
         /// <summary>If true, agents are assigned this role when no other role matches.</summary>
         public bool isFallback;
+
+        /// <summary>Prefab to instantiate for agents assigned to this role. Overrides SquadManager's default agentPrefab.</summary>
+        public GameObject prefab;
     }
 }

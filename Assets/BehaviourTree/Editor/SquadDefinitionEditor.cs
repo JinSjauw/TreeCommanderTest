@@ -29,6 +29,7 @@ namespace BehaviourTree.Editor
         private Button addBindingGroupButton;
         private ScrollView bindingGroupsScroll;
         private Label squadDefinitionNameLabel;
+        private Label amountSubHeader;
         private VisualTreeAsset roleRowTemplate;
         private VisualTreeAsset bindingRowTemplate;
         private VisualTreeAsset bindingGroupFoldoutTemplate;
@@ -102,6 +103,7 @@ namespace BehaviourTree.Editor
             bindingGroupsScroll = rootVisual.Q<ScrollView>("binding-groups-scroll");
             squadBarMenu = rootVisual.Q<ToolbarMenu>("squad-bar-menu");
             squadDefinitionNameLabel = rootVisual.Q<Label>("squad-definition-name");
+            amountSubHeader = rootVisual.Q<Label>("amount-sub-header");
 
             if (squadBlackBoardView != null)
                 RegisterNestedScrollHandling(rootVisual);
@@ -506,6 +508,7 @@ namespace BehaviourTree.Editor
                     {
                         currentSquad.availableRoles[capturedIndex].maxAmount = evt.newValue;
                         EditorUtility.SetDirty(currentSquad);
+                        UpdateAmountSubHeader();
                     });
                 }
 
@@ -521,6 +524,20 @@ namespace BehaviourTree.Editor
                     });
                 }
 
+                // Prefab (predefined in UXML as #prefab-field)
+                ObjectField prefabField = foldout?.Q<ObjectField>("prefab-field");
+                if (prefabField != null)
+                {
+                    prefabField.objectType = typeof(GameObject);
+                    prefabField.value = role.prefab;
+                    prefabField.allowSceneObjects = false;
+                    prefabField.RegisterValueChangedCallback(evt =>
+                    {
+                        currentSquad.availableRoles[capturedIndex].prefab = evt.newValue as GameObject;
+                        EditorUtility.SetDirty(currentSquad);
+                    });
+                }
+
                 // Remove button
                 row.Q<Button>("role-remove-button").clicked += () =>
                 {
@@ -531,10 +548,19 @@ namespace BehaviourTree.Editor
 
                 rolesList.Add(row);
             }
+
+            // Update the total slot count sub-header
+            UpdateAmountSubHeader();
+        }
+
+        private void UpdateAmountSubHeader()
+        {
+            if (amountSubHeader != null && currentSquad != null)
+                amountSubHeader.text = $"Total agent slots: {currentSquad.TotalAgentSlots}";
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // Binding groups
+        // Duplicate name check
         // ═══════════════════════════════════════════════════════════════
 
         private void OnAddBindingGroupClicked()

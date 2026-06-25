@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace BehaviourTree.Core
@@ -63,6 +64,32 @@ namespace BehaviourTree.Core
         /// Agents pick one role. Commander trees iterate over roles.
         /// </summary>
         public List<SquadRole> availableRoles = new List<SquadRole>();
+
+        /// <summary>
+        /// Total number of agent slots in this squad's role composition.
+        /// Sum of all role.maxAmount values. Drives commander tree stride and BB allocation.
+        /// </summary>
+        public int TotalAgentSlots => availableRoles != null ? availableRoles.Sum(r => r.maxAmount) : 0;
+
+        /// <summary>
+        /// Resolves a slot index (0..TotalAgentSlots-1) to the SquadRole that covers it.
+        /// Roles are iterated in list order; maxAmount determines how many consecutive slots each covers.
+        /// Returns null if slotIndex is out of range or no roles are defined.
+        /// </summary>
+        public SquadRole GetRoleForSlot(int slotIndex)
+        {
+            if (availableRoles == null || slotIndex < 0) return null;
+
+            int cursor = 0;
+            for (int i = 0; i < availableRoles.Count; i++)
+            {
+                int amount = Mathf.Max(1, availableRoles[i].maxAmount);
+                if (slotIndex < cursor + amount)
+                    return availableRoles[i];
+                cursor += amount;
+            }
+            return null;
+        }
 
         /// <summary>
         /// One binding group per tree that connects to this squad.

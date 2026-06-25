@@ -1,13 +1,13 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/Scripts/BehaviourTree/Editor/UIDocuments/SquadEditor/SquadConnectionRow.uss?fileID=7433441132597879392&amp;guid=15d11b8af22324e4da94ebb67be09618&amp;type=3#SquadConnectionRow"/>
+    <Style src="project://database/Assets/BehaviourTree/Editor/UIDocuments/SquadEditor/SquadConnectionRow.uss?fileID=7433441132597879392&amp;guid=15d11b8af22324e4da94ebb67be09618&amp;type=3#SquadConnectionRow"/>
     <ui:VisualElement name="connection-content" style="padding-top: 12px;">
         <ui:VisualElement name="squad-picker-row" style="flex-direction: row; align-items: center; margin-bottom: 4px;">
-            <ui:Label text="Squad" name="squad-label"/>
+            <ui:Label text="Squad" name="squad-label" style="-unity-font-style: bold;"/>
             <ui:Button text="Select Squad..." name="select-squad-button" style="flex-grow: 1; margin-right: 4px;"/>
             <ui:Button text="Open" name="open-squad-button" style="width: 50px; padding-left: 4px; padding-right: 4px;"/>
             <ui:Button text="X" name="remove-connection-button" class="remove-button"/>
         </ui:VisualElement>
-        <ui:IntegerField label="Max Members" value="1" name="max-member-field" style="margin-left: 0; margin-top: 4px; margin-bottom: 8px; display: none;"/>
+        <ui:Label text="Label" name="max-member-field" style="-unity-font-style: bold; margin-top: 8px; margin-bottom: 8px; display: none;"/>
         <ui:VisualElement name="section-separator" style="flex-grow: 1; border-top-width: 1px; border-left-color: rgb(196, 196, 196); border-right-color: rgb(196, 196, 196); border-top-color: rgb(196, 196, 196); border-bottom-color: rgb(196, 196, 196); padding-bottom: 0; padding-top: 0; margin-bottom: 6px; margin-top: 2px;"/>
         <ui:VisualElement name="roles-section" style="margin-bottom: 8px;">
             <ui:Label text="Roles" name="roles-header" style="color: rgb(179, 179, 179); -unity-font-style: bold; margin-bottom: 4px;"/>

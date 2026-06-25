@@ -33,7 +33,7 @@ namespace BehaviourTree.Runtime
         [SerializeField, Tooltip("Prefab with CommanderTreeRunner component.")]
         private GameObject commanderPrefab;
 
-        [SerializeField, Tooltip("Prefab with AgentTreeRunner component.")]
+        [SerializeField, Tooltip("Fallback prefab used when a SquadRole has no prefab assigned.")]
         private GameObject agentPrefab;
 
         [Header("Spawn")]
@@ -82,14 +82,14 @@ namespace BehaviourTree.Runtime
 
         // ── Public API ─────────────────────────────────────────────────
 
-        /// <summary>Spawns using serialized fields.</summary>
+        /// <summary>Spawns using serialized fields. Agent prefabs are read from the SquadDefinition's role composition.</summary>
         public void Spawn()
         {
-            Spawn(commanderPrefab, agentPrefab, agentCount);
+            Spawn(commanderPrefab, agentCount);
         }
 
-        /// <summary>Spawns with explicit parameters.</summary>
-        public void Spawn(GameObject commanderPrefabOverride, GameObject agentPrefabOverride, int count)
+        /// <summary>Spawns with explicit commander prefab override.</summary>
+        public void Spawn(GameObject commanderPrefabOverride, int count)
         {
             if (hasInitialized)
             {
@@ -104,7 +104,6 @@ namespace BehaviourTree.Runtime
             }
 
             this.commanderPrefab = commanderPrefabOverride != null ? commanderPrefabOverride : commanderPrefab;
-            this.agentPrefab = agentPrefabOverride != null ? agentPrefabOverride : agentPrefab;
             this.agentCount = count;
 
             SpawnSquad();
@@ -132,11 +131,11 @@ namespace BehaviourTree.Runtime
                 return -1;
             }
 
-            // Check stride capacity
-            int maxStride = commanderRunner.GetMaxSquadDataStride();
-            if (maxStride > 0 && managedAgents.Count >= maxStride)
+            // Check slot capacity against squad definition
+            int maxSlots = definition.TotalAgentSlots;
+            if (maxSlots > 0 && managedAgents.Count >= maxSlots)
             {
-                Debug.LogError($"[SquadManager] Cannot register agent: stride ({maxStride}) exceeded.");
+                Debug.LogError($"[SquadManager] Cannot register agent: slot capacity ({maxSlots}) exceeded.");
                 return -1;
             }
 
@@ -267,10 +266,10 @@ namespace BehaviourTree.Runtime
 
             commanderRunner.Initialize();
 
-            // 2 — Max squad size
-            int maxSize = commanderRunner.GetMaxSquadDataStride();
+            // 2 — Max squad size from squad definition's role composition
+            int maxSize = definition.TotalAgentSlots;
             if (maxSize <= 0)
-                maxSize = 8;
+                maxSize = 1;
 
             // 3 — Squad instance
             GameObject squadGo = new GameObject($"[Squad] {definition.name}");
@@ -290,7 +289,7 @@ namespace BehaviourTree.Runtime
             int effectiveCount = Mathf.Min(agentCount, maxSize);
             if (agentCount > maxSize)
             {
-                Debug.LogWarning($"[SquadManager] agentCount ({agentCount}) exceeds max stride ({maxSize}). Clamping to {effectiveCount}.");
+                Debug.LogWarning($"[SquadManager] agentCount ({agentCount}) exceeds total agent slots ({maxSize}). Clamping to {effectiveCount}.");
             }
             for (int i = 0; i < effectiveCount; i++)
             {
@@ -309,19 +308,29 @@ namespace BehaviourTree.Runtime
 
         private void SpawnAgent(int agentIndex)
         {
-            if (agentPrefab == null)
+            // Resolve the role for this slot index
+            SquadRole role = definition.GetRoleForSlot(agentIndex);
+            if (role == null)
             {
-                Debug.LogError("[SquadManager] Agent prefab is null.");
+                Debug.LogError($"[SquadManager] No role defined for agent slot {agentIndex}.");
                 return;
             }
 
-            GameObject agentGo = Instantiate(agentPrefab, transform);
-            agentGo.name = $"[Agent {agentIndex}] {agentPrefab.name}";
+            // Get prefab from the role, falling back to SquadManager default
+            GameObject prefab = role.prefab != null ? role.prefab : agentPrefab;
+            if (prefab == null)
+            {
+                Debug.LogError($"[SquadManager] No prefab for role '{role.name}' (slot {agentIndex}) and no fallback agentPrefab.");
+                return;
+            }
+
+            GameObject agentGo = Instantiate(prefab, transform);
+            agentGo.name = $"[Agent {agentIndex}] {role.name} | {prefab.name}";
 
             AgentTreeRunner agent = agentGo.GetComponent<AgentTreeRunner>();
             if (agent == null)
             {
-                Debug.LogError($"[SquadManager] Agent prefab '{agentPrefab.name}' has no AgentTreeRunner.");
+                Debug.LogError($"[SquadManager] Prefab '{prefab.name}' (role '{role.name}') has no AgentTreeRunner.");
                 Destroy(agentGo);
                 return;
             }
@@ -377,17 +386,24 @@ namespace BehaviourTree.Runtime
             hasInitialized = false;
         }
 
-        // ── Role assignment ────────────────────────────────────────────
+        // ── Role assignment (slot-based, deterministic) ──────────────────
 
         /// <summary>
-        /// Assigns a role to an agent based on SquadDefinition.availableRoles.
-        /// Respects maxAmount per role. Roles are filled in definition order;
-        /// when all non-fallback roles are full, falls back to isFallback roles.
+        /// Assigns a role to an agent based on its slot index in the squad composition.
+        /// Roles are mapped deterministically: slots 0..maxAmount[0]-1 get role[0],
+        /// maxAmount[0]..maxAmount[0]+maxAmount[1]-1 get role[1], etc.
+        /// No counting or "first available" heuristics — the squad definition IS the layout.
         /// </summary>
         private void AssignRole(AgentTreeRunner agent, int agentIndex)
         {
-            if (definition == null || definition.availableRoles == null || definition.availableRoles.Count == 0)
-                return;
+            if (definition == null) return;
+
+            SquadRole role = definition.GetRoleForSlot(agentIndex);
+            if (role == null) return;
+
+            // Find the role's index in availableRoles
+            int roleIndex = definition.availableRoles.IndexOf(role);
+            if (roleIndex < 0) return;
 
             BlackBoard bb = agent.BlackBoard;
             BlackboardDefinition bbDef = bb?.Definition;
@@ -396,60 +412,7 @@ namespace BehaviourTree.Runtime
             int agentRoleSlot = ComputeSlotForVariable(bbDef, "AgentAssignedRole");
             if (agentRoleSlot < 0) return;
 
-            // Count current role assignments across all managed agents
-            int[] roleCounts = new int[definition.availableRoles.Count];
-
-            // Also count roles on squad BB for agents registered externally
-            CountRoleAssignmentsOnSquad(roleCounts);
-
-            // Pick best role: fill non-fallback first, then fallback
-            int roleIndex = FindAvailableRole(roleCounts, agentIndex);
             bb.SetBoxed(agentRoleSlot, roleIndex);
-        }
-
-        private void CountRoleAssignmentsOnSquad(int[] roleCounts)
-        {
-            if (squadInstance?.BlackBoard?.Definition == null) return;
-
-            BlackboardDefinition squadDef = squadInstance.BlackBoard.Definition;
-            int rolesVarIndex = squadDef.GetVariableIndex("AgentRoles");
-            if (rolesVarIndex < 0) return;
-
-            int rolesBaseSlot = ComputeSlotForVariable(squadDef, "AgentRoles");
-            if (rolesBaseSlot < 0) return;
-
-            int stride = squadDef.GetAllVariables()[rolesVarIndex].Stride;
-            for (int i = 0; i < stride && i < roleCounts.Length; i++)
-            {
-                object val = squadInstance.BlackBoard.GetBoxedRaw(rolesBaseSlot + i);
-                int role = val is int intVal ? intVal : -1;
-                if (role >= 0 && role < roleCounts.Length)
-                    roleCounts[role]++;
-            }
-        }
-
-        private int FindAvailableRole(int[] roleCounts, int agentIndex)
-        {
-            // First pass: non-fallback roles that aren't full
-            for (int i = 0; i < definition.availableRoles.Count; i++)
-            {
-                SquadRole role = definition.availableRoles[i];
-                if (role.isFallback) continue;
-                if (roleCounts[i] < role.maxAmount)
-                    return i;
-            }
-
-            // Second pass: fallback roles
-            for (int i = 0; i < definition.availableRoles.Count; i++)
-            {
-                SquadRole role = definition.availableRoles[i];
-                if (!role.isFallback) continue;
-                if (roleCounts[i] < role.maxAmount)
-                    return i;
-            }
-
-            // All full — cycle as last resort
-            return agentIndex % definition.availableRoles.Count;
         }
 
         // ── Leader management ──────────────────────────────────────────
