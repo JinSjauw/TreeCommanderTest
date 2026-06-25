@@ -12,10 +12,8 @@ namespace BehaviourTree.Runtime.Methods
     public sealed class GetLowestAgentMethod : CompositeMethod
     {
         /// <summary>BB slot for _targetAgentID (stride=1, transient). Written with selected agent ID.</summary>
-        [SharedVar] public int targetAgentIDSlot;
-
-        /// <summary>BB slot for the squad-data variable to compare (stride > 1).</summary>
-        [SharedVar] public int variableValueSlot;
+        [SharedVar(SkipAutoResolve = true)] public int targetAgentIDSlot;
+        [SharedVar(SkipAutoResolve = true)] public int variableValueSlot;
 
         public override NodeState Execute(int nodeIndex, ref TickContext ctx)
         {
@@ -55,7 +53,7 @@ namespace BehaviourTree.Runtime.Methods
 
             for (int agentIndex = 0; agentIndex < count; agentIndex++)
             {
-                object boxed = bb.GetBoxed(rawVariableSlot + agentIndex);
+                object boxed = bb.GetBoxedRaw(rawVariableSlot + agentIndex);
                 float value = ConvertToFloat(boxed);
                 if (value < lowestValue)
                 {

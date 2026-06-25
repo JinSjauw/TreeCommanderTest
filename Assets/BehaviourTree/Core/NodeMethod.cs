@@ -32,6 +32,12 @@ namespace BehaviourTree.Core
         /// <summary>If true, the field value is written back to BB after Execute.</summary>
         public bool isOutput = true;
 
+        /// <summary>
+        /// When true, ResolveInputsGeneric / WriteOutputsGeneric skip this field.
+        /// The field still receives a bbSlotIndex during bake (GetSlotByName works).
+        /// </summary>
+        public bool skipAutoResolve = false;
+
         /// <summary>Resolved System.Type for this binding (lazy).</summary>
         public Type ResolvedType =>
             resolvedType ?? (resolvedType = ResolveType());
@@ -64,7 +70,7 @@ namespace BehaviourTree.Core
         /// </summary>
         public void CompileAccessors(Type declaringType)
         {
-            if (bbSlotIndex < 0 || fieldInfo == null) return;
+            if (bbSlotIndex < 0 || fieldInfo == null || skipAutoResolve) return;
             Type fieldType = fieldInfo.FieldType;
             if (fieldType == null) return;
 
@@ -362,7 +368,8 @@ namespace BehaviourTree.Core
                             fieldInfo = source.fieldInfo,
                             fieldTypeName = source.fieldTypeName,
                             isOutput = source.isOutput,
-                            bbSlotIndex = source.bbSlotIndex
+                            bbSlotIndex = source.bbSlotIndex,
+                            skipAutoResolve = source.skipAutoResolve
                         };
                     }
                 }
@@ -438,7 +445,7 @@ namespace BehaviourTree.Core
             if (b == null) return;
             for (int i = 0; i < b.Length; i++)
             {
-                if (b[i] != null && b[i].bbSlotIndex >= 0)
+                if (b[i] != null && b[i].bbSlotIndex >= 0 && !b[i].skipAutoResolve)
                 {
                     b[i].ReadFromBBGeneric(this, bb);
 #if UNITY_EDITOR
@@ -459,7 +466,10 @@ namespace BehaviourTree.Core
             FieldBinding[] b = bindings;
             if (b == null) return;
             for (int i = 0; i < b.Length; i++)
-                b[i]?.WriteToBBGeneric(this, bb);
+            {
+                if (b[i] != null && !b[i].skipAutoResolve)
+                    b[i].WriteToBBGeneric(this, bb);
+            }
         }
 
         /// <summary>

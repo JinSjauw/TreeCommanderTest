@@ -57,6 +57,15 @@ namespace BehaviourTree.Runtime
 
                         methodTypeMap[methodName] = type;
                         bindingCache[type] = CreateBindings(type);
+
+                        // Guard: [SharedVar] fields and DynamicParamDescriptor[] are mutually exclusive.
+                        if (temp.ParameterCount > 0 && bindingCache[type].Length > 0)
+                        {
+                            Debug.LogError(
+                                $"[MethodRegistry] Node method '{methodName}' ({type.Name}) " +
+                                "has both [SharedVar] fields and DynamicParamDescriptor[] — " +
+                                "these are mutually exclusive. Remove one or the other.");
+                        }
                         //Debug.Log($"[MethodRegistry] Registered: {methodName} ({type.Name})");
                     }
                     catch (Exception ex)
@@ -167,7 +176,8 @@ namespace BehaviourTree.Runtime
                     fieldInfo = field,
                     fieldTypeName = field.FieldType.AssemblyQualifiedName,
                     isOutput = isOutput,
-                    bbSlotIndex = -1
+                    bbSlotIndex = -1,
+                    skipAutoResolve = isSharedVar && sharedVar.SkipAutoResolve
                 });
             }
 

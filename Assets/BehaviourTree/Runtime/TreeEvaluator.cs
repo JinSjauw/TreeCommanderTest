@@ -66,6 +66,13 @@ namespace BehaviourTree.Runtime
                 ReadOnlySpan<FieldData> fields = GetNodeFieldSlice(nodeDatas[i]);
                 if (bindings != null && bindings.Length > 0)
                 {
+                    if (instance.ParameterCount > 0)
+                    {
+                        throw new InvalidOperationException(
+                            $"Node method '{name}' has both [SharedVar] fields and " +
+                            $"DynamicParamDescriptor[] — these are mutually exclusive. " +
+                            "Remove one or the other.");
+                    }
                     instance.DeserializeFields(fields, bindings, boxedConstants);
                 }
                 else if (instance.ParameterCount > 0)

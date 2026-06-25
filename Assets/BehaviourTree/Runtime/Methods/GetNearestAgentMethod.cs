@@ -12,9 +12,9 @@ namespace BehaviourTree.Runtime.Methods
     [NodeMethod("GetNearestAgent", allowedTreeType = AllowedTreeType.Commander)]
     public sealed class GetNearestAgentMethod : CompositeMethod
     {
-        [SharedVar] public int targetAgentIDSlot;
-        [SharedVar] public int agentPositionSlot;
-        [SharedVar] public int referencePositionSlot;
+        [SharedVar(SkipAutoResolve = true)] public int targetAgentIDSlot;
+        [SharedVar(SkipAutoResolve = true)] public int agentPositionSlot;
+        [SharedVar(SkipAutoResolve = true)] public int referencePositionSlot;
 
         public override NodeState Execute(int nodeIndex, ref TickContext ctx)
         {
@@ -54,7 +54,7 @@ namespace BehaviourTree.Runtime.Methods
 
             for (int agentIndex = 0; agentIndex < count; agentIndex++)
             {
-                object posBoxed = bb.GetBoxed(rawPositionSlot + agentIndex);
+                object posBoxed = bb.GetBoxedRaw(rawPositionSlot + agentIndex);
                 if (!(posBoxed is Vector3 agentPosition))
                 {
                     continue;

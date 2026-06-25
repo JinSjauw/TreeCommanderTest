@@ -99,7 +99,7 @@ bb.Set("CommanderTarget", someVector);   // FindVariableIndex → 1 → Set(1, s
 
 ---
 
-## Issue 3: `LogVariable` double-offsets when placed inside `ForEachAgent`
+## Issue 3: ~~`LogVariable` double-offsets when placed inside `ForEachAgent`~~ ✅ FIXED
 
 ### Location
 
@@ -149,7 +149,7 @@ Log output: `[60, 40, 90, 80, 70]` — a mix of Health and Stamina values from d
 
 ---
 
-## Issue 4: `ForEachRoleMethod` wastes a BB read on `agentRoleSlot` every tick
+## Issue 4: ~~`ForEachRoleMethod` wastes a BB read on `agentRoleSlot` every tick~~ ✅ FIXED
 
 ### Location
 
@@ -184,7 +184,7 @@ Also a maintenance hazard: a future developer might refactor the `Execute()` to 
 
 ---
 
-## Issue 5: No guard against mixing `[SharedVar]` fields with `DynamicParamDescriptor`
+## Issue 5: ~~No guard against mixing `[SharedVar]` fields with `DynamicParamDescriptor`~~ ✅ FIXED
 
 ### Location
 
@@ -243,10 +243,10 @@ Result: `debugSlot` is bound to the wrong variable (the target, not whatever the
 
 ## Summary of fixes
 
-| Issue | Fix | Effort |
-|---|---|---|
-| 1. Missing type-check for stride > 1 | Extract type-check from `PackFieldEntry` into a helper; call from both branches in `PackFieldEntryWithArray` | Small |
-| 2. `Get<T>(string)` uses wrong index | Add `GetSlot(string)` helper that walks definition summing strides; build a `Dictionary<string, int>` cache at `Initialize()`; use it in name-based Get/Set | Medium |
-| 3. `LogVariable` double-offset | Use `BB.GetBoxedRaw()` for the stride iteration, or skip stride iteration when `currentAgentOffset != 0` | Small |
-| 4. `ForEachRole` wasted BB read | Add `SkipAutoResolve = true` to `[SharedVar]`, check it in `ResolveInputsGeneric`, or use a sentinel value (−2 for slot-only fields) | Small |
-| 5. No guard for mixed paths | Add a validation check in `MethodRegistry` or `TreeEvaluator` that errors if both bindings and descriptors are present on one type | Tiny |
+| Issue | Status | Fix | Effort |
+|---|---|---|---|
+| 1. Missing type-check for stride > 1 | Open | Extract type-check from `PackFieldEntry` into a helper; call from both branches in `PackFieldEntryWithArray` | Small |
+| 2. `Get<T>(string)` uses wrong index | Open | Add `GetSlot(string)` helper that walks definition summing strides; build a `Dictionary<string, int>` cache at `Initialize()`; use it in name-based Get/Set | Medium |
+| 3. `LogVariable` double-offset | ✅ Fixed | Changed `BB.GetBoxed(variableSlot + i)` → `BB.GetBoxedRaw(variableSlot + i)` in `VariableMethods.cs:155` | Small |
+| 4. `ForEachRole` wasted BB read | ✅ Fixed | Added `SkipAutoResolve = true` flag to `[SharedVar]`. Fields with this flag still receive `bbSlotIndex` during bake (GetSlotByName works) but ResolveInputsGeneric / WriteOutputsGeneric / CompileAccessors skip them. Applied to `ForEachRole`, `GetLowestAgent`, `GetHighestAgent`, `GetNearestAgent` — all 8 slot-offset fields. | Small |
+| 5. No guard for mixed paths | ✅ Fixed | Added guard in `MethodRegistry` (registration time) and `TreeEvaluator` (deserialization time) that logs an error if a node method has both `[SharedVar]` fields and `DynamicParamDescriptor[]`. | Tiny |

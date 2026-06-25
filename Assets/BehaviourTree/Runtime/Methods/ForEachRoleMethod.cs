@@ -15,7 +15,7 @@ namespace BehaviourTree.Runtime.Methods
         /// <summary>Baked slot offset of the AgentRoles squad-data variable.
         /// Auto-bound to "AgentRoles" by convention — not visible in the inspector.
         /// bindings[0].bbSlotIndex gives the raw offset for per-agent reads.</summary>
-        [SharedVar(IsHidden = true, AutoVariableName = "AgentRoles")]
+        [SharedVar(IsHidden = true, AutoVariableName = "AgentRoles", SkipAutoResolve = true)]
         public int agentRoleSlot;
 
         /// <summary>Target role to match. When toggle is OFF: TacticalRole enum dropdown (baked as constant).
@@ -44,7 +44,7 @@ namespace BehaviourTree.Runtime.Methods
 
             for (; agentIndex < agentCount; agentIndex++)
             {
-                object roleBoxed = bb.GetBoxed(roleSlot + agentIndex);
+                object roleBoxed = bb.GetBoxedRaw(roleSlot + agentIndex);
                 int roleInt = roleBoxed is int roleVal ? roleVal : 0;
                 if (roleInt != targetRoleInt)
                 {

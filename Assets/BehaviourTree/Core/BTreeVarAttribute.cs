@@ -36,6 +36,14 @@ namespace BehaviourTree.Core
         /// </summary>
         public bool IsOrderDropdown = false;
 
+        /// <summary>
+        /// When true, ResolveInputsGeneric / WriteOutputsGeneric skip this field.
+        /// The field still receives a bbSlotIndex during bake (GetSlotByName works).
+        /// Use for fields that store slot offsets rather than resolved BB values
+        /// (e.g., ForEachRole.agentRoleSlot).
+        /// </summary>
+        public bool SkipAutoResolve = false;
+
         public SharedVarAttribute(bool isToggleVariable = false) => IsToggleVariable = isToggleVariable;
     }
 

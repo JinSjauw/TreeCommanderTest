@@ -11,8 +11,8 @@ namespace BehaviourTree.Runtime.Methods
     [NodeMethod("GetHighestAgent", allowedTreeType = AllowedTreeType.Commander)]
     public sealed class GetHighestAgentMethod : CompositeMethod
     {
-        [SharedVar] public int targetAgentIDSlot;
-        [SharedVar] public int variableValueSlot;
+        [SharedVar(SkipAutoResolve = true)] public int targetAgentIDSlot;
+        [SharedVar(SkipAutoResolve = true)] public int variableValueSlot;
 
         public override NodeState Execute(int nodeIndex, ref TickContext ctx)
         {
@@ -51,7 +51,7 @@ namespace BehaviourTree.Runtime.Methods
 
             for (int agentIndex = 0; agentIndex < count; agentIndex++)
             {
-                object boxed = bb.GetBoxed(rawVariableSlot + agentIndex);
+                object boxed = bb.GetBoxedRaw(rawVariableSlot + agentIndex);
                 float value = boxed is float floatValue ? floatValue : boxed is int intValue ? intValue : float.MinValue;
                 if (value > highestValue)
                 {
