@@ -29,12 +29,17 @@ namespace BehaviourTree.Runtime
         /// on the correct agent on the next tick.
         /// </summary>
         public int[] runningAgentIndex;
-        /// <summary>
-        /// Current agent count for commander composites. Set by CommanderTreeRunner
-        /// before evaluation so composites read it directly without a BB variable.
-        /// Defaults to 0 (no agents) for non-commander trees.
-        /// </summary>
+        /// <summary>Total number of agents in the current commander's squad. Set by CommanderTreeRunner before evaluation.</summary>
         public int agentCount;
+
+        /// <summary>
+        /// Per-agent offset used by leaves and composites during a single tick.
+        /// Composites set this before ticking children (ForEachAgent, SelectAgent, etc.).
+        /// TickLeaf and TickComposite apply it to bb.currentAgentOffset before resolve/execute/write,
+        /// then restore. Default 0 means access element 0 of every variable.
+        /// </summary>
+        public int agentIndex;
+
         public BlackBoard blackBoard;
 
         /// <summary>
@@ -42,6 +47,13 @@ namespace BehaviourTree.Runtime
         /// Indexed the same as nodeDatas. false = condition was not met last time it was checked.
         /// </summary>
         public bool[] lastConditionResult;
+
+        /// <summary>
+        /// Per-node flag set by TickDispatcher when a node is ticked this frame.
+        /// Used by TreeEvaluator to clear stale nodeStates for unticked nodes
+        /// without affecting RUNNING state that conditional abort depends on.
+        /// </summary>
+        public bool[] tickedThisFrame;
     }
 
     /// <summary>
@@ -86,6 +98,7 @@ namespace BehaviourTree.Runtime
             {
                 result = TickFunctions.TickComposite(nodeIndex, ref ctx);
             }
+            ctx.tickedThisFrame[nodeIndex] = true;
             ctx.nodeStates[nodeIndex] = result;
             return result;
         }

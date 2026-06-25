@@ -5,7 +5,9 @@ namespace BehaviourTree.Runtime
     /// <summary>
     /// Tick function for composite nodes.
     /// Dispatches to the CompositeMethod instance stored in methodInstances.
-    /// Handles ResolveInputsGeneric/WriteOutputsGeneric for BB-bound composite fields.
+    /// Manages bb.currentAgentOffset from ctx.agentIndex so the composite's own
+    /// SharedVar fields resolve to the correct per-agent element.
+    /// Composites themselves set ctx.agentIndex before ticking children.
     /// </summary>
     internal static partial class TickFunctions
     {
@@ -14,9 +16,15 @@ namespace BehaviourTree.Runtime
             NodeMethod method = ctx.methodInstances[nodeIndex];
             if (method is CompositeMethod composite)
             {
-                composite.ResolveInputsGeneric(ctx.blackBoard);
+                BlackBoard bb = ctx.blackBoard;
+                int savedOffset = bb.currentAgentOffset;
+                bb.currentAgentOffset = ctx.agentIndex;
+
+                composite.ResolveInputsGeneric(bb);
                 NodeState result = composite.Execute(nodeIndex, ref ctx);
-                composite.WriteOutputsGeneric(ctx.blackBoard);
+                composite.WriteOutputsGeneric(bb);
+
+                bb.currentAgentOffset = savedOffset;
                 return result;
             }
 

@@ -2,7 +2,10 @@ using BehaviourTree.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+
+[assembly: InternalsVisibleTo("BehaviourTree.Runtime.Tests")]
 
 namespace BehaviourTree.Runtime 
 {
@@ -477,6 +480,46 @@ namespace BehaviourTree.Runtime
         /// Computes the base slot offset for a variable index in the definition,
         /// accounting for strides of preceding variables.
         /// </summary>
+        /// <summary>
+        /// Validates that the field type of the entry is compatible with the blackboard variable type.
+        /// Returns the validated variable index, or -1 if the types are incompatible or unresolvable.
+        /// </summary>
+        internal static int ValidateVariableType(int varIndex, NodeFieldEntry entry, BlackboardDefinition runtimeBbDef)
+        {
+            if (varIndex < 0) return varIndex;
+
+            IReadOnlyList<BlackboardVariableBase> allVars = runtimeBbDef.GetAllVariables();
+            if (allVars == null || varIndex >= allVars.Count) return varIndex;
+
+            if (!FieldTypeHelper.TryGetSystemTypeFromName(allVars[varIndex].TypeName, out Type bbType) || bbType == null)
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning($"[TreeBaker] ValidateVariableType type resolve failed: '{entry.variableName}' bbTypeName='{allVars[varIndex].TypeName}'");
+#endif
+                return -1;
+            }
+
+            Type expectedType = ResolveFieldType(entry);
+            if (expectedType == null)
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning($"[TreeBaker] ValidateVariableType — cannot verify type for '{entry.variableName}': fieldTypeName is empty. " +
+                                 $"Open the node in the tree editor to re-serialize the field entry.");
+#endif
+                return -1;
+            }
+
+            if (!expectedType.IsAssignableFrom(bbType))
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning($"[TreeBaker] ValidateVariableType type mismatch: '{entry.variableName}' bbType={bbType.Name} expectedType={expectedType.Name} entryFieldTypeName={entry.fieldTypeName}");
+#endif
+                return -1;
+            }
+
+            return varIndex;
+        }
+
         private static int ResolveSlotOffset(int variableIndex, BlackboardDefinition definition)
         {
             IReadOnlyList<BlackboardVariableBase> allVars = definition.GetAllVariables();
@@ -552,12 +595,16 @@ namespace BehaviourTree.Runtime
             if (varIndexByName != null && !string.IsNullOrEmpty(entry.variableName) && varIndexByName.TryGetValue(entry.variableName, out int mapped))
                 varIndex = mapped;
 
+            // Validate type compatibility for both strided and non-strided variables.
+            // (Previously skipped for stride > 1 — Issue 1 fix.)
+            varIndex = ValidateVariableType(varIndex, entry, runtimeBbDef);
+
             IReadOnlyList<BlackboardVariableBase> allVars = runtimeBbDef.GetAllVariables();
 
             if (varIndex < 0 || allVars == null || varIndex >= allVars.Count)
             {
 #if UNITY_EDITOR
-                Debug.LogWarning($"[TreeBaker] Unresolved variable '{entry.variableName}' — not found in definition. varIndex={varIndex}, varCount={(allVars?.Count ?? -1)}");
+                Debug.LogWarning($"[TreeBaker] Unresolved or type-mismatched variable '{entry.variableName}' — not found in definition. varIndex={varIndex}, varCount={(allVars?.Count ?? -1)}");
 #endif
                 fieldTypeNamesList.Add(entry.fieldTypeName ?? string.Empty);
                 fieldDataArray[offset++] = FieldData.FromVariable(-1);
@@ -596,40 +643,10 @@ namespace BehaviourTree.Runtime
             {
                 int varIndex = -1;
                 if (varIndexByName != null && !string.IsNullOrEmpty(entry.variableName) && varIndexByName.TryGetValue(entry.variableName, out int mapped))
-                {
                     varIndex = mapped;
-                }
 
-                IReadOnlyList<BlackboardVariableBase> allVars = runtimeBbDef.GetAllVariables();
-                if (varIndex >= 0 && allVars != null && varIndex < allVars.Count)
-                {
-                    if (!FieldTypeHelper.TryGetSystemTypeFromName(allVars[varIndex].TypeName, out Type bbType) || bbType == null)
-                    {
-#if UNITY_EDITOR
-                        Debug.LogWarning($"[TreeBaker] PackFieldEntry type resolve failed: '{entry.variableName}' bbTypeName='{allVars[varIndex].TypeName}'");
-#endif
-                        varIndex = -1;
-                    }
-                    else
-                    {
-                        Type expectedType = ResolveFieldType(entry);
-                        if (expectedType == null)
-                        {
-#if UNITY_EDITOR
-                            Debug.LogWarning($"[TreeBaker] PackFieldEntry — cannot verify type for '{entry.variableName}': fieldTypeName is empty. " +
-                                             $"Open the node in the tree editor to re-serialize the field entry.");
-#endif
-                            varIndex = -1;
-                        }
-                        else if (!expectedType.IsAssignableFrom(bbType))
-                        {
-#if UNITY_EDITOR
-                            Debug.LogWarning($"[TreeBaker] PackFieldEntry type mismatch: '{entry.variableName}' bbType={bbType.Name} expectedType={expectedType.Name} entryFieldTypeName={entry.fieldTypeName}");
-#endif
-                            varIndex = -1;
-                        }
-                    }
-                }
+                varIndex = ValidateVariableType(varIndex, entry, runtimeBbDef);
+
                 int slotOffset = ResolveSlotOffset(varIndex, runtimeBbDef);
                 return FieldData.FromVariable(slotOffset);
             }

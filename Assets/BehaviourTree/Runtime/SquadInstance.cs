@@ -191,21 +191,18 @@ namespace BehaviourTree.Runtime
                     // Per-agent copy: offset only the squad-side slot
                     int offset = (stride > 1 && agentOffset < stride) ? agentOffset : 0;
                     int actualSrc = srcSlot + offset;
-                    object value = blackBoard.GetBoxed(actualSrc);
-                    treeBB.SetBoxed(dstSlot, value);
-                    // Debug.Log($"[SquadInstance.CopyToBB] agentOffset={agentOffset} stride={stride} offset={offset} " +
-                    //           $"srcSlot={srcSlot} actualSrc={actualSrc} dstSlot={dstSlot} value={value ?? "null"} " +
-                    //           $"treeDef='{treeDef.name}'");
+                    object value = blackBoard.GetBoxedRaw(actualSrc);
+                    treeBB.SetBoxedRaw(dstSlot, value);
                 }
                 else if (stride > 1)
                 {
                     // Commander sync: copy all stride slots (both sides have stride > 1)
                     for (int j = 0; j < stride; j++)
-                        treeBB.SetBoxed(dstSlot + j, blackBoard.GetBoxed(srcSlot + j));
+                        treeBB.SetBoxedRaw(dstSlot + j, blackBoard.GetBoxedRaw(srcSlot + j));
                 }
                 else
                 {
-                    treeBB.SetBoxed(dstSlot, blackBoard.GetBoxed(srcSlot));
+                    treeBB.SetBoxedRaw(dstSlot, blackBoard.GetBoxedRaw(srcSlot));
                 }
             }
         }
@@ -233,17 +230,17 @@ namespace BehaviourTree.Runtime
                 {
                     // Per-agent copy: offset only the squad-side slot
                     int offset = (stride > 1 && agentOffset < stride) ? agentOffset : 0;
-                    blackBoard.SetBoxed(dstSlot + offset, treeBB.GetBoxed(srcSlot));
+                    blackBoard.SetBoxedRaw(dstSlot + offset, treeBB.GetBoxedRaw(srcSlot));
                 }
                 else if (stride > 1)
                 {
                     // Commander sync: copy all stride slots (both sides have stride > 1)
                     for (int j = 0; j < stride; j++)
-                        blackBoard.SetBoxed(dstSlot + j, treeBB.GetBoxed(srcSlot + j));
+                        blackBoard.SetBoxedRaw(dstSlot + j, treeBB.GetBoxedRaw(srcSlot + j));
                 }
                 else
                 {
-                    blackBoard.SetBoxed(dstSlot, treeBB.GetBoxed(srcSlot));
+                    blackBoard.SetBoxedRaw(dstSlot, treeBB.GetBoxedRaw(srcSlot));
                 }
             }
         }

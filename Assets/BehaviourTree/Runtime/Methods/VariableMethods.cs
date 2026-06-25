@@ -152,7 +152,7 @@ namespace BehaviourTree.Runtime.Methods
                 object[] values = new object[stride];
                 for (int i = 0; i < stride; i++)
                 {
-                    values[i] = BB.GetBoxed(variableSlot + i);
+                    values[i] = BB.GetBoxedRaw(variableSlot + i);
                     if(values[i] == null)
                     {
                         Debug.Log($"[LogVariable] slot={variableSlot + i} is null");

@@ -4,8 +4,9 @@ namespace BehaviourTree.Runtime.Methods
 {
     /// <summary>
     /// SelectAgent ticks children for a single agent specified by _targetAgentID.
-    /// Sets blackBoard.currentAgentOffset = targetAgentID so leaves read/write
-    /// the correct per-agent slot. Invalid agentID → FAILURE without ticking children.
+    /// Sets ctx.agentIndex so leaves read/write the correct per-agent slot
+    /// (applied to bb.currentAgentOffset by TickLeaf/TickComposite).
+    /// Invalid agentID → FAILURE without ticking children.
     /// </summary>
     [NodeMethod("SelectAgent", allowedTreeType = AllowedTreeType.Commander)]
     public sealed class SelectAgentMethod : CompositeMethod
@@ -22,21 +23,16 @@ namespace BehaviourTree.Runtime.Methods
             if (agentID < 0 || agentID >= ctx.agentCount)
                 return NodeState.FAILURE;
 
-            BlackBoard bb = ctx.blackBoard;
-            int savedOffset = bb.currentAgentOffset;
-            bb.currentAgentOffset = agentID;
+            ctx.agentIndex = agentID;
 
             NodeState result = TickDispatcher.TickNode(node.firstChildIndex, ref ctx);
 
             if (result == NodeState.RUNNING)
             {
-                // runningAgentIndex stores the selected agent ID for resume context
                 ctx.runningAgentIndex[nodeIndex] = agentID;
-                bb.currentAgentOffset = savedOffset;
                 return NodeState.RUNNING;
             }
 
-            bb.currentAgentOffset = savedOffset;
             ctx.runningAgentIndex[nodeIndex] = 0;
             return result;
         }

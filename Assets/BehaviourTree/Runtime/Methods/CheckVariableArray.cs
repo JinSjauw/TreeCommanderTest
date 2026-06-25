@@ -82,7 +82,7 @@ namespace BehaviourTree.Runtime.Methods
 
             for (int i = 0; i < elementCount; i++)
             {
-                object value = BB.GetBoxed(variableSlot + i);
+                object value = BB.GetBoxedRaw(variableSlot + i);
                 if (Evaluate(value, operation))
                     return NodeState.SUCCESS;
             }

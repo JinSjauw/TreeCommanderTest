@@ -38,6 +38,12 @@ namespace BehaviourTree.Core
         private BlackboardDefinition definition;
         private IBlackboardStorage storage;
 
+        /// <summary>
+        /// Name → flat slot offset cache built once at Initialize().
+        /// Computes the correct offset by summing strides of preceding variables.
+        /// </summary>
+        private Dictionary<string, int> nameToBaseSlot = new();
+
         /// <summary>Snapshot of variable names from last BuildSerializedReferences call.
         /// Used to detect when the definition layout changes so we can remap reference values by name.</summary>
         [NonSerialized] private string[] lastBuiltVarNames;
@@ -59,6 +65,19 @@ namespace BehaviourTree.Core
             int count = GetTotalSlotCount(definition);
             if (storage == null) storage = new ManagedBlackboardStorage();
             storage.Initialize(definition);
+
+            // Build name → flat slot offset cache (fixes Issue 2:
+            // variable index ≠ slot offset when strides are > 1).
+            nameToBaseSlot.Clear();
+            IReadOnlyList<BlackboardVariableBase> allVarsForCache = definition.GetAllVariables();
+            int slot = 0;
+            for (int i = 0; i < allVarsForCache.Count; i++)
+            {
+                if (!string.IsNullOrEmpty(allVarsForCache[i].Name))
+                    nameToBaseSlot[allVarsForCache[i].Name] = slot;
+                int stride = allVarsForCache[i].Stride;
+                slot += (stride > 1) ? stride : 1;
+            }
             
             IReadOnlyList<BlackboardVariableBase> allVars = definition.GetAllVariables();
 
@@ -215,6 +234,7 @@ namespace BehaviourTree.Core
         {
             definition = null;
             storage = null;
+            nameToBaseSlot.Clear();
             serializedReferences.Clear();
             lastBuiltVarNames = null;
             lastBuiltVarStrides = null;
@@ -423,23 +443,39 @@ namespace BehaviourTree.Core
             return -1;
         }
 
+        /// <summary>
+        /// Returns the flat slot offset for a named variable, accounting for strides
+        /// of preceding variables. Uses a cache built at Initialize() time.
+        /// </summary>
+        public int GetSlot(string variableName)
+        {
+            if (nameToBaseSlot != null && nameToBaseSlot.TryGetValue(variableName, out int slot))
+                return slot;
+            return -1;
+        }
+
+        /// <summary>
+        /// Returns a boxed handle for efficient indexed access to a named variable.
+        /// Resolve once, then use <c>handle.Value</c> or <c>handle[agentIndex]</c>.
+        /// </summary>
+        public BoxedVariableHandle GetVariable(string variableName)
+        {
+            int baseSlot = GetSlot(variableName);
+            return new BoxedVariableHandle(storage, baseSlot);
+        }
+
         public void Set<T>(string keyName, T value)
         {
-            int index = FindVariableIndex(keyName);
-            // Debug.Log($"[Blackboard] Setting {keyName} to {value} at {index}");
-            if (index >= 0)
-            {   
-                Set(index, value);
-            }
+            int slot = GetSlot(keyName);
+            if (slot >= 0)
+                Set(slot, value);
         }
 
         public T Get<T>(string keyName)
         {
-            int index = FindVariableIndex(keyName);
-            if (index >= 0)
-            {
-                return Get<T>(index);
-            }
+            int slot = GetSlot(keyName);
+            if (slot >= 0)
+                return Get<T>(slot);
             return default;
         }
 
@@ -505,6 +541,15 @@ namespace BehaviourTree.Core
             return storage.GetBoxed(index);
         }
 
+        /// <summary>Set a boxed value WITHOUT applying currentAgentOffset.
+        /// Use for internal copy operations that handle offsets themselves.</summary>
+        public void SetBoxedRaw(int index, object value)
+        {
+            if (storage == null)
+                return;
+            storage.SetBoxed(index, value);
+        }
+
         /// <summary>Set a boxed value by slot index. Used by the bridge for type-agnostic copying.</summary>
         public void SetBoxed(int index, object value)
         {
@@ -539,6 +584,7 @@ namespace BehaviourTree.Core
         object IBlackBoardAccess.GetBoxed(int slot) => GetBoxed(slot);
         void IBlackBoardAccess.SetBoxed(int slot, object value) => SetBoxed(slot, value);
         object IBlackBoardAccess.GetBoxedRaw(int slot) => GetBoxedRaw(slot);
+        void IBlackBoardAccess.SetBoxedRaw(int slot, object value) => SetBoxedRaw(slot, value);
 
         // ── Value-Type Override Management ─────────────────────────────
 

@@ -76,7 +76,7 @@ namespace BehaviourTree.Runtime.Methods
         {
             if (inputSlot < 0 || outputSlot < 0) return NodeState.FAILURE;
 
-            object input = BB.GetBoxed(inputSlot);
+            object input = BB.GetBoxedRaw(inputSlot);
             if (input == null) return NodeState.FAILURE;
 
             int count = GetCount(input);
@@ -84,8 +84,8 @@ namespace BehaviourTree.Runtime.Methods
 
             int index = GetIndex(count);
             Vector3 position = GetPositionAt(input, index);
-
-            BB.SetBoxed(outputSlot, position);
+            Debug.Log($"ExtractPosition: {position}");
+            BB.SetBoxedRaw(outputSlot, position);
             return NodeState.SUCCESS;
         }
 

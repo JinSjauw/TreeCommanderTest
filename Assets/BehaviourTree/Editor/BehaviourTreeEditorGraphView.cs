@@ -738,7 +738,7 @@ namespace BehaviourTree.Editor
         {
             if (graphTitleLabel == null) return;
 
-            string goName = BehaviourTreeEditor.currentRunner?.gameObject?.name;
+            string goName = BehaviourTreeEditor.currentRunner == null ? null : BehaviourTreeEditor.currentRunner.gameObject?.name;
             string treeName = tree != null ? tree.name : null;
 
             if (treeName == null)

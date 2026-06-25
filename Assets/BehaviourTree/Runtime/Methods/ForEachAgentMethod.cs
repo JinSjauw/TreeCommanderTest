@@ -3,10 +3,9 @@ using BehaviourTree.Core;
 namespace BehaviourTree.Runtime.Methods
 {
     /// <summary>
-    /// ForEachAgent iterates all children for every registered agent.
-    /// Sets blackBoard.currentAgentOffset so leaves read/write the correct per-agent slot.
-    /// Continues past child SUCCESS and FAILURE — only RUNNING pauses the loop.
-    /// Resume position tracked via runningAgentIndex (agent) and activeChildIndex (child).
+    /// Iterates over all agents and ticks children for each one.
+    /// Sets ctx.agentIndex so children transparently access the correct per-agent
+    /// slot via bb.currentAgentOffset (managed by TickLeaf/TickComposite).
     /// </summary>
     [NodeMethod("ForEachAgent", allowedTreeType = AllowedTreeType.Commander)]
     public sealed class ForEachAgentMethod : CompositeMethod
@@ -16,16 +15,16 @@ namespace BehaviourTree.Runtime.Methods
             ref NodeData node = ref ctx.nodeDatas[nodeIndex];
             if (node.firstChildIndex < 0) return NodeState.SUCCESS;
 
-            BlackBoard bb = ctx.blackBoard;
-            int savedOffset = bb.currentAgentOffset;
+            int agentCount = ctx.agentCount;
+            if (agentCount <= 0) return NodeState.FAILURE;
+
             int agentIndex = ctx.runningAgentIndex[nodeIndex];
             int childIndex = ctx.activeChildIndex[nodeIndex];
-            int agentCount = ctx.agentCount;
             int childCount = node.lastChildIndex - node.firstChildIndex + 1;
 
             for (; agentIndex < agentCount; agentIndex++)
             {
-                bb.currentAgentOffset = agentIndex;
+                ctx.agentIndex = agentIndex;
 
                 for (; childIndex < childCount; childIndex++)
                 {
@@ -36,17 +35,13 @@ namespace BehaviourTree.Runtime.Methods
                     {
                         ctx.runningAgentIndex[nodeIndex] = agentIndex;
                         ctx.activeChildIndex[nodeIndex] = childIndex;
-                        bb.currentAgentOffset = savedOffset;
                         return NodeState.RUNNING;
                     }
-
-                    // SUCCESS or FAILURE — continue to next child
                 }
 
                 childIndex = 0;
             }
 
-            bb.currentAgentOffset = savedOffset;
             ctx.runningAgentIndex[nodeIndex] = 0;
             ctx.activeChildIndex[nodeIndex] = 0;
             return NodeState.SUCCESS;

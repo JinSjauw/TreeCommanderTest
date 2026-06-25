@@ -17,5 +17,9 @@ namespace BehaviourTree.Core
         /// <summary>Get a boxed value WITHOUT applying currentAgentOffset.
         /// Use for shared/commander-level variables that are not per-agent squad data.</summary>
         object GetBoxedRaw(int slot);
+
+        /// <summary>Set a boxed value WITHOUT applying currentAgentOffset.
+        /// Use for internal copy operations that handle offsets themselves.</summary>
+        void SetBoxedRaw(int slot, object value);
     }
 }

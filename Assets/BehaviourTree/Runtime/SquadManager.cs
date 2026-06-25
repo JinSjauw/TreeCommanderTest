@@ -421,7 +421,7 @@ namespace BehaviourTree.Runtime
             int stride = squadDef.GetAllVariables()[rolesVarIndex].Stride;
             for (int i = 0; i < stride && i < roleCounts.Length; i++)
             {
-                object val = squadInstance.BlackBoard.GetBoxed(rolesBaseSlot + i);
+                object val = squadInstance.BlackBoard.GetBoxedRaw(rolesBaseSlot + i);
                 int role = val is int intVal ? intVal : -1;
                 if (role >= 0 && role < roleCounts.Length)
                     roleCounts[role]++;
@@ -521,7 +521,7 @@ namespace BehaviourTree.Runtime
             AgentTreeRunner leader = Leader;
             Debug.Log($"[SquadManager.WriteSquadMovePosition] leader={leader.name}");
             if (leader == null) return;
-            commanderRunner.BlackBoard.SetBoxed(squadMovePosSlot, leader.transform.position);
+            commanderRunner.BlackBoard.SetBoxedRaw(squadMovePosSlot, leader.transform.position);
             Debug.Log($"[SquadManager.WriteSquadMovePosition] leader={leader.name} pos={leader.transform.position:F2}");
         }
 
@@ -529,7 +529,7 @@ namespace BehaviourTree.Runtime
         {
             if (patrolpointsParentSlot < 0 || commanderRunner?.BlackBoard == null) return;
             
-            commanderRunner.BlackBoard.SetBoxed(patrolpointsParentSlot, patrolpointsParent);
+            commanderRunner.BlackBoard.SetBoxedRaw(patrolpointsParentSlot, patrolpointsParent);
             Debug.Log($"[SquadManager.WritePatrolPoints]"); 
         }
 
@@ -537,7 +537,7 @@ namespace BehaviourTree.Runtime
         {
             if (agentCountSlot < 0 || commanderRunner?.BlackBoard == null) return;
             
-            commanderRunner.BlackBoard.SetBoxed(agentCountSlot, agentCount);
+            commanderRunner.BlackBoard.SetBoxedRaw(agentCountSlot, agentCount);
             Debug.Log($"[SquadManager.WriteAgentCount] agentCount={agentCount}");
         }
 
@@ -551,7 +551,7 @@ namespace BehaviourTree.Runtime
 
             NavMeshAgent navAgent = agent.GetComponent<NavMeshAgent>();
             float speed = navAgent != null ? navAgent.speed : 1f;
-            squadInstance.BlackBoard.SetBoxed(agentMoveSpeedSlot + agentIndex, speed);
+            squadInstance.BlackBoard.SetBoxedRaw(agentMoveSpeedSlot + agentIndex, speed);
         }
 
         /// <summary>Writes -1f to AgentMoveSpeed[index] to mark the slot as invalid.</summary>
@@ -559,7 +559,7 @@ namespace BehaviourTree.Runtime
         {
             if (agentMoveSpeedSlot < 0 || squadInstance?.BlackBoard == null) return;
             if (agentIndex < 0) return;
-            squadInstance.BlackBoard.SetBoxed(agentMoveSpeedSlot + agentIndex, -1f);
+            squadInstance.BlackBoard.SetBoxedRaw(agentMoveSpeedSlot + agentIndex, -1f);
         }
 
         /// <summary>Checks if the current leader is still alive. Handles death according to config.</summary>

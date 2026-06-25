@@ -357,5 +357,411 @@ namespace BehaviourTree.Runtime.Tests
 
             Assert.That(minValid, Is.EqualTo(2.0f), "Min speed should skip the -1 (removed agent)");
         }
+
+        // ═══════════════════════════════════════════════════════════════
+        // Test 7: Validate that CopyToBB/CopyFromBB use GetBoxedRaw /
+        //         SetBoxedRaw — so currentAgentOffset can never corrupt a
+        //         copy operation, even if a stray offset leaks from a tick.
+        // ═══════════════════════════════════════════════════════════════
+
+        [Test]
+        public void SquadCopy_StrayCurrentAgentOffset_DoesNotCorruptCopy()
+        {
+            const int maxAgents = 4;
+
+            var squadBBDef = ScriptableObject.CreateInstance<BlackboardDefinition>();
+            var agentBBDef = ScriptableObject.CreateInstance<BlackboardDefinition>();
+
+            squadDef.blackboardDefinition = squadBBDef;
+
+            var agentTreeAsset = ScriptableObject.CreateInstance<BehaviourTreeAssetBase>();
+            agentBBDef.sourceTreeAsset = agentTreeAsset;
+
+            try
+            {
+                BlackboardDefinition.EnsureBaseChannel<Transform>(squadBBDef, "AgentTransform", isSquadData: true);
+                squadDef.EnsureStrideApplied(maxAgents);
+
+                agentBBDef.AddVariable<Transform>("AgentTransform", stride: 1);
+
+                var agentGroup = squadDef.GetOrCreateBindingGroup(agentTreeAsset);
+                agentGroup.bindings.Add(new VariableBinding
+                {
+                    treeVariableName = "AgentTransform",
+                    squadVariableName = "AgentTransform",
+                    direction = BindingDirection.ToSquad
+                });
+
+                var squadGO = new GameObject("SquadGO");
+                var squadInstance = squadGO.AddComponent<SquadInstance>();
+                squadInstance.Initialize(squadDef, maxAgents);
+
+                var agentGO = new GameObject("AgentGO");
+                var agentBB = agentGO.AddComponent<BlackBoard>();
+                agentBB.Initialize(agentBBDef);
+
+                squadInstance.EnsureResolved(agentBBDef);
+
+                var transforms = new Transform[maxAgents];
+                for (int i = 0; i < maxAgents; i++)
+                {
+                    var go = new GameObject($"Agent_{i}");
+                    transforms[i] = go.transform;
+                }
+
+                try
+                {
+                    int agentIndex = 2;
+
+                    // ── Phase 1: Write to agent BB with currentAgentOffset = 0 ──
+                    agentBB.currentAgentOffset = 0;
+                    agentBB.SetBoxed(0, transforms[agentIndex]);
+
+                    object agentVal = agentBB.GetBoxed(0);
+                    Assert.That(agentVal, Is.EqualTo(transforms[agentIndex]),
+                        "Phase 1: Agent BB slot 0 should hold the transform");
+
+                    // ── Phase 2: Confirm GetBoxed() shifts reads when offset is set ──
+                    agentBB.currentAgentOffset = 5;
+                    object strayRead = agentBB.GetBoxed(0);
+                    Assert.That(strayRead, Is.Null,
+                        "Phase 2: GetBoxed(0) with currentAgentOffset=5 reads OOB → null. " +
+                        "This proves GetBoxed() still adds the offset for normal reads.");
+
+                    // ── Phase 3: CopyFromBB uses GetBoxedRaw — stray offset ignored ──
+                    squadInstance.CopyFromBB(agentBB, agentBBDef, agentIndex);
+
+                    int squadBase = ComputeSlot(squadBBDef, "AgentTransform");
+                    object squadVal = squadInstance.BlackBoard.GetBoxed(squadBase + agentIndex);
+                    Assert.That(squadVal, Is.EqualTo(transforms[agentIndex]),
+                        $"Phase 3: Squad slot {squadBase + agentIndex} has correct transform " +
+                        "even with currentAgentOffset=5 on the agent BB — " +
+                        "CopyFromBB uses GetBoxedRaw/SetBoxedRaw, bypassing currentAgentOffset.");
+                }
+                finally
+                {
+                    for (int i = 0; i < maxAgents; i++)
+                        Object.DestroyImmediate(transforms[i].gameObject);
+                    Object.DestroyImmediate(agentGO);
+                    Object.DestroyImmediate(squadGO);
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(squadBBDef);
+                Object.DestroyImmediate(agentBBDef);
+                Object.DestroyImmediate(agentTreeAsset);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // Test 8: Agent writes single Transform into squad's DetectedEnemies
+        //         Transform[] array at agentIndex 3. Verify the exact slot
+        //         position on squad BB. Then push to commander and verify
+        //         commander's DetectedEnemies array matches slot-for-slot.
+        // ═══════════════════════════════════════════════════════════════
+
+        [Test]
+        public void DetectedEnemies_Agent3Writes_SquadAndCommanderReceiveCorrectSlot()
+        {
+            const int maxAgents = 5;
+            const int agentIndex = 3;
+
+            var squadBBDef = ScriptableObject.CreateInstance<BlackboardDefinition>();
+            var agentBBDef = ScriptableObject.CreateInstance<BlackboardDefinition>();
+            var commanderBBDef = ScriptableObject.CreateInstance<BlackboardDefinition>();
+
+            squadDef.blackboardDefinition = squadBBDef;
+
+            var agentTreeAsset = ScriptableObject.CreateInstance<BehaviourTreeAssetBase>();
+            var commanderTreeAsset = ScriptableObject.CreateInstance<BehaviourTreeAssetBase>();
+
+            try
+            {
+                // ── Squad BB: DetectedEnemies Transform[] (squadData, stride=5, slots 0..4) ──
+                BlackboardDefinition.EnsureBaseChannel<Transform>(squadBBDef, "DetectedEnemies", isSquadData: true);
+                squadDef.EnsureStrideApplied(maxAgents);
+
+                // ── Agent BB: single Transform "DetectedEnemy" (stride=1, slot 0) ──
+                agentBBDef.AddVariable<Transform>("DetectedEnemy", stride: 1);
+
+                // ── Commander BB: DetectedEnemies Transform[] (stride=5, slots 0..4) ──
+                commanderBBDef.AddVariable<Transform>("DetectedEnemies", stride: maxAgents);
+
+                // ── Bindings ────────────────────────────────────────────
+                // Agent → Squad (ToSquad): agent "DetectedEnemy" → squad "DetectedEnemies"
+                var agentGroup = squadDef.GetOrCreateBindingGroup(agentTreeAsset);
+                agentGroup.bindings.Add(new VariableBinding
+                {
+                    treeVariableName = "DetectedEnemy",
+                    squadVariableName = "DetectedEnemies",
+                    direction = BindingDirection.ToSquad
+                });
+
+                // Squad → Commander (FromSquad): squad "DetectedEnemies" → commander "DetectedEnemies"
+                var commanderGroup = squadDef.GetOrCreateBindingGroup(commanderTreeAsset);
+                commanderGroup.bindings.Add(new VariableBinding
+                {
+                    treeVariableName = "DetectedEnemies",
+                    squadVariableName = "DetectedEnemies",
+                    direction = BindingDirection.FromSquad
+                });
+
+                agentBBDef.sourceTreeAsset = agentTreeAsset;
+                commanderBBDef.sourceTreeAsset = commanderTreeAsset;
+
+                var squadGO = new GameObject("SquadGO");
+                var squadInstance = squadGO.AddComponent<SquadInstance>();
+                squadInstance.Initialize(squadDef, maxAgents);
+
+                var agentGO = new GameObject("AgentGO");
+                var agentBB = agentGO.AddComponent<BlackBoard>();
+                agentBB.Initialize(agentBBDef);
+
+                var commanderGO = new GameObject("CommanderGO");
+                var commanderBB = commanderGO.AddComponent<BlackBoard>();
+                commanderBB.Initialize(commanderBBDef);
+
+                squadInstance.EnsureResolved(agentBBDef);
+                squadInstance.EnsureResolved(commanderBBDef);
+
+                var testTransforms = new Transform[maxAgents];
+                for (int i = 0; i < maxAgents; i++)
+                {
+                    var go = new GameObject($"Agent_{i}");
+                    testTransforms[i] = go.transform;
+                }
+
+                try
+                {
+                    // ═══════════════════════════════════════════════════════
+                    // STEP 1: Agent writes its Transform to its own BB
+                    // ═══════════════════════════════════════════════════════
+                    agentBB.SetBoxed(0, testTransforms[agentIndex]);
+
+                    // ═══════════════════════════════════════════════════════
+                    // STEP 2: Copy agent → squad (ToSquad, agentOffset=3)
+                    // ═══════════════════════════════════════════════════════
+                    squadInstance.CopyFromBB(agentBB, agentBBDef, agentIndex);
+
+                    // Verify EACH squad slot individually
+                    int squadBase = ComputeSlot(squadBBDef, "DetectedEnemies");
+                    Assert.That(squadBase, Is.EqualTo(0),
+                        "Squad DetectedEnemies base slot should be 0 (first variable)");
+
+                    object[] squadAll = new object[maxAgents];
+                    for (int i = 0; i < maxAgents; i++)
+                    {
+                        squadAll[i] = squadInstance.BlackBoard.GetBoxed(squadBase + i);
+                        if (i == agentIndex)
+                            Assert.That(squadAll[i], Is.EqualTo(testTransforms[agentIndex]),
+                                $"Squad DetectedEnemies[{i}] should be agent 3's Transform");
+                        else
+                            Assert.That(squadAll[i], Is.Null,
+                                $"Squad DetectedEnemies[{i}] should be null (no agent wrote)");
+                    }
+
+                    // ═══════════════════════════════════════════════════════
+                    // STEP 3: Copy squad → commander (FromSquad, bulk copy)
+                    // ═══════════════════════════════════════════════════════
+                    squadInstance.CopyToBB(commanderBB, commanderBBDef, agentOffset: -1);
+
+                    // Verify EACH commander slot individually
+                    int cmdrBase = ComputeSlot(commanderBBDef, "DetectedEnemies");
+                    Assert.That(cmdrBase, Is.EqualTo(0),
+                        "Commander DetectedEnemies base slot should be 0 (first variable)");
+
+                    for (int i = 0; i < maxAgents; i++)
+                    {
+                        object cmdrVal = commanderBB.GetBoxed(cmdrBase + i);
+                        if (i == agentIndex)
+                            Assert.That(cmdrVal, Is.EqualTo(testTransforms[agentIndex]),
+                                $"Commander DetectedEnemies[{i}] should be agent 3's Transform");
+                        else
+                            Assert.That(cmdrVal, Is.Null,
+                                $"Commander DetectedEnemies[{i}] should be null (no agent wrote)");
+                    }
+
+                    // ═══════════════════════════════════════════════════════
+                    // STEP 4: Verify commander reading correctly when
+                    //         currentAgentOffset is applied (ForEachAgent)
+                    // ═══════════════════════════════════════════════════════
+                    commanderBB.currentAgentOffset = agentIndex;
+                    object viaOffset = commanderBB.GetBoxed(cmdrBase);
+                    Assert.That(viaOffset, Is.EqualTo(testTransforms[agentIndex]),
+                        $"currentAgentOffset={agentIndex}: GetBoxed({cmdrBase}) " +
+                        $"→ storage[{cmdrBase}+{agentIndex}] = storage[{cmdrBase + agentIndex}] " +
+                        $"should be agent 3's Transform");
+
+                    // Also verify via BoxedVariableHandle (bypasses currentAgentOffset)
+                    var handle = commanderBB.GetVariable("DetectedEnemies");
+                    object viaHandle = handle[agentIndex];
+                    Assert.That(viaHandle, Is.EqualTo(testTransforms[agentIndex]),
+                        $"handle[3] should be agent 3's Transform (handle bypasses currentAgentOffset)");
+
+                    commanderBB.currentAgentOffset = 0;
+                }
+                finally
+                {
+                    for (int i = 0; i < maxAgents; i++)
+                        if (testTransforms[i] != null)
+                            Object.DestroyImmediate(testTransforms[i].gameObject);
+                    Object.DestroyImmediate(agentGO);
+                    Object.DestroyImmediate(commanderGO);
+                    Object.DestroyImmediate(squadGO);
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(squadBBDef);
+                Object.DestroyImmediate(agentBBDef);
+                Object.DestroyImmediate(commanderBBDef);
+                Object.DestroyImmediate(agentTreeAsset);
+                Object.DestroyImmediate(commanderTreeAsset);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // Test 9: Same as Test 8 but with other variables on the BBs
+        //         preceding DetectedEnemies — validates that
+        //         ComputeBaseSlot handles non-zero base slots correctly.
+        // ═══════════════════════════════════════════════════════════════
+
+        [Test]
+        public void DetectedEnemies_WithPrecedingVariables_SlotsAreCorrect()
+        {
+            const int maxAgents = 4;
+            const int agentIndex = 2;
+
+            var squadBBDef = ScriptableObject.CreateInstance<BlackboardDefinition>();
+            var agentBBDef = ScriptableObject.CreateInstance<BlackboardDefinition>();
+            var commanderBBDef = ScriptableObject.CreateInstance<BlackboardDefinition>();
+
+            squadDef.blackboardDefinition = squadBBDef;
+
+            var agentTreeAsset = ScriptableObject.CreateInstance<BehaviourTreeAssetBase>();
+            var commanderTreeAsset = ScriptableObject.CreateInstance<BehaviourTreeAssetBase>();
+
+            try
+            {
+                // ── Squad BB (in order): ─────────────────────────────────
+                // AgentRoles    int[]     stride=4  slots 0..3
+                // AgentOrders   int[]     stride=4  slots 4..7
+                // DetectedEnemies Transform[] stride=4  slots 8..11
+                BlackboardDefinition.EnsureBaseChannel<int>(squadBBDef, "AgentRoles", isSquadData: true);
+                BlackboardDefinition.EnsureBaseChannel<int>(squadBBDef, "AgentOrders", isSquadData: true);
+                BlackboardDefinition.EnsureBaseChannel<Transform>(squadBBDef, "DetectedEnemies", isSquadData: true);
+                squadDef.EnsureStrideApplied(maxAgents);
+
+                // ── Agent BB: single Transform "DetectedEnemy" (stride=1, slot 0) ──
+                agentBBDef.AddVariable<Transform>("DetectedEnemy", stride: 1);
+
+                // ── Commander BB (in order): ────────────────────────────
+                // SomeFlag       bool      stride=1  slot 0
+                // DetectedEnemies Transform[] stride=4  slots 1..4
+                commanderBBDef.AddVariable<bool>("SomeFlag", stride: 1);
+                commanderBBDef.AddVariable<Transform>("DetectedEnemies", stride: maxAgents);
+
+                // ── Bindings ────────────────────────────────────────────
+                var agentGroup = squadDef.GetOrCreateBindingGroup(agentTreeAsset);
+                agentGroup.bindings.Add(new VariableBinding
+                {
+                    treeVariableName = "DetectedEnemy",
+                    squadVariableName = "DetectedEnemies",
+                    direction = BindingDirection.ToSquad
+                });
+
+                var commanderGroup = squadDef.GetOrCreateBindingGroup(commanderTreeAsset);
+                commanderGroup.bindings.Add(new VariableBinding
+                {
+                    treeVariableName = "DetectedEnemies",
+                    squadVariableName = "DetectedEnemies",
+                    direction = BindingDirection.FromSquad
+                });
+
+                agentBBDef.sourceTreeAsset = agentTreeAsset;
+                commanderBBDef.sourceTreeAsset = commanderTreeAsset;
+
+                var squadGO = new GameObject("SquadGO");
+                var squadInstance = squadGO.AddComponent<SquadInstance>();
+                squadInstance.Initialize(squadDef, maxAgents);
+
+                var agentGO = new GameObject("AgentGO");
+                var agentBB = agentGO.AddComponent<BlackBoard>();
+                agentBB.Initialize(agentBBDef);
+
+                var commanderGO = new GameObject("CommanderGO");
+                var commanderBB = commanderGO.AddComponent<BlackBoard>();
+                commanderBB.Initialize(commanderBBDef);
+
+                squadInstance.EnsureResolved(agentBBDef);
+                squadInstance.EnsureResolved(commanderBBDef);
+
+                var testTransforms = new Transform[maxAgents];
+                for (int i = 0; i < maxAgents; i++)
+                {
+                    var go = new GameObject($"Agent_{i}");
+                    testTransforms[i] = go.transform;
+                }
+
+                try
+                {
+                    // Write
+                    agentBB.SetBoxed(0, testTransforms[agentIndex]);
+
+                    // ── Squad base slot check ───────────────────────────
+                    int squadBase = ComputeSlot(squadBBDef, "DetectedEnemies");
+                    Assert.That(squadBase, Is.EqualTo(8),
+                        "Squad DetectedEnemies base slot: AgentRoles(0..3) + AgentOrders(4..7) = 8");
+
+                    // Copy agent → squad
+                    squadInstance.CopyFromBB(agentBB, agentBBDef, agentIndex);
+
+                    object squadVal = squadInstance.BlackBoard.GetBoxed(squadBase + agentIndex);
+                    Assert.That(squadVal, Is.EqualTo(testTransforms[agentIndex]),
+                        $"Squad DetectedEnemies[{agentIndex}] at slot {squadBase + agentIndex} " +
+                        "should be agent 2's Transform");
+
+                    // ── Commander base slot check ───────────────────────
+                    int cmdrBase = ComputeSlot(commanderBBDef, "DetectedEnemies");
+                    Assert.That(cmdrBase, Is.EqualTo(1),
+                        "Commander DetectedEnemies base slot: SomeFlag(0) + [0] = 1");
+
+                    // Copy squad → commander
+                    squadInstance.CopyToBB(commanderBB, commanderBBDef, agentOffset: -1);
+
+                    object cmdrVal = commanderBB.GetBoxed(cmdrBase + agentIndex);
+                    Assert.That(cmdrVal, Is.EqualTo(testTransforms[agentIndex]),
+                        $"Commander DetectedEnemies[{agentIndex}] at slot {cmdrBase + agentIndex} " +
+                        "should be agent 2's Transform");
+
+                    // Verify via currentAgentOffset
+                    commanderBB.currentAgentOffset = agentIndex;
+                    object viaOffset = commanderBB.GetBoxed(cmdrBase);
+                    Assert.That(viaOffset, Is.EqualTo(testTransforms[agentIndex]),
+                        $"currentAgentOffset={agentIndex}: GetBoxed({cmdrBase}) " +
+                        $"→ storage[{cmdrBase + agentIndex}] should be agent 2's Transform");
+
+                    commanderBB.currentAgentOffset = 0;
+                }
+                finally
+                {
+                    for (int i = 0; i < maxAgents; i++)
+                        if (testTransforms[i] != null)
+                            Object.DestroyImmediate(testTransforms[i].gameObject);
+                    Object.DestroyImmediate(agentGO);
+                    Object.DestroyImmediate(commanderGO);
+                    Object.DestroyImmediate(squadGO);
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(squadBBDef);
+                Object.DestroyImmediate(agentBBDef);
+                Object.DestroyImmediate(commanderBBDef);
+                Object.DestroyImmediate(agentTreeAsset);
+                Object.DestroyImmediate(commanderTreeAsset);
+            }
+        }
     }
 }

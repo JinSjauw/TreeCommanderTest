@@ -53,7 +53,7 @@ namespace BehaviourTree.Runtime.Methods
 
             for (int i = 0; i < agentCount; i++)
             {
-                object val = BB.GetBoxed(statusSlot + i);
+                object val = BB.GetBoxedRaw(statusSlot + i);
                 int status = val is int iv ? iv : -1;
 
                 switch (status)

@@ -7,13 +7,13 @@ namespace BehaviourTree.Runtime.Methods
     /// role read from the squad BB. All three values come from squad-def variables.
     /// Continues past child SUCCESS and FAILURE — only RUNNING pauses the loop.
     /// Resume position tracked via runningAgentIndex (agent) and activeChildIndex (child).
+    /// Sets ctx.agentIndex so children access the correct per-agent slot.
     /// </summary>
     [NodeMethod("ForEachRole", allowedTreeType = AllowedTreeType.Commander)]
     public sealed class ForEachRoleMethod : CompositeMethod
     {
         /// <summary>Baked slot offset of the AgentRoles squad-data variable.
         /// Auto-bound to "AgentRoles" by convention — not visible in the inspector.
-        /// After ResolveInputsGeneric the field holds the base value;
         /// bindings[0].bbSlotIndex gives the raw offset for per-agent reads.</summary>
         [SharedVar(IsHidden = true, AutoVariableName = "AgentRoles")]
         public int agentRoleSlot;
@@ -29,7 +29,6 @@ namespace BehaviourTree.Runtime.Methods
             if (node.firstChildIndex < 0) return NodeState.SUCCESS;
 
             BlackBoard bb = ctx.blackBoard;
-            int savedOffset = bb.currentAgentOffset;
 
             int roleSlot = GetSlotByName(nameof(agentRoleSlot));
             if (roleSlot < 0) return NodeState.FAILURE;
@@ -52,7 +51,7 @@ namespace BehaviourTree.Runtime.Methods
                     continue;
                 }
 
-                bb.currentAgentOffset = agentIndex;
+                ctx.agentIndex = agentIndex;
 
                 for (; childIndex < childCount; childIndex++)
                 {
@@ -63,7 +62,6 @@ namespace BehaviourTree.Runtime.Methods
                     {
                         ctx.runningAgentIndex[nodeIndex] = agentIndex;
                         ctx.activeChildIndex[nodeIndex] = childIndex;
-                        bb.currentAgentOffset = savedOffset;
                         return NodeState.RUNNING;
                     }
 
@@ -73,7 +71,6 @@ namespace BehaviourTree.Runtime.Methods
                 childIndex = 0;
             }
 
-            bb.currentAgentOffset = savedOffset;
             ctx.runningAgentIndex[nodeIndex] = 0;
             ctx.activeChildIndex[nodeIndex] = 0;
             return NodeState.SUCCESS;

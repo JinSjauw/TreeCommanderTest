@@ -7,6 +7,7 @@ namespace BehaviourTree.Runtime.Methods
     /// Scans all agents for the one nearest to a reference position,
     /// selects that agent, then ticks children. On RUNNING, persists the
     /// selected agent. Returns FAILURE if no agent is found.
+    /// Sets ctx.agentIndex so children access the selected agent's slots.
     /// </summary>
     [NodeMethod("GetNearestAgent", allowedTreeType = AllowedTreeType.Commander)]
     public sealed class GetNearestAgentMethod : CompositeMethod
@@ -21,21 +22,16 @@ namespace BehaviourTree.Runtime.Methods
             if (node.firstChildIndex < 0) return NodeState.SUCCESS;
 
             BlackBoard bb = ctx.blackBoard;
-            int savedOffset = bb.currentAgentOffset;
 
             // Resume from saved state if children were RUNNING last tick
             if (ctx.runningAgentIndex[nodeIndex] != 0)
             {
                 int savedAgentIndex = ctx.runningAgentIndex[nodeIndex] - 1;
-                bb.currentAgentOffset = savedAgentIndex;
+                ctx.agentIndex = savedAgentIndex;
                 NodeState resumeResult = TickDispatcher.TickNode(node.firstChildIndex, ref ctx);
                 if (resumeResult == NodeState.RUNNING)
-                {
-                    bb.currentAgentOffset = savedOffset;
                     return NodeState.RUNNING;
-                }
 
-                bb.currentAgentOffset = savedOffset;
                 ctx.runningAgentIndex[nodeIndex] = 0;
                 return resumeResult;
             }
@@ -77,17 +73,15 @@ namespace BehaviourTree.Runtime.Methods
 
             bb.SetBoxed(rawTargetSlot, bestAgentIndex);
 
-            bb.currentAgentOffset = bestAgentIndex;
+            ctx.agentIndex = bestAgentIndex;
             NodeState result = TickDispatcher.TickNode(node.firstChildIndex, ref ctx);
 
             if (result == NodeState.RUNNING)
             {
                 ctx.runningAgentIndex[nodeIndex] = bestAgentIndex + 1;
-                bb.currentAgentOffset = savedOffset;
                 return NodeState.RUNNING;
             }
 
-            bb.currentAgentOffset = savedOffset;
             ctx.runningAgentIndex[nodeIndex] = 0;
             return result;
         }

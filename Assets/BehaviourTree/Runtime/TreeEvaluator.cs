@@ -20,6 +20,7 @@ namespace BehaviourTree.Runtime
         private int[] activeChildIndex;
         private int[] runningAgentIndex;
         private bool[] lastConditionResult;
+        private bool[] tickedThisFrame;
         private TickContext tickContext;
         private bool isInitialized = false;
 
@@ -49,6 +50,7 @@ namespace BehaviourTree.Runtime
             activeChildIndex = new int[nodeDatas.Length];
             runningAgentIndex = new int[nodeDatas.Length];
             lastConditionResult = new bool[nodeDatas.Length];
+            tickedThisFrame = new bool[nodeDatas.Length];
 
             // Create class-based method instances for nodes that have methodName set
             methodInstances = new NodeMethod[nodeDatas.Length];
@@ -105,9 +107,6 @@ namespace BehaviourTree.Runtime
                 return;
             }
 
-            // Reset all node states to NONE each tick so only freshly-ticked nodes show a debug state
-            Array.Fill(nodeStates, NodeState.NONE);
-
             tickContext.nodeDatas = nodeDatas;
             tickContext.methodInstances = methodInstances;
             tickContext.nodeStates = nodeStates;
@@ -115,6 +114,7 @@ namespace BehaviourTree.Runtime
             tickContext.runningAgentIndex = runningAgentIndex;
             tickContext.agentCount = agentCount;
             tickContext.lastConditionResult = lastConditionResult;
+            tickContext.tickedThisFrame = tickedThisFrame;
             tickContext.blackBoard = blackBoard;
 
             // Effective root has no children — nothing to evaluate
@@ -122,6 +122,16 @@ namespace BehaviourTree.Runtime
 
             TickDispatcher.TickNode(0, ref tickContext);
             currentNodeIndex = 0;
+
+            // Reset states for nodes that weren't ticked this frame.
+            // RUNNING nodes are always re-ticked (composites resume them),
+            // so their state stays intact for conditional abort on the next tick.
+            for (int i = 0; i < nodeStates.Length; i++)
+            {
+                if (!tickedThisFrame[i])
+                    nodeStates[i] = NodeState.NONE;
+                tickedThisFrame[i] = false;
+            }
         }
     }
 }

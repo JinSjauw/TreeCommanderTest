@@ -17,19 +17,19 @@ MonoBehaviour:
   - name: ASSAULT
     colour: {r: 0.212892, g: 1, b: 0.16509432, a: 1}
     maxAmount: 1
-    isFallback: 0
+    isFallback: 1
   - name: FLANKER
     colour: {r: 0.9245283, g: 0.7841598, b: 0.2660199, a: 1}
     maxAmount: 2
-    isFallback: 0
+    isFallback: 1
   - name: SUPPORT
     colour: {r: 0.46079564, g: 0.8915302, b: 0.8962264, a: 1}
     maxAmount: 1
-    isFallback: 0
+    isFallback: 1
   - name: SUPPRESS
     colour: {r: 1, g: 0, b: 0, a: 1}
     maxAmount: 1
-    isFallback: 1
+    isFallback: 0
   bindingGroups:
   - treeAsset: {fileID: 11400000, guid: f925db3be8ac89e41afebf7f2ee89cf2, type: 2}
     treeAssetGuid: f925db3be8ac89e41afebf7f2ee89cf2
