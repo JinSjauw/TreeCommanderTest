@@ -107,7 +107,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 12b745b2a069b894f9a3884ab55b41f0
-  graphPosition: {x: -124.43536, y: 423}
+  graphPosition: {x: -157, y: 420}
   runtimeIndex: -1
   leafType: 3
   methodName: Enemy_FlankPosition
@@ -259,7 +259,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 18195c9f2541c7d4893eadcabc576d35
-  graphPosition: {x: 140, y: 423}
+  graphPosition: {x: 164, y: 420}
   runtimeIndex: -1
   leafType: 3
   methodName: MoveTo

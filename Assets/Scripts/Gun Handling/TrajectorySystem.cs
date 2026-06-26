@@ -57,7 +57,7 @@ public class TrajectorySystem : MonoBehaviour
         hasLineOfSight = losFlag;
     }
 
-    public TrajectorySearchState SearchTrajectory()
+    public TrajectorySearchState SearchTrajectory(float trajectoryStartingHeight = -1)
     {
         hasFailed = false;
         hasTrajectory = false;
@@ -80,7 +80,8 @@ public class TrajectorySystem : MonoBehaviour
                 }
             }
 
-            curveHeight = currentSettings.trajectorySearchStartHeight - heightOffset;
+            curveHeight = trajectoryStartingHeight > 0 ? trajectoryStartingHeight : 
+            currentSettings.trajectorySearchStartHeight - heightOffset;
         }
 
         for (int i = 0; i < currentSettings.attemptsPerFrame && !hasTrajectory; i++)

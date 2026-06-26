@@ -56,9 +56,13 @@ public class EnemyDetectionSystem : MonoBehaviour
             if (candidate == transform || candidate.IsChildOf(transform))
                 continue;
 
+            // bool isActive = candidate.gameObject.activeInHierarchy;
+            // Debug.Log($"[DetectTargets] hit: '{candidate.name}' activeInHierarchy={isActive} enabled={candidate.gameObject.activeSelf}");
+
             DetectedTargets.Add(candidate);
         }
 
+        // Debug.Log($"[DetectTargets] total hits={hitCount} after filter={DetectedTargets.Count}");
         return DetectedTargets.Count > 0;
     }
 

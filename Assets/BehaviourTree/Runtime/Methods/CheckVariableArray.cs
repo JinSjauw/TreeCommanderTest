@@ -80,9 +80,33 @@ namespace BehaviourTree.Runtime.Methods
             if (variableSlot < 0)
                 return NodeState.FAILURE;
 
+            // Debug.Log($"[CheckVariableArray] operation={operation}, elementCount={elementCount}, baseSlot={variableSlot}");
+
             for (int i = 0; i < elementCount; i++)
             {
                 object value = BB.GetBoxedRaw(variableSlot + i);
+
+                // Unity objects can be "fake null" (destroyed but C# ref still alive).
+                // The `is` pattern match bypasses Unity's == null override, so we
+                // must check for destroyed objects before accessing .name.
+                // string display;
+                // if (value == null)
+                // {
+                //     display = "null";
+                // }
+                // else if (value is UnityEngine.Object uo && uo == null)
+                // {
+                //     display = "<destroyed>";
+                // }
+                // else
+                // {
+                //     display = value.ToString();
+                // }
+                //
+                // string typeName = value?.GetType().Name ?? "null";
+                // bool matches = Evaluate(value, operation);
+                // Debug.Log($"  [{i}] slot={variableSlot + i} value=[{display}] type={typeName} matches={matches}");
+
                 if (Evaluate(value, operation))
                     return NodeState.SUCCESS;
             }

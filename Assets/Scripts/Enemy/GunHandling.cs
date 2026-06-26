@@ -110,9 +110,9 @@ public class GunHandling : MonoBehaviour
         return true;
     }
 
-    public TrajectorySearchState SearchTrajectory()
+    public TrajectorySearchState SearchTrajectory(float trajectoryStartingHeight = -1)
     {
-        return trajectory.SearchTrajectory();
+        return trajectory.SearchTrajectory(trajectoryStartingHeight);
     }
 
     public void Fire()

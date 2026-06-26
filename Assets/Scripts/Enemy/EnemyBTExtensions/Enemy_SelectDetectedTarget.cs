@@ -76,6 +76,7 @@ namespace BehaviourTree.Runtime.Methods
             if (selected == null) 
             {
                 Debug.LogError($"Enemy_SelectDetectedTarget: No target selected for {strategy}");
+                BB.SetBoxed(targetSlot, null);
                 return NodeState.FAILURE;
             }
             object result = outputType == typeof(GameObject)

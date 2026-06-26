@@ -180,6 +180,22 @@ namespace BehaviourTree.Runtime
             if (!copyToCache.TryGetValue(treeDef, out int[] triplets) || triplets.Length == 0)
                 return;
 
+            // Diagnostic: locate DetectedEnemies on squad BB for logging
+            // int diagVarIndex = -1;
+            // int diagBaseSlot = -1;
+            // int diagStride = 1;
+            // if (definition?.blackboardDefinition != null)
+            // {
+            //     diagVarIndex = definition.blackboardDefinition.GetVariableIndex("DetectedEnemies");
+            //     if (diagVarIndex >= 0)
+            //     {
+            //         diagBaseSlot = ComputeBaseSlot(definition.blackboardDefinition, diagVarIndex);
+            //         var vars = definition.blackboardDefinition.GetAllVariables();
+            //         if (diagVarIndex < vars.Count)
+            //             diagStride = vars[diagVarIndex].Stride;
+            //     }
+            // }
+
             for (int i = 0; i < triplets.Length; i += 3)
             {
                 int srcSlot = triplets[i];
@@ -198,7 +214,25 @@ namespace BehaviourTree.Runtime
                 {
                     // Commander sync: copy all stride slots (both sides have stride > 1)
                     for (int j = 0; j < stride; j++)
-                        treeBB.SetBoxedRaw(dstSlot + j, blackBoard.GetBoxedRaw(srcSlot + j));
+                    {
+                        int actualSrc = srcSlot + j;
+                        int actualDst = dstSlot + j;
+                        object value = blackBoard.GetBoxedRaw(actualSrc);
+
+                        // // Log DetectedEnemies (squad) → commander pushes
+                        // if (diagBaseSlot >= 0 && actualSrc >= diagBaseSlot && actualSrc < diagBaseSlot + diagStride)
+                        // {
+                        //     int elemIndex = actualSrc - diagBaseSlot;
+                        //     string valDisplay = value == null ? "null" :
+                        //         (value is UnityEngine.Object uo && uo == null) ? "<destroyed>" :
+                        //         value.ToString();
+                        //     Debug.Log($"[Squad.CopyToBB] agentOffset=-1 (commander bulk) | " +
+                        //         $"squad.DetectedEnemies[{elemIndex}] (slot={actualSrc})={valDisplay} (type={value?.GetType().Name ?? "null"}) " +
+                        //         $"→ commanderBB[{actualDst}]");
+                        // }
+
+                        treeBB.SetBoxedRaw(actualDst, value);
+                    }
                 }
                 else
                 {
@@ -220,6 +254,22 @@ namespace BehaviourTree.Runtime
             if (!copyFromCache.TryGetValue(treeDef, out int[] triplets) || triplets.Length == 0)
                 return;
 
+            // Diagnostic: locate DetectedEnemies on squad BB for logging
+            // int diagVarIndex = -1;
+            // int diagBaseSlot = -1;
+            // int diagStride = 1;
+            // if (definition?.blackboardDefinition != null)
+            // {
+            //     diagVarIndex = definition.blackboardDefinition.GetVariableIndex("DetectedEnemies");
+            //     if (diagVarIndex >= 0)
+            //     {
+            //         diagBaseSlot = ComputeBaseSlot(definition.blackboardDefinition, diagVarIndex);
+            //         var vars = definition.blackboardDefinition.GetAllVariables();
+            //         if (diagVarIndex < vars.Count)
+            //             diagStride = vars[diagVarIndex].Stride;
+            //     }
+            // }
+
             for (int i = 0; i < triplets.Length; i += 3)
             {
                 int srcSlot = triplets[i];
@@ -230,7 +280,22 @@ namespace BehaviourTree.Runtime
                 {
                     // Per-agent copy: offset only the squad-side slot
                     int offset = (stride > 1 && agentOffset < stride) ? agentOffset : 0;
-                    blackBoard.SetBoxedRaw(dstSlot + offset, treeBB.GetBoxedRaw(srcSlot));
+                    int actualDst = dstSlot + offset;
+                    object srcValue = treeBB.GetBoxedRaw(srcSlot);
+
+                    // // Log DetectedEnemy → DetectedEnemies pushes
+                    // if (diagBaseSlot >= 0 && actualDst >= diagBaseSlot && actualDst < diagBaseSlot + diagStride)
+                    // {
+                    //     int elemIndex = actualDst - diagBaseSlot;
+                    //     string srcDisplay = srcValue == null ? "null" :
+                    //         (srcValue is UnityEngine.Object uo && uo == null) ? "<destroyed>" :
+                    //         srcValue.ToString();
+                    //     Debug.Log($"[Squad.CopyFromBB] agentOffset={agentOffset} | " +
+                    //         $"agentBB[{srcSlot}]={srcDisplay} (type={srcValue?.GetType().Name ?? "null"}) " +
+                    //         $"→ squad.DetectedEnemies[{elemIndex}] (slot={actualDst})");
+                    // }
+
+                    blackBoard.SetBoxedRaw(actualDst, srcValue);
                 }
                 else if (stride > 1)
                 {

@@ -622,6 +622,261 @@ namespace BehaviourTree.Runtime.Tests
         }
 
         // ═══════════════════════════════════════════════════════════════
+        // Test 10: Null propagation trace — agent clears DetectedEnemy
+        //          to null and we verify the null reaches squad BB and
+        //          commander BB at every step, with detailed diagnostics
+        //          if it doesn't.
+        // ═══════════════════════════════════════════════════════════════
+
+        [Test]
+        public void NullPropagation_AgentClearsDetectedEnemy_ReachesCommander()
+        {
+            const int maxAgents = 5;
+            const int agentIndex = 2;
+
+            var squadBBDef = ScriptableObject.CreateInstance<BlackboardDefinition>();
+            var agentBBDef = ScriptableObject.CreateInstance<BlackboardDefinition>();
+            var commanderBBDef = ScriptableObject.CreateInstance<BlackboardDefinition>();
+
+            squadDef.blackboardDefinition = squadBBDef;
+
+            var agentTreeAsset = ScriptableObject.CreateInstance<BehaviourTreeAssetBase>();
+            var commanderTreeAsset = ScriptableObject.CreateInstance<BehaviourTreeAssetBase>();
+
+            try
+            {
+                // ── Squad BB (in order): ─────────────────────────────────
+                // AgentRoles       int[]       stride=5  slots 0..4
+                // AgentOrders      int[]       stride=5  slots 5..9
+                // DetectedEnemies  Transform[] stride=5  slots 10..14
+                BlackboardDefinition.EnsureBaseChannel<int>(squadBBDef, "AgentRoles", isSquadData: true);
+                BlackboardDefinition.EnsureBaseChannel<int>(squadBBDef, "AgentOrders", isSquadData: true);
+                BlackboardDefinition.EnsureBaseChannel<Transform>(squadBBDef, "DetectedEnemies", isSquadData: true);
+                squadDef.EnsureStrideApplied(maxAgents);
+
+                // ── Agent BB: single Transform "DetectedEnemy" (stride=1, slot 0) ──
+                agentBBDef.AddVariable<Transform>("DetectedEnemy", stride: 1);
+
+                // ── Commander BB (in order): ────────────────────────────
+                // SomeFlag         bool        stride=1  slot 0
+                // DetectedEnemies  Transform[] stride=5  slots 1..5
+                commanderBBDef.AddVariable<bool>("SomeFlag", stride: 1);
+                commanderBBDef.AddVariable<Transform>("DetectedEnemies", stride: maxAgents);
+
+                // ── Bindings ────────────────────────────────────────────
+                var agentGroup = squadDef.GetOrCreateBindingGroup(agentTreeAsset);
+                agentGroup.bindings.Add(new VariableBinding
+                {
+                    treeVariableName = "DetectedEnemy",
+                    squadVariableName = "DetectedEnemies",
+                    direction = BindingDirection.ToSquad
+                });
+
+                var commanderGroup = squadDef.GetOrCreateBindingGroup(commanderTreeAsset);
+                commanderGroup.bindings.Add(new VariableBinding
+                {
+                    treeVariableName = "DetectedEnemies",
+                    squadVariableName = "DetectedEnemies",
+                    direction = BindingDirection.FromSquad
+                });
+
+                agentBBDef.sourceTreeAsset = agentTreeAsset;
+                commanderBBDef.sourceTreeAsset = commanderTreeAsset;
+
+                var squadGO = new GameObject("SquadGO");
+                var squadInstance = squadGO.AddComponent<SquadInstance>();
+                squadInstance.Initialize(squadDef, maxAgents);
+
+                var agentGO = new GameObject("AgentGO");
+                var agentBB = agentGO.AddComponent<BlackBoard>();
+                agentBB.Initialize(agentBBDef);
+
+                var commanderGO = new GameObject("CommanderGO");
+                var commanderBB = commanderGO.AddComponent<BlackBoard>();
+                commanderBB.Initialize(commanderBBDef);
+
+                squadInstance.EnsureResolved(agentBBDef);
+                squadInstance.EnsureResolved(commanderBBDef);
+
+                var testTransforms = new Transform[maxAgents];
+                for (int i = 0; i < maxAgents; i++)
+                {
+                    var go = new GameObject($"Agent_{i}");
+                    testTransforms[i] = go.transform;
+                }
+
+                int squadBase = ComputeSlot(squadBBDef, "DetectedEnemies");
+                int cmdrBase = ComputeSlot(commanderBBDef, "DetectedEnemies");
+
+                try
+                {
+                    Debug.Log("========== NULL PROPAGATION TEST START ==========\n");
+
+                    // ═══════════════════════════════════════════════════════
+                    // PHASE A: Write Transform → verify full pipeline
+                    // ═══════════════════════════════════════════════════════
+
+                    Debug.Log($"[Phase A.1] Writing Transform '{testTransforms[agentIndex].name}' to Agent BB slot 0");
+                    agentBB.SetBoxed(0, testTransforms[agentIndex]);
+                    object agentRead = agentBB.GetBoxed(0);
+                    Debug.Log($"[Phase A.1] Agent BB slot 0 read back: [{(agentRead as Transform)?.name ?? "null"}] (type={agentRead?.GetType().Name ?? "null"})\n");
+                    Assert.That(agentRead, Is.EqualTo(testTransforms[agentIndex]),
+                        "Phase A.1: Agent BB slot 0 should hold the Transform");
+
+                    Debug.Log($"[Phase A.2] CopyFromBB agent→squad (agentOffset={agentIndex})");
+                    squadInstance.CopyFromBB(agentBB, agentBBDef, agentIndex);
+                    Debug.Log("[Phase A.2] Reading all squad slots:");
+                    for (int i = 0; i < maxAgents; i++)
+                    {
+                        object val = squadInstance.BlackBoard.GetBoxed(squadBase + i);
+                        string tName = (val as Transform)?.name;
+                        string marker = (i == agentIndex) ? " <-- WRITTEN" : "";
+                        Debug.Log($"  Squad DetectedEnemies[{i}] (slot={squadBase + i}): [{(val == null ? "null" : $"'{tName}'")}] (type={val?.GetType().Name ?? "null"}){marker}");
+                        if (i == agentIndex)
+                            Assert.That(val, Is.EqualTo(testTransforms[agentIndex]),
+                                $"Phase A.2: Squad DetectedEnemies[{i}] should have Transform");
+                        else
+                            Assert.That(val, Is.Null,
+                                $"Phase A.2: Squad DetectedEnemies[{i}] should be null (not written)");
+                    }
+                    Debug.Log("");
+
+                    Debug.Log("[Phase A.3] CopyToBB squad→commander (agentOffset=-1, bulk)");
+                    squadInstance.CopyToBB(commanderBB, commanderBBDef, agentOffset: -1);
+                    Debug.Log("[Phase A.3] Reading all commander slots:");
+                    for (int i = 0; i < maxAgents; i++)
+                    {
+                        object val = commanderBB.GetBoxed(cmdrBase + i);
+                        string tName = (val as Transform)?.name;
+                        string marker = (i == agentIndex) ? " <-- EXPECTED" : "";
+                        Debug.Log($"  Commander DetectedEnemies[{i}] (slot={cmdrBase + i}): [{(val == null ? "null" : $"'{tName}'")}] (type={val?.GetType().Name ?? "null"}){marker}");
+                        if (i == agentIndex)
+                            Assert.That(val, Is.EqualTo(testTransforms[agentIndex]),
+                                $"Phase A.3: Commander DetectedEnemies[{i}] should have Transform");
+                        else
+                            Assert.That(val, Is.Null,
+                                $"Phase A.3: Commander DetectedEnemies[{i}] should be null (not written)");
+                    }
+
+                    Debug.Log("\n[Phase A] PASSED — Transform propagated through all 3 layers.\n");
+
+                    // ═══════════════════════════════════════════════════════
+                    // PHASE B: Clear agent to null, trace step by step
+                    // ═══════════════════════════════════════════════════════
+
+                    // B.1 — Clear the agent variable
+                    Debug.Log("[Phase B.1] Clearing Agent BB slot 0 to null");
+                    agentBB.SetBoxed(0, null);
+                    object agentVal = agentBB.GetBoxed(0);
+                    string agentTransformName = (agentVal as Transform)?.name;
+                    Debug.Log($"[Phase B.1] Agent BB slot 0 after clear: [{(agentVal == null ? "null" : $"NOT NULL: '{agentTransformName}'")}] (type={agentVal?.GetType().Name ?? "null"})");
+                    Assert.That(agentVal, Is.Null,
+                        "Phase B.1: Agent BB slot 0 should be null after SetBoxed(0, null). " +
+                        "Actual: [{0}] (type={1})",
+                        agentVal, agentVal?.GetType().Name ?? "null");
+
+                    Debug.Log("[Phase B.1] Agent BB is null ✓\n");
+
+                    // B.2 — Copy agent → squad
+                    Debug.Log($"[Phase B.2] CopyFromBB agent→squad (agentOffset={agentIndex})");
+                    squadInstance.CopyFromBB(agentBB, agentBBDef, agentIndex);
+
+                    Debug.Log("[Phase B.2] Reading all squad slots:");
+                    // Verify all squad slots individually with diagnostics
+                    for (int i = 0; i < maxAgents; i++)
+                    {
+                        object squadVal = squadInstance.BlackBoard.GetBoxed(squadBase + i);
+                        string squadTransformName = (squadVal as Transform)?.name;
+                        string marker = (i == agentIndex) ? " <-- TARGET" : "";
+                        Debug.Log($"  Squad DetectedEnemies[{i}] (slot={squadBase + i}): [{(squadVal == null ? "null" : $"'{squadTransformName}'")}] (type={squadVal?.GetType().Name ?? "null"}){marker}");
+                        string diagnostic = $"Phase B.2: Squad DetectedEnemies[{i}] " +
+                            $"(slot={squadBase + i}): value=[{squadVal}] type={squadVal?.GetType().Name ?? "null"}, " +
+                            $"expected={(i == agentIndex ? "null" : "null (or old Transform if not overwritten)")}";
+
+                        if (i == agentIndex)
+                        {
+                            Assert.That(squadVal, Is.Null, diagnostic +
+                                "\n→ FAIL: Agent cleared to null but squad still has a value. " +
+                                "Check CopyFromBB logic and binding resolution.");
+                        }
+                        else
+                        {
+                            Assert.That(squadVal, Is.Null, diagnostic +
+                                "\n→ FAIL: Untouched agent slot has unexpected value.");
+                        }
+                    }
+                    Debug.Log("[Phase B.2] All squad slots verified ✓\n");
+
+                    // B.3 — Copy squad → commander
+                    Debug.Log("[Phase B.3] CopyToBB squad→commander (agentOffset=-1, bulk)");
+                    squadInstance.CopyToBB(commanderBB, commanderBBDef, agentOffset: -1);
+
+                    Debug.Log("[Phase B.3] Reading all commander slots:");
+                    // Verify all commander slots individually with diagnostics
+                    for (int i = 0; i < maxAgents; i++)
+                    {
+                        object cmdrVal = commanderBB.GetBoxed(cmdrBase + i);
+                        string cmdrTransformName = (cmdrVal as Transform)?.name;
+                        string marker = (i == agentIndex) ? " <-- TARGET" : "";
+                        Debug.Log($"  Commander DetectedEnemies[{i}] (slot={cmdrBase + i}): [{(cmdrVal == null ? "null" : $"'{cmdrTransformName}'")}] (type={cmdrVal?.GetType().Name ?? "null"}){marker}");
+                        string diagnostic = $"Phase B.3: Commander DetectedEnemies[{i}] " +
+                            $"(slot={cmdrBase + i}): value=[{cmdrVal}] type={cmdrVal?.GetType().Name ?? "null"}, " +
+                            $"expected={(i == agentIndex ? "null" : "null")}";
+
+                        Assert.That(cmdrVal, Is.Null, diagnostic +
+                            "\n→ FAIL: Null did not reach commander. " +
+                            "If squad had null but commander doesn't, the problem is in CopyToBB. " +
+                            "If squad didn't have null either, the problem is upstream (CopyFromBB or agent BB).");
+                    }
+                    Debug.Log("[Phase B.3] All commander slots verified ✓\n");
+
+                    // ═══════════════════════════════════════════════════════
+                    // PHASE C: Write again → verify re-propagation works
+                    // ═══════════════════════════════════════════════════════
+
+                    Debug.Log($"[Phase C] Re-writing Transform '{testTransforms[agentIndex].name}' to Agent BB");
+                    agentBB.SetBoxed(0, testTransforms[agentIndex]);
+                    squadInstance.CopyFromBB(agentBB, agentBBDef, agentIndex);
+                    squadInstance.CopyToBB(commanderBB, commanderBBDef, agentOffset: -1);
+
+                    Debug.Log("[Phase C] Reading all commander slots after re-write:");
+                    for (int i = 0; i < maxAgents; i++)
+                    {
+                        object val = commanderBB.GetBoxed(cmdrBase + i);
+                        string tName = (val as Transform)?.name;
+                        string marker = (i == agentIndex) ? " <-- EXPECTED" : "";
+                        Debug.Log($"  Commander DetectedEnemies[{i}] (slot={cmdrBase + i}): [{(val == null ? "null" : $"'{tName}'")}] (type={val?.GetType().Name ?? "null"}){marker}");
+                        if (i == agentIndex)
+                            Assert.That(val, Is.EqualTo(testTransforms[agentIndex]),
+                                $"Phase C: Commander DetectedEnemies[{i}] should have Transform after re-write");
+                        else
+                            Assert.That(val, Is.Null,
+                                $"Phase C: Commander DetectedEnemies[{i}] should be null (not written)");
+                    }
+
+                    Debug.Log("\n========== NULL PROPAGATION TEST PASSED ==========");
+                }
+                finally
+                {
+                    for (int i = 0; i < maxAgents; i++)
+                        if (testTransforms[i] != null)
+                            Object.DestroyImmediate(testTransforms[i].gameObject);
+                    Object.DestroyImmediate(agentGO);
+                    Object.DestroyImmediate(commanderGO);
+                    Object.DestroyImmediate(squadGO);
+                }
+            }
+            finally
+            {
+                Object.DestroyImmediate(squadBBDef);
+                Object.DestroyImmediate(agentBBDef);
+                Object.DestroyImmediate(commanderBBDef);
+                Object.DestroyImmediate(agentTreeAsset);
+                Object.DestroyImmediate(commanderTreeAsset);
+            }
+        }
+
+        // ═══════════════════════════════════════════════════════════════
         // Test 9: Same as Test 8 but with other variables on the BBs
         //         preceding DetectedEnemies — validates that
         //         ComputeBaseSlot handles non-zero base slots correctly.

@@ -108,6 +108,32 @@ namespace BehaviourTree.Runtime.Methods
         {
             if (targetSlot < 0) return NodeState.FAILURE;
 
+            //// Diagnostic logging
+            //// string varName = "unknown";
+            //// var bb = BB as BlackBoard;
+            //// if (bb?.Definition != null)
+            //// {
+            ////     var vars = bb.Definition.GetAllVariables();
+            ////     int slotCursor = 0;
+            ////     for (int i = 0; i < vars.Count; i++)
+            ////     {
+            ////         int stride = vars[i].Stride;
+            ////         int actualStride = (stride > 1) ? stride : 1;
+            ////         if (targetSlot >= slotCursor && targetSlot < slotCursor + actualStride)
+            ////         {
+            ////             varName = vars[i].Name;
+            ////             break;
+            ////         }
+            ////         slotCursor += actualStride;
+            ////     }
+            //// }
+            ////
+            //// object before = BB.GetBoxed(targetSlot);
+            //// string beforeDisplay = before == null ? "null" :
+            ////     (before is UnityEngine.Object uo && uo == null) ? "<destroyed>" :
+            ////     before.ToString();
+            //// Debug.Log($"[ClearVariable] var='{varName}' slot={targetSlot} | before=[{beforeDisplay}] (type={before?.GetType().Name ?? "null"}) → writing null");
+
             // Write null — managed blackboard storage zeroes value-type slots on null
             BB.SetBoxed(targetSlot, null);
             return NodeState.SUCCESS;

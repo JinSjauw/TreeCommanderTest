@@ -54,6 +54,14 @@ namespace BehaviourTree.Runtime.Methods
                 index = 4,
                 allowedTypes = new[] { typeof(int) }
             },
+            new DynamicParamDescriptor
+            {
+                titleLabel = "Trajectory Starting Height",
+                label = "TrajectoryStartingHeight",
+                kind = DynamicParamKind.ScriptableObjectConstant,
+                index = 5,
+                allowedTypes = new[] { typeof(float) }
+            },
         };
 
         private enum FirePhase { Aiming, Trajectory, FireDelay, Firing }
@@ -71,6 +79,7 @@ namespace BehaviourTree.Runtime.Methods
         private GunHandling cachedGunHandling;
         private Transform target;
         private float fireDelayTimer;
+        private float trajectoryStartingHeight = -1;
 
         public override void DeserializeParameters(
             ReadOnlySpan<FieldData> fields,
@@ -97,7 +106,11 @@ namespace BehaviourTree.Runtime.Methods
 
             // Projectile Damage (ScriptableObjectConstant → int)
             if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
-                projectileDamage = fields[fieldIndex].GetInt();
+                projectileDamage = fields[fieldIndex++].GetInt();
+
+            // Trajectory Starting Height (ScriptableObjectConstant → float)
+            if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
+                trajectoryStartingHeight = fields[fieldIndex].GetFloat();
         }
 
         protected override void OnInitialize()
@@ -135,7 +148,7 @@ namespace BehaviourTree.Runtime.Methods
 
                 case FirePhase.Trajectory:
                 {
-                    TrajectorySearchState state = cachedGunHandling.SearchTrajectory();
+                    TrajectorySearchState state = cachedGunHandling.SearchTrajectory(trajectoryStartingHeight);
                     if (state == TrajectorySearchState.Found)
                     {
                         fireDelayTimer = 0f;
