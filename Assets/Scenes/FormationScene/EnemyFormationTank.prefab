@@ -916,6 +916,12 @@ MonoBehaviour:
       isProperty: 0
       memberTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
         PublicKeyToken=b77a5c561934e089
+    - targetComponent: {fileID: 7194435495231449439}
+      memberName: health
+      blackboardVariableName: HEALTH
+      isProperty: 0
+      memberTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
   commander: {fileID: 0}
   squadInstance: {fileID: 0}
 --- !u!114 &2802647565752943484
@@ -931,6 +937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackBoard
   serializedReferences:
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -4274,7 +4281,7 @@ MonoBehaviour:
   meshRootTransform: {fileID: 8545527158048715372}
   materialToApply: {fileID: 2100000, guid: c218e00d5b34a6f4698911d68cf491d4, type: 2}
   corpsePrefab: {fileID: 7949673561649792230, guid: 68c66b1a7d987454a9d22dbfafe87d57, type: 3}
-  transformToReturnTime: 1
+  transformToReturnTime: 0
 --- !u!54 &5777873416959904649
 Rigidbody:
   m_ObjectHideFlags: 0

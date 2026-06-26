@@ -481,7 +481,7 @@ MonoBehaviour:
   compositeType: 1
   methodName: SEQUENCE
   fieldEntries: []
-  abortType: 3
+  abortType: 1
 --- !u!114 &-3533789639374244050
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -191,7 +191,6 @@ public partial class SquadTabView : VisualElement
                     {
                         RoleSearchProvider provider = ScriptableObject.CreateInstance<RoleSearchProvider>();
                         provider.availableRoles = connection.squad.availableRoles;
-                        provider.excludeRoles = new HashSet<string>(connection.assignedRoles);
                         provider.onRoleSelected = roleName =>
                         {
                             connection.assignedRoles.Add(roleName);

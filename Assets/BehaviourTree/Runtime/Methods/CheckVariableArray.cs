@@ -27,7 +27,8 @@ namespace BehaviourTree.Runtime.Methods
     /// Use with a Priority composite: when this node returns SUCCESS, the Priority
     /// aborts lower-priority branches and switches to the reaction subtree.
     /// </summary>
-    [NodeMethod("CheckVariableArray")]
+    
+    //[NodeMethod("CheckVariableArray")]
     public sealed class CheckVariableArray : ConditionMethod
     {
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]

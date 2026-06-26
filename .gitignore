@@ -164,3 +164,4 @@ x86/
 !/Packages/manifest.json
 !/Packages/packages-lock.json
 !/Packages/*.meta
+Assets/BehaviourTree/Runtime/Tests

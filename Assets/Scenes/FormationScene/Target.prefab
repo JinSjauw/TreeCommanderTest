@@ -53,6 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   maxHealth: 2000
   health: 0
+  hasDied: 0
 --- !u!114 &258788109791603882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,11 +67,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathHandler
   transformToRemove: {fileID: 1167192516992154372}
-  visualsTransform: {fileID: 4286569383884317318}
   meshRootTransform: {fileID: 7407725989833560814}
   materialToApply: {fileID: 2100000, guid: c218e00d5b34a6f4698911d68cf491d4, type: 2}
   corpsePrefab: {fileID: 7949673561649792230, guid: 68c66b1a7d987454a9d22dbfafe87d57, type: 3}
-  transformToReturnTime: 1
+  transformToReturnTime: 0
 --- !u!54 &2407052848101590400
 Rigidbody:
   m_ObjectHideFlags: 0

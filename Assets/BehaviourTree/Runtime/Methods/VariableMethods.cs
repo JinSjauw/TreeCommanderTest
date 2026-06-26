@@ -208,23 +208,34 @@ namespace BehaviourTree.Runtime.Methods
     public sealed class CompareVariable : ConditionMethod
     {
         private static bool IsVectorType(Type t) => t == typeof(Vector2) || t == typeof(Vector3) || t == typeof(Vector4);
+        private static bool IsNumericType(Type t) => t == typeof(int) || t == typeof(float);
+        private static bool IsReferenceOrBooleanType(Type t) =>
+            t == typeof(bool) || t == typeof(GameObject) || t == typeof(Transform) ||
+            t == typeof(Component) || (t != null && !t.IsValueType);
+        private const int CompareOpEq = (int)VariableCompareOp.Equal;
+        private const int CompareOpNotEq = (int)VariableCompareOp.NotEqual;
         private const int MagnitudeOpStart = 6; // MagnitudeLess
+
+        private static readonly int[] EqualNotEqualOps = { CompareOpEq, CompareOpNotEq };
+        private static readonly int[] NumericOps = { CompareOpEq, CompareOpNotEq,
+            (int)VariableCompareOp.Less, (int)VariableCompareOp.LessOrEqual,
+            (int)VariableCompareOp.Greater, (int)VariableCompareOp.GreaterOrEqual };
 
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {
-            new DynamicParamDescriptor { titleLabel = "Operand A", label = "Operand A", kind = DynamicParamKind.Variable, index = 0 },
-            new DynamicParamDescriptor { titleLabel = "Compare With", label = "Compare With", kind = DynamicParamKind.Toggle, index = 1, syncTypeFromIndex = 0 },
+            new DynamicParamDescriptor { titleLabel = "Input", label = "Operand A", kind = DynamicParamKind.Variable, index = 0 },
+            new DynamicParamDescriptor { titleLabel = "Compare With", label = "Operand B", kind = DynamicParamKind.Toggle, index = 1, syncTypeFromIndex = 0 },
             new DynamicParamDescriptor
             {
                 titleLabel = "Operation", label = "Operation", kind = DynamicParamKind.Operation, index = 2,
                 operationEnumType = typeof(VariableCompareOp),
                 getAvailableOpIndices = (type) =>
                 {
-                    // Magnitude ops only apply to Vector types
-                    if (type != null && IsVectorType(type)) return null; // all ops
-                    int[] nonMag = new int[MagnitudeOpStart];
-                    for (int i = 0; i < MagnitudeOpStart; i++) nonMag[i] = i;
-                    return nonMag;
+                    if (type == null) return EqualNotEqualOps;
+                    if (IsVectorType(type)) return null; // all ops including magnitude
+                    if (IsNumericType(type)) return NumericOps;
+                    // bool, GameObject, Transform, Component, and any reference type → Equal/NotEqual only
+                    return EqualNotEqualOps;
                 }
             },
         };
@@ -379,7 +390,7 @@ namespace BehaviourTree.Runtime.Methods
             new DynamicParamDescriptor { titleLabel = "Variable", label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
             new DynamicParamDescriptor
             {
-                titleLabel = "Condition", label = "Condition", kind = DynamicParamKind.Operation, index = 1, syncTypeFromIndex = 0,
+                titleLabel = "Condition", label = "Condition", kind = DynamicParamKind.Operation, index = 1,
                 operationEnumType = typeof(VariableCheckOp),
                 getAvailableOpIndices = (type) =>
                 {
@@ -399,8 +410,11 @@ namespace BehaviourTree.Runtime.Methods
         {
             if (fields.Length >= 1 && fields[0].IsVariable)
                 variableSlot = fields[0].value;
-            if (fields.Length >= 2 && fields[1].IsConstant)
-                operation = (VariableCheckOp)fields[1].value;
+
+            // Skip stride marker emitted by TreeBaker for squadData variables (stride > 1)
+            int opFieldIndex = fields.Length >= 2 && fields[1].IsStrideMarker ? 2 : 1;
+            if (fields.Length > opFieldIndex && fields[opFieldIndex].IsConstant)
+                operation = (VariableCheckOp)fields[opFieldIndex].value;
         }
 
         public override NodeState Execute(TickContext ctx)

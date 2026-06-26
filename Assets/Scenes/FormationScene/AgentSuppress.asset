@@ -676,12 +676,12 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: b4b44d02244d5074cb05447071263ee0
-  graphPosition: {x: -0, y: 175}
+  graphPosition: {x: 0, y: 175}
   runtimeIndex: -1
   compositeType: 1
   methodName: SEQUENCE
   fieldEntries: []
-  abortType: 3
+  abortType: 1
 --- !u!114 &1943491683753136744
 MonoBehaviour:
   m_ObjectHideFlags: 0

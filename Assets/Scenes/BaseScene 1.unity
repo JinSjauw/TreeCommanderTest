@@ -1390,15 +1390,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   objectPool: {fileID: 1660154982}
   enemyPrefab: {fileID: 4277509301112172683, guid: e28f2a11bf608204f9ec8e86b7af3649, type: 3}
-  enemyPatrolPoints: {fileID: 1739893802}
+  enemyPatrolPoints: {fileID: 264813706}
   spawnEnemyAtStart: 1
   spawnEnemyOnTimer: 1
   enemySpawnTimer: 180
   squadManagerPrefab: {fileID: 4318205481906272402, guid: 6bc9397047568864b9ad767638b702cb, type: 3}
   squadPatrolPoints: {fileID: 1739893802}
   spawnSquadAtStart: 1
-  spawnSquadOnTimer: 0
-  squadSpawnTimer: 60
+  spawnSquadOnTimer: 1
+  squadSpawnTimer: 180
   squadAgentCount: 6
   squadRadius: 8
 --- !u!1 &1360744447
@@ -2843,6 +2843,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6714113862871991729, guid: fa2b5204d8f040540a0a7206304331e1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9052893811937196989, guid: fa2b5204d8f040540a0a7206304331e1, type: 3}
+      propertyPath: trackedBindingGroups.Array.data[0].bindings.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9052893811937196989, guid: fa2b5204d8f040540a0a7206304331e1, type: 3}

@@ -42,67 +42,6 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   BlackBoardTypeID: 0
---- !u!114 &-3969228022055262043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: CheckVariableArray
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: CheckVariableArray
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: b24b858f404ae53419076384b1e788e9
-  graphPosition: {x: -735, y: 700}
-  runtimeIndex: 3
-  leafType: 2
-  methodName: CheckVariableArray
-  fieldEntries:
-  - fieldName: variable
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: DetectedEnemies
-    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: condition
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: 
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 1
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  BlackBoardTypeID: 0
 --- !u!114 &-3920582747905440604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,7 +95,7 @@ MonoBehaviour:
     configSourceGuid: 
     configFieldName: 
     isConfigConstant: 0
-    intValue: 2
+    intValue: 0
     floatValue: 0
     boolValue: 0
     vector2Value: {x: 0, y: 0}
@@ -361,7 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: SEQUENCE
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  nodeName: 
+  nodeName: SEQUENCE
   children:
   - {fileID: 1004605836162802914}
   - {fileID: -3397769103818021505}
@@ -404,7 +343,6 @@ MonoBehaviour:
   - {fileID: -1469423470487883905}
   - {fileID: 7179348187851499072}
   - {fileID: -3091463069800464899}
-  - {fileID: -3969228022055262043}
   - {fileID: 1004605836162802914}
   - {fileID: -3397769103818021505}
   - {fileID: 467381731415672461}
@@ -412,6 +350,7 @@ MonoBehaviour:
   - {fileID: 1570107228174084481}
   - {fileID: 8581150211481401213}
   - {fileID: -2254639262006041514}
+  - {fileID: 714487137051391398}
   editorNotes: []
   commanderSquad: {fileID: 11400000, guid: 31472f977e5443e47a1778f6ade52b9e, type: 2}
   maxSquadSize: 5
@@ -475,6 +414,67 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   BlackBoardTypeID: 0
+--- !u!114 &714487137051391398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: CheckSquadData
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: 
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 211fdd313f5510c40a54dfcf52fa0c8a
+  graphPosition: {x: -724.7495, y: 700}
+  runtimeIndex: 3
+  leafType: 2
+  methodName: CheckSquadData
+  fieldEntries:
+  - fieldName: input
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: DetectedEnemies
+    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: operation
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 1
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
 --- !u!114 &1004605836162802914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -528,7 +528,7 @@ MonoBehaviour:
     configSourceGuid: 
     configFieldName: 
     isConfigConstant: 0
-    intValue: 0
+    intValue: 2
     floatValue: 0
     boolValue: 0
     vector2Value: {x: 0, y: 0}
@@ -1087,7 +1087,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   nodeName: 
   children:
-  - {fileID: -3969228022055262043}
+  - {fileID: 714487137051391398}
   - {fileID: -2254639262006041514}
   - {fileID: -1469423470487883905}
   firstChildIndex: 0
@@ -1099,4 +1099,4 @@ MonoBehaviour:
   compositeType: 1
   methodName: SEQUENCE
   fieldEntries: []
-  abortType: 3
+  abortType: 2

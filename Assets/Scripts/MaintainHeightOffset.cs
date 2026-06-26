@@ -8,28 +8,21 @@ public class MaintainHeightOffset : MonoBehaviour
     [SerializeField] private float heightOffset = 0.5f;
     [SerializeField] private float standardHeightOffset = 0.45f;
 
-    private Transform targetTransform;
-    private Vector3 standardHitPosition;
-
-    private void Awake() {
-        standardHitPosition = transform.position;
-        standardHitPosition.y = standardHeightOffset;
-        targetTransform = transform;
-    }
-
     void FixedUpdate()
     {
-        if (targetTransform != null)
+        if (transform != null)
         {
             if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, raycastDistance, obstacleMasks))
             {
-                Vector3 hitPosition = hit.point;
-                hitPosition.y += heightOffset;
-                targetTransform.position = hitPosition;
+                Vector3 newPosition = transform.position;
+                newPosition.y = hit.point.y + heightOffset;
+                transform.position = newPosition;
             }
             else
             {
-                targetTransform.position = standardHitPosition;
+                Vector3 newPosition = transform.position;
+                newPosition.y = standardHeightOffset;
+                transform.position = newPosition;
             }
         }
     }

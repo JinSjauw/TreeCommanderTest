@@ -23,24 +23,16 @@ namespace BehaviourTree.Runtime
             AbortType parentAbortType = composite.abortType;
             int childCount = last - first + 1;
 
-            // Find the currently RUNNING child of THIS composite
+            // BUG #1 FIX: Find the RIGHTMOST running child instead of the first.
+            // This matters for Parallel composites where multiple children can be RUNNING.
             int runningChildLocal = -1;
             for (int c = 0; c < childCount; c++)
             {
                 if (ctx.nodeStates[first + c] == NodeState.RUNNING)
-                {
-                    runningChildLocal = c;
-                    break;
-                }
+                    runningChildLocal = c; // don't break — keep scanning for the rightmost
             }
 
             // ── SELF abort pass ──
-            // Re-evaluates this composite's own children's conditions every tick.
-            // If any condition transitions (true→false or false→true) while a later
-            // sibling is RUNNING, abort the running sibling and restart from here.
-            // Skipped entirely when no child is RUNNING — abort is impossible and
-            // lastConditionResult tracking is not needed (next running tick will
-            // compare against the last evaluated state regardless).
             if ((parentAbortType == AbortType.Self || parentAbortType == AbortType.Both)
                 && runningChildLocal >= 0)
             {
@@ -50,76 +42,95 @@ namespace BehaviourTree.Runtime
                     ref NodeData childNode = ref ctx.nodeDatas[childIndex];
 
                     bool conditionMet;
+                    bool skippedSubtreeDescendants = false;
+                    int subtreeOriginalC = c;
                     if (ctx.methodInstances[childIndex] is ConditionMethod)
                     {
-                        // Direct condition leaf — evaluate for transition detection
                         conditionMet = EvaluateLeafCondition(childIndex, ref ctx);
                     }
-                    else if (childNode.nodeType == BehaviourNodeType.SUBTREE
+                    else if ((childNode.nodeType == BehaviourNodeType.SUBTREE
+                           || childNode.nodeType == BehaviourNodeType.DECORATOR)
                         && childNode.firstChildIndex >= 0)
                     {
-                        // Subtree is transparent — walk through to find its first condition
-                        conditionMet = EvaluateCompositeCondition(childIndex, AbortType.Self, ref ctx);
+                        // insideSubtree=true so we see through all composites and decorators
+                        conditionMet = EvaluateCompositeCondition(childIndex, AbortType.Self, true, ref ctx);
+                        // Skip past subtree/decorator descendants — they were already handled by EvaluateCompositeCondition.
+                        int containerEndLocal = childNode.lastChildIndex - first;
+                        if (containerEndLocal > c) { c = containerEndLocal; skippedSubtreeDescendants = true; }
                     }
                     else
                     {
-                        // Composites are logic gates — their internal conditions are
-                        // their own responsibility, not the parent's abort concern.
-                        // ActionMethods are not conditions.
                         continue;
                     }
 
                     bool wasMet = ctx.lastConditionResult[childIndex];
                     ctx.lastConditionResult[childIndex] = conditionMet;
 
-                    // Any status change triggers abort (both directions matter:
-                    // true→false for Sequence — condition broke while action runs;
-                    // false→true for Selector — higher-priority condition just became met)
-                    if (wasMet != conditionMet && runningChildLocal >= 0 && runningChildLocal > c)
+                    // BUG #1 FIX: check if ANY child to the right is RUNNING, not just the first one
+                    if (wasMet != conditionMet && HasRunningSiblingToRight(first, childCount, c, ref ctx))
                     {
-                        AbortSubtree(first + runningChildLocal, ref ctx);
-                        return c;
+                        AbortSiblingsToRight(first, childCount, c, ref ctx);
+                        // If we skipped subtree descendants, the abort restarts at the subtree's position
+                        return skippedSubtreeDescendants ? subtreeOriginalC : c;
                     }
                 }
             }
 
             // ── LOWER PRIORITY abort pass ──
-            // This composite checks children that are composites with LowerPriority/Both
-            // abort type. If that child composite's condition transitions false→true,
-            // and a sibling to the right is RUNNING, abort the sibling.
             for (int c = 0; c < childCount; c++)
             {
                 int childIndex = first + c;
                 ref NodeData childNode = ref ctx.nodeDatas[childIndex];
 
-                // Subtree children → recursively find composites with LP/Both abort
-                if (childNode.nodeType == BehaviourNodeType.SUBTREE
+                if ((childNode.nodeType == BehaviourNodeType.SUBTREE
+                  || childNode.nodeType == BehaviourNodeType.DECORATOR)
                     && childNode.firstChildIndex >= 0)
                 {
+                    // DECORATOR with LP/Both abort: evaluate its first condition directly,
+                    // just like a COMPOSITE with LP/Both. The decorator's wrapped subtree
+                    // contains the condition.
+                    AbortType decAbort = childNode.abortType;
+                    if (childNode.nodeType == BehaviourNodeType.DECORATOR
+                        && (decAbort == AbortType.LowerPriority || decAbort == AbortType.Both))
+                    {
+                        bool decConditionMet = EvaluateCompositeCondition(childIndex, decAbort, true, ref ctx);
+                        bool decWasMet = ctx.lastConditionResult[childIndex];
+                        ctx.lastConditionResult[childIndex] = decConditionMet;
+                        if (!decWasMet && decConditionMet && HasRunningSiblingToRight(first, childCount, c, ref ctx))
+                        {
+                            AbortSiblingsToRight(first, childCount, c, ref ctx);
+                            return c;
+                        }
+                        int decEndLocal = childNode.lastChildIndex - first;
+                        if (decEndLocal > c) c = decEndLocal;
+                        continue;
+                    }
+
+                    // Recurse into the subtree/decorator to find LP/Both composites inside
                     int abortIndex = EvaluateLpConditionsRecursive(
                         childNode.firstChildIndex, childNode.lastChildIndex,
-                        first, runningChildLocal, c, ref ctx);
+                        first, runningChildLocal, c,
+                        childNode.lastChildIndex, childCount, ref ctx);
                     if (abortIndex >= 0) return abortIndex;
+                    // Skip past descendants — they were already handled above.
+                    int containerEndLocal = childNode.lastChildIndex - first;
+                    if (containerEndLocal > c) c = containerEndLocal;
                     continue;
                 }
 
-                // Only composites can have abort types
                 if (childNode.nodeType != BehaviourNodeType.COMPOSITE) continue;
                 AbortType childAbort = childNode.abortType;
                 if (childAbort != AbortType.LowerPriority && childAbort != AbortType.Both) continue;
 
-                // Evaluate this child composite's condition — pass its own abort type
-                // for the recursion constraint
-                bool conditionMet = EvaluateCompositeCondition(childIndex, childAbort, ref ctx);
+                bool conditionMet = EvaluateCompositeCondition(childIndex, childAbort, false, ref ctx);
                 bool wasMet = ctx.lastConditionResult[childIndex];
                 ctx.lastConditionResult[childIndex] = conditionMet;
 
-                // Condition transitioned false→true, and a sibling to the right is RUNNING
-                if (!wasMet && conditionMet && runningChildLocal >= 0 && runningChildLocal > c)
+                // BUG #1 FIX: check if ANY child to the right is RUNNING
+                if (!wasMet && conditionMet && HasRunningSiblingToRight(first, childCount, c, ref ctx))
                 {
-                    // Abort the running sibling
-                    AbortSubtree(first + runningChildLocal, ref ctx);
-                    return c; // restart from this newly-active child composite
+                    AbortSiblingsToRight(first, childCount, c, ref ctx);
+                    return c;
                 }
             }
 
@@ -152,6 +163,62 @@ namespace BehaviourTree.Runtime
             }
         }
 
+        // ── BUG #1 helpers ──
+
+        /// <summary>
+        /// Returns true if any child to the right of <paramref name="position"/> is RUNNING.
+        /// Used instead of a single runningChildLocal to handle Parallel composites correctly.
+        /// </summary>
+        private static bool HasRunningSiblingToRight(int first, int childCount, int position, ref TickContext ctx)
+        {
+            for (int c = position + 1; c < childCount; c++)
+            {
+                if (ctx.nodeStates[first + c] == NodeState.RUNNING)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Aborts ALL RUNNING children to the right of <paramref name="position"/>.
+        /// Handles Parallel composites where multiple siblings may be running simultaneously.
+        /// </summary>
+        private static void AbortSiblingsToRight(int first, int childCount, int position, ref TickContext ctx)
+        {
+            for (int c = position + 1; c < childCount; c++)
+            {
+                if (ctx.nodeStates[first + c] == NodeState.RUNNING)
+                    AbortSubtree(first + c, ref ctx);
+            }
+        }
+
+        // ── BUG #2 helpers ──
+
+        /// <summary>
+        /// Returns true if any node in the absolute index range [fromIndex..toIndex] is RUNNING.
+        /// </summary>
+        private static bool HasRunningNodeInRange(int fromIndex, int toIndex, ref TickContext ctx)
+        {
+            for (int i = fromIndex; i <= toIndex; i++)
+            {
+                if (ctx.nodeStates[i] == NodeState.RUNNING)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Aborts all RUNNING nodes in the absolute index range [fromIndex..toIndex].
+        /// </summary>
+        private static void AbortRunningNodesInRange(int fromIndex, int toIndex, ref TickContext ctx)
+        {
+            for (int i = fromIndex; i <= toIndex; i++)
+            {
+                if (ctx.nodeStates[i] == NodeState.RUNNING)
+                    AbortSubtree(i, ref ctx);
+            }
+        }
+
         /// <summary>
         /// Evaluates a single node's method as a standalone condition.
         /// Only ConditionMethod is supported as condition-bearing for abort.
@@ -169,10 +236,7 @@ namespace BehaviourTree.Runtime
             if (method is ConditionMethod condition)
             {
                 result = condition.Execute(ctx);
-                //Debug.Log($"[ConditionalAbort] NAME: {method.MethodName} nodeIndex={nodeIndex} result={result}");
             }
-            // ActionMethod: don't execute (side effects)
-            // DecoratorMethod: not supported yet (would need child evaluation)
 
             return result == NodeState.SUCCESS;
         }
@@ -182,75 +246,117 @@ namespace BehaviourTree.Runtime
         /// composite subtree. Used for LowerPriority abort where the parent needs
         /// to check a child composite's condition.
         ///
-        /// Recursion rule: only recurses into nested child composites that share
-        /// the same abort type (LowerPriority or Both). Nested composites with
-        /// None or Self are NOT descended into.
-        ///
-        /// Returns true if no qualifying condition was found (treated as "always met").
+        /// When <paramref name="insideSubtree"/> is true (child is within an expanded
+        /// Subtree node), composites are always recursed into regardless of their
+        /// own abort type — subtrees are transparent containers.
         /// </summary>
-        private static bool EvaluateCompositeCondition(int compositeIndex, AbortType requiredType, ref TickContext ctx)
+        private static bool EvaluateCompositeCondition(int compositeIndex, AbortType requiredType, bool insideSubtree, ref TickContext ctx)
         {
             ref NodeData composite = ref ctx.nodeDatas[compositeIndex];
-            return FindFirstCondition(composite.firstChildIndex, composite.lastChildIndex, requiredType, ref ctx);
+            return FindFirstCondition(composite.firstChildIndex, composite.lastChildIndex, requiredType, insideSubtree, ref ctx);
         }
 
-        private static bool FindFirstCondition(int first, int last, AbortType requiredType, ref TickContext ctx)
+        /// <summary>
+        /// Recursively finds and evaluates the first condition-bearing node within [first..last].
+        ///
+        /// BUG #3 FIX: When <paramref name="insideSubtree"/> is true, composites are recursed
+        /// into regardless of their own abortType (subtrees are transparent containers).
+        ///
+        /// BUG #4 FIX: Updates lastConditionResult at the leaf's actual index, not the caller's.
+        /// </summary>
+        private static bool FindFirstCondition(int first, int last, AbortType requiredType, bool insideSubtree, ref TickContext ctx)
         {
             if (first < 0) return true;
 
-            // Single pass: for each child, either evaluate its method as a condition
-            // (if it's a leaf) or recurse into it (if it's a composite with compatible
-            // abort type). Method-bearing composites (e.g. SEQUENCE) are never evaluated
-            // as leaf conditions — their method is CompositeMethod, not ConditionMethod.
             for (int i = first; i <= last; i++)
             {
                 ref NodeData child = ref ctx.nodeDatas[i];
 
                 // Method-bearing non-composite leaf → evaluate as condition
                 if (ctx.methodInstances[i] != null && child.nodeType != BehaviourNodeType.COMPOSITE)
-                    return EvaluateLeafCondition(i, ref ctx);
+                {
+                    // Decorator with children → recurse into it (transparent container).
+                    // Decorators wrap a child that may contain conditions.
+                    if (child.firstChildIndex >= 0 && child.nodeType == BehaviourNodeType.DECORATOR)
+                    {
+                        bool found = FindFirstCondition(child.firstChildIndex,
+                            child.lastChildIndex, requiredType, true, ref ctx);
+                        if (!found) return false;
+                        continue;
+                    }
 
-                // Composite with children → recurse if abort type is compatible
+                    // Only ConditionMethod nodes are meaningful for abort evaluation.
+                    // Action/other method types return true unconditionally from
+                    // EvaluateLeafCondition, which would shadow any real condition
+                    // nodes to the right — skip them so we can reach actual conditions.
+                    if (!(ctx.methodInstances[i] is ConditionMethod))
+                        continue;
+
+                    // BUG #4 FIX: update lastConditionResult at the actual condition leaf's index
+                    bool result = EvaluateLeafCondition(i, ref ctx);
+                    ctx.lastConditionResult[i] = result;
+                    return result;
+                }
+
+                // Composite with children → recurse if abort type is compatible,
+                // OR if insideSubtree (BUG #3: subtrees see through all composites)
                 if (child.firstChildIndex >= 0 && child.nodeType == BehaviourNodeType.COMPOSITE)
                 {
-                    bool hasRequired = child.abortType == requiredType ||
-                                       child.abortType == AbortType.Both;
-                    if (!hasRequired) continue;
+                    if (!insideSubtree)
+                    {
+                        bool hasRequired = child.abortType == requiredType ||
+                                           child.abortType == AbortType.Both;
+                        if (!hasRequired) continue;
+                    }
 
                     bool found = FindFirstCondition(child.firstChildIndex,
-                        child.lastChildIndex, requiredType, ref ctx);
-                    if (!found) return false; // condition found and FAILED
+                        child.lastChildIndex, requiredType, insideSubtree, ref ctx);
+                    if (!found) return false;
                     continue;
                 }
 
-                // Subtree with children → always recurse (subtrees are transparent)
+                // Subtree with children → always recurse with insideSubtree=true
                 if (child.firstChildIndex >= 0 && child.nodeType == BehaviourNodeType.SUBTREE)
                 {
                     bool found = FindFirstCondition(child.firstChildIndex,
-                        child.lastChildIndex, requiredType, ref ctx);
+                        child.lastChildIndex, requiredType, true, ref ctx);
                     if (!found) return false;
                 }
             }
 
-            return true; // no qualifying condition-bearing children found
+            return true;
         }
 
         /// <summary>
         /// Recursively evaluates LowerPriority/Both composites within [first, last],
-        /// walking transparently through SUBTREE nodes.
-        /// parentFirst: the original parent composite's firstChildIndex (for AbortSubtree target).
-        /// parentPosition: the original subtree's child position in the parent composite.
-        /// runningChildLocal: position of the currently RUNNING child in the parent composite.
-        /// Returns the child position to resume from if an abort occurred, or -1.
+        /// walking transparently through SUBTREE and DECORATOR nodes.
+        ///
+        /// BUG #2 FIX: When runningChildLocal == parentPosition, the running child is
+        /// INSIDE this subtree. We scan for running nodes within [first..subtreeScopeLast]
+        /// and abort those to the right of the triggering LP composite.
         /// </summary>
         private static int EvaluateLpConditionsRecursive(
             int first, int last,
             int parentFirst,
             int runningChildLocal,
             int parentPosition,
+            int subtreeScopeLast,
+            int parentChildCount,
             ref TickContext ctx)
         {
             int childCount = last - first + 1;
+
+            // Detect whether the running child is inside this subtree.
+            // If the subtree node itself is RUNNING, the actual running node is a descendant.
+            bool runningInside = ctx.nodeStates[parentFirst + parentPosition] == NodeState.RUNNING;
+
+            // Precompute where the original subtree's descendants end, for the
+            // external-sibling abort path to avoid aborting subtree-internal nodes.
+            ref NodeData originalSubtree = ref ctx.nodeDatas[parentFirst + parentPosition];
+            int afterSubtreeInParent = originalSubtree.lastChildIndex >= 0
+                ? originalSubtree.lastChildIndex - parentFirst
+                : parentPosition;
+
             for (int i = 0; i < childCount; i++)
             {
                 int childIndex = first + i;
@@ -262,24 +368,49 @@ namespace BehaviourTree.Runtime
                     if (childAbort != AbortType.LowerPriority
                         && childAbort != AbortType.Both) continue;
 
-                    bool conditionMet = EvaluateCompositeCondition(childIndex, childAbort, ref ctx);
+                    bool conditionMet = EvaluateCompositeCondition(childIndex, childAbort, false, ref ctx);
                     bool wasMet = ctx.lastConditionResult[childIndex];
                     ctx.lastConditionResult[childIndex] = conditionMet;
 
-                    if (!wasMet && conditionMet
-                        && runningChildLocal >= 0
-                        && runningChildLocal > parentPosition)
+                    if (!wasMet && conditionMet)
                     {
-                        AbortSubtree(parentFirst + runningChildLocal, ref ctx);
-                        return parentPosition;
+                        bool didAbort = false;
+
+                        // BUG #2 FIX: If running nodes exist inside this subtree,
+                        // abort siblings to the RIGHT of the LP composite (not children of it).
+                        if (runningInside)
+                        {
+                            int afterLp = childNode.lastChildIndex >= 0 ? childNode.lastChildIndex + 1 : childIndex + 1;
+                            if (HasRunningNodeInRange(afterLp, subtreeScopeLast, ref ctx))
+                            {
+                                AbortRunningNodesInRange(afterLp, subtreeScopeLast, ref ctx);
+                                didAbort = true;
+                            }
+                        }
+
+                        // Running siblings OUTSIDE the subtree (to the right) must also be aborted.
+                        // This is independent of runningInside — both can be true simultaneously.
+                        for (int c = afterSubtreeInParent + 1; c < parentChildCount; c++)
+                        {
+                            if (ctx.nodeStates[parentFirst + c] == NodeState.RUNNING)
+                            {
+                                AbortSubtree(parentFirst + c, ref ctx);
+                                didAbort = true;
+                            }
+                        }
+
+                        if (didAbort)
+                            return parentPosition;
                     }
                 }
-                else if (childNode.nodeType == BehaviourNodeType.SUBTREE
+                else if ((childNode.nodeType == BehaviourNodeType.SUBTREE
+                       || childNode.nodeType == BehaviourNodeType.DECORATOR)
                     && childNode.firstChildIndex >= 0)
                 {
                     int abortIndex = EvaluateLpConditionsRecursive(
                         childNode.firstChildIndex, childNode.lastChildIndex,
-                        parentFirst, runningChildLocal, parentPosition, ref ctx);
+                        parentFirst, runningChildLocal, parentPosition,
+                        subtreeScopeLast, parentChildCount, ref ctx);
                     if (abortIndex >= 0) return abortIndex;
                 }
             }

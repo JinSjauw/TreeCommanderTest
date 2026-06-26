@@ -15,7 +15,6 @@ namespace BehaviourTree.Editor
     {
         public Action<string> onRoleSelected;
         public List<SquadRole> availableRoles;
-        public HashSet<string> excludeRoles;
         private Texture2D identationIcon;
 
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
@@ -30,17 +29,7 @@ namespace BehaviourTree.Editor
             List<SearchTreeEntry> searchList = new List<SearchTreeEntry>();
             searchList.Add(new SearchTreeGroupEntry(new GUIContent("Available Roles"), 0));
 
-            List<SquadRole> filtered = new List<SquadRole>();
-            if (availableRoles != null)
-            {
-                for (int i = 0; i < availableRoles.Count; i++)
-                {
-                    if (excludeRoles == null || !excludeRoles.Contains(availableRoles[i].name))
-                        filtered.Add(availableRoles[i]);
-                }
-            }
-
-            if (filtered.Count == 0)
+            if (availableRoles == null || availableRoles.Count == 0)
             {
                 searchList.Add(new SearchTreeEntry(new GUIContent("No available roles"))
                 {
@@ -50,9 +39,9 @@ namespace BehaviourTree.Editor
             }
             else
             {
-                for (int i = 0; i < filtered.Count; i++)
+                for (int i = 0; i < availableRoles.Count; i++)
                 {
-                    SquadRole role = filtered[i];
+                    SquadRole role = availableRoles[i];
                     searchList.Add(new SearchTreeEntry(new GUIContent(role.name, identationIcon))
                     {
                         level = 1,

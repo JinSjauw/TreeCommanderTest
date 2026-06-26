@@ -967,7 +967,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: cd4ebacca1c5ff845a7eead2a0202045
-  graphPosition: {x: -442, y: 444}
+  graphPosition: {x: -434, y: 455}
   runtimeIndex: -1
   leafType: 2
   methodName: Enemy_Detected
@@ -1054,7 +1054,7 @@ MonoBehaviour:
   compositeType: 1
   methodName: SEQUENCE
   fieldEntries: []
-  abortType: 3
+  abortType: 1
 --- !u!114 &8392349563842025776
 MonoBehaviour:
   m_ObjectHideFlags: 0

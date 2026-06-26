@@ -61,6 +61,10 @@ namespace BehaviourTree.Runtime
         private int currentLeaderIndex = -1;
         private bool hasInitialized = false;
 
+        /// <summary>Expanded role index per agent slot. Built once at init from SquadDefinition.availableRoles.
+        /// agentRoleIndices[slotIndex] = roleIndex in availableRoles.</summary>
+        private int[] agentRoleIndices;
+
         // ── BB slots (cached for fast write) ────────────────────
 
         private int leaderSlot = -1;
@@ -340,6 +344,9 @@ namespace BehaviourTree.Runtime
             if (maxSize <= 0)
                 maxSize = 1;
 
+            // Build flat role-index array: one entry per slot, value = role index in availableRoles
+            BuildRoleIndices(maxSize);
+
             // 3 — Squad instance
             GameObject squadGo = new GameObject($"[Squad] {definition.name}");
             squadInstance = squadGo.AddComponent<SquadInstance>();
@@ -388,7 +395,7 @@ namespace BehaviourTree.Runtime
                 Debug.LogError($"[SquadManager] No role defined for agent slot {agentIndex}.");
                 return;
             }
-
+            
             // Get prefab from the role, falling back to SquadManager default
             GameObject prefab = role.prefab != null ? role.prefab : agentPrefab;
             if (prefab == null)
@@ -418,7 +425,6 @@ namespace BehaviourTree.Runtime
                 nav.avoidancePriority += agentIndex;
 
             commanderRunner.RegisterAgent(agent);
-
             AssignRole(agent, agentIndex);
             WriteAgentMoveSpeed(agent, agentIndex);
 
@@ -462,24 +468,39 @@ namespace BehaviourTree.Runtime
             hasInitialized = false;
         }
 
-        // ── Role assignment (slot-based, deterministic) ──────────────────
+        // ── Role assignment (flat array, built once at init) ──────────────
 
         /// <summary>
-        /// Assigns a role to an agent based on its slot index in the squad composition.
-        /// Roles are mapped deterministically: slots 0..maxAmount[0]-1 get role[0],
-        /// maxAmount[0]..maxAmount[0]+maxAmount[1]-1 get role[1], etc.
-        /// No counting or "first available" heuristics — the squad definition IS the layout.
+        /// Expands SquadDefinition.availableRoles into a flat int[] where
+        /// each role is repeated maxAmount times. agentRoleIndices[slotIndex]
+        /// directly gives the role index in availableRoles.
+        /// </summary>
+        private void BuildRoleIndices(int maxSize)
+        {
+            if (definition?.availableRoles == null) return;
+
+            agentRoleIndices = new int[maxSize];
+            int slot = 0;
+            for (int roleIdx = 0; roleIdx < definition.availableRoles.Count; roleIdx++)
+            {
+                int amount = Mathf.Max(1, definition.availableRoles[roleIdx].maxAmount);
+                for (int j = 0; j < amount && slot < maxSize; j++)
+                    agentRoleIndices[slot++] = roleIdx;
+            }
+            // Fill remaining slots with fallback (last role) if any
+            while (slot < maxSize)
+                agentRoleIndices[slot++] = definition.availableRoles.Count - 1;
+        }
+
+        /// <summary>
+        /// Assigns a role to an agent by direct lookup into the pre-built flat array.
         /// </summary>
         private void AssignRole(AgentTreeRunner agent, int agentIndex)
         {
-            if (definition == null) return;
+            if (agentRoleIndices == null || agentIndex < 0 || agentIndex >= agentRoleIndices.Length)
+                return;
 
-            SquadRole role = definition.GetRoleForSlot(agentIndex);
-            if (role == null) return;
-
-            // Find the role's index in availableRoles
-            int roleIndex = definition.availableRoles.IndexOf(role);
-            if (roleIndex < 0) return;
+            int roleIndex = agentRoleIndices[agentIndex];
 
             BlackBoard bb = agent.BlackBoard;
             BlackboardDefinition bbDef = bb?.Definition;
