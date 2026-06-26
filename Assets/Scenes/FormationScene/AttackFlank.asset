@@ -14,13 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   nodeName: CompositeNode
   children:
-  - {fileID: 7368346024535759899}
   - {fileID: 7716649726340458671}
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
   guid: 35627ef38e6921744b103d9b66732581
-  graphPosition: {x: 175, y: 445}
+  graphPosition: {x: 175, y: 536.27014}
   runtimeIndex: -1
   compositeType: 1
   methodName: SELECTOR
@@ -44,7 +43,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: fece182b376fa7f41bf03291b1325251
-  graphPosition: {x: 700, y: 910}
+  graphPosition: {x: -11.000122, y: 945}
   runtimeIndex: -1
   leafType: 3
   methodName: MoveTo
@@ -55,6 +54,49 @@ MonoBehaviour:
     isArray: 0
     variableName: EngagePosition
     fieldTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
+--- !u!114 &-8125986886227552676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: HasChanged
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: 
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: ad279ad18b4103d4eb58ed690ec4fcdb
+  graphPosition: {x: -315, y: 350}
+  runtimeIndex: -1
+  leafType: 2
+  methodName: HasChanged
+  fieldEntries:
+  - fieldName: variable
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: AttackTarget
+    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
     stringValue: 
     isOrderConstant: 0
@@ -87,7 +129,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 6084eac197ba0744ab016a81542f5955
-  graphPosition: {x: -140, y: 900}
+  graphPosition: {x: 266.225, y: 1330}
   runtimeIndex: -1
   leafType: 3
   methodName: Enemy_FireSequence
@@ -183,6 +225,24 @@ MonoBehaviour:
     vector3Value: {x: 0, y: 0, z: 0}
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
+  - fieldName: trajectorystartingheight
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: AttackTarget
+    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 1
+    intValue: 100
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
   BlackBoardTypeID: 0
 --- !u!114 &-7483379735800373705
 MonoBehaviour:
@@ -202,7 +262,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: f23267b72e8d1ac4fbdbc8028068513f
-  graphPosition: {x: 0, y: 441}
+  graphPosition: {x: 0, y: 525}
   runtimeIndex: -1
   leafType: 3
   methodName: SetNavAgentSpeed
@@ -220,6 +280,48 @@ MonoBehaviour:
     isConfigConstant: 0
     intValue: 0
     floatValue: 1.5
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
+--- !u!114 &-6573170171879868167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7481cfd050e4cc741a9e04f011e99a2f, type: 3}
+  m_Name: Repeater
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.DecoratorNode
+  nodeName: 
+  children:
+  - {fileID: 7368346024535759899}
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: d084f5789acc3f44abefa15bdbf0ed25
+  graphPosition: {x: 231.00015, y: 945}
+  runtimeIndex: -1
+  methodName: Repeater
+  fieldEntries:
+  - fieldName: targetCount
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 2
+    floatValue: 0
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
@@ -244,7 +346,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 99af44e3e38596b4db5b24ee2cf621cc
-  graphPosition: {x: -210, y: 444}
+  graphPosition: {x: -210, y: 535.27014}
   runtimeIndex: -1
   leafType: 3
   methodName: Enemy_SelectDetectedTarget
@@ -301,13 +403,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.RootNode
   nodeName: RootNode
   children:
-  - {fileID: -3663001079886521446}
+  - {fileID: -3948267772782135650}
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
   guid: ef18d2eaf5122954d812db4982569c02
   graphPosition: {x: 0, y: 0}
   runtimeIndex: -1
+--- !u!114 &-3948267772782135650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
+  m_Name: SELECTOR
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
+  nodeName: 
+  children:
+  - {fileID: -8125986886227552676}
+  - {fileID: -3663001079886521446}
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 723fd4ac0f86c1f4692794f8032f393e
+  graphPosition: {x: 0, y: 157}
+  runtimeIndex: -1
+  compositeType: 1
+  methodName: SELECTOR
+  fieldEntries: []
+  abortType: 1
 --- !u!114 &-3663001079886521446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -330,7 +458,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 47eb67cc2366eb04aa9708e67bb43d35
-  graphPosition: {x: 0, y: 200}
+  graphPosition: {x: 0, y: 337.5314}
   runtimeIndex: -1
   compositeType: 1
   methodName: SEQUENCE
@@ -354,7 +482,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 1e1c63cdb75357840894186b13d63e76
-  graphPosition: {x: 245, y: 1120}
+  graphPosition: {x: 616.225, y: 1540}
   runtimeIndex: -1
   leafType: 3
   methodName: MoveTo
@@ -397,7 +525,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 308bc14ccc34c6a4c9439e4e3773238e
-  graphPosition: {x: 385, y: 910}
+  graphPosition: {x: -221.00006, y: 945}
   runtimeIndex: -1
   leafType: 3
   methodName: Enemy_FlankPosition
@@ -470,7 +598,7 @@ MonoBehaviour:
     configFieldName: 
     isConfigConstant: 0
     intValue: 0
-    floatValue: 10
+    floatValue: 15
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
@@ -488,7 +616,7 @@ MonoBehaviour:
     configFieldName: 
     isConfigConstant: 0
     intValue: 0
-    floatValue: 35
+    floatValue: 45
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
@@ -506,7 +634,7 @@ MonoBehaviour:
     configFieldName: 
     isConfigConstant: 0
     intValue: 0
-    floatValue: 60
+    floatValue: 70
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
@@ -524,14 +652,51 @@ MonoBehaviour:
     configFieldName: 
     isConfigConstant: 0
     intValue: 0
-    floatValue: 25
+    floatValue: 22
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   BlackBoardTypeID: 0
---- !u!114 &-93553955469177657
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2337152736176314f8b42c250d167c18, type: 3}
+  m_Name: AttackFlank
+  m_EditorClassIdentifier: BehaviourTree.Editor::BehaviourTree.Editor.AgentTreeAsset
+  root: {fileID: -4514022094149222607}
+  blackboardDefinition: {fileID: 4902958092739548978}
+  commanderBlackboardDefinition: {fileID: 0}
+  squadConnections: []
+  availableConfigs: []
+  nodesList:
+  - {fileID: -4514022094149222607}
+  - {fileID: -5752582874314478406}
+  - {fileID: 7368346024535759899}
+  - {fileID: -9183269817489576209}
+  - {fileID: 8644145442147616296}
+  - {fileID: -7603973016966518122}
+  - {fileID: -3663001079886521446}
+  - {fileID: -7483379735800373705}
+  - {fileID: 4582986831013943851}
+  - {fileID: 4262612639565300718}
+  - {fileID: -3533789639374244050}
+  - {fileID: 7716649726340458671}
+  - {fileID: -8454073383416273479}
+  - {fileID: -2651616593489612233}
+  - {fileID: -8125986886227552676}
+  - {fileID: -3948267772782135650}
+  - {fileID: 110035613275389656}
+  - {fileID: -6573170171879868167}
+  editorNotes: []
+--- !u!114 &110035613275389656
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -543,13 +708,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
   m_Name: Enemy_CheckRange
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: LeafNode
+  nodeName: 
   children: []
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
-  guid: b128805f29aadae4fbc4902a74bae2e4
-  graphPosition: {x: -560, y: 910}
+  guid: 9ab26b7198ffb664eb2f645b3a4ba1da
+  graphPosition: {x: 56.225014, y: 1330}
   runtimeIndex: -1
   leafType: 2
   methodName: Enemy_CheckRange
@@ -577,7 +742,7 @@ MonoBehaviour:
     isVariable: 0
     isToggleVariable: 0
     isArray: 0
-    variableName: HEALTH
+    variableName: 
     fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
     stringValue: 
     isOrderConstant: 0
@@ -610,41 +775,6 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   BlackBoardTypeID: 0
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2337152736176314f8b42c250d167c18, type: 3}
-  m_Name: AttackFlank
-  m_EditorClassIdentifier: BehaviourTree.Editor::BehaviourTree.Editor.AgentTreeAsset
-  root: {fileID: -4514022094149222607}
-  blackboardDefinition: {fileID: 4902958092739548978}
-  commanderBlackboardDefinition: {fileID: 0}
-  squadConnections: []
-  availableConfigs: []
-  nodesList:
-  - {fileID: -4514022094149222607}
-  - {fileID: -5752582874314478406}
-  - {fileID: 7368346024535759899}
-  - {fileID: -9183269817489576209}
-  - {fileID: -93553955469177657}
-  - {fileID: 8644145442147616296}
-  - {fileID: -7603973016966518122}
-  - {fileID: -3663001079886521446}
-  - {fileID: -7483379735800373705}
-  - {fileID: 4582986831013943851}
-  - {fileID: 4262612639565300718}
-  - {fileID: -3533789639374244050}
-  - {fileID: 7716649726340458671}
-  - {fileID: -8454073383416273479}
-  - {fileID: -2651616593489612233}
-  - {fileID: 5892176820340511539}
-  editorNotes: []
 --- !u!114 &4262612639565300718
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -665,7 +795,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 6c026f77e9c4f1b44b3412d51e06deca
-  graphPosition: {x: 85.99993, y: 910}
+  graphPosition: {x: 476.22498, y: 1330}
   runtimeIndex: -1
   compositeType: 1
   methodName: SEQUENCE
@@ -689,7 +819,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 14245f193efa00b44b25a135ba35cf08
-  graphPosition: {x: -70, y: 1120}
+  graphPosition: {x: 301.22507, y: 1540}
   runtimeIndex: -1
   leafType: 3
   methodName: Enemy_FlankPosition
@@ -863,49 +993,6 @@ MonoBehaviour:
         isSystemVariable: 0
         singleValue: {x: 0, y: 0, z: 0}
         arrayValues: []
---- !u!114 &5892176820340511539
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: Enemy_HasLineOfSight
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: 
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: aea22dc020e2e4d4a8b31666e6387ea5
-  graphPosition: {x: -372, y: 910}
-  runtimeIndex: -1
-  leafType: 2
-  methodName: Enemy_HasLineOfSight
-  fieldEntries:
-  - fieldName: target
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: AttackTarget
-    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  BlackBoardTypeID: 0
 --- !u!114 &7368346024535759899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -920,20 +1007,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   nodeName: CompositeNode
   children:
-  - {fileID: -93553955469177657}
-  - {fileID: 5892176820340511539}
+  - {fileID: 110035613275389656}
   - {fileID: -7603973016966518122}
   - {fileID: 4262612639565300718}
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
   guid: 37a07f5ac6f2e1c40acf7a9d52c0b014
-  graphPosition: {x: -151, y: 690}
+  graphPosition: {x: 231.22508, y: 1101.1201}
   runtimeIndex: -1
   compositeType: 1
   methodName: SEQUENCE
   fieldEntries: []
-  abortType: 2
+  abortType: 0
 --- !u!114 &7716649726340458671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -950,11 +1036,12 @@ MonoBehaviour:
   children:
   - {fileID: -2651616593489612233}
   - {fileID: -8454073383416273479}
+  - {fileID: -6573170171879868167}
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
   guid: 1a8b60e4cee5ec44eab822c70290702e
-  graphPosition: {x: 538.7425, y: 700}
+  graphPosition: {x: -46.000122, y: 735}
   runtimeIndex: -1
   compositeType: 1
   methodName: SEQUENCE
@@ -978,7 +1065,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: e7b55437a667cf34b8cdcd60a2376a08
-  graphPosition: {x: -442, y: 444}
+  graphPosition: {x: -420, y: 525}
   runtimeIndex: -1
   leafType: 2
   methodName: Enemy_Detected

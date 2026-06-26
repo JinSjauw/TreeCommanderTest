@@ -14,6 +14,7 @@ public class TrajectorySystem : MonoBehaviour
 
     private float curveHeight;
     private Vector3 trajectoryTargetPosition;
+    private Vector3 actualTargetPosition;
     private bool hasTrajectory;
     private bool hasAimTarget;
     private bool hasFailed;
@@ -47,12 +48,13 @@ public class TrajectorySystem : MonoBehaviour
         validator = new TrajectoryValidator(directFire.segmentCount, ObstructionMask, targetMask, fireCurve.GetPosition());
     }
 
-    public void SetTrajectoryTarget(Vector3 position, bool losFlag = false)
+    public void SetTrajectoryTarget(Vector3 randomizedPosition, Vector3 actualTarget, bool losFlag = false)
     {
         if (fireTarget != null)
-            fireTarget.position = position;
+            fireTarget.position = randomizedPosition;
 
-        trajectoryTargetPosition = position;
+        trajectoryTargetPosition = randomizedPosition;
+        actualTargetPosition = actualTarget;
         hasAimTarget = true;
         hasLineOfSight = losFlag;
     }
@@ -88,7 +90,9 @@ public class TrajectorySystem : MonoBehaviour
         {
             controlPosition.y = curveHeight;
 
-            bool isValid = validator.Validate(startPosition, trajectoryTargetPosition, controlPosition, hasLineOfSight, currentSettings.segmentCount);
+            bool isValid = hasLineOfSight
+                ? validator.ValidateDirect(startPosition, trajectoryTargetPosition, controlPosition, actualTargetPosition, currentSettings.segmentCount)
+                : validator.ValidateIndirect(startPosition, trajectoryTargetPosition, controlPosition, currentSettings.segmentCount);
 
             if (isValid)
             {

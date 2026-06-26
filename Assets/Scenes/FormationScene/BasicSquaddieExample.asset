@@ -163,8 +163,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: e893658156ed69145afc121bf53dc087
-  graphPosition: {x: 245, y: 1435}
-  runtimeIndex: 45
+  graphPosition: {x: 385, y: 1435}
+  runtimeIndex: 47
   subTreeAsset: {fileID: 11400000, guid: 3a331599925145c4c827a504dccac4e9, type: 2}
   bindings:
   - subtreeVariableName: AttackTarget
@@ -219,7 +219,7 @@ MonoBehaviour:
   comment: 
   guid: dced761da8a7a1a47970c104c5e97564
   graphPosition: {x: 1138, y: 805}
-  runtimeIndex: 68
+  runtimeIndex: 70
   leafType: 3
   methodName: ReportStatus
   fieldEntries:
@@ -279,7 +279,7 @@ MonoBehaviour:
   comment: 
   guid: 5e375594c54d415459490e586bc3c311
   graphPosition: {x: 508, y: 805}
-  runtimeIndex: 65
+  runtimeIndex: 67
   leafType: 3
   methodName: SetNavAgentSpeed
   fieldEntries:
@@ -321,7 +321,7 @@ MonoBehaviour:
   comment: 
   guid: 3f285aa79ec833d4f862272b6912837f
   graphPosition: {x: 315, y: 805}
-  runtimeIndex: 64
+  runtimeIndex: 66
   leafType: 2
   methodName: CheckOrder
   fieldEntries:
@@ -381,7 +381,7 @@ MonoBehaviour:
   comment: 
   guid: 0869351bb91a3944ab7dcf8f81ea51ca
   graphPosition: {x: -315, y: 805}
-  runtimeIndex: 62
+  runtimeIndex: 64
   leafType: 2
   methodName: Enemy_Detected
   fieldEntries:
@@ -502,7 +502,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: ec7e05509535c3b468f099f738697962
-  graphPosition: {x: 175, y: 1260}
+  graphPosition: {x: 315, y: 1260}
   runtimeIndex: 8
   compositeType: 1
   methodName: SEQUENCE
@@ -639,7 +639,7 @@ MonoBehaviour:
   comment: 
   guid: 879edcc024ca1c74b8a4dcecbf6a2d83
   graphPosition: {x: -859.3755, y: 1400}
-  runtimeIndex: 27
+  runtimeIndex: 29
   subTreeAsset: {fileID: 11400000, guid: 8cc0023090cd4814987c9138c41525bf, type: 2}
   bindings:
   - subtreeVariableName: AttackTarget
@@ -665,7 +665,7 @@ MonoBehaviour:
   comment: 
   guid: 57f41fff9432e2b48b2f24aeedbb767c
   graphPosition: {x: 1699.8528, y: 805}
-  runtimeIndex: 70
+  runtimeIndex: 72
   leafType: 3
   methodName: ReportStatus
   fieldEntries:
@@ -725,7 +725,7 @@ MonoBehaviour:
   comment: 
   guid: 50554a4aa17186244ad73501ef0cd4f1
   graphPosition: {x: 1489.8528, y: 805}
-  runtimeIndex: 69
+  runtimeIndex: 71
   leafType: 3
   methodName: ClearVariable
   fieldEntries:
@@ -768,7 +768,7 @@ MonoBehaviour:
   comment: 
   guid: 4afc659c82ac62f4da43b1ac1e977c24
   graphPosition: {x: -140, y: 805}
-  runtimeIndex: 63
+  runtimeIndex: 65
   leafType: 3
   methodName: Enemy_SelectDetectedTarget
   fieldEntries:
@@ -829,7 +829,7 @@ MonoBehaviour:
   comment: 
   guid: 20004605264c7404d8ad94e4932a2165
   graphPosition: {x: 928, y: 805}
-  runtimeIndex: 67
+  runtimeIndex: 69
   leafType: 3
   methodName: MoveTo
   fieldEntries:
@@ -897,7 +897,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: e074a343d7159964ca01ee20e063aa52
-  graphPosition: {x: -2030, y: 1422}
+  graphPosition: {x: -2014, y: 1435}
   runtimeIndex: 10
   subTreeAsset: {fileID: 11400000, guid: ee22691b830f1204f9d50d86c5274c6d, type: 2}
   bindings:
@@ -1010,7 +1010,7 @@ MonoBehaviour:
   comment: 
   guid: aec5b4b5769d35841b5638fbd4285255
   graphPosition: {x: 718, y: 805}
-  runtimeIndex: 66
+  runtimeIndex: 68
   leafType: 3
   methodName: ReportStatus
   fieldEntries:
@@ -1095,8 +1095,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: e99fd9be9e88b2d42b55751c649a94af
-  graphPosition: {x: 70, y: 1435}
-  runtimeIndex: 44
+  graphPosition: {x: 210, y: 1435}
+  runtimeIndex: 46
   leafType: 2
   methodName: CheckOrder
   fieldEntries:
@@ -1185,7 +1185,7 @@ MonoBehaviour:
   comment: 
   guid: 427bf9991317feb4f85cff46709e5dfa
   graphPosition: {x: -1034.3756, y: 1400}
-  runtimeIndex: 26
+  runtimeIndex: 28
   leafType: 2
   methodName: CheckOrder
   fieldEntries:

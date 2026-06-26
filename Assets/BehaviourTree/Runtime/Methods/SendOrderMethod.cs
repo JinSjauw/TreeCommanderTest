@@ -22,6 +22,7 @@ namespace BehaviourTree.Runtime.Methods
         [SharedVar(isToggleVariable: true, IsOrderDropdown = true)]
         public int orderValue;
 
+        //Debug
         private OrderRegistry orderRegistry;
 
         protected override void OnInitialize()
@@ -32,7 +33,7 @@ namespace BehaviourTree.Runtime.Methods
         public override NodeState Execute(TickContext ctx)
         {
             ordersSlot = orderValue;
-            Debug.Log($"SendOrderMethod: sentOrder: {orderRegistry.orderNames[orderValue]}");
+            //Debug.Log($"SendOrderMethod: sentOrder: {orderRegistry.orderNames[orderValue]}");
 
             return NodeState.SUCCESS;
         }

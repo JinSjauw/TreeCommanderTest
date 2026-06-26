@@ -69,9 +69,9 @@ public class GunHandling : MonoBehaviour
         TickFiringCooldown(Time.deltaTime);
     }
 
-    public void SetFiringCooldown(float cooldown)
+    public void SetReload(float reload)
     {
-        reloadDuration = cooldown;
+        reloadDuration = reload;
     }
 
     public void SetFireDelay(float delay)
@@ -106,7 +106,7 @@ public class GunHandling : MonoBehaviour
             randomPosition = hit.point;
         }
 
-        trajectory.SetTrajectoryTarget(randomPosition, directLineOfSight);
+        trajectory.SetTrajectoryTarget(randomPosition, attackTarget.position, directLineOfSight);
         return true;
     }
 

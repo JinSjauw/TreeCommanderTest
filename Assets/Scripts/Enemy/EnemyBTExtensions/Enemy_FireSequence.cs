@@ -131,7 +131,8 @@ namespace BehaviourTree.Runtime.Methods
                 // Push config values to GunHandling (only once per fire cycle)
                 cachedGunHandling.SetSpread(spread);
                 cachedGunHandling.SetDamage(projectileDamage);
-                cachedGunHandling.SetFiringCooldown(reloadDuration);
+                cachedGunHandling.SetReload(reloadDuration);
+                cachedGunHandling.SetFireDelay(fireDelay);
 
                 cachedGunHandling.SelectAimTarget(target);
                 phase = FirePhase.Aiming;

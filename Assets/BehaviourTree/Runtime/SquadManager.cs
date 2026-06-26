@@ -68,6 +68,7 @@ namespace BehaviourTree.Runtime
         private int agentMoveSpeedSlot = -1;
         private int patrolpointsParentSlot = -1;
         private int agentCountSlot = -1;
+        private int leaderTransformSlot = -1;
 
         // ── Public accessors ────────────────────────────────────────────
 
@@ -281,6 +282,7 @@ namespace BehaviourTree.Runtime
             
             WritePatrolPoints();
             WriteAgentCount();
+            WriteLeaderTransform();
 
             // 4 — Register commander with squad
             commanderRunner.RegisterSquad(squadInstance);
@@ -305,6 +307,9 @@ namespace BehaviourTree.Runtime
 
             hasInitialized = true;
         }
+
+
+
 
         private void SpawnAgent(int agentIndex)
         {
@@ -437,7 +442,8 @@ namespace BehaviourTree.Runtime
             squadMovePosSlot = ComputeSlotForVariable(commanderDef, "SquadMovePosition");
             patrolpointsParentSlot = ComputeSlotForVariable(commanderDef, "PatrolPoints");
             agentCountSlot = ComputeSlotForVariable(commanderDef, "AgentCount");
-            Debug.Log($"[SquadManager.CacheSquadSlots] agentCountSlot={agentCountSlot}");
+            leaderTransformSlot = ComputeSlotForVariable(commanderDef, "LeaderTransform");
+            Debug.Log($"[SquadManager.CacheSquadSlots] agentCountSlot={agentCountSlot} | leaderTransformSlot={leaderTransformSlot}");
         }
 
         private static int ComputeSlotForVariable(BlackboardDefinition def, string varName)
@@ -467,6 +473,7 @@ namespace BehaviourTree.Runtime
 
             // Write leader position to SquadMovePosition on init
             WriteSquadMovePosition();
+            WriteLeaderTransform();
         }
 
         /// <summary>Writes -1 (no leader) to the LeaderIndex slot.</summary>
@@ -502,6 +509,17 @@ namespace BehaviourTree.Runtime
             
             commanderRunner.BlackBoard.SetBoxedRaw(agentCountSlot, agentCount);
             Debug.Log($"[SquadManager.WriteAgentCount] agentCount={agentCount}");
+        }
+
+        private void WriteLeaderTransform()
+        {
+            if (currentLeaderIndex < 0)
+                return;
+
+                       if (leaderTransformSlot < 0 || commanderRunner?.BlackBoard == null) return;
+            
+            commanderRunner.BlackBoard.SetBoxedRaw(leaderTransformSlot, managedAgents[currentLeaderIndex].transform);
+            Debug.Log($"[SquadManager.WriteLeaderTransform]"); 
         }
 
         /// <summary>

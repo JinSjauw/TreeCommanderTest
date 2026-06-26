@@ -927,6 +927,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   valueOverrides: []
   overriddenReferenceSlots: 
 --- !u!114 &964266579338726739
@@ -2117,6 +2121,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2332480527262446838}
+  - component: {fileID: 4357009321727849084}
   m_Layer: 0
   m_Name: BarrelNeutralTargets
   m_TagString: Untagged
@@ -2141,6 +2146,24 @@ Transform:
   - {fileID: 6825372677260049093}
   m_Father: {fileID: 6372239304794428817}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4357009321727849084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4198321844556231410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a5a78bdd3e58634090ba58f870b62ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  obstacleMasks:
+    serializedVersion: 2
+    m_Bits: 64
+  raycastDistance: 5
+  heightOffset: 0.3
+  standardHeightOffset: 0.45
 --- !u!1 &4337129026702152758
 GameObject:
   m_ObjectHideFlags: 0

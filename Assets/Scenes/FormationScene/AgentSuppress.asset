@@ -367,7 +367,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 76e69f8ba41ed2c4794599fb048090c2
-  graphPosition: {x: -420, y: 1085}
+  graphPosition: {x: -350, y: 1050}
   runtimeIndex: -1
   leafType: 3
   methodName: Enemy_FireSequence
@@ -403,7 +403,7 @@ MonoBehaviour:
     configFieldName: 
     isConfigConstant: 0
     intValue: 0
-    floatValue: 0.1
+    floatValue: 0.3
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
@@ -591,7 +591,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 62600707c505e9545be2367f3166173a
-  graphPosition: {x: 245, y: 1085}
+  graphPosition: {x: 163.99995, y: 1085}
   runtimeIndex: -1
   leafType: 3
   methodName: MoveTo
