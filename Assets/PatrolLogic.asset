@@ -40,7 +40,7 @@ MonoBehaviour:
   comment: 
   guid: 06b38b9d33183334bb3e7858b7689dae
   graphPosition: {x: 186.41846, y: 410}
-  runtimeIndex: -1
+  runtimeIndex: 3
   leafType: 3
   methodName: WaitSeconds
   fieldEntries:
@@ -146,7 +146,7 @@ MonoBehaviour:
   comment: 
   guid: 6991ae4adf76bb5489eaae1b82d86670
   graphPosition: {x: -198.58154, y: 410}
-  runtimeIndex: -1
+  runtimeIndex: 1
   leafType: 3
   methodName: ExtractPosition
   fieldEntries:
@@ -226,7 +226,7 @@ MonoBehaviour:
   comment: 
   guid: c6e56457eeba0f44aabb12496253d45a
   graphPosition: {x: 0, y: 410}
-  runtimeIndex: -1
+  runtimeIndex: 2
   leafType: 3
   methodName: MoveTo
   fieldEntries:
@@ -272,7 +272,7 @@ MonoBehaviour:
   comment: 
   guid: c808374e43d58484685571dd4a05b16e
   graphPosition: {x: 0, y: 200}
-  runtimeIndex: -1
+  runtimeIndex: 0
   compositeType: 1
   methodName: SEQUENCE
   fieldEntries: []

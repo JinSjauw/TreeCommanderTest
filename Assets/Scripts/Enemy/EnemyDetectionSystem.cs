@@ -6,17 +6,17 @@ using UnityEngine;
 public class EnemyDetectionSystem : MonoBehaviour
 {
     [Header("Detection Settings")]
-    [SerializeField] private float lastDetectionRadius = 30f;
-    [SerializeField] private float firingRadius = 15f;
+    [SerializeField] private float detectionRadius = 30f;
+    [SerializeField] private float fireRadius = 15f;
     [SerializeField] private Transform eyeTransform;
 
     private Collider[] detectBuffer = new Collider[32];
     private LayerMask groundLayer;
+    private LayerMask targetLayers;
 
-    public LayerMask TargetLayers { get; set; }
     public List<Transform> DetectedTargets { get; private set; } = new List<Transform>();
-    public float DetectionRadius => lastDetectionRadius;
-    public float FiringRadius => firingRadius;
+    public float DetectionRadius => detectionRadius;
+    public float FiringRadius => fireRadius;
 
     private void Awake()
     {
@@ -24,25 +24,26 @@ public class EnemyDetectionSystem : MonoBehaviour
     }
 
     /// <summary>Called by EnemyInitializer to push config values.</summary>
-    public void SetDetectionConfig(float detectRadius, float fireRadius)
+    public void SetDetectionConfig(float detectionRadius, float fireRadius, LayerMask targetLayers)
     {
-        lastDetectionRadius = detectRadius;
-        firingRadius = fireRadius;
+        this.detectionRadius = detectionRadius;
+        this.fireRadius = fireRadius;
+        this.targetLayers = targetLayers;
     }
 
     public bool DetectTargets()
     {
-        return DetectTargets(lastDetectionRadius);
+        return DetectTargets(detectionRadius);
     }
 
     public bool DetectTargets(float radius)
     {
-        lastDetectionRadius = radius;
+        detectionRadius = radius;
 
         DetectedTargets.Clear();
 
         int hitCount = Physics.OverlapSphereNonAlloc(
-            transform.position, radius, detectBuffer, TargetLayers);
+            transform.position, radius, detectBuffer, targetLayers);
 
         if (hitCount == 0)
         {
@@ -152,12 +153,12 @@ public class EnemyDetectionSystem : MonoBehaviour
 
     public bool TargetInFiringRange(Transform target)
     {
-        return IsTargetInRange(target, firingRadius);
+        return IsTargetInRange(target, fireRadius);
     }
 
     public bool TargetInDetectionRange(Transform target)
     {
-        return IsTargetInRange(target, lastDetectionRadius);
+        return IsTargetInRange(target, detectionRadius);
     }
 
     public bool HasLineOfSightToTarget(Transform target)

@@ -106,6 +106,7 @@ namespace BehaviourTree.Runtime.Methods
         private static int GetCount(object collection)
         {
             if (collection == null) return 0;
+            if (collection is UnityEngine.Object uObj && uObj == null) return 0;
 
             return collection switch
             {
@@ -120,6 +121,8 @@ namespace BehaviourTree.Runtime.Methods
 
         private static Vector3 GetPositionAt(object collection, int index)
         {
+            if (collection is UnityEngine.Object uObj && uObj == null) return Vector3.zero;
+
             return collection switch
             {
                 Transform t          => index < t.childCount ? t.GetChild(index).position : Vector3.zero,

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DeathHandler : MonoBehaviour
@@ -10,7 +11,50 @@ public class DeathHandler : MonoBehaviour
     [SerializeField] private Material materialToApply;
     [SerializeField] private Transform corpsePrefab;
 
+    [SerializeField] private float transformToReturnTime = 1f;
+    private bool returnTimerActive = false;
+    private float returnTimer = 0f;
+
     private ObjectPool pool;
+
+    private MeshRenderer[] meshRenderers;
+
+    private void Awake()
+    {
+        meshRenderers = GetComponentsInChildren<MeshRenderer>();
+    }
+
+    private void OnEnable()
+    {
+        returnTimerActive = false;
+        returnTimer = 0f;
+
+        EnableMeshRenderers(true);
+    }
+
+    private void Update()
+    {
+        if (returnTimerActive)
+        {
+            returnTimer += Time.deltaTime;
+
+            if (returnTimer >= transformToReturnTime)
+            {
+                returnTimerActive = false;
+                returnTimer = 0f;
+
+                pool.ReturnGameObject(transformToRemove.gameObject);
+            }
+        }
+    }
+
+    private void EnableMeshRenderers(bool state)
+    {
+        foreach (MeshRenderer meshRenderer in meshRenderers)
+        {
+            meshRenderer.enabled = state;
+        }
+    }
 
     private void CloneMesh(Transform root, Transform clone) 
     {
@@ -59,6 +103,9 @@ public class DeathHandler : MonoBehaviour
 
         CloneMesh(meshRootTransform, corpseTransform);
 
-        pool.ReturnGameObject(transformToRemove.gameObject);
+        //Start return timer
+        //pool.ReturnGameObject(transformToRemove.gameObject);
+        EnableMeshRenderers(false);
+        returnTimerActive = true;
     }
 }

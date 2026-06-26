@@ -40,9 +40,6 @@ public class EnemyController : MonoBehaviour
     {
         if (!masksConfigured)
         {
-            if (Detection != null)
-                Detection.TargetLayers = targetLayers;
-
             if (GunHandling != null)
             {
                 GunHandling.ObstructionLayers = obstacleLayers;
@@ -67,9 +64,6 @@ public class EnemyController : MonoBehaviour
         this.targetLayers = targetLayers;
         this.obstacleLayers = obstacleLayers;
         masksConfigured = true;
-
-        if (Detection != null)
-            Detection.TargetLayers = targetLayers;
 
         if (GunHandling != null)
         {

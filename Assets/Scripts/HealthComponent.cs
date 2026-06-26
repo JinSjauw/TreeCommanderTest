@@ -10,11 +10,9 @@ public class HealthComponent : MonoBehaviour
     //[SerializeField] private float percentageHealth;
 
     private bool isPlayer;
-    private bool hasDied = false;
+    public bool hasDied = false;
     private EnemyController enemyController;
     private DeathHandler deathHandler;
-
-    public bool HasDied => hasDied;
 
     private void Awake()
     {

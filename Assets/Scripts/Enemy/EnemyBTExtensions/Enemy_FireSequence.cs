@@ -56,10 +56,18 @@ namespace BehaviourTree.Runtime.Methods
             },
             new DynamicParamDescriptor
             {
-                titleLabel = "Trajectory Starting Height",
-                label = "TrajectoryStartingHeight",
-                kind = DynamicParamKind.ScriptableObjectConstant,
+                titleLabel = "Trajectory Always Indirect",
+                label = "Value",
+                kind = DynamicParamKind.Constant,
                 index = 5,
+                allowedTypes = new[] { typeof(bool) }
+            },
+            new DynamicParamDescriptor
+            {
+                titleLabel = "Trajectory Starting Height",
+                label = "Start Height",
+                kind = DynamicParamKind.ScriptableObjectConstant,
+                index = 6,
                 allowedTypes = new[] { typeof(float) }
             },
         };
@@ -79,6 +87,7 @@ namespace BehaviourTree.Runtime.Methods
         private GunHandling cachedGunHandling;
         private Transform target;
         private float fireDelayTimer;
+        private bool trajectoryAlwaysIndirect = false;
         private float trajectoryStartingHeight = -1;
 
         public override void DeserializeParameters(
@@ -108,6 +117,10 @@ namespace BehaviourTree.Runtime.Methods
             if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
                 projectileDamage = fields[fieldIndex++].GetInt();
 
+            // Trajectory Always Indirect (Variable → bool)
+            if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
+                trajectoryAlwaysIndirect = fields[fieldIndex++].GetBool();
+
             // Trajectory Starting Height (ScriptableObjectConstant → float)
             if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
                 trajectoryStartingHeight = fields[fieldIndex].GetFloat();
@@ -134,7 +147,7 @@ namespace BehaviourTree.Runtime.Methods
                 cachedGunHandling.SetReload(reloadDuration);
                 cachedGunHandling.SetFireDelay(fireDelay);
 
-                cachedGunHandling.SelectAimTarget(target);
+                cachedGunHandling.SelectAimTarget(target, trajectoryAlwaysIndirect);
                 phase = FirePhase.Aiming;
                 cachedGunHandling.SetAiming(true);
                 initialized = true;

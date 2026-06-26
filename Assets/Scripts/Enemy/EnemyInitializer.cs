@@ -1,3 +1,4 @@
+using BehaviourTree.Runtime;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -16,7 +17,7 @@ public class EnemyInitializer : MonoBehaviour
         if (config == null)
             return;
 
-        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        NavMeshAgent agent = GetComponent<NavMeshAgent>() ?? GetComponentInChildren<NavMeshAgent>();
         if (agent != null)
         {
             agent.speed = config.moveSpeed;
@@ -24,15 +25,18 @@ public class EnemyInitializer : MonoBehaviour
             // avoidancePriority is set by EnemyManager after spawn — do not override here
         }
 
-        EnemyController controller = GetComponent<EnemyController>();
+        EnemyController controller = GetComponent<EnemyController>() ?? GetComponentInChildren<EnemyController>();
         controller?.SetMovementConfig(config.maxConeHalfAngle, config.minPathDistance,
             config.maxPathDistance, config.maintainDistance);
 
-        EnemyDetectionSystem detection = GetComponent<EnemyDetectionSystem>();
-        detection?.SetDetectionConfig(config.detectionRadius, config.firingRadius);
+        EnemyDetectionSystem detection = GetComponent<EnemyDetectionSystem>() ?? GetComponentInChildren<EnemyDetectionSystem>();
+        detection?.SetDetectionConfig(config.detectionRadius, config.firingRadius, config.targetLayers);
 
-        GunHandling gunHandling = GetComponent<GunHandling>();
+        GunHandling gunHandling = GetComponent<GunHandling>() ?? GetComponentInChildren<GunHandling>();
         gunHandling?.SetFireConfig(config.projectileDamage, config.roundsPerMinute,
             config.randomTargetRadius);
+
+        TrajectorySystem trajectory = GetComponent<TrajectorySystem>() ?? GetComponentInChildren<TrajectorySystem>();
+        trajectory?.UpdateMasks(config.obstacleLayers, config.targetLayers);
     }
 }

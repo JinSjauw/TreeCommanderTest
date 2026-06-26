@@ -84,7 +84,7 @@ public class GunHandling : MonoBehaviour
         turretController.SetAiming(aiming);
     }
 
-    public bool SelectAimTarget(Transform attackTarget)
+    public bool SelectAimTarget(Transform attackTarget, bool trajectoryAlwaysIndirect = false)
     {
         if (attackTarget == null) return false;
         
@@ -94,6 +94,7 @@ public class GunHandling : MonoBehaviour
         Vector3 overshootDirection = attackTarget.position - originPosition;
 
         bool directLineOfSight = !Physics.Linecast( originPosition, attackTarget.position, ObstructionLayers );
+        if (trajectoryAlwaysIndirect) directLineOfSight = false;
 
         float overshootFactor = directLineOfSight ? 50f : 1.5f; //placeholder numbers
         
@@ -101,7 +102,7 @@ public class GunHandling : MonoBehaviour
             + (overshootDirection.normalized * overshootFactor)
             + randomFactor;
 
-        if (!directLineOfSight && Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 100f, ObstructionLayers))
+        if (!directLineOfSight && Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 1000f, ObstructionLayers))
         {
             randomPosition = hit.point;
         }

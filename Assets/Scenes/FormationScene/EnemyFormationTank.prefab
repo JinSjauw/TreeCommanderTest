@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6028529690283563001}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8545527158048715372}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TankMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -72,7 +72,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6675075726418459906}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 627020355567442042}
   - component: {fileID: 9118434147568707597}
   - component: {fileID: 2721774587510356443}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LowerLeg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5540428491470758969}
   - component: {fileID: 7709270416171840049}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LegTargets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -249,7 +249,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6278017634309318408}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Armature.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,7 +281,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6501482996662762839}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TrajectoryHelpers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -316,7 +316,7 @@ GameObject:
   - component: {fileID: 4357360061811864345}
   - component: {fileID: 6648914607675641360}
   - component: {fileID: 5436148308606696345}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.010
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -404,7 +404,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2362405122772483907}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.RL_hint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -435,7 +435,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8948482056334297603}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.FL_target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -468,7 +468,7 @@ GameObject:
   - component: {fileID: 403752550826425038}
   - component: {fileID: 6826932190299867968}
   - component: {fileID: 6528561416662298963}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -558,7 +558,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1222028017388677773}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TargetPoint
   m_TagString: Target
   m_Icon: {fileID: 0}
@@ -589,7 +589,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7533423630051365342}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -623,7 +623,7 @@ GameObject:
   - component: {fileID: 12645582753474899}
   - component: {fileID: 2171859374130542463}
   - component: {fileID: 7351042383551114939}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: UpperLeg.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -711,7 +711,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3735297586686937045}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rigs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -748,7 +748,7 @@ GameObject:
   - component: {fileID: 7453762697561352093}
   - component: {fileID: 8967174342206297916}
   - component: {fileID: 3857251380575200211}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -840,7 +840,7 @@ GameObject:
   - component: {fileID: 4096845100476099490}
   - component: {fileID: 2802647565752943484}
   - component: {fileID: 964266579338726739}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: EnemyFormationTank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -906,7 +906,16 @@ MonoBehaviour:
   blackBoard: {fileID: 2802647565752943484}
   runtimeAsset: {fileID: 0}
   authoringAsset: {fileID: 11400000, guid: 4a6bf587047dff84ea2f8e3304bcf0ee, type: 2}
-  trackedBindingGroups: []
+  trackedBindingGroups:
+  - targetTree: {fileID: 11400000, guid: 4a6bf587047dff84ea2f8e3304bcf0ee, type: 2}
+    targetTreeGuid: 4a6bf587047dff84ea2f8e3304bcf0ee
+    bindings:
+    - targetComponent: {fileID: 7194435495231449439}
+      memberName: hasDied
+      blackboardVariableName: AgentHasDied
+      isProperty: 0
+      memberTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+        PublicKeyToken=b77a5c561934e089
   commander: {fileID: 0}
   squadInstance: {fileID: 0}
 --- !u!114 &2802647565752943484
@@ -922,8 +931,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackBoard
   serializedReferences:
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -957,7 +964,7 @@ GameObject:
   - component: {fileID: 7979646980502901694}
   - component: {fileID: 910198792769305500}
   - component: {fileID: 4831585788423270224}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: UpperLegPlate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1045,7 +1052,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 715568883150504583}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Armature.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1077,7 +1084,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4288723270571185311}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: GunAssembly
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1112,7 +1119,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5951485008899804200}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1147,7 +1154,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2351722523170256598}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: MeshBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1181,7 +1188,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5077174534768165884}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1217,7 +1224,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6065020513777369882}
   - component: {fileID: 8255474424955815146}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Leg.RR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1310,7 +1317,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2794300179289257785}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: AttachPointUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1341,7 +1348,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6155896694067053498}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1378,7 +1385,7 @@ GameObject:
   - component: {fileID: 8766455886555832396}
   - component: {fileID: 5161498231780315972}
   - component: {fileID: 4192648312866838756}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TurretArmorLights
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1466,7 +1473,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3738471226210446295}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.RR_target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1497,7 +1504,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2742947885212391650}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.002_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1528,7 +1535,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5661580189658312603}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BodySkeleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1562,7 +1569,7 @@ GameObject:
   - component: {fileID: 8560554720215854986}
   - component: {fileID: 6173932514849841326}
   - component: {fileID: 5877415387891977632}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LowerLegPlate.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1652,7 +1659,7 @@ GameObject:
   - component: {fileID: 5685477057442198099}
   - component: {fileID: 8681755859655280704}
   - component: {fileID: 2382264430414681528}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: UpperLegPlate.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1741,7 +1748,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6248564314304502554}
   - component: {fileID: 7822171549540847375}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Leg.FL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1834,7 +1841,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2763553375406263920}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1869,7 +1876,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8894949336284652629}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1907,7 +1914,7 @@ GameObject:
   - component: {fileID: 8910662883384027267}
   - component: {fileID: 7045894723338806382}
   - component: {fileID: 4519117128872091312}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FireControl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1988,8 +1995,8 @@ MonoBehaviour:
   barrelTarget: {fileID: 282026864679466370}
   neutralTarget: {fileID: 1367267566684937718}
   neutralBarrelTarget: {fileID: 6825372677260049093}
-  turretTraverseSpeed: 22
-  barrelTraverseSpeed: 10
+  turretTraverseSpeed: 34
+  barrelTraverseSpeed: 15
   angleThreshold: 0.01
 --- !u!1 &4005551998037483929
 GameObject:
@@ -2002,7 +2009,7 @@ GameObject:
   - component: {fileID: 3926222814309828098}
   - component: {fileID: 8705441793582115353}
   - component: {fileID: 4905788160230939136}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LegFoot.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2090,7 +2097,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8603361569049313811}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.002_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2122,7 +2129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2332480527262446838}
   - component: {fileID: 4357009321727849084}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BarrelNeutralTargets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2174,7 +2181,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9186958531283457252}
   - component: {fileID: 3995775569032205769}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Pathfinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2230,7 +2237,7 @@ GameObject:
   - component: {fileID: 6181495318129440829}
   - component: {fileID: 2654115415574485898}
   - component: {fileID: 1713926475607612504}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.008
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2320,7 +2327,7 @@ GameObject:
   - component: {fileID: 2601067530999937478}
   - component: {fileID: 5462786592897255361}
   - component: {fileID: 8312313465563447594}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.012
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2409,7 +2416,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7523347268361032016}
   - component: {fileID: 271026841733898659}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Leg.RL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2504,7 +2511,7 @@ GameObject:
   - component: {fileID: 4425667183819344678}
   - component: {fileID: 4086894981102010474}
   - component: {fileID: 1936559473311161365}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: UpperLegPlate.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2592,7 +2599,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1939086342817326882}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.002_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2625,7 +2632,7 @@ GameObject:
   - component: {fileID: 7316549294785207578}
   - component: {fileID: 66286111881715959}
   - component: {fileID: 3582101390543410013}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LegFoot.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2715,7 +2722,7 @@ GameObject:
   - component: {fileID: 8796763567384827507}
   - component: {fileID: 1058161630551608937}
   - component: {fileID: 6789666772019550670}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: UpperLeg.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2803,7 +2810,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8808079236638765630}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2837,7 +2844,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4335472857867411865}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.RR_hint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2870,7 +2877,7 @@ GameObject:
   - component: {fileID: 1036519331866968456}
   - component: {fileID: 6539178213069171111}
   - component: {fileID: 5561712041554357838}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.005
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2960,7 +2967,7 @@ GameObject:
   - component: {fileID: 6243987137043917326}
   - component: {fileID: 6850805006192626167}
   - component: {fileID: 5590368348026054082}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.009
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3049,7 +3056,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1223542297624387324}
   - component: {fileID: 7977950827676388924}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SubSystems
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3097,7 +3104,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3421379250590832479}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3134,7 +3141,7 @@ GameObject:
   - component: {fileID: 4361236569403489638}
   - component: {fileID: 1804510260510612028}
   - component: {fileID: 7065949942194100963}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LowerLeg.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3222,7 +3229,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3718384056865754555}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.FL_hint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3255,7 +3262,7 @@ GameObject:
   - component: {fileID: 8125701079638074364}
   - component: {fileID: 4520632554657061586}
   - component: {fileID: 4476834905489618843}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LowerLeg.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3343,7 +3350,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 521896774057776309}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LegTargets.FL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3376,7 +3383,7 @@ GameObject:
   - component: {fileID: 2920563944409426955}
   - component: {fileID: 1566637365244248786}
   - component: {fileID: 596648675816549368}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LowerLegPlate.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3464,7 +3471,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 692011260747052334}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.RL_target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3497,7 +3504,7 @@ GameObject:
   - component: {fileID: 3646016385318573270}
   - component: {fileID: 8533015833926978276}
   - component: {fileID: 1505647141311993911}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TurretArmor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3586,7 +3593,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1552935286646453027}
   - component: {fileID: 2971816292762842251}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Leg.FR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3681,7 +3688,7 @@ GameObject:
   - component: {fileID: 8891933730974955979}
   - component: {fileID: 9000419946598148647}
   - component: {fileID: 1911958801559804893}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.RR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3784,7 +3791,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8326790434252949730}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.002_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3817,7 +3824,7 @@ GameObject:
   - component: {fileID: 4901706848535093137}
   - component: {fileID: 4592349623223902609}
   - component: {fileID: 6826064987178919329}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3907,7 +3914,7 @@ GameObject:
   - component: {fileID: 719622428850439633}
   - component: {fileID: 4398062552500895676}
   - component: {fileID: 14825922332510083}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: UpperLegPlate.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3997,7 +4004,7 @@ GameObject:
   - component: {fileID: 310182813189201030}
   - component: {fileID: 3786108053734082111}
   - component: {fileID: 8312405077183700065}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.011
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4085,7 +4092,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1645970356208494940}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.FR_hint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4118,7 +4125,7 @@ GameObject:
   - component: {fileID: 7770386738449232620}
   - component: {fileID: 2718079998003425289}
   - component: {fileID: 3759303817782482396}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: AttachmentPoint.Front.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4211,7 +4218,7 @@ GameObject:
   - component: {fileID: 5777873416959904649}
   - component: {fileID: 2069840068960328217}
   - component: {fileID: 3264017789036545473}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TurretBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4250,6 +4257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   maxHealth: 210
   health: 0
+  hasDied: 1
 --- !u!114 &4149864227018026105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4266,6 +4274,7 @@ MonoBehaviour:
   meshRootTransform: {fileID: 8545527158048715372}
   materialToApply: {fileID: 2100000, guid: c218e00d5b34a6f4698911d68cf491d4, type: 2}
   corpsePrefab: {fileID: 7949673561649792230, guid: 68c66b1a7d987454a9d22dbfafe87d57, type: 3}
+  transformToReturnTime: 1
 --- !u!54 &5777873416959904649
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4344,7 +4353,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3790385563788067487}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LegTargets.RR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4377,7 +4386,7 @@ GameObject:
   - component: {fileID: 163445231981190346}
   - component: {fileID: 407973448650120821}
   - component: {fileID: 257785216223892733}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4467,7 +4476,7 @@ GameObject:
   - component: {fileID: 7481982224617502331}
   - component: {fileID: 6792119678485050582}
   - component: {fileID: 5308362671350456281}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.RL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4570,7 +4579,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8598882281028303043}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LegTargets.FR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4601,7 +4610,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1367267566684937718}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: NeutralTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4632,7 +4641,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6201148754208805943}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4668,7 +4677,7 @@ GameObject:
   - component: {fileID: 2587476069987711342}
   - component: {fileID: 8388938156507521332}
   - component: {fileID: 7649603549990807108}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.FL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4773,7 +4782,7 @@ GameObject:
   - component: {fileID: 2005177021266195838}
   - component: {fileID: 1603563312582688051}
   - component: {fileID: 3463117104406562514}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.FR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4876,7 +4885,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3218715218486484301}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BarrelAxis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4910,7 +4919,7 @@ GameObject:
   - component: {fileID: 7703437666101700802}
   - component: {fileID: 2360446563372822306}
   - component: {fileID: 233945646692700622}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LowerLegPlate.004
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5000,7 +5009,7 @@ GameObject:
   - component: {fileID: 3965315907197649703}
   - component: {fileID: 2739305173689408096}
   - component: {fileID: 5415114953071204835}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LegFoot.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5088,7 +5097,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8134110340839847329}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5123,7 +5132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3265375544646743106}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5160,7 +5169,7 @@ GameObject:
   - component: {fileID: 5238900706110428178}
   - component: {fileID: 3761799658328116118}
   - component: {fileID: 6091192213479521356}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: UpperLeg.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5248,7 +5257,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6193556276717377400}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LegControllers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5285,7 +5294,7 @@ GameObject:
   - component: {fileID: 2248974827458106863}
   - component: {fileID: 5732433916752374262}
   - component: {fileID: 4241773462026384420}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.006
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5375,7 +5384,7 @@ GameObject:
   - component: {fileID: 4003369765739062986}
   - component: {fileID: 2563034455269691908}
   - component: {fileID: 3187623115285121326}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BaseArmature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5455,7 +5464,7 @@ GameObject:
   - component: {fileID: 4758903617289615590}
   - component: {fileID: 4269260635426364939}
   - component: {fileID: 3934360650129604439}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: OuterBarrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5544,7 +5553,7 @@ GameObject:
   m_Component:
   - component: {fileID: 282026864679466370}
   - component: {fileID: 8902886796718504160}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: CurveControl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5593,7 +5602,7 @@ GameObject:
   - component: {fileID: 5996079475780137295}
   - component: {fileID: 322026947357139928}
   - component: {fileID: 923465194608488111}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LegFoot.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5681,7 +5690,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2448688131367182162}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: TurretAxis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5714,7 +5723,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2353761154222563997}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Rig.FR_target
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5747,7 +5756,7 @@ GameObject:
   - component: {fileID: 7628735752384930430}
   - component: {fileID: 6979385077726115898}
   - component: {fileID: 7526011251578304057}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: InnerBarrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5835,7 +5844,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5422339538101894431}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LegTargets.RL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5868,7 +5877,7 @@ GameObject:
   - component: {fileID: 3076856777105191508}
   - component: {fileID: 7328906137185705061}
   - component: {fileID: 10457068639731172}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5958,7 +5967,7 @@ GameObject:
   - component: {fileID: 782810232056158550}
   - component: {fileID: 6646163899600132169}
   - component: {fileID: 8088976017847747235}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LowerLegPlate.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6048,7 +6057,7 @@ GameObject:
   - component: {fileID: 8209323792120973075}
   - component: {fileID: 8216704453943566899}
   - component: {fileID: 2547150526690553999}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: AttachmentPoint.Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6138,7 +6147,7 @@ GameObject:
   - component: {fileID: 213383229494203056}
   - component: {fileID: 2966710721002836202}
   - component: {fileID: 451628595501433146}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.007
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6228,7 +6237,7 @@ GameObject:
   - component: {fileID: 1886398866177032655}
   - component: {fileID: 7110719871436488514}
   - component: {fileID: 8520539088239517401}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: UpperLeg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6318,7 +6327,7 @@ GameObject:
   - component: {fileID: 1771387815844617520}
   - component: {fileID: 3871050042491411666}
   - component: {fileID: 3678531438880549270}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LowerLeg.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6408,7 +6417,7 @@ GameObject:
   - component: {fileID: 6364811510661802939}
   - component: {fileID: 2717659409795669884}
   - component: {fileID: 7467619186075759337}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6498,7 +6507,7 @@ GameObject:
   - component: {fileID: 2514261403900219925}
   - component: {fileID: 951101618168536540}
   - component: {fileID: 8197237022449940915}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6573,7 +6582,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1479089137127335353}
   - component: {fileID: 8466174615792642319}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DetectionSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6607,8 +6616,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60384b9c3820e0746ba7b82cff206170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDetectionSystem
-  lastDetectionRadius: 30
-  firingRadius: 30
+  detectionRadius: 30
+  fireRadius: 15
   eyeTransform: {fileID: 2448688131367182162}
 --- !u!1 &8791083252051881410
 GameObject:
@@ -6619,7 +6628,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6306188830194918210}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6653,7 +6662,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1667568655370647489}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6687,7 +6696,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1647094921339729022}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Armature.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6720,7 +6729,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3657118228247396625}
   - component: {fileID: 2673096389132381702}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LegManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6780,7 +6789,7 @@ GameObject:
   - component: {fileID: 7122328945014439920}
   - component: {fileID: 7844078912011410174}
   - component: {fileID: 3051338299188223040}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6868,7 +6877,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6825372677260049093}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: NeutralBarrelTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6899,7 +6908,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3218255619693831334}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bone_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}

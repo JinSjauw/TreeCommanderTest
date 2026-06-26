@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.SquadDefinition
   blackboardDefinition: {fileID: 818047124686629}
   availableRoles:
-  - name: ASSAULT
-    colour: {r: 0.05633807, g: 1, b: 0, a: 1}
-    maxAmount: 2
+  - name: ARTILLERY
+    colour: {r: 1, g: 0, b: 0, a: 1}
+    maxAmount: 1
     isFallback: 0
     prefab: {fileID: 0}
   - name: FLANKER
-    colour: {r: 0.9245283, g: 0.7841598, b: 0.2660199, a: 1}
-    maxAmount: 3
+    colour: {r: 0.8396226, g: 0, b: 0.5984322, a: 1}
+    maxAmount: 2
     isFallback: 0
     prefab: {fileID: 0}
-  - name: SUPPRESS
-    colour: {r: 1, g: 0, b: 0, a: 1}
-    maxAmount: 1
-    isFallback: 1
+  - name: ASSAULT
+    colour: {r: 1, g: 0.85521466, b: 0.33490568, a: 1}
+    maxAmount: 2
+    isFallback: 0
     prefab: {fileID: 0}
   bindingGroups:
   - treeAsset: {fileID: 11400000, guid: f925db3be8ac89e41afebf7f2ee89cf2, type: 2}
@@ -102,7 +102,7 @@ MonoBehaviour:
       type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentRoles
-        variableStride: 7
+        variableStride: 5
         variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         isSquadData: 1
@@ -113,7 +113,7 @@ MonoBehaviour:
       type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentOrders
-        variableStride: 7
+        variableStride: 5
         variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         isSquadData: 1
@@ -135,7 +135,7 @@ MonoBehaviour:
       type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentStatus
-        variableStride: 7
+        variableStride: 5
         variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         isSquadData: 1
@@ -146,7 +146,7 @@ MonoBehaviour:
       type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentMovePosition
-        variableStride: 7
+        variableStride: 5
         variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
         isSquadData: 1
@@ -157,7 +157,7 @@ MonoBehaviour:
       type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentMoveSpeed
-        variableStride: 7
+        variableStride: 5
         variableTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         isSquadData: 1
@@ -168,7 +168,7 @@ MonoBehaviour:
       type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: DetectedEnemies
-        variableStride: 7
+        variableStride: 5
         variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
         isSquadData: 1

@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2521c1f1531d0a34691158b23e025651, type: 3}
+  m_Name: EnemyConfigA
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyConfig
+  moveSpeed: 5
+  stoppingDistance: 1
+  maintainDistance: 10
+  minPathDistance: 3
+  maxPathDistance: 8
+  maxConeHalfAngle: 30
+  detectionRadius: 25
+  firingRadius: 15
+  requireLineOfSight: 0
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  roundsPerMinute: 30
+  projectileDamage: 10
+  randomTargetRadius: 0.5
+  maxHealth: 100
+  avoidancePriority: 50
+  engageConeHalfAngle: 30
+  engageMinDistance: 3
+  engageMaxDistance: 8
+  engageMaintainDistance: 10
+  flankAngle: 60
+  flankConeHalfAngle: 15
+  flankMinDistance: 3
+  flankMaxDistance: 8
+  flankMaintainDistance: 10

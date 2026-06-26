@@ -59,7 +59,7 @@ namespace BehaviourTree.Runtime
         private CommanderTreeRunner commanderRunner;
         private readonly List<AgentTreeRunner> managedAgents = new List<AgentTreeRunner>();
         private int currentLeaderIndex = -1;
-        private bool hasInitialized;
+        private bool hasInitialized = false;
 
         // ── BB slots (cached for fast write) ────────────────────
 
@@ -83,14 +83,20 @@ namespace BehaviourTree.Runtime
 
         // ── Public API ─────────────────────────────────────────────────
 
-        /// <summary>Spawns using serialized fields. Agent prefabs are read from the SquadDefinition's role composition.</summary>
-        public void Spawn()
+        /// <summary>Prevents auto-spawn on Start. Call before activating the GameObject when spawning via object pool.</summary>
+        public void DisableAutoSpawn()
         {
-            Spawn(commanderPrefab, agentCount);
+            spawnOnStart = false;
+        }
+
+        /// <summary>Spawns using serialized fields. Agent prefabs are read from the SquadDefinition's role composition.</summary>
+        public void Spawn(Transform patrolPointsOverride = null, Vector3? squadMovePosition = null)
+        {
+            Spawn(commanderPrefab, agentCount, patrolPointsOverride, squadMovePosition);
         }
 
         /// <summary>Spawns with explicit commander prefab override.</summary>
-        public void Spawn(GameObject commanderPrefabOverride, int count)
+        public void Spawn(GameObject commanderPrefabOverride, int count, Transform patrolPointsOverride = null, Vector3? squadMovePosition = null)
         {
             if (hasInitialized)
             {
@@ -106,8 +112,70 @@ namespace BehaviourTree.Runtime
 
             this.commanderPrefab = commanderPrefabOverride != null ? commanderPrefabOverride : commanderPrefab;
             this.agentCount = count;
+            if (patrolPointsOverride != null)
+                patrolpointsParent = patrolPointsOverride;
 
             SpawnSquad();
+
+            if (squadMovePosition.HasValue)
+                WriteSquadMovePosition(squadMovePosition.Value);
+        }
+
+        /// <summary>
+        /// Spawns the squad and positions agents in a circle formation around the given center.
+        /// Mirrors the CalculateFormation node logic: agent 0 (leader) at center,
+        /// agents 1..N-1 evenly distributed around the circle.
+        /// </summary>
+        public void SpawnInFormation(Vector3 center, int count, float radius, Transform patrolPointsOverride = null, Vector3? squadMovePosition = null)
+        {
+            if (hasInitialized)
+            {
+                Debug.LogWarning("[SquadManager] Already initialized. Despawn first.");
+                return;
+            }
+
+            if (definition == null)
+            {
+                Debug.LogError("[SquadManager] SquadDefinition is null.");
+                return;
+            }
+
+            this.agentCount = count;
+            if (patrolPointsOverride != null)
+                patrolpointsParent = patrolPointsOverride;
+
+            SpawnSquad();
+
+            // Position agents in circle formation, matching CalculateFormation math
+            for (int i = 0; i < managedAgents.Count; i++)
+            {
+                Vector3 position;
+                if (i == 0)
+                {
+                    position = center;
+                }
+                else
+                {
+                    float angle = (i / (float)(managedAgents.Count - 1)) * 360f * Mathf.Deg2Rad;
+                    position = center + new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * radius;
+                }
+
+                if (NavMesh.SamplePosition(position, out NavMeshHit hit, 10f, NavMesh.AllAreas))
+                {
+                    position = hit.position;
+                }
+
+                managedAgents[i].transform.position = position;
+
+                NavMeshAgent navAgent = managedAgents[i].GetComponentInChildren<NavMeshAgent>();
+                if (navAgent != null)
+                {
+                    navAgent.Warp(position);
+                }
+            }
+
+            if (squadMovePosition.HasValue)
+                WriteSquadMovePosition(squadMovePosition.Value);
         }
 
         /// <summary>Deregisters and destroys all agents and commander, then the squad instance.</summary>
@@ -344,7 +412,10 @@ namespace BehaviourTree.Runtime
             agent.squadInstance = squadInstance;
             agent.Initialize();
             agent.RunIndependently = false;
-            agent.GetComponentInChildren<NavMeshAgent>().avoidancePriority += agentIndex;
+
+            NavMeshAgent nav = agentGo.GetComponentInChildren<NavMeshAgent>();
+            if (nav != null)
+                nav.avoidancePriority += agentIndex;
 
             commanderRunner.RegisterAgent(agent);
 
@@ -493,6 +564,13 @@ namespace BehaviourTree.Runtime
             if (leader == null) return;
             commanderRunner.BlackBoard.SetBoxedRaw(squadMovePosSlot, leader.transform.position);
             Debug.Log($"[SquadManager.WriteSquadMovePosition] leader={leader.name} pos={leader.transform.position:F2}");
+        }
+
+        /// <summary>Writes an explicit position into SquadMovePosition on the commander BB.</summary>
+        private void WriteSquadMovePosition(Vector3 position)
+        {
+            if (squadMovePosSlot < 0 || commanderRunner?.BlackBoard == null) return;
+            commanderRunner.BlackBoard.SetBoxedRaw(squadMovePosSlot, position);
         }
 
         private void WritePatrolPoints()

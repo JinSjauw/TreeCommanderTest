@@ -69,7 +69,7 @@ namespace BehaviourTree.Editor
             SetupTitleField();
 
             if (NodeSO.NodeType == BehaviourNodeType.ROOT)
-                capabilities &= ~(Capabilities.Movable | Capabilities.Selectable |Capabilities.Deletable | Capabilities.Copiable);
+                capabilities &= ~(Capabilities.Deletable | Capabilities.Copiable);
 
             RegisterCallback<MouseDownEvent>(OnNodeClicked);
 

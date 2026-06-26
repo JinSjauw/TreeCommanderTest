@@ -21,9 +21,9 @@ public class TrajectorySystem : MonoBehaviour
     private bool hasLineOfSight;
 
     private TrajectorySearchSettings currentSettings;
+    private LayerMask obstructionMask;
+    private LayerMask targetMask;
     
-    public LayerMask ObstructionMask { get; set; }
-    public LayerMask targetMask { get; set; }
     public bool HasTrajectory => hasTrajectory;
     public bool HasAimTarget => hasAimTarget;
     public bool HasFailed => hasFailed;
@@ -34,9 +34,9 @@ public class TrajectorySystem : MonoBehaviour
 
     private void Init()
     {
-        if (ObstructionMask == 0)
+        if (obstructionMask == 0)
         {
-            ObstructionMask = LayerMask.GetMask("Ground");
+            obstructionMask = LayerMask.GetMask("Ground");
         }
 
         if (directFire == null)
@@ -45,7 +45,7 @@ public class TrajectorySystem : MonoBehaviour
             return;
         }
 
-        validator = new TrajectoryValidator(directFire.segmentCount, ObstructionMask, targetMask, fireCurve.GetPosition());
+        validator = new TrajectoryValidator(directFire.segmentCount, obstructionMask, targetMask, fireCurve.GetPosition());
     }
 
     public void SetTrajectoryTarget(Vector3 randomizedPosition, Vector3 actualTarget, bool losFlag = false)
@@ -65,6 +65,12 @@ public class TrajectorySystem : MonoBehaviour
         hasTrajectory = false;
 
         currentSettings = hasLineOfSight ? directFire : indirectFire;
+
+        if(trajectoryStartingHeight >= 10) //Implicit condition. If the trajectoryStartingHeight is 4 or above you will always check for an indirect arc.
+        {
+            currentSettings = indirectFire;
+            hasLineOfSight = false;
+        }
 
         Vector3 startPosition = trajectoryStart.position;
         Vector3 controlPosition = fireCurve.transform.position;
@@ -128,12 +134,13 @@ public class TrajectorySystem : MonoBehaviour
 
     public void UpdateMasks(LayerMask obstructionMask, LayerMask targetMask)
     {
-        ObstructionMask = obstructionMask;
+        this.obstructionMask = obstructionMask;
         this.targetMask = targetMask;
 
-        if(validator == null) Init(); 
+        if(validator == null) Init();
 
-        validator.SetMasks(ObstructionMask, targetMask);
+
+        validator.SetMasks(this.obstructionMask, targetMask);
     }
 
     public void ResetTrajectory()

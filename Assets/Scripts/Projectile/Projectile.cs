@@ -171,7 +171,7 @@ public class Projectile : MonoBehaviour
                 float distance = Vector3.Distance(hit.transform.position, transform.position);
                 float distanceAlpha = distance / damageRadius;
                 
-                if (hit.HasDied) continue;
+                if (hit.hasDied) continue;
                 
                 hit.TakeDamage(damage * damageFallOff.Evaluate(distanceAlpha));
             }
