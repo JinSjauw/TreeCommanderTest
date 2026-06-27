@@ -34,6 +34,22 @@ namespace BehaviourTree.Runtime
         /// </summary>
         public int agentCount;
 
+        /// <summary>
+        /// Adjusts saved runningAgentIndex values after agent compaction.
+        /// Called by CommanderTreeRunner when an agent is unregistered and BB slots shift.
+        /// Indices > removedIndex are decremented; the removed index itself is kept
+        /// (it now points to the next agent after the shift).
+        /// </summary>
+        public void OnAgentCompacted(int removedIndex)
+        {
+            if (runningAgentIndex == null) return;
+            for (int i = 0; i < runningAgentIndex.Length; i++)
+            {
+                if (runningAgentIndex[i] > removedIndex)
+                    runningAgentIndex[i]--;
+            }
+        }
+
         public TreeEvaluator(NodeData[] nodeDatas, FieldData[] fieldDatas, string[] fieldTypeNames, object[] boxedConstants, int maxTreeDepth)
         {
             if (nodeDatas == null || fieldDatas == null || nodeDatas.Length == 0)

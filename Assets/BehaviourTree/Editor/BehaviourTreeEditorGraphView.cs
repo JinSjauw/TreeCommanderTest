@@ -75,6 +75,21 @@ namespace BehaviourTree.Editor
             graphViewChanged += OnGraphViewChanged;
 
             Undo.undoRedoPerformed += OnUndoRedo;
+
+            RegisterCallback<KeyDownEvent>(OnKeyDown);
+        }
+
+        private void OnKeyDown(KeyDownEvent evt)
+        {
+            if (evt.keyCode == KeyCode.LeftAlt && selection.Count > 0)
+            {
+                var selectedEdges = selection.Where(e => e is Edge).Cast<Edge>().ToList();
+                if (selectedEdges.Count > 0)
+                {
+                    DeleteElements(selectedEdges);
+                    evt.StopPropagation();
+                }
+            }
         }
 
         private void UnSerializeAndPaste(string operationName, string data)

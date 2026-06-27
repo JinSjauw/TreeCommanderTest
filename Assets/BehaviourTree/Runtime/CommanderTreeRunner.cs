@@ -288,6 +288,10 @@ namespace BehaviourTree.Runtime
                     currentSlot += varStride;
                 }
             }
+
+            // Adjust runningAgentIndex in the evaluator so ForEachRole/ForEachAgent
+            // resume at the correct agent after compaction shifts indices.
+            evaluator?.OnAgentCompacted(removedIndex);
         }
 
         /// <summary>
