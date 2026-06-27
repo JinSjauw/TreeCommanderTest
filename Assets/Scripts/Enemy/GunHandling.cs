@@ -126,11 +126,12 @@ public class GunHandling : MonoBehaviour
         GameObject newProjectile = pool.GetObject(projectilePrefab);
         newProjectile.transform.position = muzzleTransform.position;
         newProjectile.transform.forward = muzzleTransform.forward;
-        newProjectile.transform.parent = projectileCollection;
+        newProjectile.transform.parent = pool.transform;
 
         GameObject muzzleFlash = pool.GetObject(muzzleFlashPrefab);
         muzzleFlash.transform.position = muzzleTransform.position;
         muzzleFlash.transform.up = muzzleTransform.forward;
+        muzzleFlash.transform.parent = pool.transform;
 
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {

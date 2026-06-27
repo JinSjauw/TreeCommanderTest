@@ -161,7 +161,9 @@ public class Projectile : MonoBehaviour
         
         //projectileUI.DisableLockMark();
 
-        pool.GetObject(explosionVFX.gameObject).transform.position = transform.position;
+        GameObject explosionObject = pool.GetObject(explosionVFX.gameObject);
+        explosionObject.transform.position = transform.position;
+        explosionObject.transform.parent = pool.transform;
 
         int numHits = Physics.OverlapSphereNonAlloc(transform.position, damageRadius, OverlapBuffer);
         for (int i = 0; i < numHits; i++)
