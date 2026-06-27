@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22a5cdfb3aac5eb4da5384a8d0e46da6, type: 3}
+  m_Name: TypeDisplayRegistry
+  m_EditorClassIdentifier: BehaviourTree.Editor::BehaviourTree.Editor.TypeDisplayRegistry
+  entries:
+  - typeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    displayName: Int
+    displayColor: {r: 0.33, g: 0.6, b: 1, a: 1}
+  - typeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    displayName: Float
+    displayColor: {r: 0.33, g: 0.6, b: 1, a: 1}
+  - typeName: System.Double, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    displayName: Double
+    displayColor: {r: 0.33, g: 0.6, b: 1, a: 1}
+  - typeName: System.UInt32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    displayName: UInt
+    displayColor: {r: 0.33, g: 0.6, b: 1, a: 1}
+  - typeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    displayName: Bool
+    displayColor: {r: 0.32941177, g: 0.6, b: 1, a: 1}
+  - typeName: System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    displayName: String
+    displayColor: {r: 0.87, g: 0.87, b: 0.33, a: 1}
+  - typeName: UnityEngine.Vector2, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    displayName: Vector2
+    displayColor: {r: 0.33, g: 0.8, b: 0.8, a: 1}
+  - typeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    displayName: Vector3
+    displayColor: {r: 0.33, g: 0.8, b: 0.8, a: 1}
+  - typeName: UnityEngine.Vector4, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    displayName: Vector4
+    displayColor: {r: 0.33, g: 0.8, b: 0.8, a: 1}
+  - typeName: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    displayName: Color
+    displayColor: {r: 0.8, g: 0.33, b: 0.8, a: 1}
+  - typeName: UnityEngine.Quaternion, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    displayName: Quaternion
+    displayColor: {r: 0.87, g: 0.6, b: 0.27, a: 1}
+  - typeName: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    displayName: GameObject
+    displayColor: {r: 0.3764706, g: 0.6156863, b: 0.48235294, a: 1}
+  - typeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    displayName: Transform
+    displayColor: {r: 0.37647063, g: 0.6156863, b: 0.48235297, a: 1}
+  - typeName: UnityEngine.Material, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
+    displayName: Material
+    displayColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}

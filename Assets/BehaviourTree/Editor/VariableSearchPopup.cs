@@ -122,8 +122,10 @@ namespace BehaviourTree.Editor
             BlackboardVariableBase variable = filteredVariables[index];
             Type varType = variable.GetValueType();
             string typeDisplay = varType != null
-                ? FieldTypeHelper.GetDisplayName(varType, variable.Stride)
+                ? TypeDisplayRegistry.instance.GetDisplayName(varType)
                 : variable.TypeName ?? "?";
+            if (variable.Stride > 1)
+                typeDisplay += $"[{variable.Stride}]";
 
             label.text = $"{variable.Name}  ({typeDisplay})";
         }

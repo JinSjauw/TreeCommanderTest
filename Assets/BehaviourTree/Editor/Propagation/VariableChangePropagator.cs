@@ -63,6 +63,16 @@ namespace BehaviourTree.Editor.Propagation
         }
 
         /// <summary>
+        /// Marks that a change has occurred, ensuring the next <see cref="Flush"/>
+        /// will fire <see cref="ChangesFlushed"/> even if no rename/delete/type-change
+        /// operations were queued. Used when variables are added to the blackboard.
+        /// </summary>
+        public void MarkChanged()
+        {
+            EnsureContext();
+        }
+
+        /// <summary>
         /// Flushes the batch: fires the VariableRenamed event so UI tabs can refresh,
         /// then invalidates the cached context.
         /// </summary>

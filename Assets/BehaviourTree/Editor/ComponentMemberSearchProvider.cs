@@ -118,7 +118,7 @@ namespace BehaviourTree.Editor
                         FieldInfo field = fields[fi];
                         if (!IsTypeSupported(field.FieldType, supportedTypes)) continue;
 
-                        string display = $"{field.Name}  ({FieldTypeHelper.GetDisplayName(field.FieldType)})";
+                        string display = $"{field.Name}  ({TypeDisplayRegistry.instance.GetDisplayName(field.FieldType)})";
                         SelectedMemberInfo info = new SelectedMemberInfo(comp, field.Name, false, field.FieldType);
                         memberEntries.Add(new SearchTreeEntry(new GUIContent(display, indentIcon))
                             { level = 3, userData = info });
@@ -133,7 +133,7 @@ namespace BehaviourTree.Editor
                         if (!prop.CanRead) continue;
                         if (!IsTypeSupported(prop.PropertyType, supportedTypes)) continue;
 
-                        string display = $"{prop.Name}  ({FieldTypeHelper.GetDisplayName(prop.PropertyType)})";
+                        string display = $"{prop.Name}  ({TypeDisplayRegistry.instance.GetDisplayName(prop.PropertyType)})";
                         SelectedMemberInfo info = new SelectedMemberInfo(comp, prop.Name, true, prop.PropertyType);
                         memberEntries.Add(new SearchTreeEntry(new GUIContent(display, indentIcon))
                             { level = 3, userData = info });

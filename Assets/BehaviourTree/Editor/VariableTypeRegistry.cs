@@ -44,6 +44,14 @@ namespace BehaviourTree.Editor
         /// <summary>All registered types (derived from factory keys).</summary>
         public static IReadOnlyList<Type> Types => fieldFactories.Keys.ToList();
 
+        /// <summary>Types hidden from type search/selection UI but still functional.</summary>
+        public static readonly HashSet<Type> HiddenTypes = new HashSet<Type>
+        {
+            typeof(Color),
+            typeof(Quaternion),
+            typeof(Material),
+        };
+
         /// <summary>
         /// Register a type with a factory that creates the value editor VisualElement,
         /// and an optional custom binder. If binder is null, a default binder is generated

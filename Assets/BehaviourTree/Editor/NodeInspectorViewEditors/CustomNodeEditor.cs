@@ -197,18 +197,24 @@ namespace BehaviourTree.Editor
                     EditorGUILayout.BeginVertical("box");
 
                     string typeLabel;
+                    string colorHex = "lightblue";
                     if(info.fieldType != null && info.fieldType.IsEnum)
                     {
-                        typeLabel = $"Enum( {info.fieldType.Name} )";
+                        typeLabel = $"Enum( {TypeDisplayRegistry.instance.GetDisplayName(info.fieldType)} )";
+                    }
+                    else if (info.fieldType != null)
+                    {
+                        typeLabel = TypeDisplayRegistry.instance.GetDisplayName(info.fieldType);
+                        if (info.isArray) typeLabel += "[]";
+                        colorHex = TypeDisplayRegistry.instance.GetRichColorHex(info.fieldType);
                     }
                     else
                     {
-                        typeLabel = info.fieldType != null ? info.fieldType.Name : "Unknown";
-                        if (info.isArray) typeLabel += "[]";
+                        typeLabel = "Unknown";
                     }
                     
                     string displayName = char.ToUpper(info.fieldName[0]) + info.fieldName.Substring(1);
-                    EditorGUILayout.LabelField($"<b>{displayName}</b> : <color=lightblue>{typeLabel}</color>", RichTextLabelStyle);
+                    EditorGUILayout.LabelField($"<b>{displayName}</b> : <color=#{colorHex}>{typeLabel}</color>", RichTextLabelStyle);
 
                     if (!info.isToggleVariable)
                         isVariableProp.boolValue = info.isVariable || info.isArray;
@@ -335,7 +341,7 @@ namespace BehaviourTree.Editor
             }
             else
             {
-                EditorGUILayout.HelpBox($"Type '{fieldType.Name}' requires a [SharedVar] — use a blackboard variable instead of a constant.", MessageType.Warning);
+                EditorGUILayout.HelpBox($"Type '{TypeDisplayRegistry.instance.GetDisplayName(fieldType)}' requires a [SharedVar] — use a blackboard variable instead of a constant.", MessageType.Warning);
             }
         }
 
@@ -389,7 +395,7 @@ namespace BehaviourTree.Editor
 
             if (matchingVars.Count == 0)
             {
-                EditorGUILayout.HelpBox($"No matching variable of type '{expectedType.Name}' in Blackboard.", MessageType.Info);
+                EditorGUILayout.HelpBox($"No matching variable of type '{TypeDisplayRegistry.instance.GetDisplayName(expectedType)}' in Blackboard.", MessageType.Info);
                 variableNameProp.stringValue = "";
                 return;
             }
@@ -598,9 +604,19 @@ namespace BehaviourTree.Editor
                 // ── Title header ──
                 if (hasTitle)
                 {
-                    string typeName = paramType != null ? paramType.Name
-                        : (desc.allowedTypes != null && desc.allowedTypes.Length == 1 ? desc.allowedTypes[0].Name : null);
-                    string header = typeName != null ? $"<b>{desc.titleLabel}</b> : {typeName}" : $"<b>{desc.titleLabel}</b>";
+                    Type displayType = paramType ?? (desc.allowedTypes != null && desc.allowedTypes.Length == 1 ? desc.allowedTypes[0] : null);
+                    string header;
+                    if (displayType != null)
+                    {
+                        string typeDisplay = TypeDisplayRegistry.instance.GetDisplayName(displayType);
+                        if (entryIsArray) typeDisplay += "[]";
+                        string colorHex = TypeDisplayRegistry.instance.GetRichColorHex(displayType);
+                        header = $"<b>{desc.titleLabel}</b> : <color=#{colorHex}>{typeDisplay}</color>";
+                    }
+                    else
+                    {
+                        header = $"<b>{desc.titleLabel}</b>";
+                    }
                     EditorGUILayout.LabelField(header, RichTextLabelStyle);
                 }
 
@@ -731,9 +747,9 @@ namespace BehaviourTree.Editor
         private static string BuildTypedLabel(string baseLabel, Type resolvedType, Type[] allowedTypes)
         {
             if (resolvedType != null)
-                return $"{baseLabel} ({resolvedType.Name})";
+                return $"{baseLabel} ({TypeDisplayRegistry.instance.GetDisplayName(resolvedType)})";
             if (allowedTypes != null && allowedTypes.Length == 1)
-                return $"{baseLabel} ({allowedTypes[0].Name})";
+                return $"{baseLabel} ({TypeDisplayRegistry.instance.GetDisplayName(allowedTypes[0])})";
             return baseLabel;
         }
 
@@ -1065,7 +1081,7 @@ namespace BehaviourTree.Editor
             {
                 string modeLabel = isArray ? "array" : "singular";
                 EditorGUILayout.HelpBox(
-                    $"No {modeLabel} variable of type '{expectedType.Name}' in Blackboard. ",
+                    $"No {modeLabel} variable of type '{TypeDisplayRegistry.instance.GetDisplayName(expectedType)}' in Blackboard. ",
                     MessageType.Info);
                 variableNameProp.stringValue = "";
                 return;
@@ -1314,7 +1330,7 @@ namespace BehaviourTree.Editor
             else
             {
                 EditorGUILayout.HelpBox(
-                    $"Type '{fieldType.Name}' is not supported for constant values. Use a variable source instead.",
+                    $"Type '{TypeDisplayRegistry.instance.GetDisplayName(fieldType)}' is not supported for constant values. Use a variable source instead.",
                     MessageType.Warning);
             }
 

@@ -165,7 +165,7 @@ namespace BehaviourTree.Editor
 
                     int baseSlot = slotOffsets[i];
                     int stride = Mathf.Max(1, bv.Stride);
-                    string displayName = FieldTypeHelper.GetDisplayName(type);
+                    string displayName = TypeDisplayRegistry.instance.GetDisplayName(type);
 
                     if (stride == 1)
                     {
@@ -219,7 +219,7 @@ namespace BehaviourTree.Editor
                         continue;
 
                     int stride = Mathf.Max(1, bv.Stride);
-                    string displayName = FieldTypeHelper.GetDisplayName(type);
+                    string displayName = TypeDisplayRegistry.instance.GetDisplayName(type);
 
                     if (stride == 1)
                     {
@@ -404,7 +404,7 @@ namespace BehaviourTree.Editor
 
             // Fallback for unknown custom types: read-only label with type name and ToString() value.
             string displayValue = value?.ToString() ?? "null";
-            EditorGUILayout.LabelField(label, $"{FieldTypeHelper.GetDisplayName(type)} — {displayValue}");
+            EditorGUILayout.LabelField(label, $"{TypeDisplayRegistry.instance.GetDisplayName(type)} — {displayValue}");
             return value;
         }
     }

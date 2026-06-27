@@ -132,7 +132,10 @@ namespace BehaviourTree.Editor
                 subtreeNameProp.stringValue = subVar.Name;
 
                 string typeLabel = TypeLabel(subVar.TypeName);
-                EditorGUILayout.LabelField($"<b>{subVar.Name}</b> : <color=lightblue>{typeLabel}</color>", RichTextLabelStyle);
+                string colorHex = "lightblue";
+                if (FieldTypeHelper.TryGetSystemTypeFromName(subVar.TypeName, out Type subType) && subType != null)
+                    colorHex = TypeDisplayRegistry.instance.GetRichColorHex(subType);
+                EditorGUILayout.LabelField($"<b>{subVar.Name}</b> : <color=#{colorHex}>{typeLabel}</color>", RichTextLabelStyle);
 
                 string[] options;
                 int selectedIndex;
@@ -226,7 +229,7 @@ namespace BehaviourTree.Editor
         private string TypeLabel(string typeName)
         {
             if (FieldTypeHelper.TryGetSystemTypeFromName(typeName, out Type t) && t != null)
-                return t.Name;
+                return TypeDisplayRegistry.instance.GetDisplayName(t);
             return typeName;
         }
 

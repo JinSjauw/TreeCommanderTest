@@ -55,7 +55,9 @@ namespace BehaviourTree.Editor
 
         public override VisualElement CreateGUI()
         {
-            allTypes = VariableTypeRegistry.Types.ToList();
+            allTypes = VariableTypeRegistry.Types
+                .Where(t => !VariableTypeRegistry.HiddenTypes.Contains(t))
+                .ToList();
 
             // Apply allowedTypes filter if specified.
             // Strip array suffixes so e.g. int[] allowed → shows int in the type list.
@@ -150,7 +152,7 @@ namespace BehaviourTree.Editor
         {
             Label label = element as Label;
             if (label == null || index < 0 || index >= filteredTypes.Count) return;
-            label.text = FieldTypeHelper.GetDisplayName(filteredTypes[index]);
+            label.text = TypeDisplayRegistry.instance.GetDisplayName(filteredTypes[index]);
         }
 
         public override Vector2 GetWindowSize()
@@ -174,7 +176,7 @@ namespace BehaviourTree.Editor
             {
                 foreach (Type type in allTypes)
                 {
-                    string displayName = FieldTypeHelper.GetDisplayName(type);
+                    string displayName = TypeDisplayRegistry.instance.GetDisplayName(type);
                     if (displayName.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
                         filteredTypes.Add(type);
                 }

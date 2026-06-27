@@ -208,7 +208,7 @@ public partial class BlackBoardView : VisualElement
 
         // ── Type dropdown ───────────────────────────────
         List<Type> types = VariableTypeRegistry.Types.ToList();
-        typeDropdown.choices = types.Select(type => FieldTypeHelper.GetDisplayName(type)).ToList();
+        typeDropdown.choices = types.Select(type => TypeDisplayRegistry.instance.GetDisplayName(type)).ToList();
         int typeIndex = -1;
         if (currentType != null)
         {
@@ -224,7 +224,7 @@ public partial class BlackBoardView : VisualElement
 
         typeDropdown.RegisterValueChangedCallback(handles.typeCallback = evt =>
         {
-            int newIndex = types.FindIndex(t => FieldTypeHelper.GetDisplayName(t) == evt.newValue);
+            int newIndex = types.FindIndex(t => TypeDisplayRegistry.instance.GetDisplayName(t) == evt.newValue);
             if (newIndex >= 0 && types[newIndex] != currentType)
                 ChangeVariableType(variable, index, types[newIndex]);
         });
@@ -273,7 +273,7 @@ public partial class BlackBoardView : VisualElement
             }
             else
             {
-                string typeName = currentType != null ? FieldTypeHelper.GetDisplayName(currentType) : "?";
+                string typeName = currentType != null ? TypeDisplayRegistry.instance.GetDisplayName(currentType) : "?";
                 Foldout foldout = new Foldout
                 {
                     text = $"{typeName}[{stride}]",
@@ -560,6 +560,12 @@ public partial class BlackBoardView : VisualElement
                 string type = previousVariableTypes.TryGetValue(name, out string t) ? t : null;
                 p.Delete(name, type);
             }
+
+            // Additions: leftover added items with no matching removed name.
+            // No propagation needed, but Flush must still fire ChangesFlushed
+            // so that editors (e.g. TreeBindings dropdowns) refresh.
+            if (added.Count > removed.Count)
+                p.MarkChanged();
 
             p.Flush();
         }

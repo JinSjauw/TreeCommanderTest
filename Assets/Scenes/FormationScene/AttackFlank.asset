@@ -634,7 +634,7 @@ MonoBehaviour:
     configFieldName: 
     isConfigConstant: 0
     intValue: 0
-    floatValue: 65
+    floatValue: 60
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
@@ -652,7 +652,7 @@ MonoBehaviour:
     configFieldName: 
     isConfigConstant: 0
     intValue: 0
-    floatValue: 100
+    floatValue: 85
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
