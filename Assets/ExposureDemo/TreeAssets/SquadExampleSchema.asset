@@ -1,0 +1,195 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af5c27ca323eddd47a61ac5ddc97ac42, type: 3}
+  m_Name: SquadExampleSchema
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.SquadDefinition
+  blackboardDefinition: {fileID: 818047124686629}
+  availableRoles:
+  - name: ARTILLERY
+    colour: {r: 1, g: 0, b: 0, a: 1}
+    maxAmount: 1
+    isFallback: 0
+    prefab: {fileID: 0}
+  - name: FLANKER
+    colour: {r: 0.8396226, g: 0, b: 0.5984322, a: 1}
+    maxAmount: 2
+    isFallback: 0
+    prefab: {fileID: 0}
+  - name: ASSAULT
+    colour: {r: 1, g: 0.85521466, b: 0.33490568, a: 1}
+    maxAmount: 2
+    isFallback: 0
+    prefab: {fileID: 0}
+  bindingGroups:
+  - treeAsset: {fileID: 11400000, guid: f925db3be8ac89e41afebf7f2ee89cf2, type: 2}
+    treeAssetGuid: f925db3be8ac89e41afebf7f2ee89cf2
+    bindings:
+    - treeVariableName: AgentRoles
+      squadVariableName: AgentRoles
+      direction: 1
+    - treeVariableName: AgentOrders
+      squadVariableName: AgentOrders
+      direction: 0
+    - treeVariableName: LeaderIndex
+      squadVariableName: LeaderIndex
+      direction: 1
+    - treeVariableName: AgentStatus
+      squadVariableName: AgentStatus
+      direction: 1
+    - treeVariableName: AgentsMovePos
+      squadVariableName: AgentMovePosition
+      direction: 0
+    - treeVariableName: AgentMoveSpeed
+      squadVariableName: AgentMoveSpeed
+      direction: 1
+    - treeVariableName: DetectedEnemies
+      squadVariableName: DetectedEnemies
+      direction: 1
+    - treeVariableName: AgentsPosition
+      squadVariableName: AgentsPosition
+      direction: 1
+  - treeAsset: {fileID: 11400000, guid: 4a6bf587047dff84ea2f8e3304bcf0ee, type: 2}
+    treeAssetGuid: 4a6bf587047dff84ea2f8e3304bcf0ee
+    bindings:
+    - treeVariableName: AgentAssignedRole
+      squadVariableName: AgentRoles
+      direction: 0
+    - treeVariableName: AgentReceivedOrder
+      squadVariableName: AgentOrders
+      direction: 1
+    - treeVariableName: AgentStatus
+      squadVariableName: AgentStatus
+      direction: 0
+    - treeVariableName: agentMoveTarget
+      squadVariableName: AgentMovePosition
+      direction: 1
+    - treeVariableName: formationSpeed
+      squadVariableName: AgentMoveSpeed
+      direction: 1
+    - treeVariableName: DetectedEnemy
+      squadVariableName: DetectedEnemies
+      direction: 0
+    - treeVariableName: EnagagePosition
+      squadVariableName: AgentsPosition
+      direction: 0
+--- !u!114 &818047124686629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
+  m_Name: FormationSchema_Schema
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
+  sharedVariables:
+  - rid: 3017916985123537033
+  - rid: 3017916985123537034
+  - rid: 3017916985123537035
+  - rid: 3017916985123537036
+  - rid: 3017916985123537044
+  - rid: 3017916985123537045
+  - rid: 3017916985123537084
+  - rid: 3017917049619873916
+  references:
+    version: 2
+    RefIds:
+    - rid: 3017916985123537033
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentRoles
+        variableStride: 5
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 3017916985123537034
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentOrders
+        variableStride: 5
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 3017916985123537035
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: LeaderIndex
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 3017916985123537036
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentStatus
+        variableStride: 5
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 3017916985123537044
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentMovePosition
+        variableStride: 5
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []
+    - rid: 3017916985123537045
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentMoveSpeed
+        variableStride: 5
+        variableTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: []
+    - rid: 3017916985123537084
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: DetectedEnemies
+        variableStride: 5
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+    - rid: 3017917049619873916
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentsPosition
+        variableStride: 5
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []

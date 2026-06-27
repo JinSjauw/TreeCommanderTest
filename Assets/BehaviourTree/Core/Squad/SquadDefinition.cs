@@ -53,7 +53,6 @@ namespace BehaviourTree.Core
     /// ScriptableObject that defines a squad: its shared data schema (blackboard),
     /// available role names, and per-tree variable bindings.
     /// </summary>
-    [CreateAssetMenu(menuName = "BehaviourTree/Squad Definition")]
     public class SquadDefinition : ScriptableObject
     {
         /// <summary>The squad's own blackboard schema. Defines all shared squad data variables.</summary>

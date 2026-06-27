@@ -12,6 +12,7 @@ namespace BehaviourTree.Editor
     /// alongside transient scalars (_agentCount, _targetAgentID, etc.).
     /// Type distinguishes commander trees from agent trees in the editor.
     /// </summary>
+
     [CreateAssetMenu(menuName = "BehaviourTree/Commander Tree")]
     public class CommanderTreeAsset : BaseEditorTreeAsset
     {
