@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5722098202846957478
+--- !u!114 &-3431560426435837806
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13,14 +13,14 @@ MonoBehaviour:
   m_Name: BasicExampleDirectV2_Runtime_BB_Definition
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
   sharedVariables:
-  - rid: 3017916979489538165
-  - rid: 3017916979489538166
-  - rid: 3017916979489538167
-  - rid: 3017916979489538168
+  - rid: 3017917049619874203
+  - rid: 3017917049619874204
+  - rid: 3017917049619874205
+  - rid: 3017917049619874206
   references:
     version: 2
     RefIds:
-    - rid: 3017916979489538165
+    - rid: 3017917049619874203
       type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AttackTarget
@@ -31,7 +31,7 @@ MonoBehaviour:
         isSystemVariable: 0
         singleValue: {fileID: 0}
         arrayValues: []
-    - rid: 3017916979489538166
+    - rid: 3017917049619874204
       type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: EngagePosition
@@ -42,7 +42,7 @@ MonoBehaviour:
         isSystemVariable: 0
         singleValue: {x: 0, y: 0, z: 0}
         arrayValues: []
-    - rid: 3017916979489538167
+    - rid: 3017917049619874205
       type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: MoveTarget
@@ -53,7 +53,7 @@ MonoBehaviour:
         isSystemVariable: 0
         singleValue: {x: 0, y: 0, z: 0}
         arrayValues: []
-    - rid: 3017916979489538168
+    - rid: 3017917049619874206
       type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: PatrolPoints
@@ -155,7 +155,7 @@ MonoBehaviour:
     methodName: Enemy_FireSequence
     blackBoardTypeID: 0
     fieldDataStartIndex: 8
-    fieldDataCount: 5
+    fieldDataCount: 7
     abortType: 0
   - nodeType: 5
     firstChildIndex: 11
@@ -170,7 +170,7 @@ MonoBehaviour:
     lastChildIndex: 13
     methodName: SEQUENCE
     blackBoardTypeID: 0
-    fieldDataStartIndex: 13
+    fieldDataStartIndex: 15
     fieldDataCount: 0
     abortType: 0
   - nodeType: 3
@@ -178,7 +178,7 @@ MonoBehaviour:
     lastChildIndex: -1
     methodName: Enemy_EngagePosition
     blackBoardTypeID: 0
-    fieldDataStartIndex: 13
+    fieldDataStartIndex: 15
     fieldDataCount: 6
     abortType: 0
   - nodeType: 3
@@ -186,7 +186,7 @@ MonoBehaviour:
     lastChildIndex: -1
     methodName: MoveTo
     blackBoardTypeID: 0
-    fieldDataStartIndex: 19
+    fieldDataStartIndex: 21
     fieldDataCount: 1
     abortType: 0
   - nodeType: 1
@@ -194,7 +194,7 @@ MonoBehaviour:
     lastChildIndex: 16
     methodName: SEQUENCE
     blackBoardTypeID: 0
-    fieldDataStartIndex: 20
+    fieldDataStartIndex: 22
     fieldDataCount: 0
     abortType: 0
   - nodeType: 3
@@ -202,7 +202,7 @@ MonoBehaviour:
     lastChildIndex: -1
     methodName: Enemy_EngagePosition
     blackBoardTypeID: 0
-    fieldDataStartIndex: 20
+    fieldDataStartIndex: 22
     fieldDataCount: 6
     abortType: 0
   - nodeType: 3
@@ -210,7 +210,7 @@ MonoBehaviour:
     lastChildIndex: -1
     methodName: MoveTo
     blackBoardTypeID: 0
-    fieldDataStartIndex: 26
+    fieldDataStartIndex: 28
     fieldDataCount: 1
     abortType: 0
   - nodeType: 1
@@ -218,7 +218,7 @@ MonoBehaviour:
     lastChildIndex: 20
     methodName: SEQUENCE
     blackBoardTypeID: 0
-    fieldDataStartIndex: 27
+    fieldDataStartIndex: 29
     fieldDataCount: 0
     abortType: 0
   - nodeType: 3
@@ -226,7 +226,7 @@ MonoBehaviour:
     lastChildIndex: -1
     methodName: ExtractPosition
     blackBoardTypeID: 0
-    fieldDataStartIndex: 27
+    fieldDataStartIndex: 29
     fieldDataCount: 3
     abortType: 0
   - nodeType: 3
@@ -234,7 +234,7 @@ MonoBehaviour:
     lastChildIndex: -1
     methodName: MoveTo
     blackBoardTypeID: 0
-    fieldDataStartIndex: 30
+    fieldDataStartIndex: 32
     fieldDataCount: 1
     abortType: 0
   - nodeType: 3
@@ -242,7 +242,7 @@ MonoBehaviour:
     lastChildIndex: -1
     methodName: WaitSeconds
     blackBoardTypeID: 0
-    fieldDataStartIndex: 31
+    fieldDataStartIndex: 33
     fieldDataCount: 1
     abortType: 0
   runtimeNodeGuids:
@@ -255,7 +255,7 @@ MonoBehaviour:
   - 33ed4eea230e0904fbc7c3a88910e97e
   - 0525c974394f09b419f5fdd8c0256dec
   - ffa9c9fd7840d6e419e0ef3c8e41daba
-  - 6d968628389863e4d8fbfb01e92943fb
+  - 94ff4a4bc638ddd4d90e126c23a8ca41
   - 016164a13dcea5b45b3d1c70f56d3403
   - 016164a13dcea5b45b3d1c70f56d3403/69cfa63cf5cc37c429980618c73bd094
   - 016164a13dcea5b45b3d1c70f56d3403/2bb60a8e9b7e3c94eb56d1c4034b1578
@@ -281,19 +281,23 @@ MonoBehaviour:
   - mode: 1
     value: 0
   - mode: 0
-    value: 1101004800
+    value: 1110704128
   - mode: 0
     value: 0
   - mode: 1
     value: 0
   - mode: 0
-    value: 1056964608
+    value: 1050253722
   - mode: 0
     value: 1069547520
   - mode: 0
-    value: 1075838976
+    value: 1084227584
   - mode: 0
-    value: 10
+    value: 200
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
   - mode: 1
     value: 1
   - mode: 1
@@ -350,6 +354,8 @@ MonoBehaviour:
   - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
   - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
   - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
   - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
     PublicKeyToken=null
   - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
@@ -378,7 +384,7 @@ MonoBehaviour:
   - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
     PublicKeyToken=null
   - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-  blackboardDefinition: {fileID: -5722098202846957478}
+  blackboardDefinition: {fileID: -3431560426435837806}
   maxTreeDepth: 6
   sourceTreeGuid: 
   sourceTree: {fileID: 11400000, guid: 6f657e5519dbc4f49902a218fe2b824f, type: 2}

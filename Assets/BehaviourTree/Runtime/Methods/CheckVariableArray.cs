@@ -29,109 +29,88 @@ namespace BehaviourTree.Runtime.Methods
     /// </summary>
     
     //[NodeMethod("CheckVariableArray")]
-    public sealed class CheckVariableArray : ConditionMethod
-    {
-        public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
-        {
-            new DynamicParamDescriptor
-            {
-                titleLabel = "Array Variable",
-                label = "Variable",
-                kind = DynamicParamKind.Variable,
-                index = 0,
-                allowedTypes = new[]
-                {
-                    typeof(Transform[]), typeof(GameObject[]),
-                    typeof(bool[]), typeof(int[]), typeof(float[]),
-                    typeof(Vector2[]), typeof(Vector3[]),
-                },
-            },
-            new DynamicParamDescriptor
-            {
-                titleLabel = "Condition",
-                label = "Condition",
-                kind = DynamicParamKind.Operation,
-                index = 1,
-                operationEnumType = typeof(ArrayCheckOp),
-            },
-        };
+    // public sealed class CheckVariableArray : ConditionMethod
+    // {
+    //     public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
+    //     {
+    //         new DynamicParamDescriptor
+    //         {
+    //             titleLabel = "Array Variable",
+    //             label = "Variable",
+    //             kind = DynamicParamKind.Variable,
+    //             index = 0,
+    //             allowedTypes = new[]
+    //             {
+    //                 typeof(Transform[]), typeof(GameObject[]),
+    //                 typeof(bool[]), typeof(int[]), typeof(float[]),
+    //                 typeof(Vector2[]), typeof(Vector3[]),
+    //             },
+    //         },
+    //         new DynamicParamDescriptor
+    //         {
+    //             titleLabel = "Condition",
+    //             label = "Condition",
+    //             kind = DynamicParamKind.Operation,
+    //             index = 1,
+    //             operationEnumType = typeof(ArrayCheckOp),
+    //         },
+    //     };
 
-        private int variableSlot = -1;
-        private int elementCount = 1;
-        private ArrayCheckOp operation;
+    //     private int variableSlot = -1;
+    //     private int elementCount = 1;
+    //     private ArrayCheckOp operation;
 
-        public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
-        {
-            // Field 0: array variable slot
-            if (fields.Length >= 1 && fields[0].IsVariable)
-                variableSlot = fields[0].value;
+    //     public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
+    //     {
+    //         // Field 0: array variable slot
+    //         if (fields.Length >= 1 && fields[0].IsVariable)
+    //             variableSlot = fields[0].value;
 
-            // TreeBaker emits a stride marker after array variables (stride > 1)
-            if (fields.Length >= 2 && fields[1].IsStrideMarker)
-                elementCount = fields[1].value;
+    //         // TreeBaker emits a stride marker after array variables (stride > 1)
+    //         if (fields.Length >= 2 && fields[1].IsStrideMarker)
+    //             elementCount = fields[1].value;
 
-            // Field 2 (or 1 if no stride): ArrayCheckOp enum constant
-            int opFieldIndex = fields.Length >= 2 && fields[1].IsStrideMarker ? 2 : 1;
-            if (fields.Length > opFieldIndex && fields[opFieldIndex].IsConstant)
-                operation = (ArrayCheckOp)fields[opFieldIndex].value;
-        }
+    //         // Field 2 (or 1 if no stride): ArrayCheckOp enum constant
+    //         int opFieldIndex = fields.Length >= 2 && fields[1].IsStrideMarker ? 2 : 1;
+    //         if (fields.Length > opFieldIndex && fields[opFieldIndex].IsConstant)
+    //             operation = (ArrayCheckOp)fields[opFieldIndex].value;
+    //     }
 
-        public override NodeState Execute(TickContext ctx)
-        {
-            if (variableSlot < 0)
-                return NodeState.FAILURE;
+    //     public override NodeState Execute(TickContext ctx)
+    //     {
+    //         if (variableSlot < 0)
+    //             return NodeState.FAILURE;
 
-            // Debug.Log($"[CheckVariableArray] operation={operation}, elementCount={elementCount}, baseSlot={variableSlot}");
+    //         // Debug.Log($"[CheckVariableArray] operation={operation}, elementCount={elementCount}, baseSlot={variableSlot}");
 
-            for (int i = 0; i < elementCount; i++)
-            {
-                object value = BB.GetBoxedRaw(variableSlot + i);
+    //         for (int i = 0; i < elementCount; i++)
+    //         {
+    //             object value = BB.GetBoxedRaw(variableSlot + i);
 
-                // Unity objects can be "fake null" (destroyed but C# ref still alive).
-                // The `is` pattern match bypasses Unity's == null override, so we
-                // must check for destroyed objects before accessing .name.
-                // string display;
-                // if (value == null)
-                // {
-                //     display = "null";
-                // }
-                // else if (value is UnityEngine.Object uo && uo == null)
-                // {
-                //     display = "<destroyed>";
-                // }
-                // else
-                // {
-                //     display = value.ToString();
-                // }
-                //
-                // string typeName = value?.GetType().Name ?? "null";
-                // bool matches = Evaluate(value, operation);
-                // Debug.Log($"  [{i}] slot={variableSlot + i} value=[{display}] type={typeName} matches={matches}");
+    //             if (Evaluate(value, operation))
+    //                 return NodeState.SUCCESS;
+    //         }
 
-                if (Evaluate(value, operation))
-                    return NodeState.SUCCESS;
-            }
+    //         return NodeState.FAILURE;
+    //     }
 
-            return NodeState.FAILURE;
-        }
+    //     private static bool Evaluate(object value, ArrayCheckOp op) => op switch
+    //     {
+    //         ArrayCheckOp.IsAnyNull    => IsNullValue(value),
+    //         ArrayCheckOp.IsAnyNotNull => !IsNullValue(value),
+    //         _ => false,
+    //     };
 
-        private static bool Evaluate(object value, ArrayCheckOp op) => op switch
-        {
-            ArrayCheckOp.IsAnyNull    => IsNullValue(value),
-            ArrayCheckOp.IsAnyNotNull => !IsNullValue(value),
-            _ => false,
-        };
-
-        private static bool IsNullValue(object value)
-        {
-            if (value == null) return true;
-            if (value is int i && i == 0) return true;
-            if (value is float f && Mathf.Approximately(f, 0f)) return true;
-            if (value is Vector2 v2 && v2.sqrMagnitude < 0.0001f) return true;
-            if (value is Vector3 v3 && v3.sqrMagnitude < 0.0001f) return true;
-            if (value is bool b && !b) return true;
-            if (value is UnityEngine.Object uo && uo == null) return true;
-            return false;
-        }
-    }
+    //     private static bool IsNullValue(object value)
+    //     {
+    //         if (value == null) return true;
+    //         if (value is int i && i == 0) return true;
+    //         if (value is float f && Mathf.Approximately(f, 0f)) return true;
+    //         if (value is Vector2 v2 && v2.sqrMagnitude < 0.0001f) return true;
+    //         if (value is Vector3 v3 && v3.sqrMagnitude < 0.0001f) return true;
+    //         if (value is bool b && !b) return true;
+    //         if (value is UnityEngine.Object uo && uo == null) return true;
+    //         return false;
+    //     }
+    // }
 }

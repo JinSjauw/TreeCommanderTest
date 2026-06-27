@@ -365,7 +365,13 @@ namespace BehaviourTree.Editor
                     data = new NodeTooltipData
                     {
                         nodeName = "Set Variable",
-                        description = "Assigns a value to a blackboard variable. The value can be a constant you type in, or copied from another variable. Works with all types (numbers, positions, booleans, object references)."
+                        description = "Assigns a value to a blackboard variable. The value can be a constant you type in, or copied from another variable. Works with all types (numbers, positions, booleans, object references).",
+                        returnValues = "SUCCESS — value was written successfully\nFAILURE — target variable is invalid or no value source is available",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Target", description = "The variable to write the value into." },
+                            new NodeFieldDescription { fieldName = "Value", description = "The value to assign. Toggle between a constant you type in or a variable to copy from." }
+                        }
                     }
                 },
                 new MethodTooltipEntry
@@ -374,7 +380,12 @@ namespace BehaviourTree.Editor
                     data = new NodeTooltipData
                     {
                         nodeName = "Clear Variable",
-                        description = "Resets a blackboard variable to its default value (zero for numbers, empty for objects)."
+                        description = "Resets a blackboard variable to its default value (zero for numbers, empty for objects). Use this to clean up temporary data when a behaviour finishes.",
+                        returnValues = "SUCCESS — variable was cleared\nFAILURE — target variable is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Target", description = "The variable to reset to its default value." }
+                        }
                     }
                 },
                 new MethodTooltipEntry
@@ -383,7 +394,12 @@ namespace BehaviourTree.Editor
                     data = new NodeTooltipData
                     {
                         nodeName = "Log Variable",
-                        description = "Prints the current value of a blackboard variable to the Unity Console. Useful for debugging your tree during play mode."
+                        description = "Prints the current value of a blackboard variable to the Unity Console. If the variable is an array, all elements are logged. Useful for debugging your tree during play mode.",
+                        returnValues = "SUCCESS — value was logged\nFAILURE — variable slot is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Variable", description = "The variable whose value you want to print to the console." }
+                        }
                     }
                 },
                 new MethodTooltipEntry
@@ -392,7 +408,12 @@ namespace BehaviourTree.Editor
                     data = new NodeTooltipData
                     {
                         nodeName = "Toggle",
-                        description = "Flips a boolean variable on or off. If it was true, it becomes false; if it was false, it becomes true."
+                        description = "Flips a boolean variable: true becomes false, false becomes true. A quick way to switch states without needing a Set Variable node.",
+                        returnValues = "SUCCESS — value was toggled\nFAILURE — variable slot is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Variable", description = "The boolean variable to flip. Must be a bool type." }
+                        }
                     }
                 },
                 new MethodTooltipEntry
@@ -401,7 +422,13 @@ namespace BehaviourTree.Editor
                     data = new NodeTooltipData
                     {
                         nodeName = "Set From Transform",
-                        description = "Copies a GameObject's position into a Vector2 or Vector3 variable. The output format is chosen automatically based on the variable's type."
+                        description = "Copies a GameObject's position into a Vector2 or Vector3 variable. If the target is Vector2, only the X and Z axes are copied (ignoring Y). The output format is chosen automatically based on the variable's type.",
+                        returnValues = "SUCCESS — position was copied\nFAILURE — target or source is invalid, or source is not a Transform",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Target", description = "The Vector2 or Vector3 variable to write the position into." },
+                            new NodeFieldDescription { fieldName = "Source", description = "The Transform variable to read the world position from." }
+                        }
                     }
                 },
                 new MethodTooltipEntry
@@ -410,7 +437,12 @@ namespace BehaviourTree.Editor
                     data = new NodeTooltipData
                     {
                         nodeName = "Move To",
-                        description = "Tells the agent to move toward a target location using its NavMeshAgent. The target can be a position or a Transform to follow. Keeps running until the destination is reached."
+                        description = "Tells the agent to move toward a target location using its NavMeshAgent. The target can be a position (Vector2/Vector3) or a Transform to follow. Keeps running until the agent reaches the destination. If aborted (e.g. by a higher-priority branch), the agent stops moving.",
+                        returnValues = "SUCCESS — agent arrived at destination\nRUNNING — agent is still moving\nFAILURE — target is invalid or no NavMeshAgent found on the agent",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Target", description = "Where the agent should move to. Can be a Vector2, Vector3, or Transform variable." }
+                        }
                     }
                 },
                 new MethodTooltipEntry
@@ -420,6 +452,7 @@ namespace BehaviourTree.Editor
                     {
                         nodeName = "Send Order",
                         description = "Sends a command order to the current agent(s). Agent trees can check for this order using the Check Order node. Only available in Commander trees.",
+                        returnValues = "SUCCESS — order was sent\nFAILURE — (never fails under normal conditions)",
                         fieldDescriptions = new[]
                         {
                             new NodeFieldDescription { fieldName = "orderValue", description = "The order to send. Agents receive this value and can react to it." }
@@ -433,9 +466,90 @@ namespace BehaviourTree.Editor
                     {
                         nodeName = "Wait",
                         description = "Pauses the tree for a set number of seconds, then continues. While waiting, the node stays in the RUNNING state.",
+                        returnValues = "SUCCESS — wait time has elapsed\nRUNNING — still counting down\nFAILURE — (never fails under normal conditions)",
                         fieldDescriptions = new[]
                         {
                             new NodeFieldDescription { fieldName = "duration", description = "How many seconds to wait before continuing." }
+                        }
+                    }
+                },
+
+                // ═══ Commander & Agent Actions ═══
+                new MethodTooltipEntry
+                {
+                    methodName = "ReportStatus",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Report Status",
+                        description = "Writes a status value (Success, Failure, or Running) into an integer variable. This is how an agent reports its current status back to the Commander tree — the commander can then read this with the Poll Agent Status node. Only available in Agent trees.",
+                        returnValues = "SUCCESS — status was written\nFAILURE — target variable is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Target", description = "The integer variable to write the status into. The Commander reads this to coordinate the squad." },
+                            new NodeFieldDescription { fieldName = "Value", description = "Which status to report: Success (0), Failure (1), or Running (2)." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "CalculateFormation",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Calculate Formation",
+                        description = "Computes a position in a formation pattern for each agent. Use inside a For Each Agent or For Each Role loop — each agent gets a unique offset position. Currently supports Circle formation: agents are evenly spaced around the center at the given radius. Only available in Commander trees.",
+                        returnValues = "SUCCESS — position was calculated and written\nFAILURE — output variable is invalid or no agents available",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Center", description = "The center point of the formation. Can be a constant Vector3 or read from a variable." },
+                            new NodeFieldDescription { fieldName = "Output", description = "The Vector3 array variable to write each agent's formation position into." },
+                            new NodeFieldDescription { fieldName = "Type", description = "The formation shape. Currently only Circle is available." },
+                            new NodeFieldDescription { fieldName = "Radius", description = "The radius of the formation. Agents are placed at this distance from the center." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "ArrayReduce",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Array Reduce",
+                        description = "Reduces an array of numbers or vectors into a single value. Average computes the mean of all elements. Lowest finds the minimum (by value for numbers, by magnitude for vectors). Highest finds the maximum. Works on regular arrays stored in the blackboard.",
+                        returnValues = "SUCCESS — reduction completed and output written\nFAILURE — source or output is invalid, array is empty, or all elements are null",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Source", description = "The array variable to reduce. Supports int[], float[], Vector2[], and Vector3[]." },
+                            new NodeFieldDescription { fieldName = "Op", description = "How to reduce the array: Average (mean of all values), Lowest (minimum), or Highest (maximum)." },
+                            new NodeFieldDescription { fieldName = "Output", description = "Where to store the resulting single value. The type automatically matches the array's element type." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "SquadReduce",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Squad Reduce",
+                        description = "Works like Array Reduce, but operates on squad data — it reads one value per agent from a squad-wide array. Useful for finding the average health of all agents, which agent has the lowest ammo, etc. Only available in Commander trees.",
+                        returnValues = "SUCCESS — reduction completed and output written\nFAILURE — source or output is invalid, no agents, or all values are null",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Source", description = "The squad data array to reduce. Supports int[], float[], Vector2[], and Vector3[]." },
+                            new NodeFieldDescription { fieldName = "Op", description = "How to reduce the array: Average (mean of all values), Lowest (minimum), or Highest (maximum)." },
+                            new NodeFieldDescription { fieldName = "Output", description = "Where to store the resulting single value. The type automatically matches the array's element type." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "SetNavAgentSpeed",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Set NavAgent Speed",
+                        description = "Changes the agent's NavMeshAgent movement speed at runtime. The original speed is saved and automatically restored when this node is aborted or the behaviour stops. Use this to temporarily slow down or speed up an agent during specific behaviours (e.g. sprint, sneak). Only available in Agent trees.",
+                        returnValues = "SUCCESS — speed was set\nFAILURE — no NavMeshAgent found on the agent",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Value", description = "The new movement speed for the NavMeshAgent. Can be a constant value or read from a variable." }
                         }
                     }
                 },
@@ -447,7 +561,14 @@ namespace BehaviourTree.Editor
                     data = new NodeTooltipData
                     {
                         nodeName = "Compare Variable",
-                        description = "Checks a variable against a value or another variable. Supports equals, not equals, less than, greater than, and distance comparisons for positions. SUCCEEDS when the comparison is true, FAILS otherwise."
+                        description = "Checks a variable against a value or another variable. Supports equals, not equals, less than, greater than, and magnitude comparisons for vectors. The available operations change based on the variable's type — for example, magnitude comparisons only appear for Vector2 and Vector3.",
+                        returnValues = "SUCCESS — comparison is true\nFAILURE — comparison is false or Operand A is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Operand A", description = "The first variable to compare (left side). Its type determines which operations are available." },
+                            new NodeFieldDescription { fieldName = "Operand B", description = "The value to compare against (right side). Toggle between a constant or another variable." },
+                            new NodeFieldDescription { fieldName = "Operation", description = "The comparison to perform: Equal, Not Equal, Less/Greater (for numbers), or Magnitude (for vectors)." }
+                        }
                     }
                 },
                 new MethodTooltipEntry
@@ -456,7 +577,13 @@ namespace BehaviourTree.Editor
                     data = new NodeTooltipData
                     {
                         nodeName = "Check Variable",
-                        description = "Checks a variable's state without needing a comparison value. Booleans: is true / is false. Numbers: is zero / is not zero. Object references: is null / is not null / is active / is inactive. SUCCEEDS when the condition is met."
+                        description = "Checks a variable's state without needing a comparison value. Booleans: is true / is false. Numbers and vectors: is zero / is not zero. References: is null / is not null / is active / is inactive. The available checks depend on the variable's type.",
+                        returnValues = "SUCCESS — condition is met\nFAILURE — condition is not met or variable is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Variable", description = "The variable to check. The available conditions change based on its type." },
+                            new NodeFieldDescription { fieldName = "Condition", description = "What to check for: IsTrue/IsFalse (bool), IsZero/IsNotZero (numbers/vectors), IsNull/IsNotNull/IsActive/IsInactive (references)." }
+                        }
                     }
                 },
                 new MethodTooltipEntry
@@ -465,7 +592,12 @@ namespace BehaviourTree.Editor
                     data = new NodeTooltipData
                     {
                         nodeName = "Has Changed",
-                        description = "Detects when a variable's value has changed since the previous frame. SUCCEEDS if the value is different. On the first check, it always returns FAILURE (no previous value to compare against)."
+                        description = "Detects when a variable's value has changed since the previous frame. On the first check, it always returns FAILURE (no previous value to compare against). Useful for triggering actions when data updates — for example, reacting when a target position changes.",
+                        returnValues = "SUCCESS — value changed since last check\nFAILURE — value is unchanged, first check, or variable is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Variable", description = "The variable to monitor for changes. Works with any type." }
+                        }
                     }
                 },
                 new MethodTooltipEntry
@@ -474,7 +606,13 @@ namespace BehaviourTree.Editor
                     data = new NodeTooltipData
                     {
                         nodeName = "Edge Detect",
-                        description = "Detects when a boolean variable flips. Choose rising edge (off to on) or falling edge (on to off). On the first check, it always returns FAILURE (nothing to compare against)."
+                        description = "Detects when a boolean variable flips from one state to another. Rising edge triggers when the value goes from false to true. Falling edge triggers when it goes from true to false. On the first check, always returns FAILURE (nothing to compare against). Use this to fire one-shot reactions to state changes.",
+                        returnValues = "SUCCESS — edge detected (rising or falling as configured)\nFAILURE — no edge detected, first check, or variable is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Variable", description = "The boolean variable to monitor for edge transitions. Must be a bool type." },
+                            new NodeFieldDescription { fieldName = "Edge", description = "Which transition to detect: Rising (false→true) or Falling (true→false)." }
+                        }
                     }
                 },
                 new MethodTooltipEntry
@@ -484,9 +622,41 @@ namespace BehaviourTree.Editor
                     {
                         nodeName = "Check Order",
                         description = "Checks whether the agent has received a specific order from the Commander tree. SUCCEEDS when the received order matches, FAILS otherwise. Only available in Agent trees.",
+                        returnValues = "SUCCESS — received order matches the expected order\nFAILURE — order does not match",
                         fieldDescriptions = new[]
                         {
                             new NodeFieldDescription { fieldName = "expectedOrder", description = "The order to check for. Succeeds when the commander has sent this order." }
+                        }
+                    }
+                },
+
+                // ═══ Commander Conditions ═══
+                new MethodTooltipEntry
+                {
+                    methodName = "PollAgentStatus",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Poll Agent Status",
+                        description = "Reads the status array reported by all agents and determines the overall squad state. If any agent has failed (status = 1), this node fails immediately. If any agent is still running (status = 2), it stays RUNNING. If all agents have completed, it returns SUCCESS. Use this to coordinate when all agents have finished their tasks. Only available in Commander trees.",
+                        returnValues = "SUCCESS — all agents have arrived / completed\nRUNNING — at least one agent is still running\nFAILURE — any agent has failed, or input variable is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Input", description = "The integer array variable holding each agent's current status (written by Report Status nodes)." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "CheckSquadData",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Check Squad Data",
+                        description = "Scans a squad-wide array (one value per agent) and checks if any element meets a condition. IsAnyNull succeeds when any agent's value is null, zero, or unset. IsAnyNotNull succeeds when any agent has a valid value. Succeeds as soon as a match is found — ideal for detecting threats or finding available targets. Only available in Commander trees.",
+                        returnValues = "SUCCESS — at least one element matches the condition\nFAILURE — no element matches, or input variable is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Input", description = "The squad data array to scan. Supports Transform[], GameObject[], bool[], int[], float[], Vector2[], and Vector3[]." },
+                            new NodeFieldDescription { fieldName = "Operation", description = "What to look for: IsAnyNull (any empty/invalid entry) or IsAnyNotNull (any valid entry)." }
                         }
                     }
                 },
@@ -496,13 +666,174 @@ namespace BehaviourTree.Editor
                     data = new NodeTooltipData
                     {
                         nodeName = "Cooldown",
-                        description = "A gate that only lets the tree pass once, then blocks for a set time. SUCCEEDS on the first tick, then FAILS until the cooldown timer runs out. After the timer elapses, it opens again for one tick.",
+                        description = "A gate that only lets the tree pass once, then blocks for a set time. SUCCEEDS on the first tick, then FAILS until the cooldown timer runs out. After the timer elapses, it opens again for one tick. Use this to prevent a behaviour from triggering too frequently.",
+                        returnValues = "SUCCESS — cooldown has elapsed, gate is open\nFAILURE — cooldown is still active, gate is closed",
                         fieldDescriptions = new[]
                         {
                             new NodeFieldDescription { fieldName = "duration", description = "How long the cooldown lasts before the gate opens again." },
                             new NodeFieldDescription { fieldName = "remaining", description = "A variable that tracks the remaining cooldown time. Can be shared between nodes." },
                             new NodeFieldDescription { fieldName = "useCustomTick", description = "When enabled, uses a custom time value instead of real delta time for the countdown." },
                             new NodeFieldDescription { fieldName = "customTickValue", description = "How much time passes per tick when using a custom tick. Only relevant when Use Custom Tick is enabled." }
+                        }
+                    }
+                },
+
+                // ═══ Enemy Agent Nodes ═══
+                new MethodTooltipEntry
+                {
+                    methodName = "Enemy_CheckRange",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Check Range",
+                        description = "Checks whether the distance from the agent to a target is within a given radius. Supports Less Than or Greater Than comparisons. The radius can be a constant value or read from a blackboard variable. Only available in Agent trees.",
+                        returnValues = "SUCCESS — distance satisfies the range condition\nFAILURE — target is invalid, no radius configured, or distance does not satisfy the condition",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Target", description = "The target to measure distance to. Accepts Transform, GameObject, or Vector3." },
+                            new NodeFieldDescription { fieldName = "Radius", description = "The distance threshold. Can be a constant float or read from a blackboard variable." },
+                            new NodeFieldDescription { fieldName = "Operation", description = "How to compare: LessThan (within range) or GreaterThan (outside range)." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "Enemy_Detected",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Detected",
+                        description = "Scans for targets within a radius using the EnemyDetectionSystem. Combines range checking and optional line-of-sight verification into a single condition. Succeeds as soon as any qualifying target is found. Only available in Agent trees.",
+                        returnValues = "SUCCESS — at least one target detected within range (and with line of sight, if enabled)\nFAILURE — no targets detected, or none pass the range/LOS checks",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Radius", description = "The detection radius. Targets beyond this distance are ignored." },
+                            new NodeFieldDescription { fieldName = "Operation", description = "How to compare distance: LessThan or GreaterThan against the radius." },
+                            new NodeFieldDescription { fieldName = "Check LOS", description = "When enabled, targets must also pass a line-of-sight check (no obstacles between agent and target)." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "Enemy_HasLineOfSight",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Has Line of Sight",
+                        description = "Checks whether there is a clear line of sight to a specific target Transform using Physics.Linecast. Use this to verify the agent can see a target before engaging. Only available in Agent trees.",
+                        returnValues = "SUCCESS — clear line of sight to the target\nFAILURE — line of sight blocked, target is invalid, or detection system is unavailable",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Target", description = "The Transform to check line of sight against. Must be a Transform variable." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "Enemy_HasArrived",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Has Arrived",
+                        description = "Checks whether the NavMeshAgent has reached its destination. Returns SUCCESS when the path is complete and the remaining distance is within the agent's stopping distance (plus a 0.1 unit tolerance). Only available in Agent trees.",
+                        returnValues = "SUCCESS — agent has arrived at destination\nFAILURE — agent is still moving or NavMeshAgent is unavailable",
+                        fieldDescriptions = new NodeFieldDescription[0]
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "Enemy_StopMovement",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Stop Movement",
+                        description = "Immediately stops the NavMeshAgent by setting isStopped to true. A quick fire-and-forget action — always succeeds unless the agent is missing. Only available in Agent trees.",
+                        returnValues = "SUCCESS — agent was stopped\nFAILURE — no NavMeshAgent found",
+                        fieldDescriptions = new NodeFieldDescription[0]
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "Enemy_EngagePosition",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Engage Position",
+                        description = "Computes a random tactical position in a cone directed toward the target and writes it to a Vector3 variable. The cone behavior adapts based on distance: close to the target, the cone widens and the direction blends backward (defensive retreat); far from the target, the cone narrows and pushes forward (aggressive advance). Use the output with a Move To node. Only available in Agent trees.",
+                        returnValues = "SUCCESS — engage position calculated and written\nFAILURE — output or target variable is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Position", description = "The Vector3 variable to write the calculated engage position into." },
+                            new NodeFieldDescription { fieldName = "Target", description = "The target Transform to orient the engage cone toward." },
+                            new NodeFieldDescription { fieldName = "Cone Angle", description = "The base angle (in degrees) of the cone. The cone widens when close to the target." },
+                            new NodeFieldDescription { fieldName = "Min Dist", description = "The minimum distance from the agent to pick a position." },
+                            new NodeFieldDescription { fieldName = "Max Dist", description = "The maximum distance from the agent to pick a position." },
+                            new NodeFieldDescription { fieldName = "Maintain Dist", description = "The target distance to maintain from the target. Closer than this triggers defensive backward movement; farther triggers aggressive forward movement." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "Enemy_FlankPosition",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Flank Position",
+                        description = "Computes a random flanking position perpendicular to the target direction and writes it to a Vector3 variable. The agent automatically flanks the opposite side of the target (target on right → flank left, target on left → flank right). Flank Angle blends between pure side-flank (0°) and heading directly toward the target (90°). Same distance-based cone modulation as Engage Position. Only available in Agent trees.",
+                        returnValues = "SUCCESS — flank position calculated and written\nFAILURE — output or target variable is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Position", description = "The Vector3 variable to write the calculated flank position into." },
+                            new NodeFieldDescription { fieldName = "Target", description = "The target Transform to flank around." },
+                            new NodeFieldDescription { fieldName = "Flank Angle", description = "Blends between pure side-flank (0°) and heading straight at the target (90°). Lower values give wider flanking arcs." },
+                            new NodeFieldDescription { fieldName = "Cone Angle", description = "The base angle (in degrees) for random variation in the movement cone." },
+                            new NodeFieldDescription { fieldName = "Min Dist", description = "The minimum distance from the agent to pick a position." },
+                            new NodeFieldDescription { fieldName = "Max Dist", description = "The maximum distance from the agent to pick a position." },
+                            new NodeFieldDescription { fieldName = "Maintain Dist", description = "The target distance to maintain from the target. Closer triggers defensive backward movement; farther triggers aggressive forward movement." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "Enemy_SelectDetectedTarget",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Select Detected Target",
+                        description = "Runs the EnemyDetectionSystem to scan for targets, then picks one using a selection strategy. The chosen target is written to a blackboard variable (as Transform or GameObject) for other nodes to use. Only available in Agent trees.",
+                        returnValues = "SUCCESS — a target was selected and written\nFAILURE — no targets detected, no target selected by strategy, or output variable is invalid",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Output", description = "Where to store the selected target. Accepts Transform or GameObject variable types." },
+                            new NodeFieldDescription { fieldName = "Selection Strategy", description = "How to pick among detected targets: Nearest (closest target) or Random." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "Enemy_FireSequence",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Fire Sequence",
+                        description = "Runs a complete multi-phase firing cycle: aim at the target, search for a valid trajectory, wait for a fire delay, then fire a single shot. Stays RUNNING through all phases and returns SUCCESS after one shot is fired. Re-enter this node for subsequent shots. The trajectory search can fail, causing the node to return FAILURE. Only available in Agent trees.",
+                        returnValues = "SUCCESS — one shot was fired successfully\nRUNNING — aiming, searching trajectory, waiting for fire delay, or reloading\nFAILURE — target is invalid, GunHandling is unavailable, or no valid firing trajectory found",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Target", description = "The Transform to aim and fire at." },
+                            new NodeFieldDescription { fieldName = "Fire Delay", description = "How many seconds to wait between aiming and firing." },
+                            new NodeFieldDescription { fieldName = "Spread", description = "The accuracy spread angle. Higher values mean less accurate shots." },
+                            new NodeFieldDescription { fieldName = "Reload", description = "How many seconds the reload cycle takes after firing." },
+                            new NodeFieldDescription { fieldName = "Damage", description = "How much damage each projectile deals." },
+                            new NodeFieldDescription { fieldName = "Trajectory Always Indirect", description = "When enabled, the projectile always follows an indirect (arced) trajectory." },
+                            new NodeFieldDescription { fieldName = "Trajectory Starting Height", description = "The starting height offset for indirect projectile trajectories." }
+                        }
+                    }
+                },
+                new MethodTooltipEntry
+                {
+                    methodName = "ExtractPosition",
+                    data = new NodeTooltipData
+                    {
+                        nodeName = "Extract Position",
+                        description = "Extracts a Vector3 position from a collection element. Handles single Transforms (reads child transforms), single GameObjects (reads child transforms), or arrays (Transform[], GameObject[], Vector3[]). Supports Sequential mode (cycles through elements in order) and Random mode (picks randomly each tick). A generic utility for patrol point cycling or waypoint extraction. Available on any tree type.",
+                        returnValues = "SUCCESS — position extracted and written\nFAILURE — input or output is invalid, or the collection is empty",
+                        fieldDescriptions = new[]
+                        {
+                            new NodeFieldDescription { fieldName = "Collection", description = "The source to extract a position from. Accepts Transform, GameObject, Transform[], GameObject[], or Vector3[]." },
+                            new NodeFieldDescription { fieldName = "Output", description = "The Vector3 variable to write the extracted position into." },
+                            new NodeFieldDescription { fieldName = "Mode", description = "How to pick an element: Sequential (cycle through in order) or Random (pick any element)." }
                         }
                     }
                 },

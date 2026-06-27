@@ -108,32 +108,6 @@ namespace BehaviourTree.Runtime.Methods
         {
             if (targetSlot < 0) return NodeState.FAILURE;
 
-            //// Diagnostic logging
-            //// string varName = "unknown";
-            //// var bb = BB as BlackBoard;
-            //// if (bb?.Definition != null)
-            //// {
-            ////     var vars = bb.Definition.GetAllVariables();
-            ////     int slotCursor = 0;
-            ////     for (int i = 0; i < vars.Count; i++)
-            ////     {
-            ////         int stride = vars[i].Stride;
-            ////         int actualStride = (stride > 1) ? stride : 1;
-            ////         if (targetSlot >= slotCursor && targetSlot < slotCursor + actualStride)
-            ////         {
-            ////             varName = vars[i].Name;
-            ////             break;
-            ////         }
-            ////         slotCursor += actualStride;
-            ////     }
-            //// }
-            ////
-            //// object before = BB.GetBoxed(targetSlot);
-            //// string beforeDisplay = before == null ? "null" :
-            ////     (before is UnityEngine.Object uo && uo == null) ? "<destroyed>" :
-            ////     before.ToString();
-            //// Debug.Log($"[ClearVariable] var='{varName}' slot={targetSlot} | before=[{beforeDisplay}] (type={before?.GetType().Name ?? "null"}) → writing null");
-
             // Write null — managed blackboard storage zeroes value-type slots on null
             BB.SetBoxed(targetSlot, null);
             return NodeState.SUCCESS;
@@ -382,82 +356,82 @@ namespace BehaviourTree.Runtime.Methods
     /// Checks a blackboard variable against a condition (IsTrue, IsNull, IsZero, IsActive, etc.).
     /// Available operations depend on the variable type.
     /// </summary>
-    [NodeMethod("CheckVariable")]
-    public sealed class CheckVariable : ConditionMethod
-    {
-        private static bool IsBoolType(Type t) => t == typeof(bool);
-        private static bool IsNumericOrVectorType(Type t) => t == typeof(int) || t == typeof(float) || t == typeof(Vector2) || t == typeof(Vector3);
-        private static bool IsReferenceType(Type t) => t == typeof(GameObject) || t == typeof(Transform) || (t != null && t.IsClass && t != typeof(string));
+    //[NodeMethod("CheckVariable")]
+    // public sealed class CheckVariable : ConditionMethod
+    // {
+    //     private static bool IsBoolType(Type t) => t == typeof(bool);
+    //     private static bool IsNumericOrVectorType(Type t) => t == typeof(int) || t == typeof(float) || t == typeof(Vector2) || t == typeof(Vector3);
+    //     private static bool IsReferenceType(Type t) => t == typeof(GameObject) || t == typeof(Transform) || (t != null && t.IsClass && t != typeof(string));
 
-        public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
-        {
-            new DynamicParamDescriptor { titleLabel = "Variable", label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
-            new DynamicParamDescriptor
-            {
-                titleLabel = "Condition", label = "Condition", kind = DynamicParamKind.Operation, index = 1,
-                operationEnumType = typeof(VariableCheckOp),
-                getAvailableOpIndices = (type) =>
-                {
-                    if (type == null) return null;
-                    if (IsBoolType(type)) return new[] { 0, 1 };           // IsTrue, IsFalse
-                    if (IsNumericOrVectorType(type)) return new[] { 2, 3 }; // IsZero, IsNotZero
-                    if (IsReferenceType(type)) return new[] { 4, 5, 6, 7 }; // IsNull, IsNotNull, IsActive, IsInactive
-                    return null;
-                }
-            },
-        };
+    //     public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
+    //     {
+    //         new DynamicParamDescriptor { titleLabel = "Variable", label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
+    //         new DynamicParamDescriptor
+    //         {
+    //             titleLabel = "Condition", label = "Condition", kind = DynamicParamKind.Operation, index = 1,
+    //             operationEnumType = typeof(VariableCheckOp),
+    //             getAvailableOpIndices = (type) =>
+    //             {
+    //                 if (type == null) return null;
+    //                 if (IsBoolType(type)) return new[] { 0, 1 };           // IsTrue, IsFalse
+    //                 if (IsNumericOrVectorType(type)) return new[] { 2, 3 }; // IsZero, IsNotZero
+    //                 if (IsReferenceType(type)) return new[] { 4, 5, 6, 7 }; // IsNull, IsNotNull, IsActive, IsInactive
+    //                 return null;
+    //             }
+    //         },
+    //     };
 
-        private int variableSlot = -1;
-        private VariableCheckOp operation;
+    //     private int variableSlot = -1;
+    //     private VariableCheckOp operation;
 
-        public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
-        {
-            if (fields.Length >= 1 && fields[0].IsVariable)
-                variableSlot = fields[0].value;
+    //     public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
+    //     {
+    //         if (fields.Length >= 1 && fields[0].IsVariable)
+    //             variableSlot = fields[0].value;
 
-            // Skip stride marker emitted by TreeBaker for squadData variables (stride > 1)
-            int opFieldIndex = fields.Length >= 2 && fields[1].IsStrideMarker ? 2 : 1;
-            if (fields.Length > opFieldIndex && fields[opFieldIndex].IsConstant)
-                operation = (VariableCheckOp)fields[opFieldIndex].value;
-        }
+    //         // Skip stride marker emitted by TreeBaker for squadData variables (stride > 1)
+    //         int opFieldIndex = fields.Length >= 2 && fields[1].IsStrideMarker ? 2 : 1;
+    //         if (fields.Length > opFieldIndex && fields[opFieldIndex].IsConstant)
+    //             operation = (VariableCheckOp)fields[opFieldIndex].value;
+    //     }
 
-        public override NodeState Execute(TickContext ctx)
-        {
-            if (variableSlot < 0) return NodeState.FAILURE;
+    //     public override NodeState Execute(TickContext ctx)
+    //     {
+    //         if (variableSlot < 0) return NodeState.FAILURE;
 
-            object value = BB.GetBoxed(variableSlot);
-            bool result = operation switch
-            {
-                VariableCheckOp.IsTrue    => value is bool b && b,
-                VariableCheckOp.IsFalse   => value is bool b2 && !b2,
-                VariableCheckOp.IsZero    => IsZeroValue(value),
-                VariableCheckOp.IsNotZero => !IsZeroValue(value),
-                VariableCheckOp.IsNull    => value == null || (value is UnityEngine.Object uo && uo == null),
-                VariableCheckOp.IsNotNull => value != null && (!(value is UnityEngine.Object uo2) || uo2 != null),
-                VariableCheckOp.IsActive  => IsActiveInHierarchy(value),
-                VariableCheckOp.IsInactive=> !IsActiveInHierarchy(value),
-                _ => false
-            };
-            return result ? NodeState.SUCCESS : NodeState.FAILURE;
-        }
+    //         object value = BB.GetBoxed(variableSlot);
+    //         bool result = operation switch
+    //         {
+    //             VariableCheckOp.IsTrue    => value is bool b && b,
+    //             VariableCheckOp.IsFalse   => value is bool b2 && !b2,
+    //             VariableCheckOp.IsZero    => IsZeroValue(value),
+    //             VariableCheckOp.IsNotZero => !IsZeroValue(value),
+    //             VariableCheckOp.IsNull    => value == null || (value is UnityEngine.Object uo && uo == null),
+    //             VariableCheckOp.IsNotNull => value != null && (!(value is UnityEngine.Object uo2) || uo2 != null),
+    //             VariableCheckOp.IsActive  => IsActiveInHierarchy(value),
+    //             VariableCheckOp.IsInactive=> !IsActiveInHierarchy(value),
+    //             _ => false
+    //         };
+    //         return result ? NodeState.SUCCESS : NodeState.FAILURE;
+    //     }
 
-        private static bool IsZeroValue(object value)
-        {
-            if (value == null) return true;
-            if (value is int i) return i == 0;
-            if (value is float f) return Mathf.Approximately(f, 0f);
-            if (value is Vector2 v2) return v2.sqrMagnitude < 0.0001f;
-            if (value is Vector3 v3) return v3.sqrMagnitude < 0.0001f;
-            return false;
-        }
+    //     private static bool IsZeroValue(object value)
+    //     {
+    //         if (value == null) return true;
+    //         if (value is int i) return i == 0;
+    //         if (value is float f) return Mathf.Approximately(f, 0f);
+    //         if (value is Vector2 v2) return v2.sqrMagnitude < 0.0001f;
+    //         if (value is Vector3 v3) return v3.sqrMagnitude < 0.0001f;
+    //         return false;
+    //     }
 
-        private static bool IsActiveInHierarchy(object value)
-        {
-            if (value is GameObject go) return go != null && go.activeInHierarchy;
-            if (value is Component comp) return comp != null && comp.gameObject.activeInHierarchy;
-            return false;
-        }
-    }
+    //     private static bool IsActiveInHierarchy(object value)
+    //     {
+    //         if (value is GameObject go) return go != null && go.activeInHierarchy;
+    //         if (value is Component comp) return comp != null && comp.gameObject.activeInHierarchy;
+    //         return false;
+    //     }
+    // }
 
     /// <summary>
     /// Returns SUCCESS if the variable's value changed since the last tick.
@@ -503,56 +477,56 @@ namespace BehaviourTree.Runtime.Methods
     /// <summary>
     /// Detects rising (false→true) or falling (true→false) edges on a boolean variable.
     /// </summary>
-    [NodeMethod("EdgeDetect")]
-    public sealed class EdgeDetect : ConditionMethod
-    {
-        public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
-        {
-            new DynamicParamDescriptor { titleLabel = "Variable", label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
-            new DynamicParamDescriptor
-            {
-                titleLabel = "Edge", label = "Edge", kind = DynamicParamKind.Operation, index = 1,
-                operationEnumType = typeof(EdgeDetectOp),
-            },
-        };
+    //[NodeMethod("EdgeDetect")]
+    // public sealed class EdgeDetect : ConditionMethod
+    // {
+    //     public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
+    //     {
+    //         new DynamicParamDescriptor { titleLabel = "Variable", label = "Variable", kind = DynamicParamKind.Variable, index = 0 },
+    //         new DynamicParamDescriptor
+    //         {
+    //             titleLabel = "Edge", label = "Edge", kind = DynamicParamKind.Operation, index = 1,
+    //             operationEnumType = typeof(EdgeDetectOp),
+    //         },
+    //     };
 
-        private int variableSlot = -1;
-        private EdgeDetectOp operation;  // EdgeDetect
-        private bool previous;
-        private bool hasPrevious;
+    //     private int variableSlot = -1;
+    //     private EdgeDetectOp operation;  // EdgeDetect
+    //     private bool previous;
+    //     private bool hasPrevious;
 
-        public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
-        {
-            if (fields.Length >= 1 && fields[0].IsVariable)
-                variableSlot = fields[0].value;
-            if (fields.Length >= 2 && fields[1].IsConstant)
-                operation = (EdgeDetectOp)fields[1].value;
-        }
+    //     public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
+    //     {
+    //         if (fields.Length >= 1 && fields[0].IsVariable)
+    //             variableSlot = fields[0].value;
+    //         if (fields.Length >= 2 && fields[1].IsConstant)
+    //             operation = (EdgeDetectOp)fields[1].value;
+    //     }
 
-        public override NodeState Execute(TickContext ctx)
-        {
-            if (variableSlot < 0) return NodeState.FAILURE;
+    //     public override NodeState Execute(TickContext ctx)
+    //     {
+    //         if (variableSlot < 0) return NodeState.FAILURE;
 
-            object value = BB.GetBoxed(variableSlot);
-            bool current = value is bool b && b;
+    //         object value = BB.GetBoxed(variableSlot);
+    //         bool current = value is bool b && b;
 
-            if (!hasPrevious)
-            {
-                previous = current;
-                hasPrevious = true;
-                return NodeState.FAILURE;
-            }
+    //         if (!hasPrevious)
+    //         {
+    //             previous = current;
+    //             hasPrevious = true;
+    //             return NodeState.FAILURE;
+    //         }
 
-            bool triggered = operation switch
-            {
-                EdgeDetectOp.Rising  => current && !previous,
-                EdgeDetectOp.Falling => !current && previous,
-                _ => false
-            };
-            previous = current;
-            return triggered ? NodeState.SUCCESS : NodeState.FAILURE;
-        }
-    }
+    //         bool triggered = operation switch
+    //         {
+    //             EdgeDetectOp.Rising  => current && !previous,
+    //             EdgeDetectOp.Falling => !current && previous,
+    //             _ => false
+    //         };
+    //         previous = current;
+    //         return triggered ? NodeState.SUCCESS : NodeState.FAILURE;
+    //     }
+    // }
 
     /// <summary>
     /// Toggles a boolean blackboard variable.
@@ -592,48 +566,48 @@ namespace BehaviourTree.Runtime.Methods
     /// Writes a Transform's position into a Vector2 or Vector3 variable.
     /// Output type is auto-detected from the target variable.
     /// </summary>
-    [NodeMethod("SetFromTransform")]
-    public sealed class SetFromTransform : ActionMethod
-    {
-        public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
-        {
-            new DynamicParamDescriptor { titleLabel = "Target", label = "Target", kind = DynamicParamKind.Variable, index = 0 },
-            new DynamicParamDescriptor
-            {
-                titleLabel = "Source", label = "Source", kind = DynamicParamKind.Variable, index = 1,
-                allowedTypes = new[] { typeof(Transform) }
-            },
-        };
+    // [NodeMethod("SetFromTransform")]
+    // public sealed class SetFromTransform : ActionMethod
+    // {
+    //     public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
+    //     {
+    //         new DynamicParamDescriptor
+    //         {
+    //             titleLabel = "Source", label = "Input", kind = DynamicParamKind.Variable, index = 0,
+    //             allowedTypes = new[] { typeof(Transform) }
+    //         },
+    //         new DynamicParamDescriptor { titleLabel = "Target", label = "Output", kind = DynamicParamKind.Variable, index = 1 },
+    //     };
 
-        private int targetSlot = -1;
-        private int sourceSlot = -1;
+    //     private int targetSlot = -1;
+    //     private int sourceSlot = -1;
 
-        public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
-        {
-            int fieldIndex = 0;
-            targetSlot = VariableMethodHelper.ReadVariableSlot(fields, ref fieldIndex);
-            sourceSlot = VariableMethodHelper.ReadVariableSlot(fields, ref fieldIndex);
-        }
+    //     public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
+    //     {
+    //         int fieldIndex = 0;
+    //         sourceSlot = VariableMethodHelper.ReadVariableSlot(fields, ref fieldIndex);
+    //         targetSlot = VariableMethodHelper.ReadVariableSlot(fields, ref fieldIndex);
+    //     }
 
-        public override NodeState Execute(TickContext ctx)
-        {
-            if (targetSlot < 0 || sourceSlot < 0) return NodeState.FAILURE;
+    //     public override NodeState Execute(TickContext ctx)
+    //     {
+    //         if (targetSlot < 0 || sourceSlot < 0) return NodeState.FAILURE;
 
-            object sourceValue = BB.GetBoxed(sourceSlot);
-            Transform source = sourceValue as Transform;
-            if (source == null) return NodeState.FAILURE;
+    //         object sourceValue = BB.GetBoxed(sourceSlot);
+    //         Transform source = sourceValue as Transform;
+    //         if (source == null) return NodeState.FAILURE;
 
-            object targetValue = BB.GetBoxed(targetSlot);
-            if (targetValue is Vector3)
-                BB.SetBoxed(targetSlot, source.position);
-            else if (targetValue is Vector2)
-                BB.SetBoxed(targetSlot, new Vector2(source.position.x, source.position.z));
-            else
-                return NodeState.FAILURE;
+    //         object targetValue = BB.GetBoxed(targetSlot);
+    //         if (targetValue is Vector3)
+    //             BB.SetBoxed(targetSlot, source.position);
+    //         else if (targetValue is Vector2)
+    //             BB.SetBoxed(targetSlot, new Vector2(source.position.x, source.position.z));
+    //         else
+    //             return NodeState.FAILURE;
 
-            return NodeState.SUCCESS;
-        }
-    }
+    //         return NodeState.SUCCESS;
+    //     }
+    // }
 
     /// <summary>
     /// Moves a NavMeshAgent toward a target position (Vector2, Vector3, or Transform).

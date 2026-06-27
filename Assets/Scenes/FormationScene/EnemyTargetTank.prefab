@@ -245,6 +245,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4096845100476099490, guid: 32a93f9fea1499348a9fc1f8c0f0cb96, type: 3}
+      propertyPath: runtimeAsset
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4096845100476099490, guid: 32a93f9fea1499348a9fc1f8c0f0cb96, type: 3}
       propertyPath: authoringAsset
       value: 
       objectReference: {fileID: 11400000, guid: 6f657e5519dbc4f49902a218fe2b824f, type: 2}

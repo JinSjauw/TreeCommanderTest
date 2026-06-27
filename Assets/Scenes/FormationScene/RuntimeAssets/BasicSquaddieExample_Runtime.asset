@@ -1,0 +1,1472 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4957832045940677625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
+  m_Name: BasicSquaddieExample_Runtime_BB_Definition
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
+  sharedVariables:
+  - rid: 3017917049619874192
+  - rid: 3017917049619874193
+  - rid: 3017917049619874194
+  - rid: 3017917049619874195
+  - rid: 3017917049619874196
+  - rid: 3017917049619874197
+  - rid: 3017917049619874198
+  - rid: 3017917049619874199
+  - rid: 3017917049619874200
+  - rid: 3017917049619874201
+  - rid: 3017917049619874202
+  references:
+    version: 2
+    RefIds:
+    - rid: 3017917049619874192
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentAssignedRole
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 3017917049619874193
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentReceivedOrder
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 3017917049619874194
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentStatus
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 3017917049619874195
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: agentMoveTarget
+        variableStride: 1
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []
+    - rid: 3017917049619874196
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: formationSpeed
+        variableStride: 1
+        variableTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: []
+    - rid: 3017917049619874197
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: DetectedEnemy
+        variableStride: 1
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+    - rid: 3017917049619874198
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentHasDied
+        variableStride: 1
+        variableTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: 
+    - rid: 3017917049619874199
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: EnagagePosition
+        variableStride: 1
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []
+    - rid: 3017917049619874200
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: e074a343d7159964ca01ee20e063aa52/AttackTarget
+        variableStride: 1
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+    - rid: 3017917049619874201
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: 879edcc024ca1c74b8a4dcecbf6a2d83/AttackTarget
+        variableStride: 1
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+    - rid: 3017917049619874202
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: e893658156ed69145afc121bf53dc087/AttackTarget
+        variableStride: 1
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66c25e780b933274d83104b31a416a22, type: 3}
+  m_Name: BasicSquaddieExample_Runtime
+  m_EditorClassIdentifier: BehaviourTree.Runtime::RuntimeBehaviourTreeAsset
+  runtimeNodeData:
+  - nodeType: 1
+    firstChildIndex: 1
+    lastChildIndex: 2
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 3
+    lastChildIndex: 5
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 2
+  - nodeType: 1
+    firstChildIndex: 6
+    lastChildIndex: 10
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: CompareVariable
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ClearVariable
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 3
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ReportStatus
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 4
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 11
+    lastChildIndex: 12
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 0
+    abortType: 2
+  - nodeType: 1
+    firstChildIndex: 13
+    lastChildIndex: 15
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 80
+    lastChildIndex: 81
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 0
+    abortType: 2
+  - nodeType: 1
+    firstChildIndex: 82
+    lastChildIndex: 86
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 89
+    lastChildIndex: 90
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: HasChanged
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ReportStatus
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 7
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 16
+    lastChildIndex: 18
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 9
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 36
+    lastChildIndex: 38
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 9
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 55
+    lastChildIndex: 57
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 9
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: CheckOrder
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 9
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ReportStatus
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 11
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 5
+    firstChildIndex: 19
+    lastChildIndex: 19
+    methodName: 
+    blackBoardTypeID: 0
+    fieldDataStartIndex: -1
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 20
+    lastChildIndex: 21
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 13
+    fieldDataCount: 0
+    abortType: 1
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: HasChanged
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 13
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 22
+    lastChildIndex: 25
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 14
+    fieldDataCount: 0
+    abortType: 1
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_Detected
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 14
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_SelectDetectedTarget
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 17
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SetNavAgentSpeed
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 19
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 26
+    lastChildIndex: 26
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 20
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 27
+    lastChildIndex: 29
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 20
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_FlankPosition
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 20
+    fieldDataCount: 7
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 27
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 4
+    firstChildIndex: 30
+    lastChildIndex: 30
+    methodName: Repeater
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 28
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 31
+    lastChildIndex: 33
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 29
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_CheckRange
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 29
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_FireSequence
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 32
+    fieldDataCount: 7
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 34
+    lastChildIndex: 35
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 39
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_FlankPosition
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 39
+    fieldDataCount: 7
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 46
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: CheckOrder
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 47
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ReportStatus
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 49
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 5
+    firstChildIndex: 39
+    lastChildIndex: 39
+    methodName: 
+    blackBoardTypeID: 0
+    fieldDataStartIndex: -1
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 40
+    lastChildIndex: 43
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 51
+    fieldDataCount: 0
+    abortType: 1
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_Detected
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 51
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_SelectDetectedTarget
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 54
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SetNavAgentSpeed
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 56
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 44
+    lastChildIndex: 45
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 57
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 46
+    lastChildIndex: 49
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 57
+    fieldDataCount: 0
+    abortType: 2
+  - nodeType: 1
+    firstChildIndex: 53
+    lastChildIndex: 54
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 57
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_CheckRange
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 57
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_HasLineOfSight
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 60
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 4
+    firstChildIndex: 50
+    lastChildIndex: 50
+    methodName: Repeater
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 61
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 51
+    lastChildIndex: 52
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 62
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_FireSequence
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 62
+    fieldDataCount: 7
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_EngagePosition
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 69
+    fieldDataCount: 6
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 75
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_EngagePosition
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 76
+    fieldDataCount: 6
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 82
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: CheckOrder
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 83
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ReportStatus
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 85
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 5
+    firstChildIndex: 58
+    lastChildIndex: 58
+    methodName: 
+    blackBoardTypeID: 0
+    fieldDataStartIndex: -1
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 59
+    lastChildIndex: 62
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 87
+    fieldDataCount: 0
+    abortType: 1
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_Detected
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 87
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_SelectDetectedTarget
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 90
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SetNavAgentSpeed
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 92
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 63
+    lastChildIndex: 64
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 93
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 65
+    lastChildIndex: 68
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 93
+    fieldDataCount: 0
+    abortType: 2
+  - nodeType: 1
+    firstChildIndex: 78
+    lastChildIndex: 79
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 93
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_CheckRange
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 93
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 69
+    lastChildIndex: 70
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 96
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: WaitSeconds
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 96
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 76
+    lastChildIndex: 77
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 97
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 71
+    lastChildIndex: 73
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 97
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 4
+    firstChildIndex: 75
+    lastChildIndex: 75
+    methodName: Repeater
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 97
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_CheckRange
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 98
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_HasLineOfSight
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 101
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 4
+    firstChildIndex: 74
+    lastChildIndex: 74
+    methodName: Repeater
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 102
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_FireSequence
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 103
+    fieldDataCount: 7
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_FireSequence
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 110
+    fieldDataCount: 7
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_EngagePosition
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 117
+    fieldDataCount: 6
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 123
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_EngagePosition
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 124
+    fieldDataCount: 6
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 130
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_Detected
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 131
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_SelectDetectedTarget
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 134
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 87
+    lastChildIndex: 88
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 136
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SetNavAgentSpeed
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 136
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ReportStatus
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 137
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 139
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ReportStatus
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 140
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: CheckOrder
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 142
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: CheckOrder
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 144
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ClearVariable
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 146
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ReportStatus
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 147
+    fieldDataCount: 2
+    abortType: 0
+  runtimeNodeGuids:
+  - fdbc59b49c6c8dd45b1396b8a6143a00
+  - dfef8aa5aa419544092a9d97e0e9922a
+  - ac43ec8161a164f4bbc51ee730b8fac9
+  - 97032b258f55eb640a4c4d71e253a2ec
+  - 74f6ff5f94c0ad24ea5429db2de3a7e9
+  - e06a8d13002666646b7d850dabf37338
+  - ba9371d85c5a6534b8a47fc1c85b7e14
+  - e22dcf491d8155f42813613f8609b65b
+  - 001da2791a6abaf4d9f9634d85f4003b
+  - aecd6c3a9f3321a4cacbba2cedab0bba
+  - 6677984341bd8ed4e982e8252b3ab8d0
+  - 8f5e44c48c18b914fa472364997989e7
+  - 91b7e0a57f42f1a4ebf8b45b90fcc8d2
+  - 469ea021737933044a00fd5959803350
+  - 135d1529b5f9ba34e8aae7e0f5f74c17
+  - ec7e05509535c3b468f099f738697962
+  - 89f551bc006abf84ebbbc35e70890d75
+  - 5bbe61d7b03e05d428cf7073cc56cf37
+  - e074a343d7159964ca01ee20e063aa52
+  - e074a343d7159964ca01ee20e063aa52/723fd4ac0f86c1f4692794f8032f393e
+  - e074a343d7159964ca01ee20e063aa52/ad279ad18b4103d4eb58ed690ec4fcdb
+  - e074a343d7159964ca01ee20e063aa52/47eb67cc2366eb04aa9708e67bb43d35
+  - e074a343d7159964ca01ee20e063aa52/e7b55437a667cf34b8cdcd60a2376a08
+  - e074a343d7159964ca01ee20e063aa52/99af44e3e38596b4db5b24ee2cf621cc
+  - e074a343d7159964ca01ee20e063aa52/f23267b72e8d1ac4fbdbc8028068513f
+  - e074a343d7159964ca01ee20e063aa52/35627ef38e6921744b103d9b66732581
+  - e074a343d7159964ca01ee20e063aa52/1a8b60e4cee5ec44eab822c70290702e
+  - e074a343d7159964ca01ee20e063aa52/308bc14ccc34c6a4c9439e4e3773238e
+  - e074a343d7159964ca01ee20e063aa52/fece182b376fa7f41bf03291b1325251
+  - e074a343d7159964ca01ee20e063aa52/d084f5789acc3f44abefa15bdbf0ed25
+  - e074a343d7159964ca01ee20e063aa52/37a07f5ac6f2e1c40acf7a9d52c0b014
+  - e074a343d7159964ca01ee20e063aa52/9ab26b7198ffb664eb2f645b3a4ba1da
+  - e074a343d7159964ca01ee20e063aa52/ed48f8b5ecb3638479d05956661b4e39
+  - e074a343d7159964ca01ee20e063aa52/6c026f77e9c4f1b44b3412d51e06deca
+  - e074a343d7159964ca01ee20e063aa52/14245f193efa00b44b25a135ba35cf08
+  - e074a343d7159964ca01ee20e063aa52/1e1c63cdb75357840894186b13d63e76
+  - 427bf9991317feb4f85cff46709e5dfa
+  - 79b0dac38d45b3242809776960db1cb5
+  - 879edcc024ca1c74b8a4dcecbf6a2d83
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/efef1ff65ea041d44bcdd35f37a5473a
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/cd4ebacca1c5ff845a7eead2a0202045
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/d08140a585bddb24f8a4a412e59ebc42
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/611be0982fe9325479e72f6b5f7600c0
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/9e6887fae12853b44bcc0b29bae9cec2
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/c0df32ad5278af14eabe85196e7c41a7
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/993467dbb23de53448d7514442b5dad1
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/4d35aca74444e15458c6333633a79344
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/28b52bc91b035224fb356fd1cf5d57b0
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/321cc85fbed3df5478d76c7cc011ad5a
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/4d54f415cab10fe42b7ecea6392fbdc0
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/091c8a7fc9207c646ae8f072fe6b8a85
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/c1795d04ceae6104eb6a0343510efed2
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/52ab26bbbb768de408b2036ba368231d
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/94b5e103589873f47881825c67eb1a4b
+  - 879edcc024ca1c74b8a4dcecbf6a2d83/1b2264228414bfe45a9ae27ff8577d50
+  - e99fd9be9e88b2d42b55751c649a94af
+  - 8086431cb83f9fe44802d95cb5882d1d
+  - e893658156ed69145afc121bf53dc087
+  - e893658156ed69145afc121bf53dc087/b4b44d02244d5074cb05447071263ee0
+  - e893658156ed69145afc121bf53dc087/4e1e57165d99cb14f8ff38febd3964c5
+  - e893658156ed69145afc121bf53dc087/de84a53d375a8614d8a4a8353fc5f079
+  - e893658156ed69145afc121bf53dc087/daf1a391aea8428498d1fe87094cfe91
+  - e893658156ed69145afc121bf53dc087/7a65e6905bd0d494aa84257d6b7d7c0e
+  - e893658156ed69145afc121bf53dc087/8f1107b43b43c5441b0ba910f2ca8048
+  - e893658156ed69145afc121bf53dc087/8ec7d64eccb311a42860f3d13f9100c7
+  - e893658156ed69145afc121bf53dc087/896b8fc376f99b542b9dc786aa58c419
+  - e893658156ed69145afc121bf53dc087/df7f78ee36365fa459adcb5d9f8278e0
+  - e893658156ed69145afc121bf53dc087/86eb1f5bf24bac94e81b9f4993ac376f
+  - e893658156ed69145afc121bf53dc087/18a1b436a0b36724e9b64707c6c903f8
+  - e893658156ed69145afc121bf53dc087/97ca5bb08b8f4da4aa8b6194bd3c9918
+  - e893658156ed69145afc121bf53dc087/15fa3f9c72920804c871d0be96de1f5d
+  - e893658156ed69145afc121bf53dc087/0ac4834b83078374abfb0de653603ddb
+  - e893658156ed69145afc121bf53dc087/c326ce8b4faf31e48bf0a4af0da1dc30
+  - e893658156ed69145afc121bf53dc087/49ae4d9fe8a9cd142bc271d369c41c48
+  - e893658156ed69145afc121bf53dc087/182e149328e076346a31577d1c44029e
+  - e893658156ed69145afc121bf53dc087/2d854820cb1f7d045a335be8c03a8df4
+  - e893658156ed69145afc121bf53dc087/b04fbadec0e40cf42b07fcdae4a181b7
+  - e893658156ed69145afc121bf53dc087/62600707c505e9545be2367f3166173a
+  - e893658156ed69145afc121bf53dc087/c861cb7b2d4f6954797722ccb4af041b
+  - e893658156ed69145afc121bf53dc087/7cc7780f3f553ea4b819c7d9555a6712
+  - 0869351bb91a3944ab7dcf8f81ea51ca
+  - 4afc659c82ac62f4da43b1ac1e977c24
+  - f41e5aa8c3dc5cf47a5c222ea028c15c
+  - 5e375594c54d415459490e586bc3c311
+  - aec5b4b5769d35841b5638fbd4285255
+  - 20004605264c7404d8ad94e4932a2165
+  - dced761da8a7a1a47970c104c5e97564
+  - 3f285aa79ec833d4f862272b6912837f
+  - a48b8462e2f962a49b53a89d99594141
+  - 50554a4aa17186244ad73501ef0cd4f1
+  - 57f41fff9432e2b48b2f24aeedbb767c
+  runtimeFieldData:
+  - mode: 1
+    value: 6
+  - mode: 0
+    value: 1
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 5
+  - mode: 1
+    value: 2
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 1
+  - mode: 1
+    value: 2
+  - mode: 0
+    value: 2
+  - mode: 1
+    value: 1
+  - mode: 0
+    value: 2
+  - mode: 1
+    value: 2
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 8
+  - mode: 0
+    value: 1124859904
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 8
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 1069547520
+  - mode: 1
+    value: 7
+  - mode: 1
+    value: 8
+  - mode: 0
+    value: 1113325568
+  - mode: 0
+    value: 1097859072
+  - mode: 0
+    value: 1114636288
+  - mode: 0
+    value: 1118437376
+  - mode: 0
+    value: 1109393408
+  - mode: 1
+    value: 7
+  - mode: 0
+    value: 2
+  - mode: 1
+    value: 8
+  - mode: 0
+    value: 1113325568
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 8
+  - mode: 0
+    value: 1050253722
+  - mode: 0
+    value: 1069547520
+  - mode: 0
+    value: 1073741824
+  - mode: 0
+    value: 110
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 7
+  - mode: 1
+    value: 8
+  - mode: 0
+    value: 1114636288
+  - mode: 0
+    value: 1103626240
+  - mode: 0
+    value: 1101004800
+  - mode: 0
+    value: 1108082688
+  - mode: 0
+    value: 1109393408
+  - mode: 1
+    value: 7
+  - mode: 1
+    value: 1
+  - mode: 0
+    value: 3
+  - mode: 1
+    value: 2
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 1124859904
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 9
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 1067030938
+  - mode: 1
+    value: 9
+  - mode: 0
+    value: 1108082688
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 9
+  - mode: 0
+    value: 2
+  - mode: 1
+    value: 9
+  - mode: 0
+    value: 1050253722
+  - mode: 0
+    value: 1077936128
+  - mode: 0
+    value: 1065353216
+  - mode: 0
+    value: 45
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 7
+  - mode: 1
+    value: 9
+  - mode: 0
+    value: 1119092736
+  - mode: 0
+    value: 1097859072
+  - mode: 0
+    value: 1106247680
+  - mode: 0
+    value: 1102053376
+  - mode: 1
+    value: 7
+  - mode: 1
+    value: 7
+  - mode: 1
+    value: 9
+  - mode: 0
+    value: 1108082688
+  - mode: 0
+    value: 1101004800
+  - mode: 0
+    value: 1110704128
+  - mode: 0
+    value: 1102053376
+  - mode: 1
+    value: 7
+  - mode: 1
+    value: 1
+  - mode: 0
+    value: 5
+  - mode: 1
+    value: 2
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 1126170624
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 10
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 1061997773
+  - mode: 1
+    value: 10
+  - mode: 0
+    value: 1126170624
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 1077936128
+  - mode: 0
+    value: 6
+  - mode: 1
+    value: 10
+  - mode: 0
+    value: 1112014848
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 10
+  - mode: 0
+    value: 3
+  - mode: 1
+    value: 10
+  - mode: 0
+    value: 1041865114
+  - mode: 0
+    value: 1090519040
+  - mode: 0
+    value: 1056964608
+  - mode: 0
+    value: 30
+  - mode: 0
+    value: 1
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 10
+  - mode: 0
+    value: 1041865114
+  - mode: 0
+    value: 1086324736
+  - mode: 0
+    value: 1056964608
+  - mode: 0
+    value: 30
+  - mode: 0
+    value: 1
+  - mode: 0
+    value: 1105199104
+  - mode: 1
+    value: 7
+  - mode: 1
+    value: 10
+  - mode: 0
+    value: 1127481344
+  - mode: 0
+    value: 1092616192
+  - mode: 0
+    value: 1103626240
+  - mode: 0
+    value: 1109393408
+  - mode: 1
+    value: 7
+  - mode: 1
+    value: 7
+  - mode: 1
+    value: 10
+  - mode: 0
+    value: 1113325568
+  - mode: 0
+    value: 1097859072
+  - mode: 0
+    value: 1106247680
+  - mode: 0
+    value: 1109393408
+  - mode: 1
+    value: 7
+  - mode: 0
+    value: 1117126656
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 5
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 1061997773
+  - mode: 1
+    value: 2
+  - mode: 0
+    value: 2
+  - mode: 1
+    value: 3
+  - mode: 1
+    value: 2
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 1
+  - mode: 0
+    value: 1
+  - mode: 1
+    value: 1
+  - mode: 0
+    value: 7
+  - mode: 1
+    value: 5
+  - mode: 1
+    value: 2
+  - mode: 0
+    value: 0
+  fieldTypeNames:
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  blackboardDefinition: {fileID: -4957832045940677625}
+  maxTreeDepth: 12
+  sourceTreeGuid: 
+  sourceTree: {fileID: 11400000, guid: 4a6bf587047dff84ea2f8e3304bcf0ee, type: 2}

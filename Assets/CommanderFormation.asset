@@ -505,7 +505,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
   m_Name: SetVariable
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: 
+  nodeName: SetVariable
   children: []
   firstChildIndex: 0
   lastChildIndex: 0
@@ -565,7 +565,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
   m_Name: SendOrder
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: 
+  nodeName: SendOrder
   children: []
   firstChildIndex: 0
   lastChildIndex: 0
@@ -686,7 +686,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: ForEachRole
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  nodeName: 
+  nodeName: ForEachRole
   children:
   - {fileID: -3091463069800464899}
   firstChildIndex: 0
@@ -1105,7 +1105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: ForEachAgent
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  nodeName: 
+  nodeName: ForEachAgent
   children:
   - {fileID: 2327313945984807962}
   - {fileID: 2419913014970158866}

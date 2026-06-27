@@ -175,51 +175,81 @@ MonoBehaviour:
       description: Assigns a value to a blackboard variable. The value can be a constant
         you type in, or copied from another variable. Works with all types (numbers,
         positions, booleans, object references).
-      returnValues: 
-      fieldDescriptions: []
+      returnValues: "SUCCESS \u2014 value was written successfully\nFAILURE \u2014
+        target variable is invalid or no value source is available"
+      fieldDescriptions:
+      - fieldName: Target
+        description: The variable to write the value into.
+      - fieldName: Value
+        description: The value to assign. Toggle between a constant you type in or
+          a variable to copy from.
   - methodName: ClearVariable
     data:
       nodeName: Clear Variable
       description: Resets a blackboard variable to its default value (zero for numbers,
-        empty for objects).
-      returnValues: 
-      fieldDescriptions: []
+        empty for objects). Use this to clean up temporary data when a behaviour
+        finishes.
+      returnValues: "SUCCESS \u2014 variable was cleared\nFAILURE \u2014 target variable
+        is invalid"
+      fieldDescriptions:
+      - fieldName: Target
+        description: The variable to reset to its default value.
   - methodName: LogVariable
     data:
       nodeName: Log Variable
       description: Prints the current value of a blackboard variable to the Unity
-        Console. Useful for debugging your tree during play mode.
-      returnValues: 
-      fieldDescriptions: []
+        Console. If the variable is an array, all elements are logged. Useful for
+        debugging your tree during play mode.
+      returnValues: "SUCCESS \u2014 value was logged\nFAILURE \u2014 variable slot
+        is invalid"
+      fieldDescriptions:
+      - fieldName: Variable
+        description: The variable whose value you want to print to the console.
   - methodName: Toggle
     data:
       nodeName: Toggle
-      description: Flips a boolean variable on or off. If it was true, it becomes
-        false; if it was false, it becomes true.
-      returnValues: 
-      fieldDescriptions: []
+      description: 'Flips a boolean variable: true becomes false, false becomes true.
+        A quick way to switch states without needing a Set Variable node.'
+      returnValues: "SUCCESS \u2014 value was toggled\nFAILURE \u2014 variable slot
+        is invalid"
+      fieldDescriptions:
+      - fieldName: Variable
+        description: The boolean variable to flip. Must be a bool type.
   - methodName: SetFromTransform
     data:
       nodeName: Set From Transform
       description: Copies a GameObject's position into a Vector2 or Vector3 variable.
+        If the target is Vector2, only the X and Z axes are copied (ignoring Y).
         The output format is chosen automatically based on the variable's type.
-      returnValues: 
-      fieldDescriptions: []
+      returnValues: "SUCCESS \u2014 position was copied\nFAILURE \u2014 target or
+        source is invalid, or source is not a Transform"
+      fieldDescriptions:
+      - fieldName: Target
+        description: The Vector2 or Vector3 variable to write the position into.
+      - fieldName: Source
+        description: The Transform variable to read the world position from.
   - methodName: MoveTo
     data:
       nodeName: Move To
       description: Tells the agent to move toward a target location using its NavMeshAgent.
-        The target can be a position or a Transform to follow. Keeps running until
-        the destination is reached.
-      returnValues: 
-      fieldDescriptions: []
+        The target can be a position (Vector2/Vector3) or a Transform to follow.
+        Keeps running until the agent reaches the destination. If aborted (e.g. by
+        a higher-priority branch), the agent stops moving.
+      returnValues: "SUCCESS \u2014 agent arrived at destination\nRUNNING \u2014
+        agent is still moving\nFAILURE \u2014 target is invalid or no NavMeshAgent
+        found on the agent"
+      fieldDescriptions:
+      - fieldName: Target
+        description: Where the agent should move to. Can be a Vector2, Vector3, or
+          Transform variable.
   - methodName: SendOrder
     data:
       nodeName: Send Order
       description: Sends a command order to the current agent(s). Agent trees can
         check for this order using the Check Order node. Only available in Commander
         trees.
-      returnValues: 
+      returnValues: "SUCCESS \u2014 order was sent\nFAILURE \u2014 (never fails under
+        normal conditions)"
       fieldDescriptions:
       - fieldName: ordersSlot
         description: 
@@ -231,63 +261,219 @@ MonoBehaviour:
       nodeName: Wait
       description: Pauses the tree for a set number of seconds, then continues. While
         waiting, the node stays in the RUNNING state.
-      returnValues: 
+      returnValues: "SUCCESS \u2014 wait time has elapsed\nRUNNING \u2014 still counting
+        down\nFAILURE \u2014 (never fails under normal conditions)"
       fieldDescriptions:
       - fieldName: duration
         description: How many seconds to wait before continuing.
+  - methodName: ReportStatus
+    data:
+      nodeName: Report Status
+      description: "Writes a status value (Success, Failure, or Running) into an
+        integer variable. This is how an agent reports its current status back to
+        the Commander tree \u2014 the commander can then read this with the Poll
+        Agent Status node. Only available in Agent trees."
+      returnValues: "SUCCESS \u2014 status was written\nFAILURE \u2014 target variable
+        is invalid"
+      fieldDescriptions:
+      - fieldName: Target
+        description: The integer variable to write the status into. The Commander
+          reads this to coordinate the squad.
+      - fieldName: Value
+        description: 'Which status to report: Success (0), Failure (1), or Running
+          (2).'
+  - methodName: CalculateFormation
+    data:
+      nodeName: Calculate Formation
+      description: "Computes a position in a formation pattern for each agent. Use
+        inside a For Each Agent or For Each Role loop \u2014 each agent gets a unique
+        offset position. Currently supports Circle formation: agents are evenly spaced
+        around the center at the given radius. Only available in Commander trees."
+      returnValues: "SUCCESS \u2014 position was calculated and written\nFAILURE
+        \u2014 output variable is invalid or no agents available"
+      fieldDescriptions:
+      - fieldName: Center
+        description: The center point of the formation. Can be a constant Vector3
+          or read from a variable.
+      - fieldName: Output
+        description: The Vector3 array variable to write each agent's formation position
+          into.
+      - fieldName: Type
+        description: The formation shape. Currently only Circle is available.
+      - fieldName: Radius
+        description: The radius of the formation. Agents are placed at this distance
+          from the center.
+  - methodName: ArrayReduce
+    data:
+      nodeName: Array Reduce
+      description: Reduces an array of numbers or vectors into a single value. Average
+        computes the mean of all elements. Lowest finds the minimum (by value for
+        numbers, by magnitude for vectors). Highest finds the maximum. Works on regular
+        arrays stored in the blackboard.
+      returnValues: "SUCCESS \u2014 reduction completed and output written\nFAILURE
+        \u2014 source or output is invalid, array is empty, or all elements are null"
+      fieldDescriptions:
+      - fieldName: Source
+        description: The array variable to reduce. Supports int[], float[], Vector2[],
+          and Vector3[].
+      - fieldName: Op
+        description: 'How to reduce the array: Average (mean of all values), Lowest
+          (minimum), or Highest (maximum).'
+      - fieldName: Output
+        description: Where to store the resulting single value. The type automatically
+          matches the array's element type.
+  - methodName: SquadReduce
+    data:
+      nodeName: Squad Reduce
+      description: "Works like Array Reduce, but operates on squad data \u2014 it
+        reads one value per agent from a squad-wide array. Useful for finding the
+        average health of all agents, which agent has the lowest ammo, etc. Only
+        available in Commander trees."
+      returnValues: "SUCCESS \u2014 reduction completed and output written\nFAILURE
+        \u2014 source or output is invalid, no agents, or all values are null"
+      fieldDescriptions:
+      - fieldName: Source
+        description: The squad data array to reduce. Supports int[], float[], Vector2[],
+          and Vector3[].
+      - fieldName: Op
+        description: 'How to reduce the array: Average (mean of all values), Lowest
+          (minimum), or Highest (maximum).'
+      - fieldName: Output
+        description: Where to store the resulting single value. The type automatically
+          matches the array's element type.
+  - methodName: SetNavAgentSpeed
+    data:
+      nodeName: Set NavAgent Speed
+      description: Changes the agent's NavMeshAgent movement speed at runtime. The
+        original speed is saved and automatically restored when this node is aborted
+        or the behaviour stops. Use this to temporarily slow down or speed up an
+        agent during specific behaviours (e.g. sprint, sneak). Only available in
+        Agent trees.
+      returnValues: "SUCCESS \u2014 speed was set\nFAILURE \u2014 no NavMeshAgent
+        found on the agent"
+      fieldDescriptions:
+      - fieldName: Value
+        description: The new movement speed for the NavMeshAgent. Can be a constant
+          value or read from a variable.
   - methodName: CompareVariable
     data:
       nodeName: Compare Variable
-      description: Checks a variable against a value or another variable. Supports
-        equals, not equals, less than, greater than, and distance comparisons for
-        positions. SUCCEEDS when the comparison is true, FAILS otherwise.
-      returnValues: 
-      fieldDescriptions: []
+      description: "Checks a variable against a value or another variable. Supports
+        equals, not equals, less than, greater than, and magnitude comparisons for
+        vectors. The available operations change based on the variable's type \u2014
+        for example, magnitude comparisons only appear for Vector2 and Vector3."
+      returnValues: "SUCCESS \u2014 comparison is true\nFAILURE \u2014 comparison
+        is false or Operand A is invalid"
+      fieldDescriptions:
+      - fieldName: Operand A
+        description: The first variable to compare (left side). Its type determines
+          which operations are available.
+      - fieldName: Operand B
+        description: The value to compare against (right side). Toggle between a
+          constant or another variable.
+      - fieldName: Operation
+        description: 'The comparison to perform: Equal, Not Equal, Less/Greater (for
+          numbers), or Magnitude (for vectors).'
   - methodName: CheckVariable
     data:
       nodeName: Check Variable
       description: 'Checks a variable''s state without needing a comparison value.
-        Booleans: is true / is false. Numbers: is zero / is not zero. Object references:
-        is null / is not null / is active / is inactive. SUCCEEDS when the condition
-        is met.'
-      returnValues: 
-      fieldDescriptions: []
+        Booleans: is true / is false. Numbers and vectors: is zero / is not zero.
+        References: is null / is not null / is active / is inactive. The available
+        checks depend on the variable''s type.'
+      returnValues: "SUCCESS \u2014 condition is met\nFAILURE \u2014 condition is
+        not met or variable is invalid"
+      fieldDescriptions:
+      - fieldName: Variable
+        description: The variable to check. The available conditions change based
+          on its type.
+      - fieldName: Condition
+        description: 'What to check for: IsTrue/IsFalse (bool), IsZero/IsNotZero
+          (numbers/vectors), IsNull/IsNotNull/IsActive/IsInactive (references).'
   - methodName: HasChanged
     data:
       nodeName: Has Changed
-      description: Detects when a variable's value has changed since the previous
-        frame. SUCCEEDS if the value is different. On the first check, it always
-        returns FAILURE (no previous value to compare against).
-      returnValues: 
-      fieldDescriptions: []
+      description: "Detects when a variable's value has changed since the previous
+        frame. On the first check, it always returns FAILURE (no previous value to
+        compare against). Useful for triggering actions when data updates \u2014
+        for example, reacting when a target position changes."
+      returnValues: "SUCCESS \u2014 value changed since last check\nFAILURE \u2014
+        value is unchanged, first check, or variable is invalid"
+      fieldDescriptions:
+      - fieldName: Variable
+        description: The variable to monitor for changes. Works with any type.
   - methodName: EdgeDetect
     data:
       nodeName: Edge Detect
-      description: Detects when a boolean variable flips. Choose rising edge (off
-        to on) or falling edge (on to off). On the first check, it always returns
-        FAILURE (nothing to compare against).
-      returnValues: 
-      fieldDescriptions: []
+      description: Detects when a boolean variable flips from one state to another.
+        Rising edge triggers when the value goes from false to true. Falling edge
+        triggers when it goes from true to false. On the first check, always returns
+        FAILURE (nothing to compare against). Use this to fire one-shot reactions
+        to state changes.
+      returnValues: "SUCCESS \u2014 edge detected (rising or falling as configured)\nFAILURE
+        \u2014 no edge detected, first check, or variable is invalid"
+      fieldDescriptions:
+      - fieldName: Variable
+        description: The boolean variable to monitor for edge transitions. Must be
+          a bool type.
+      - fieldName: Edge
+        description: "Which transition to detect: Rising (false\u2192true) or Falling
+          (true\u2192false)."
   - methodName: CheckOrder
     data:
       nodeName: Check Order
       description: Checks whether the agent has received a specific order from the
         Commander tree. SUCCEEDS when the received order matches, FAILS otherwise.
         Only available in Agent trees.
-      returnValues: 
+      returnValues: "SUCCESS \u2014 received order matches the expected order\nFAILURE
+        \u2014 order does not match"
       fieldDescriptions:
       - fieldName: receivedOrderSlot
         description: 
       - fieldName: expectedOrder
         description: The order to check for. Succeeds when the commander has sent
           this order.
+  - methodName: PollAgentStatus
+    data:
+      nodeName: Poll Agent Status
+      description: Reads the status array reported by all agents and determines the
+        overall squad state. If any agent has failed (status = 1), this node fails
+        immediately. If any agent is still running (status = 2), it stays RUNNING.
+        If all agents have completed, it returns SUCCESS. Use this to coordinate
+        when all agents have finished their tasks. Only available in Commander trees.
+      returnValues: "SUCCESS \u2014 all agents have arrived / completed\nRUNNING
+        \u2014 at least one agent is still running\nFAILURE \u2014 any agent has
+        failed, or input variable is invalid"
+      fieldDescriptions:
+      - fieldName: Input
+        description: The integer array variable holding each agent's current status
+          (written by Report Status nodes).
+  - methodName: CheckSquadData
+    data:
+      nodeName: Check Squad Data
+      description: "Scans a squad-wide array (one value per agent) and checks if
+        any element meets a condition. IsAnyNull succeeds when any agent's value
+        is null, zero, or unset. IsAnyNotNull succeeds when any agent has a valid
+        value. Succeeds as soon as a match is found \u2014 ideal for detecting threats
+        or finding available targets. Only available in Commander trees."
+      returnValues: "SUCCESS \u2014 at least one element matches the condition\nFAILURE
+        \u2014 no element matches, or input variable is invalid"
+      fieldDescriptions:
+      - fieldName: Input
+        description: The squad data array to scan. Supports Transform[], GameObject[],
+          bool[], int[], float[], Vector2[], and Vector3[].
+      - fieldName: Operation
+        description: 'What to look for: IsAnyNull (any empty/invalid entry) or IsAnyNotNull
+          (any valid entry).'
   - methodName: Cooldown
     data:
       nodeName: Cooldown
       description: A gate that only lets the tree pass once, then blocks for a set
         time. SUCCEEDS on the first tick, then FAILS until the cooldown timer runs
-        out. After the timer elapses, it opens again for one tick.
-      returnValues: 
+        out. After the timer elapses, it opens again for one tick. Use this to prevent
+        a behaviour from triggering too frequently.
+      returnValues: "SUCCESS \u2014 cooldown has elapsed, gate is open\nFAILURE \u2014
+        cooldown is still active, gate is closed"
       fieldDescriptions:
       - fieldName: duration
         description: How long the cooldown lasts before the gate opens again.
@@ -300,3 +486,197 @@ MonoBehaviour:
       - fieldName: customTickValue
         description: How much time passes per tick when using a custom tick. Only
           relevant when Use Custom Tick is enabled.
+  - methodName: Enemy_CheckRange
+    data:
+      nodeName: Check Range
+      description: Checks whether the distance from the agent to a target is within
+        a given radius. Supports Less Than or Greater Than comparisons. The radius
+        can be a constant value or read from a blackboard variable. Only available
+        in Agent trees.
+      returnValues: "SUCCESS \u2014 distance satisfies the range condition\nFAILURE
+        \u2014 target is invalid, no radius configured, or distance does not satisfy
+        the condition"
+      fieldDescriptions:
+      - fieldName: Target
+        description: The target to measure distance to. Accepts Transform, GameObject,
+          or Vector3.
+      - fieldName: Radius
+        description: The distance threshold. Can be a constant float or read from
+          a blackboard variable.
+      - fieldName: Operation
+        description: 'How to compare: LessThan (within range) or GreaterThan (outside
+          range).'
+  - methodName: Enemy_Detected
+    data:
+      nodeName: Detected
+      description: Scans for targets within a radius using the EnemyDetectionSystem.
+        Combines range checking and optional line-of-sight verification into a single
+        condition. Succeeds as soon as any qualifying target is found. Only available
+        in Agent trees.
+      returnValues: "SUCCESS \u2014 at least one target detected within range (and
+        with line of sight, if enabled)\nFAILURE \u2014 no targets detected, or none
+        pass the range/LOS checks"
+      fieldDescriptions:
+      - fieldName: Radius
+        description: The detection radius. Targets beyond this distance are ignored.
+      - fieldName: Operation
+        description: 'How to compare distance: LessThan or GreaterThan against the
+          radius.'
+      - fieldName: Check LOS
+        description: When enabled, targets must also pass a line-of-sight check (no
+          obstacles between agent and target).
+  - methodName: Enemy_HasLineOfSight
+    data:
+      nodeName: Has Line of Sight
+      description: Checks whether there is a clear line of sight to a specific target
+        Transform using Physics.Linecast. Use this to verify the agent can see a
+        target before engaging. Only available in Agent trees.
+      returnValues: "SUCCESS \u2014 clear line of sight to the target\nFAILURE \u2014
+        line of sight blocked, target is invalid, or detection system is unavailable"
+      fieldDescriptions:
+      - fieldName: Target
+        description: The Transform to check line of sight against. Must be a Transform
+          variable.
+  - methodName: Enemy_HasArrived
+    data:
+      nodeName: Has Arrived
+      description: Checks whether the NavMeshAgent has reached its destination. Returns
+        SUCCESS when the path is complete and the remaining distance is within the
+        agent's stopping distance (plus a 0.1 unit tolerance). Only available in
+        Agent trees.
+      returnValues: "SUCCESS \u2014 agent has arrived at destination\nFAILURE \u2014
+        agent is still moving or NavMeshAgent is unavailable"
+      fieldDescriptions: []
+  - methodName: Enemy_StopMovement
+    data:
+      nodeName: Stop Movement
+      description: "Immediately stops the NavMeshAgent by setting isStopped to true.
+        A quick fire-and-forget action \u2014 always succeeds unless the agent is
+        missing. Only available in Agent trees."
+      returnValues: "SUCCESS \u2014 agent was stopped\nFAILURE \u2014 no NavMeshAgent
+        found"
+      fieldDescriptions: []
+  - methodName: Enemy_EngagePosition
+    data:
+      nodeName: Engage Position
+      description: 'Computes a random tactical position in a cone directed toward
+        the target and writes it to a Vector3 variable. The cone behavior adapts
+        based on distance: close to the target, the cone widens and the direction
+        blends backward (defensive retreat); far from the target, the cone narrows
+        and pushes forward (aggressive advance). Use the output with a Move To node.
+        Only available in Agent trees.'
+      returnValues: "SUCCESS \u2014 engage position calculated and written\nFAILURE
+        \u2014 output or target variable is invalid"
+      fieldDescriptions:
+      - fieldName: Position
+        description: The Vector3 variable to write the calculated engage position
+          into.
+      - fieldName: Target
+        description: The target Transform to orient the engage cone toward.
+      - fieldName: Cone Angle
+        description: The base angle (in degrees) of the cone. The cone widens when
+          close to the target.
+      - fieldName: Min Dist
+        description: The minimum distance from the agent to pick a position.
+      - fieldName: Max Dist
+        description: The maximum distance from the agent to pick a position.
+      - fieldName: Maintain Dist
+        description: The target distance to maintain from the target. Closer than
+          this triggers defensive backward movement; farther triggers aggressive
+          forward movement.
+  - methodName: Enemy_FlankPosition
+    data:
+      nodeName: Flank Position
+      description: "Computes a random flanking position perpendicular to the target
+        direction and writes it to a Vector3 variable. The agent automatically flanks
+        the opposite side of the target (target on right \u2192 flank left, target
+        on left \u2192 flank right). Flank Angle blends between pure side-flank (0\xB0)
+        and heading directly toward the target (90\xB0). Same distance-based cone
+        modulation as Engage Position. Only available in Agent trees."
+      returnValues: "SUCCESS \u2014 flank position calculated and written\nFAILURE
+        \u2014 output or target variable is invalid"
+      fieldDescriptions:
+      - fieldName: Position
+        description: The Vector3 variable to write the calculated flank position
+          into.
+      - fieldName: Target
+        description: The target Transform to flank around.
+      - fieldName: Flank Angle
+        description: "Blends between pure side-flank (0\xB0) and heading straight
+          at the target (90\xB0). Lower values give wider flanking arcs."
+      - fieldName: Cone Angle
+        description: The base angle (in degrees) for random variation in the movement
+          cone.
+      - fieldName: Min Dist
+        description: The minimum distance from the agent to pick a position.
+      - fieldName: Max Dist
+        description: The maximum distance from the agent to pick a position.
+      - fieldName: Maintain Dist
+        description: The target distance to maintain from the target. Closer triggers
+          defensive backward movement; farther triggers aggressive forward movement.
+  - methodName: Enemy_SelectDetectedTarget
+    data:
+      nodeName: Select Detected Target
+      description: Runs the EnemyDetectionSystem to scan for targets, then picks
+        one using a selection strategy. The chosen target is written to a blackboard
+        variable (as Transform or GameObject) for other nodes to use. Only available
+        in Agent trees.
+      returnValues: "SUCCESS \u2014 a target was selected and written\nFAILURE \u2014
+        no targets detected, no target selected by strategy, or output variable is
+        invalid"
+      fieldDescriptions:
+      - fieldName: Output
+        description: Where to store the selected target. Accepts Transform or GameObject
+          variable types.
+      - fieldName: Selection Strategy
+        description: 'How to pick among detected targets: Nearest (closest target)
+          or Random.'
+  - methodName: Enemy_FireSequence
+    data:
+      nodeName: Fire Sequence
+      description: 'Runs a complete multi-phase firing cycle: aim at the target,
+        search for a valid trajectory, wait for a fire delay, then fire a single
+        shot. Stays RUNNING through all phases and returns SUCCESS after one shot
+        is fired. Re-enter this node for subsequent shots. The trajectory search
+        can fail, causing the node to return FAILURE. Only available in Agent trees.'
+      returnValues: "SUCCESS \u2014 one shot was fired successfully\nRUNNING \u2014
+        aiming, searching trajectory, waiting for fire delay, or reloading\nFAILURE
+        \u2014 target is invalid, GunHandling is unavailable, or no valid firing
+        trajectory found"
+      fieldDescriptions:
+      - fieldName: Target
+        description: The Transform to aim and fire at.
+      - fieldName: Fire Delay
+        description: How many seconds to wait between aiming and firing.
+      - fieldName: Spread
+        description: The accuracy spread angle. Higher values mean less accurate
+          shots.
+      - fieldName: Reload
+        description: How many seconds the reload cycle takes after firing.
+      - fieldName: Damage
+        description: How much damage each projectile deals.
+      - fieldName: Trajectory Always Indirect
+        description: When enabled, the projectile always follows an indirect (arced)
+          trajectory.
+      - fieldName: Trajectory Starting Height
+        description: The starting height offset for indirect projectile trajectories.
+  - methodName: ExtractPosition
+    data:
+      nodeName: Extract Position
+      description: Extracts a Vector3 position from a collection element. Handles
+        single Transforms (reads child transforms), single GameObjects (reads child
+        transforms), or arrays (Transform[], GameObject[], Vector3[]). Supports Sequential
+        mode (cycles through elements in order) and Random mode (picks randomly each
+        tick). A generic utility for patrol point cycling or waypoint extraction.
+        Available on any tree type.
+      returnValues: "SUCCESS \u2014 position extracted and written\nFAILURE \u2014
+        input or output is invalid, or the collection is empty"
+      fieldDescriptions:
+      - fieldName: Collection
+        description: The source to extract a position from. Accepts Transform, GameObject,
+          Transform[], GameObject[], or Vector3[].
+      - fieldName: Output
+        description: The Vector3 variable to write the extracted position into.
+      - fieldName: Mode
+        description: 'How to pick an element: Sequential (cycle through in order)
+          or Random (pick any element).'
