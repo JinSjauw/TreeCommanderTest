@@ -2385,9 +2385,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyFormationTank
       objectReference: {fileID: 0}
-    - target: {fileID: 8553357346185448640, guid: 66b0af6add867b14297e7b79a89730f4, type: 3}
-      propertyPath: heightOffset
-      value: 0.8
+    - target: {fileID: 8261073738341746034, guid: 66b0af6add867b14297e7b79a89730f4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

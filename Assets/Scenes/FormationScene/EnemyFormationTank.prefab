@@ -1983,6 +1983,7 @@ MonoBehaviour:
   projectileVariables: {fileID: 11400000, guid: e5149bb87ea089448b5e193b3d5ad636, type: 2}
   projectileCollection: {fileID: 1508147052678375363}
   projectilePrefab: {fileID: 8414172719971548377, guid: 680e5ee165c176a40b146b6a4d501732, type: 3}
+  muzzleFlashPrefab: {fileID: 100006, guid: 7c442b9b6852b8a4f93306f3d154d471, type: 3}
   projectileDamage: 60
   roundPerMinute: 6
   randomTargetRadius: 1.5

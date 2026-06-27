@@ -440,6 +440,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 7194435495231449439, guid: 32a93f9fea1499348a9fc1f8c0f0cb96, type: 3}
+      propertyPath: maxHealth
+      value: 2100
+      objectReference: {fileID: 0}
     - target: {fileID: 7278417056135320827, guid: 32a93f9fea1499348a9fc1f8c0f0cb96, type: 3}
       propertyPath: m_Layer
       value: 8

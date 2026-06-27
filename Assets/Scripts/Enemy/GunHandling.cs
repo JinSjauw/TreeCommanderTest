@@ -22,6 +22,7 @@ public class GunHandling : MonoBehaviour
     [SerializeField] private ProjectileVariables projectileVariables;
     [SerializeField] private Transform projectileCollection;
     [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private GameObject muzzleFlashPrefab;
     [SerializeField] private float projectileDamage;
     [SerializeField] private float roundPerMinute;
 
@@ -126,6 +127,10 @@ public class GunHandling : MonoBehaviour
         newProjectile.transform.position = muzzleTransform.position;
         newProjectile.transform.forward = muzzleTransform.forward;
         newProjectile.transform.parent = projectileCollection;
+
+        GameObject muzzleFlash = pool.GetObject(muzzleFlashPrefab);
+        muzzleFlash.transform.position = muzzleTransform.position;
+        muzzleFlash.transform.up = muzzleTransform.forward;
 
         if (newProjectile.TryGetComponent(out Projectile projectileComponent))
         {
