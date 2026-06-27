@@ -45,7 +45,7 @@ MonoBehaviour:
   comment: 
   guid: dda9b20325578f346b9db020dc47b7f6
   graphPosition: {x: 350, y: 875}
-  runtimeIndex: 21
+  runtimeIndex: 19
   leafType: 3
   methodName: SendOrder
   fieldEntries:
@@ -193,7 +193,7 @@ MonoBehaviour:
   comment: 
   guid: 7d951e82576d5104f98da56df66ebe38
   graphPosition: {x: 910, y: 700}
-  runtimeIndex: 23
+  runtimeIndex: 21
   leafType: 2
   methodName: PollAgentStatus
   fieldEntries:
@@ -512,7 +512,7 @@ MonoBehaviour:
   comment: 
   guid: b579a8f8bbad5b94dbaa861666463c5f
   graphPosition: {x: 508.49377, y: 700}
-  runtimeIndex: 19
+  runtimeIndex: 18
   leafType: 3
   methodName: SetVariable
   fieldEntries:
@@ -814,7 +814,7 @@ MonoBehaviour:
   comment: 
   guid: 76b119c775a61644199b65cc96ff69a3
   graphPosition: {x: 665, y: 945}
-  runtimeIndex: 25
+  runtimeIndex: 23
   leafType: 3
   methodName: CalculateFormation
   fieldEntries:
@@ -972,7 +972,7 @@ MonoBehaviour:
   comment: 
   guid: c69c6c50762d3214ea4d944ab9af20e0
   graphPosition: {x: 840, y: 945}
-  runtimeIndex: 26
+  runtimeIndex: 24
   leafType: 3
   methodName: SendOrder
   fieldEntries:
@@ -1114,7 +1114,7 @@ MonoBehaviour:
   comment: 
   guid: ada03ab9101e5a3458a7decd0c650917
   graphPosition: {x: 751, y: 700}
-  runtimeIndex: 22
+  runtimeIndex: 20
   compositeType: 1
   methodName: ForEachAgent
   fieldEntries: []
@@ -1479,7 +1479,7 @@ MonoBehaviour:
   comment: 
   guid: c21ec5b612f156547be7bdce17a9189e
   graphPosition: {x: 1074, y: 700}
-  runtimeIndex: 24
+  runtimeIndex: 22
   leafType: 3
   methodName: ExtractPosition
   fieldEntries:

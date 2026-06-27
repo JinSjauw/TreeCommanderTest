@@ -919,7 +919,7 @@ MonoBehaviour:
   - {fileID: 6399685680739518035}
   editorNotes:
   - position: {x: 801.5581, y: 495.1809}
-    size: {x: 435.3996, y: 210.14713}
+    size: {x: 441.05963, y: 210.33855}
     title: Patrol Logic
     contents: "Checks the order -> Runs moving sequence\n\nSets the formation speed
       so all agents have a similair movespeed \n\nREPORT STATUS -> RUNNING to the

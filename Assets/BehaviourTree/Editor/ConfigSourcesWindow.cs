@@ -68,15 +68,9 @@ namespace BehaviourTree.Editor
             EditorGUILayout.Space(4);
 
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("+ Add Config"))
+            if (GUILayout.Button("+ Add Config", GUILayout.Height(40)))
             {
                 _availableConfigsProp.arraySize++;
-            }
-            if (GUILayout.Button("Drag-drop SOs here"))
-            {
-                // Focus the first empty slot for drag-drop
-                if (_availableConfigsProp.arraySize == 0)
-                    _availableConfigsProp.arraySize = 1;
             }
             EditorGUILayout.EndHorizontal();
 
