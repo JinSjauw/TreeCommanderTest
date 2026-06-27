@@ -65,7 +65,22 @@ public class DeathHandler : MonoBehaviour
             {
                 cloneChild.position = child.position;
                 cloneChild.rotation = child.rotation;
-                cloneChild.localScale = child.localScale;
+                // Match actual world-space scale by accounting for parent hierarchy
+                Vector3 targetWorldScale = child.lossyScale;
+                Transform cloneParent = cloneChild.parent;
+                if (cloneParent != null)
+                {
+                    Vector3 parentWorldScale = cloneParent.lossyScale;
+                    cloneChild.localScale = new Vector3(
+                        Mathf.Approximately(parentWorldScale.x, 0f) ? targetWorldScale.x : targetWorldScale.x / parentWorldScale.x,
+                        Mathf.Approximately(parentWorldScale.y, 0f) ? targetWorldScale.y : targetWorldScale.y / parentWorldScale.y,
+                        Mathf.Approximately(parentWorldScale.z, 0f) ? targetWorldScale.z : targetWorldScale.z / parentWorldScale.z
+                    );
+                }
+                else
+                {
+                    cloneChild.localScale = targetWorldScale;
+                }
 
                 if(cloneChild.TryGetComponent(out MeshRenderer meshRenderer)) 
                 {
@@ -98,7 +113,7 @@ public class DeathHandler : MonoBehaviour
 
         GameObject corpseObject = pool.GetObject(corpsePrefab.gameObject);
         Transform corpseTransform = corpseObject.transform;
-        corpseTransform.localScale = meshRootTransform.localScale;
+        corpseTransform.localScale = meshRootTransform.lossyScale;
         corpseTransform.position = meshRootTransform.position;
 
         CloneMesh(meshRootTransform, corpseTransform);

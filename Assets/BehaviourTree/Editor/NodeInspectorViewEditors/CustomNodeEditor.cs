@@ -583,10 +583,6 @@ namespace BehaviourTree.Editor
             if (fieldEntriesProp.arraySize < realCount)
                 return;
 
-            // isArray tracks whether the first entry is array-mode (stride > 1)
-            bool isArray = fieldEntriesProp.arraySize > 0
-                ? fieldEntriesProp.GetArrayElementAtIndex(0).FindPropertyRelative("isArray").boolValue : false;
-
             EditorGUILayout.BeginVertical("box");
 
             // ── Generic parameter rows ──
@@ -595,6 +591,7 @@ namespace BehaviourTree.Editor
                 DynamicParamDescriptor desc = descriptors[i];
                 SerializedProperty entry = fieldEntriesProp.GetArrayElementAtIndex(i);
                 Type paramType = ResolveEntryType(i);
+                bool entryIsArray = entry.FindPropertyRelative("isArray").boolValue;
 
                 bool hasTitle = !string.IsNullOrEmpty(desc.titleLabel);
 
@@ -610,10 +607,10 @@ namespace BehaviourTree.Editor
                 switch (desc.kind)
                 {
                     case DynamicParamKind.Variable:
-                        DrawVariableParamRow(entry, desc, paramType, isArray, i, hasTitle);
+                        DrawVariableParamRow(entry, desc, paramType, entryIsArray, i, hasTitle);
                         break;
                     case DynamicParamKind.Toggle:
-                        DrawToggleParamRow(entry, desc, paramType, isArray, hasTitle);
+                        DrawToggleParamRow(entry, desc, paramType, entryIsArray, hasTitle);
                         break;
                     case DynamicParamKind.Constant:
                         EditorGUILayout.BeginHorizontal();
@@ -627,7 +624,7 @@ namespace BehaviourTree.Editor
                         DrawOperationParamRow(entry, desc, paramType);
                         break;
                     case DynamicParamKind.ScriptableObjectConstant:
-                        DrawSOConstantParamRow(entry, desc, paramType, isArray, hasTitle);
+                        DrawSOConstantParamRow(entry, desc, paramType, entryIsArray, hasTitle);
                         break;
                 }
                 EditorGUILayout.Space(4f);
@@ -684,9 +681,41 @@ namespace BehaviourTree.Editor
 
                 SerializedProperty ftProp = fieldEntriesProp.GetArrayElementAtIndex(i)
                     .FindPropertyRelative("fieldTypeName");
-                if (ftProp != null && ftProp.stringValue != srcTypeName)
-                    ftProp.stringValue = srcTypeName;
+                if (ftProp != null)
+                {
+                    string targetTypeName = srcTypeName;
+                    if (currentDescriptors[i].syncElementType)
+                    {
+                        Type srcType = FieldTypeHelper.GetSystemTypeFromName(srcTypeName);
+                        // fieldTypeName stores the element type for blackboard variables.
+                        // Array-ness is tracked via the isArray serialized property.
+                        bool sourceIsArray = srcType != null && srcType.IsArray;
+                        if (!sourceIsArray && srcIndex >= 0 && srcIndex.Value < fieldEntriesProp.arraySize)
+                        {
+                            SerializedProperty srcIsArrayProp = fieldEntriesProp
+                                .GetArrayElementAtIndex(srcIndex.Value)
+                                .FindPropertyRelative("isArray");
+                            sourceIsArray = srcIsArrayProp != null && srcIsArrayProp.boolValue;
+                        }
+
+                        if (sourceIsArray && srcType != null)
+                        {
+                            Type elemType = srcType.IsArray ? srcType.GetElementType() : srcType;
+                            if (elemType != null)
+                                targetTypeName = elemType.AssemblyQualifiedName;
+                        }
+
+                        // Output is always scalar when syncing element type
+                        SerializedProperty isArrayProp = fieldEntriesProp.GetArrayElementAtIndex(i)
+                            .FindPropertyRelative("isArray");
+                        if (isArrayProp != null)
+                            isArrayProp.boolValue = false;
+                    }
+                    if (ftProp.stringValue != targetTypeName)
+                        ftProp.stringValue = targetTypeName;
+                }
             }
+            fieldEntriesProp.serializedObject.ApplyModifiedProperties();
         }
 
         // ── Row helpers — one per DynamicParamKind ──
@@ -1125,7 +1154,32 @@ namespace BehaviourTree.Editor
                     selectedIndex = EditorGUILayout.Popup(selectedIndex, matchingVars.ToArray(), GUILayout.Width(InputFieldWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight));
                     variableNameProp.stringValue = matchingVarNames[selectedIndex];
                     if (variableNameProp.stringValue != previousVal)
+                    {
+                        // Auto-configure type and array mode from selected variable
+                        string selectedVarName = matchingVarNames[selectedIndex];
+                        if (!string.IsNullOrEmpty(selectedVarName))
+                        {
+                            // Find the variable in the blackboard definition
+                            for (int varIdx = 0; varIdx < allVars.Count; varIdx++)
+                            {
+                                if (allVars[varIdx].Name == selectedVarName)
+                                {
+                                    BlackboardVariableBase bv = allVars[varIdx];
+                                    Type varType = bv.GetValueType();
+                                    SerializedProperty ftProp = fieldEntriesProp.GetArrayElementAtIndex(entryIndex)
+                                        .FindPropertyRelative("fieldTypeName");
+                                    if (ftProp != null && varType != null)
+                                        ftProp.stringValue = varType.AssemblyQualifiedName;
+                                    fieldEntriesProp.GetArrayElementAtIndex(entryIndex)
+                                        .FindPropertyRelative("isArray").boolValue = bv.Stride > 1;
+                                    fieldEntriesProp.serializedObject.ApplyModifiedProperties();
+                                    SyncLinkedEntryTypes();
+                                    break;
+                                }
+                            }
+                        }
                         nodeVisualsChangedThisFrame = true;
+                    }
                 }
                 else
                 {

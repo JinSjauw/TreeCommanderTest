@@ -57,9 +57,19 @@ namespace BehaviourTree.Editor
         {
             allTypes = VariableTypeRegistry.Types.ToList();
 
-            // Apply allowedTypes filter if specified
+            // Apply allowedTypes filter if specified.
+            // Strip array suffixes so e.g. int[] allowed → shows int in the type list.
+            // The user controls array/singular mode via radio buttons.
             if (allowedTypes != null && allowedTypes.Length > 0)
-                allTypes = allTypes.Where(t => Array.IndexOf(allowedTypes, t) >= 0).ToList();
+            {
+                Type[] elementTypes = new Type[allowedTypes.Length];
+                for (int i = 0; i < allowedTypes.Length; i++)
+                {
+                    Type t = allowedTypes[i];
+                    elementTypes[i] = (t != null && t.IsArray) ? t.GetElementType() : t;
+                }
+                allTypes = allTypes.Where(t => Array.IndexOf(elementTypes, t) >= 0).ToList();
+            }
 
             filteredTypes = new List<Type>(allTypes);
 

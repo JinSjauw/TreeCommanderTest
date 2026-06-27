@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.OrderRegistry
   orderNames:
   - ATTACK
-  - MOVE
   - PATROL
   - FLANK
   - ASSAULT
+  - MOVE
   - SUPPRESS
   - STANDBY
   - REGROUP

@@ -61,6 +61,13 @@ namespace BehaviourTree.Core
         public int? syncTypeFromIndex;
 
         /// <summary>
+        /// When true and syncTypeFromIndex is set, the synced type is the element type
+        /// of the source's array type (e.g. int[] → int, Vector3[] → Vector3).
+        /// When false (default), the full source type is copied verbatim.
+        /// </summary>
+        public bool syncElementType;
+
+        /// <summary>
         /// For Operation kind: the enum type to render as a dropdown.
         /// Only used when kind == DynamicParamKind.Operation.
         /// </summary>

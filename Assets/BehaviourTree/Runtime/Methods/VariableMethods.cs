@@ -289,6 +289,10 @@ namespace BehaviourTree.Runtime.Methods
             if (a == null || b == null)
                 return op == VariableCompareOp.NotEqual;
 
+            // Disregard Vector3.zero — treat as invalid / no data
+            if (a is Vector3 va && va == Vector3.zero) return false;
+            if (b is Vector3 vb && vb == Vector3.zero) return false;
+
             if (a is int ai && b is int bi)
                 return CompareNumeric(ai, bi, op);
             if (TryToFloat(a, out float af) && TryToFloat(b, out float bf))
@@ -300,7 +304,7 @@ namespace BehaviourTree.Runtime.Methods
                 float magB = GetMagnitude(b);
                 return CompareNumericF(magA, magB, op);
             }
-
+            Debug.Log($"EvaluateCompare: {a} {op} {b}");
             return op switch
             {
                 VariableCompareOp.Equal => a.Equals(b),

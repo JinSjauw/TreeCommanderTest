@@ -153,7 +153,8 @@ public class GunHandling : MonoBehaviour
         isReloading = true;
 
         barrelRecoilController.ApplyImpulse();
-        bodyRecoilController.AddImpulseDirection(muzzleTransform.forward);
+        Vector3 recoilDirection = bodyRecoilController.transform.InverseTransformDirection(muzzleTransform.forward);
+        bodyRecoilController.AddImpulseDirection(recoilDirection);
     }
 
     public bool TickFiringCooldown(float deltaTime)

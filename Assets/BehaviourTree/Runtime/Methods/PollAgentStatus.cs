@@ -1,5 +1,6 @@
 using System;
 using BehaviourTree.Core;
+using UnityEngine;
 
 namespace BehaviourTree.Runtime.Methods
 {
@@ -46,7 +47,10 @@ namespace BehaviourTree.Runtime.Methods
         public override NodeState Execute(TickContext ctx)
         {
             if (statusSlot < 0)
+            {
+                Debug.LogError($"PollAgentStatus: statusSlot {statusSlot} is invalid.");
                 return NodeState.FAILURE;
+            }
 
             int agentCount = ctx.agentCount;
             bool anyRunning = false;
@@ -55,7 +59,6 @@ namespace BehaviourTree.Runtime.Methods
             {
                 object val = BB.GetBoxedRaw(statusSlot + i);
                 int status = val is int iv ? iv : -1;
-
                 switch (status)
                 {
                     case 1: return NodeState.FAILURE;  // any one failed → fail

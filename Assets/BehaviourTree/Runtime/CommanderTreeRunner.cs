@@ -77,7 +77,11 @@ namespace BehaviourTree.Runtime
                 agent.PushTrackedBindings();
                 CopySquadsToTree(agent, i);
                 agent.Evaluate();
-                CopySquadsFromTree(agent, i);
+                // Skip write-back if the agent died during Evaluate — compaction
+                // already invalidated and shifted its squad BB slots, so writing
+                // with the old offset would corrupt the next agent's data.
+                if (agent.commander != null)
+                    CopySquadsFromTree(agent, i);
             }
         }
 
