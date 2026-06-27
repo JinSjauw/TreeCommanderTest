@@ -172,7 +172,7 @@ public class EnemyManager : MonoBehaviour
         LegManager legManager = spawnedObj.GetComponentInChildren<LegManager>();
         if (legManager != null)
         {
-            legManager.SnapBodyHeight();
+            legManager.SetBodyHeight();
             legManager.SyncAllLegs();
         }
 

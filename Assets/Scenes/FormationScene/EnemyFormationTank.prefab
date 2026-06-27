@@ -40,6 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8545527158048715372}
+  - component: {fileID: 780402640886452551}
   m_Layer: 7
   m_Name: TankMesh
   m_TagString: Untagged
@@ -63,6 +64,22 @@ Transform:
   - {fileID: 6372239304794428817}
   m_Father: {fileID: 2514261403900219925}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &780402640886452551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 326531307847429582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a26f12f259a20d74ea6ea613f5796ed6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Spring3D
+  bodyTransform: {fileID: 8545527158048715372}
+  impulsePower: {x: -2, y: -3, z: -2}
+  angularFrequency: 5
+  dampingRatio: 0.8
 --- !u!1 &434929215048331494
 GameObject:
   m_ObjectHideFlags: 0
@@ -484,10 +501,11 @@ Transform:
   m_GameObject: {fileID: 1968524187410171569}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.70710677, z: 0.70710677, w: 0}
-  m_LocalPosition: {x: 0, y: -0, z: 0.0069}
+  m_LocalPosition: {x: 0, y: -0, z: 0.0061}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1066806027422320628}
   - {fileID: 7628735752384930430}
   - {fileID: 4758903617289615590}
   m_Father: {fileID: 4288723270571185311}
@@ -1956,12 +1974,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GunHandling
   turretController: {fileID: 4519117128872091312}
+  barrelRecoilController: {fileID: 5412515152570780719}
+  bodyRecoilController: {fileID: 780402640886452551}
   trajectory: {fileID: 7045894723338806382}
   muzzleTransform: {fileID: 6028529690283563001}
   projectileTargetTransform: {fileID: 1222028017388677773}
   fireCurve: {fileID: 8902886796718504160}
   projectileVariables: {fileID: 11400000, guid: e5149bb87ea089448b5e193b3d5ad636, type: 2}
-  projectileCollection: {fileID: 0}
+  projectileCollection: {fileID: 1508147052678375363}
   projectilePrefab: {fileID: 8414172719971548377, guid: 680e5ee165c176a40b146b6a4d501732, type: 3}
   projectileDamage: 60
   roundPerMinute: 6
@@ -4240,7 +4260,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6137730979647515384}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5165,6 +5185,37 @@ Transform:
   - {fileID: 1036519331866968456}
   m_Father: {fileID: 6155896694067053498}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7085772992577637116
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1066806027422320628}
+  m_Layer: 7
+  m_Name: RecoilTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1066806027422320628
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7085772992577637116}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.00127, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 403752550826425038}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7126078431428347621
 GameObject:
   m_ObjectHideFlags: 0
@@ -5763,6 +5814,8 @@ GameObject:
   - component: {fileID: 7628735752384930430}
   - component: {fileID: 6979385077726115898}
   - component: {fileID: 7526011251578304057}
+  - component: {fileID: 5412515152570780719}
+  - component: {fileID: 4369995168059283572}
   m_Layer: 7
   m_Name: InnerBarrel
   m_TagString: Untagged
@@ -5779,8 +5832,8 @@ Transform:
   m_GameObject: {fileID: 7601759882692197618}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.010003579, z: -0.00023179471}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.01123, z: -0.00023}
+  m_LocalScale: {x: 1, y: 1.3091, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 403752550826425038}
@@ -5842,6 +5895,40 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5412515152570780719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7601759882692197618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bc6c324821b54498084382c91d0825, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpringOffset
+  springSource: {fileID: 4369995168059283572}
+  targetTransform: {fileID: 7628735752384930430}
+  axis: 1
+  multiplier: 0.1
+  initialOffset: 0
+  impulseValue: -1.2
+  logValues: 0
+--- !u!114 &4369995168059283572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7601759882692197618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01df36c1f20f3ae4bb940165a73a26aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpringComponent
+  angularFrequency: 7
+  dampingRatio: 0.8
+  logValues: 0
 --- !u!1 &7678381045693538429
 GameObject:
   m_ObjectHideFlags: 0
@@ -6777,14 +6864,12 @@ MonoBehaviour:
   legGroupB:
   - {fileID: 7822171549540847375}
   - {fileID: 8255474424955815146}
-  bodyTransform: {fileID: 6372239304794428817}
-  heightOffset: 0.75
+  bodyTransform: {fileID: 8545527158048715372}
+  heightOffset: 0.8
   legsMoved: 0
   groupToCheck: 0
-  timeToUpdate: 0.3
-  updateTimer: 0
-  heightSpeed: 12
   rotationSpeed: 20
+  spring3D: {fileID: 780402640886452551}
 --- !u!1 &9088530666722886210
 GameObject:
   m_ObjectHideFlags: 0

@@ -17,18 +17,11 @@ public class LegManager : MonoBehaviour
 
     [SerializeField] private int legsMoved = 0;
     [SerializeField] private LegGroups groupToCheck = LegGroups.LEG_A;
-
-    [SerializeField] private float timeToUpdate;
-    [SerializeField] private float updateTimer;
-    [SerializeField] private float heightSpeed;
     [SerializeField] private float rotationSpeed;
 
-    private Vector3 oldHeight;
-    private Vector3 newHeight;
+    [SerializeField] private Spring3D spring3D;
 
-    private Quaternion oldTilt;
     private Quaternion newTilt;
-
     private LayerMask groundMask;
 
     private void OnEnable()
@@ -68,7 +61,8 @@ public class LegManager : MonoBehaviour
         //Rotate & Set body height based on average from legPositions
         UpdateRotation();
 
-        UpdateHeight();
+        SetBodyHeight();
+        //UpdateHeight();
 
         UpdateTimer();
     }
@@ -94,10 +88,6 @@ public class LegManager : MonoBehaviour
     private void UpdateHeight() 
     {
         //Directly apply height 
-
-        Vector3 heightCheckPosition = bodyTransform.position;
-        heightCheckPosition.y = 20;
-
         if (Physics.Raycast(bodyTransform.position, Vector3.down, out RaycastHit hit, 100, groundMask))
         {
             Vector3 heightApplied = bodyTransform.position;
@@ -137,13 +127,15 @@ public class LegManager : MonoBehaviour
             Vector3 toPoint = position - center;
             float heightDiff = position.y - center.y;
 
-            if (toPoint.x < 0.1f) 
+            // Exclude legs too close to center along each axis to avoid
+            // near-zero denominators and ensure legs on both sides contribute.
+            if (Mathf.Abs(toPoint.x) > 0.1f) 
             {
                 averageXSlope += heightDiff / toPoint.x;
                 xSlopeAdded += 1;
             }
 
-            if(toPoint.z < 0.1f) 
+            if(Mathf.Abs(toPoint.z) > 0.1f) 
             {
                 averageZSlope += heightDiff / toPoint.z;
                 zSlopeAdded += 1;
@@ -158,7 +150,6 @@ public class LegManager : MonoBehaviour
 
         //Quaternion currentRotation = bodyTransform.rotation;
         Quaternion tiltRotation = Quaternion.Euler(-rotationX, 0, rotationZ);
-        oldTilt = bodyTransform.rotation;
         newTilt = Quaternion.Euler(0, bodyTransform.rotation.eulerAngles.y, 0) * tiltRotation;
     }
 
@@ -228,13 +219,15 @@ public class LegManager : MonoBehaviour
     /// <summary>
     /// Immediately raycasts from body position to set the body Y to ground + heightOffset.
     /// </summary>
-    public void SnapBodyHeight()
+    public void SetBodyHeight()
     {
-        if (Physics.Raycast(bodyTransform.position + Vector3.up * 20, Vector3.down, out RaycastHit hit, 100f, groundMask))
+        if (Physics.Raycast(bodyTransform.parent.position + Vector3.up * 20, Vector3.down, out RaycastHit hit, 100f, groundMask))
         {
-            Vector3 heightApplied = bodyTransform.position;
-            heightApplied.y = hit.point.y + heightOffset;
-            bodyTransform.position = heightApplied;
+            Vector3 heightApplied = hit.point;
+            heightApplied.y += heightOffset;
+            Vector3 localHeightApplied = bodyTransform.parent.InverseTransformPoint(heightApplied);
+            spring3D.SetTargetOffsetY(localHeightApplied.y);
+            //bodyTransform.position = heightApplied;
         }
     }
 

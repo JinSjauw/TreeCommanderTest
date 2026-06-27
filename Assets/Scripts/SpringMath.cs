@@ -13,6 +13,53 @@ public struct DampedSpringMotionParams
 }
 
 /// <summary>
+/// Reusable damped spring state for a single float value.
+/// Tracks position, velocity, and equilibrium (target).
+/// </summary>
+[System.Serializable]
+public struct FloatSpring
+{
+    public float position;
+    public float velocity;
+    public float equilibrium;
+
+    public FloatSpring(float startValue)
+    {
+        position = startValue;
+        velocity = 0f;
+        equilibrium = startValue;
+    }
+
+    /// <summary>Advance the spring by one timestep.</summary>
+    public void Update(float deltaTime, float angularFrequency, float dampingRatio)
+    {
+        var p = SpringMath.CalcDampedSpringMotionParams(deltaTime, angularFrequency, dampingRatio);
+        SpringMath.UpdateDampedSpring(ref position, ref velocity, equilibrium, p);
+    }
+
+    /// <summary>Add an instantaneous velocity impulse.</summary>
+    public void AddImpulse(float velocityDelta)
+    {
+        velocity += velocityDelta;
+    }
+
+    /// <summary>Instantly snap position to equilibrium with zero velocity.</summary>
+    public void Snap()
+    {
+        position = equilibrium;
+        velocity = 0f;
+    }
+
+    /// <summary>Instantly snap to a given target and set it as equilibrium.</summary>
+    public void SnapTo(float target)
+    {
+        equilibrium = target;
+        position = target;
+        velocity = 0f;
+    }
+}
+
+/// <summary>
 /// Reusable damped spring state for a Vector3 value.
 /// Tracks position, velocity, and equilibrium (target) in one struct.
 /// </summary>

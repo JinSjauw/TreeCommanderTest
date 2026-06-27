@@ -7,6 +7,10 @@ public class GunHandling : MonoBehaviour
 {
     [Header("Turret")]
     [SerializeField] private TurretController turretController;
+    
+    [Header("Recoil")]
+    [SerializeField] private SpringOffset barrelRecoilController;
+    [SerializeField] private Spring3D bodyRecoilController;
 
     [Header("Trajectory")]
     [SerializeField] private TrajectorySystem trajectory;
@@ -142,6 +146,9 @@ public class GunHandling : MonoBehaviour
         trajectory.ResetTrajectory();
         reloadTimer = 0f;
         isReloading = true;
+
+        barrelRecoilController.ApplyImpulse();
+        bodyRecoilController.AddImpulseDirection(muzzleTransform.forward);
     }
 
     public bool TickFiringCooldown(float deltaTime)
