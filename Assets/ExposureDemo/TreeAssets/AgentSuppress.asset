@@ -909,7 +909,7 @@ MonoBehaviour:
   methodName: Enemy_SelectDetectedTarget
   fieldEntries:
   - fieldName: outputslot
-    isVariable: 1
+    isVariable: 0
     isToggleVariable: 0
     isArray: 0
     variableName: AttackTarget
@@ -928,11 +928,12 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   - fieldName: selectionstrategy
-    isVariable: 0
+    isVariable: 1
     isToggleVariable: 0
     isArray: 0
-    variableName: 
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    variableName: AttackTarget
+    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
     stringValue: 
     isOrderConstant: 0
     configSourceGuid: 

@@ -518,7 +518,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: SELECTOR
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  nodeName: 
+  nodeName: SELECTOR
   children:
   - {fileID: -3001101870104340258}
   - {fileID: 6399685680739518035}
@@ -1138,7 +1138,7 @@ MonoBehaviour:
   methodName: Enemy_SelectDetectedTarget
   fieldEntries:
   - fieldName: outputslot
-    isVariable: 1
+    isVariable: 0
     isToggleVariable: 0
     isArray: 0
     variableName: DetectedEnemy
@@ -1157,11 +1157,12 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   - fieldName: selectionstrategy
-    isVariable: 0
+    isVariable: 1
     isToggleVariable: 0
     isArray: 0
-    variableName: 
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    variableName: DetectedEnemy
+    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
     stringValue: 
     isOrderConstant: 0
     configSourceGuid: 
