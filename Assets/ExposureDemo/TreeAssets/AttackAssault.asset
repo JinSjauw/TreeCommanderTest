@@ -66,6 +66,67 @@ MonoBehaviour:
   methodName: SEQUENCE
   fieldEntries: []
   abortType: 0
+--- !u!114 &-6673223331060570044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: Enemy_SelectDetectedTarget
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: 
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 3f2e8e93281465147b4cf95a6ebeecc1
+  graphPosition: {x: -245, y: 455}
+  runtimeIndex: -1
+  leafType: 3
+  methodName: Enemy_SelectDetectedTarget
+  fieldEntries:
+  - fieldName: selectionstrategy
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: outputslot
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: AttackTarget
+    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
 --- !u!114 &-6442518322899807712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -499,68 +560,6 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   BlackBoardTypeID: 0
---- !u!114 &-2357833193463932789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: Enemy_SelectDetectedTarget
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: LeafNode
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: d08140a585bddb24f8a4a412e59ebc42
-  graphPosition: {x: -210, y: 443}
-  runtimeIndex: -1
-  leafType: 3
-  methodName: Enemy_SelectDetectedTarget
-  fieldEntries:
-  - fieldName: outputslot
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: AttackTarget
-    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: selectionstrategy
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: AttackTarget
-    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  BlackBoardTypeID: 0
 --- !u!114 &-1797174815616634253
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -672,7 +671,6 @@ MonoBehaviour:
   - {fileID: 4095780958571741290}
   - {fileID: 8392349563842025776}
   - {fileID: 5478538096985462280}
-  - {fileID: -2357833193463932789}
   - {fileID: 4408395150926601786}
   - {fileID: -7845765581144169590}
   - {fileID: -1797174815616634253}
@@ -682,6 +680,7 @@ MonoBehaviour:
   - {fileID: -4300270564991336126}
   - {fileID: -3803506854830757011}
   - {fileID: -4077158895237239608}
+  - {fileID: -6673223331060570044}
   editorNotes: []
 --- !u!114 &2734048202429114399
 MonoBehaviour:
@@ -1043,7 +1042,7 @@ MonoBehaviour:
   nodeName: CompositeNode
   children:
   - {fileID: 6369104222607329165}
-  - {fileID: -2357833193463932789}
+  - {fileID: -6673223331060570044}
   - {fileID: -3396140252983772132}
   - {fileID: 8392349563842025776}
   firstChildIndex: 0

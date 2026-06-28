@@ -532,6 +532,67 @@ MonoBehaviour:
   methodName: SELECTOR
   fieldEntries: []
   abortType: 0
+--- !u!114 &-3330782802751188614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: Enemy_SelectDetectedTarget
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: 
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 37f53bd79d66d4b459fec04889a336d4
+  graphPosition: {x: -105, y: 770}
+  runtimeIndex: 81
+  leafType: 3
+  methodName: Enemy_SelectDetectedTarget
+  fieldEntries:
+  - fieldName: selectionstrategy
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: outputslot
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: DetectedEnemy
+    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
 --- !u!114 &-3001101870104340258
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -889,7 +950,6 @@ MonoBehaviour:
   - {fileID: -4568573919724919309}
   - {fileID: 7489058067732038606}
   - {fileID: -1942203300807677091}
-  - {fileID: 2037490760592435613}
   - {fileID: 3270583257702400651}
   - {fileID: 2328392838448342604}
   - {fileID: -1930740700699726263}
@@ -917,6 +977,7 @@ MonoBehaviour:
   - {fileID: -3597380772009312417}
   - {fileID: -3364494165439592450}
   - {fileID: 6399685680739518035}
+  - {fileID: -3330782802751188614}
   editorNotes:
   - position: {x: 801.5581, y: 495.1809}
     size: {x: 441.05963, y: 210.33855}
@@ -1114,68 +1175,6 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   BlackBoardTypeID: 0
---- !u!114 &2037490760592435613
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: Enemy_SelectDetectedTarget
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: Enemy_SelectDetectedTarget
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: 4afc659c82ac62f4da43b1ac1e977c24
-  graphPosition: {x: -105, y: 770}
-  runtimeIndex: 81
-  leafType: 3
-  methodName: Enemy_SelectDetectedTarget
-  fieldEntries:
-  - fieldName: outputslot
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: DetectedEnemy
-    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: selectionstrategy
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: DetectedEnemy
-    fieldTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  BlackBoardTypeID: 0
 --- !u!114 &2103521551675517398
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1260,7 +1259,7 @@ MonoBehaviour:
   nodeName: 
   children:
   - {fileID: -1942203300807677091}
-  - {fileID: 2037490760592435613}
+  - {fileID: -3330782802751188614}
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
