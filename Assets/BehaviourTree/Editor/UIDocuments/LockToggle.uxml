@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/BehaviourTree/Editor/UIDocuments/LockToggle.uss?fileID=7433441132597879392&amp;guid=be34f79582b529b45b6ced6426cb9c64&amp;type=3#LockToggle"/>
+    <ui:VisualElement class="toggle">
+        <ui:Toggle name="LockToggle" text="Lock" tooltip="Lock tree and selected GameObject" value="false" style="flex-grow: 1; margin-right: 5px; margin-bottom: 5px; margin-top: 5px; margin-left: 5px; width: 24px; height: 24px; padding-bottom: 0;"/>
+    </ui:VisualElement>
+</ui:UXML>

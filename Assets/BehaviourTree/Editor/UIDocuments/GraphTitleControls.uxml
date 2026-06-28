@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/BehaviourTree/Editor/UIDocuments/GraphControls.uss?fileID=7433441132597879392&amp;guid=42bf554d605d6464ca3309e436880624&amp;type=3#GraphControls"/>
+    <ui:VisualElement name="GraphControls" style="flex-direction: row; align-items: center; width: 100px; height: 45px; flex-grow: 0; margin-left: 0; position: absolute; left: 38px;">
+        <ui:Button name="CyclePrevBtn" text="◀" tooltip="Previous opened tree" class="cycle-buttons" style="height: 30px; margin-right: 4px;"/>
+        <ui:Button name="CycleNextBtn" text="▶" tooltip="Next opened tree" class="cycle-buttons" style="height: 30px; margin-left: 4px;"/>
+    </ui:VisualElement>
+</ui:UXML>

@@ -100,13 +100,9 @@ namespace BehaviourTree.Runtime.Methods
         public override NodeState Execute(TickContext ctx)
         {
             int count = ctx.agentCount;
-            Debug.Log($"[SquadReduce] sourceSlot={sourceSlot}, outputSlot={outputSlot}, agentCount={count}, operation={operation}, elementType={elementType}, runtimeType={runtimeType}");
 
             if (sourceSlot < 0 || outputSlot < 0 || count <= 0)
-            {
-                Debug.LogWarning($"[SquadReduce] FAILURE: invalid slots or zero agentCount (sourceSlot={sourceSlot}, outputSlot={outputSlot}, count={count})");
                 return NodeState.FAILURE;
-            }
 
             // ── Resolve runtime type once ─────────────────────────────
             if (!runtimeTypeResolved)
@@ -115,20 +111,16 @@ namespace BehaviourTree.Runtime.Methods
                 if (elementType != null)
                 {
                     runtimeType = elementType;
-                    Debug.Log($"[SquadReduce] Resolved runtimeType from elementType: {runtimeType}");
                 }
                 else
                 {
-                    Debug.Log($"[SquadReduce] elementType is null, detecting from first non-null value...");
                     // Fallback: detect from first non-null value
                     for (int i = 0; i < count; i++)
                     {
                         object val = BB.GetBoxedRaw(sourceSlot + i);
-                        Debug.Log($"[SquadReduce]   slot[{sourceSlot}+{i}] = {val ?? "null"} (type: {val?.GetType().Name ?? "null"})");
                         if (val != null)
                         {
                             runtimeType = val.GetType();
-                            Debug.Log($"[SquadReduce]   → detected runtimeType: {runtimeType}");
                             break;
                         }
                     }
@@ -136,28 +128,13 @@ namespace BehaviourTree.Runtime.Methods
             }
 
             if (runtimeType == null)
-            {
-                Debug.LogWarning($"[SquadReduce] FAILURE: runtimeType is null (no valid elements in source array)");
                 return NodeState.FAILURE;
-            }
-
-            // ── Debug: dump all source values ──────────────────────────
-            Debug.Log($"[SquadReduce] Reading {count} elements from slot {sourceSlot}:");
-            for (int i = 0; i < count; i++)
-            {
-                object val = BB.GetBoxedRaw(sourceSlot + i);
-                Debug.Log($"[SquadReduce]   [{i}] = {val ?? "null"} (type: {val?.GetType().Name ?? "null"}, nullVal: {IsNullValue(val)})");
-            }
 
             // ── Reduce ────────────────────────────────────────────────
             object result = ComputeReduce(runtimeType, count, out bool success);
             if (!success)
-            {
-                Debug.LogWarning($"[SquadReduce] FAILURE: ComputeReduce returned failure for type={runtimeType}, operation={operation}");
                 return NodeState.FAILURE;
-            }
 
-            Debug.Log($"[SquadReduce] SUCCESS: result={result}, writing to outputSlot={outputSlot}");
             BB.SetBoxed(outputSlot, result);
             return NodeState.SUCCESS;
         }

@@ -525,6 +525,17 @@ namespace BehaviourTree.Editor
                 warningIcon.style.display = DisplayStyle.None;
             }
         }
+
+        public void Cleanup()
+        {
+            UnregisterCallback<MouseDownEvent>(OnNodeClicked);
+
+            if (titleField != null)
+            {
+                titleField.UnregisterCallback<KeyDownEvent>(OnTitleKeyDown);
+                titleField.UnregisterCallback<BlurEvent>(OnTitleBlur);
+            }
+        }
     }
 }
 

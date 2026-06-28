@@ -145,6 +145,7 @@ namespace BehaviourTree.Runtime.Methods
 
         public override NodeState Execute(TickContext ctx)
         {
+#if UNITY_EDITOR
             if (variableSlot < 0) return NodeState.FAILURE;
 
             if (stride > 1)
@@ -153,7 +154,7 @@ namespace BehaviourTree.Runtime.Methods
                 for (int i = 0; i < stride; i++)
                 {
                     values[i] = BB.GetBoxedRaw(variableSlot + i);
-                    if(values[i] == null)
+                    if (values[i] == null)
                     {
                         Debug.Log($"[LogVariable] slot={variableSlot + i} is null");
                     }
@@ -165,7 +166,7 @@ namespace BehaviourTree.Runtime.Methods
             {
                 Debug.Log($"[LogVariable] {BB.GetBoxed(variableSlot)}");
             }
-
+#endif
             return NodeState.SUCCESS;
         }
     }
@@ -278,7 +279,6 @@ namespace BehaviourTree.Runtime.Methods
                 float magB = GetMagnitude(b);
                 return CompareNumericF(magA, magB, op);
             }
-            Debug.Log($"EvaluateCompare: {a} {op} {b}");
             return op switch
             {
                 VariableCompareOp.Equal => a.Equals(b),

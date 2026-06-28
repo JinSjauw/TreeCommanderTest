@@ -14,6 +14,9 @@ namespace BehaviourTree.Editor
         public const string GraphNoteUss = BasePath + "GraphNote.uss";
         public const string BehaviourPortUxml = BasePath + "BehaviourPort.uxml";
         public const string BehaviourPortUss = BasePath + "BehaviourPort.uss";
+        public const string GraphTitleBarUxml = BasePath + "GraphTitleBar.uxml";
+        public const string GraphTitleControlsUxml = BasePath + "GraphTitleControls.uxml";
+        public const string LockToggleUxml = BasePath + "LockToggle.uxml";
 
         // ── Blackboard / variable editing ────────────────────
         public const string BlackboardVariableEntryUxml = BasePath + "BlackboardVariableEntry.uxml";

@@ -25,6 +25,11 @@ namespace BehaviourTree.Editor
         private VisualElement contentsTextInput;
         private System.Action onChanged;
 
+        private EventCallback<ChangeEvent<string>> onTitleChanged;
+        private EventCallback<ChangeEvent<string>> onContentsChanged;
+        private EventCallback<ChangeEvent<Color>> onColorChanged;
+        private EventCallback<ChangeEvent<Color>> onTextColorChanged;
+
         private const string selectedIndicatorClass = "selected-indicator";
 
         public GraphNote()
@@ -72,31 +77,51 @@ namespace BehaviourTree.Editor
             ApplyBackgroundColor(data.noteColor);
             ApplyTextColor(data.textColor);
 
-            titleField.RegisterValueChangedCallback(evt =>
+            titleField.RegisterValueChangedCallback(onTitleChanged = evt =>
             {
                 data.title = evt.newValue;
                 onChanged?.Invoke();
             });
 
-            contentsField.RegisterValueChangedCallback(evt =>
+            contentsField.RegisterValueChangedCallback(onContentsChanged = evt =>
             {
                 data.contents = evt.newValue;
                 onChanged?.Invoke();
             });
 
-            colorField.RegisterValueChangedCallback(evt =>
+            colorField.RegisterValueChangedCallback(onColorChanged = evt =>
             {
                 data.noteColor = evt.newValue;
                 ApplyBackgroundColor(evt.newValue);
                 onChanged?.Invoke();
             });
 
-            textColorField.RegisterValueChangedCallback(evt =>
+            textColorField.RegisterValueChangedCallback(onTextColorChanged = evt =>
             {
                 data.textColor = evt.newValue;
                 ApplyTextColor(evt.newValue);
                 onChanged?.Invoke();
             });
+        }
+
+        /// <summary>
+        /// Unbind callbacks and release references. Call when the note is removed from the graph.
+        /// </summary>
+        public void Unbind()
+        {
+            if (titleField != null && onTitleChanged != null)
+                titleField.UnregisterValueChangedCallback(onTitleChanged);
+            if (contentsField != null && onContentsChanged != null)
+                contentsField.UnregisterValueChangedCallback(onContentsChanged);
+            if (colorField != null && onColorChanged != null)
+                colorField.UnregisterValueChangedCallback(onColorChanged);
+            if (textColorField != null && onTextColorChanged != null)
+                textColorField.UnregisterValueChangedCallback(onTextColorChanged);
+
+            onTitleChanged = null;
+            onContentsChanged = null;
+            onColorChanged = null;
+            onTextColorChanged = null;
         }
 
         public void PersistLayout()

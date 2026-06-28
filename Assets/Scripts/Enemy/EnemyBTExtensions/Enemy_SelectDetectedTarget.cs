@@ -15,20 +15,21 @@ namespace BehaviourTree.Runtime.Methods
         {
             new DynamicParamDescriptor
             {
-                titleLabel = "Output",
-                label = "Output Slot",
-                kind = DynamicParamKind.Variable,
-                index = 0,
-                allowedTypes = new[] { typeof(Transform), typeof(GameObject) }
-            },
-            new DynamicParamDescriptor
-            {
                 titleLabel = "Selection Strategy",
                 label = "Selection Strategy",
                 kind = DynamicParamKind.Operation,
-                index = 1,
+                index = 0,
                 operationEnumType = typeof(SelectionStrategy)
             },
+            new DynamicParamDescriptor
+            {
+                titleLabel = "Output",
+                label = "Output Slot",
+                kind = DynamicParamKind.Variable,
+                index = 1,
+                allowedTypes = new[] { typeof(Transform), typeof(GameObject) }
+            },
+
         };
 
         private SelectionStrategy strategy;
@@ -43,14 +44,19 @@ namespace BehaviourTree.Runtime.Methods
         {
             int fieldIndex = 0;
 
+            if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant) 
+            {
+                strategy = (SelectionStrategy)fields[fieldIndex].value;
+                fieldIndex++;
+            }
+            
             // Read fieldTypeNames BEFORE ReadVariableSlot, since it advances fieldIndex
             if (fieldIndex < fields.Length && fields[fieldIndex].IsVariable)
+            {
                 FieldTypeHelper.TryGetSystemTypeFromName(fieldTypeNames[fieldIndex], out outputType);
+            }
 
             targetSlot = ReadVariableSlot(fields, ref fieldIndex);
-
-            if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
-                strategy = (SelectionStrategy)fields[fieldIndex].value;
         }
 
         protected override void OnInitialize()

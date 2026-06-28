@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
   m_Name: Enemy_FireSequence
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: 
+  nodeName: Enemy_FireSequence
   children: []
   firstChildIndex: 0
   lastChildIndex: 0
@@ -251,7 +251,7 @@ MonoBehaviour:
   comment: 
   guid: c059e9a7fb999f347971f70a8ad46499
   graphPosition: {x: 525, y: 420}
-  runtimeIndex: -1
+  runtimeIndex: 2
   compositeType: 1
   methodName: SEQUENCE
   fieldEntries: []
@@ -303,7 +303,7 @@ MonoBehaviour:
   comment: 
   guid: abc81a084e8dce944acf654dbfbec7bb
   graphPosition: {x: -490, y: 1120}
-  runtimeIndex: -1
+  runtimeIndex: 10
   leafType: 3
   methodName: WaitSeconds
   fieldEntries:
@@ -366,7 +366,7 @@ MonoBehaviour:
   comment: 
   guid: 2d971b8c8fa527b4297bb836e06cf27c
   graphPosition: {x: 665, y: 665}
-  runtimeIndex: -1
+  runtimeIndex: 19
   leafType: 3
   methodName: MoveTo
   fieldEntries:
@@ -583,7 +583,7 @@ MonoBehaviour:
   comment: 
   guid: 88e75f777f46ad740b5afd8612a6dc8d
   graphPosition: {x: 385, y: 665}
-  runtimeIndex: -1
+  runtimeIndex: 18
   leafType: 3
   methodName: ExtractPosition
   fieldEntries:
@@ -689,7 +689,7 @@ MonoBehaviour:
   comment: 
   guid: 016164a13dcea5b45b3d1c70f56d3403
   graphPosition: {x: -280, y: 1120}
-  runtimeIndex: 10
+  runtimeIndex: 11
   subTreeAsset: {fileID: 11400000, guid: 117f4455c2f62e94faa0d2eea9f4d4a0, type: 2}
   bindings:
   - subtreeVariableName: EngagePosition

@@ -535,7 +535,6 @@ namespace BehaviourTree.Runtime
             patrolpointsParentSlot = ComputeSlotForVariable(commanderDef, "PatrolPoints");
             agentCountSlot = ComputeSlotForVariable(commanderDef, "AgentCount");
             leaderTransformSlot = ComputeSlotForVariable(commanderDef, "LeaderTransform");
-            Debug.Log($"[SquadManager.CacheSquadSlots] agentCountSlot={agentCountSlot} | leaderTransformSlot={leaderTransformSlot}");
         }
 
         private static int ComputeSlotForVariable(BlackboardDefinition def, string varName)
@@ -543,8 +542,6 @@ namespace BehaviourTree.Runtime
             if (def == null) return -1;
             int varIndex = def.GetVariableIndex(varName);
             if (varIndex < 0) return -1;
-
-            Debug.Log($"[SquadManager.ComputeSlotForVariable] def={def} | varName={varName} | varIndex={varIndex}");
 
             IReadOnlyList<BlackboardVariableBase> vars = def.GetAllVariables();
             int slot = 0;
@@ -581,10 +578,8 @@ namespace BehaviourTree.Runtime
         {
             if (squadMovePosSlot < 0 || commanderRunner?.BlackBoard == null) return;
             AgentTreeRunner leader = Leader;
-            Debug.Log($"[SquadManager.WriteSquadMovePosition] leader={leader.name}");
             if (leader == null) return;
             commanderRunner.BlackBoard.SetBoxedRaw(squadMovePosSlot, leader.transform.position);
-            Debug.Log($"[SquadManager.WriteSquadMovePosition] leader={leader.name} pos={leader.transform.position:F2}");
         }
 
         /// <summary>Writes an explicit position into SquadMovePosition on the commander BB.</summary>
@@ -599,7 +594,6 @@ namespace BehaviourTree.Runtime
             if (patrolpointsParentSlot < 0 || commanderRunner?.BlackBoard == null) return;
             
             commanderRunner.BlackBoard.SetBoxedRaw(patrolpointsParentSlot, patrolpointsParent);
-            Debug.Log($"[SquadManager.WritePatrolPoints]"); 
         }
 
         private void WriteAgentCount()
@@ -607,7 +601,6 @@ namespace BehaviourTree.Runtime
             if (agentCountSlot < 0 || commanderRunner?.BlackBoard == null) return;
             
             commanderRunner.BlackBoard.SetBoxedRaw(agentCountSlot, agentCount);
-            Debug.Log($"[SquadManager.WriteAgentCount] agentCount={agentCount}");
         }
 
         private void WriteLeaderTransform()
@@ -618,7 +611,6 @@ namespace BehaviourTree.Runtime
                        if (leaderTransformSlot < 0 || commanderRunner?.BlackBoard == null) return;
             
             commanderRunner.BlackBoard.SetBoxedRaw(leaderTransformSlot, managedAgents[currentLeaderIndex].transform);
-            Debug.Log($"[SquadManager.WriteLeaderTransform]"); 
         }
 
         /// <summary>

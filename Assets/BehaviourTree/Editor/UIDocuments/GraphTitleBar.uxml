@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/BehaviourTree/Editor/UIDocuments/GraphTitleBar.uss?fileID=7433441132597879392&amp;guid=e35a4e30c1dcfce42aba32c64108de28&amp;type=3#GraphTitleBar"/>
+    <ui:VisualElement name="GraphTitleBar" style="flex-direction: row; align-items: center;">
+        <ui:Label name="GraphTitleBadge" text="" style="font-size: 20px; -unity-font-style: bold; margin-right: 6px;"/>
+        <ui:TextField name="GraphTitleTextField" value="Behaviour Tree" is-delayed="true"/>
+        <editor:DropdownField name="RunnerDropdown" class="runner-dropdown" style="flex-grow: 1; height: 40px;"/>
+    </ui:VisualElement>
+</ui:UXML>

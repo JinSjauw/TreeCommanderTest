@@ -20,18 +20,20 @@ namespace BehaviourTree.Runtime.Methods
             if (node.firstChildIndex < 0)
                 return NodeState.SUCCESS;
 
+            int childCount = node.lastChildIndex - node.firstChildIndex + 1;
+
+            if (children == null || children.Length != childCount)
+            {
+                children = new ParallelChildState[childCount];
+            }
+
             // ── Conditional abort check ──
             int abortResult = TickFunctions.CheckConditionalAbort(nodeIndex, ref ctx);
             if (abortResult != ctx.activeChildIndex[nodeIndex])
-                children = null; // Reset per-child state on abort
-
-            int childCount = node.lastChildIndex - node.firstChildIndex + 1;
-
-            if (children == null)
             {
-                children = new ParallelChildState[childCount];
+                // Reset state on abort without re-allocating
                 for (int i = 0; i < childCount; i++)
-                    children[i] = new ParallelChildState { result = NodeState.NONE };
+                    children[i].result = NodeState.NONE;
             }
 
             // Tick all children (not just leaves — supports nested composites)
@@ -58,13 +60,15 @@ namespace BehaviourTree.Runtime.Methods
 
             if (anyFailure)
             {
-                children = null;
+                for (int i = 0; i < childCount; i++)
+                    children[i].result = NodeState.NONE;
                 return NodeState.FAILURE;
             }
 
             if (anyRunning) return NodeState.RUNNING;
 
-            children = null;
+            for (int i = 0; i < childCount; i++)
+                children[i].result = NodeState.NONE;
             return NodeState.SUCCESS;
         }
     }

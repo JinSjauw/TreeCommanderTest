@@ -8,6 +8,7 @@ using BehaviourTree.Core;
 using BehaviourTree.Editor;
 using BehaviourTree.Runtime;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
@@ -29,6 +30,12 @@ public class BehaviourTreeEditor : EditorWindow
     public static BlackboardDefinition currentBlackboardDef { get; private set; }
     public static BaseEditorTreeAsset currentTree { get; private set; }
     public static BehaviourTreeRunnerBase currentRunner { get; private set; }
+
+    private static List<BaseEditorTreeAsset> recentOpenedTrees = new List<BaseEditorTreeAsset>();
+    private const int maxRecentTrees = 5;
+
+    public static bool selectionIsLocked;
+    public static int lockBypassDepth;
 
     [MenuItem("BehaviourTree/Open Behaviour Tree Graph", priority = 29)]
     public static void OpenWindow()
@@ -100,6 +107,8 @@ public class BehaviourTreeEditor : EditorWindow
         else
         {
             treeGraphView.OnCreateNewTreeRequested = HandleCreateNewTreeFromContext;
+            treeGraphView.OnCyclePrevious = CycleToPreviousRecentTree;
+            treeGraphView.OnCycleNext = CycleToNextRecentTree;
         }
 
         if (inspectorView == null)
@@ -470,6 +479,8 @@ public class BehaviourTreeEditor : EditorWindow
 
     private void OnSelectionChange()
     {
+        if (selectionIsLocked && currentTree != null && lockBypassDepth == 0) return;
+
         BaseEditorTreeAsset selectedAsset = OnSelectTree();
 
         if (selectedAsset == null) return;
@@ -541,6 +552,7 @@ public class BehaviourTreeEditor : EditorWindow
                 inspectorView?.ClearView();
                 treeGraphView.OnNodeSelected = OnNodeSelectionChanged;
                 treeGraphView.PopulateView(currentTree);
+                RecordTreeOpened(currentTree);
                 if (blackBoardView != null)
                     blackBoardView.IsSquadContext = currentTree is CommanderTreeAsset;
                 BlackboardDefinition bbDef = currentTree is CommanderTreeAsset
@@ -607,6 +619,7 @@ public class BehaviourTreeEditor : EditorWindow
         {
             treeGraphView.OnNodeSelected = null;
             treeGraphView.ClearView();
+            treeGraphView.Dispose();
         }
 
         if (treeSearchProvider != null)
@@ -614,5 +627,52 @@ public class BehaviourTreeEditor : EditorWindow
             DestroyImmediate(treeSearchProvider);
             treeSearchProvider = null;
         }
+    }
+
+    private static void RecordTreeOpened(BaseEditorTreeAsset treeAsset)
+    {
+        if (treeAsset == null) return;
+        recentOpenedTrees.Remove(treeAsset);
+        recentOpenedTrees.Add(treeAsset);
+        while (recentOpenedTrees.Count > maxRecentTrees)
+            recentOpenedTrees.RemoveAt(0);
+    }
+
+    private static int GetCurrentTreeRecentIndex()
+    {
+        if (currentTree == null) return -1;
+        return recentOpenedTrees.IndexOf(currentTree);
+    }
+
+    private static void CycleToRecentTree(int direction)
+    {
+        if (recentOpenedTrees.Count < 2) return;
+        int idx = GetCurrentTreeRecentIndex();
+        if (idx < 0) return;
+
+        idx = (idx + direction + recentOpenedTrees.Count) % recentOpenedTrees.Count;
+        var target = recentOpenedTrees[idx];
+        if (target == currentTree) return;
+
+        lockBypassDepth++;
+        try
+        {
+            Selection.activeObject = target;
+            AssetDatabase.OpenAsset(target);
+        }
+        finally
+        {
+            lockBypassDepth--;
+        }
+    }
+
+    private static void CycleToPreviousRecentTree()
+    {
+        CycleToRecentTree(-1);
+    }
+
+    private static void CycleToNextRecentTree()
+    {
+        CycleToRecentTree(1);
     }
 }

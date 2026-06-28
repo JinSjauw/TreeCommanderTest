@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.SceneManagement;
 using UnityEngine.UIElements;
 using UnityEngine;
 using BehaviourTree.Core;
@@ -13,6 +14,14 @@ namespace BehaviourTree.Editor
     [UxmlElement("BTGraphView")]
     public partial class BehaviourTreeEditorGraphView : GraphView
     {
+        static BehaviourTreeEditorGraphView()
+        {
+            EditorSceneManager.sceneOpened += (_, _) => runnersCacheValid = false;
+        }
+
+        private static List<BehaviourTreeRunnerBase> cachedRunners;
+        private static bool runnersCacheValid;
+
         // Callback for when graph changes (hook up export logic here)
         public Action<BehaviourTreeEditorGraphView> onGraphDataChanged;
         public Action<BehaviourNodeView> OnNodeSelected;
@@ -22,6 +31,9 @@ namespace BehaviourTree.Editor
         /// Parameter: true for CommanderTree, false for AgentTree.
         /// </summary>
         public Action<bool> OnCreateNewTreeRequested;
+        public Action OnCyclePrevious;
+        public Action OnCycleNext;
+        public Toggle lockToggle;
         
         private BaseEditorTreeAsset tree;
         private Dictionary<string, BehaviourNodeView> nodeViewDict;
@@ -36,6 +48,9 @@ namespace BehaviourTree.Editor
         private SubtreeExtractor subtreeExtractor;
         private List<Port> compatiblePortsCache = new List<Port>();
         private bool debugProxiesAreSetup;
+        private DropdownField runnerDropdown;
+        private List<BehaviourTreeRunnerBase> availableRunners = new List<BehaviourTreeRunnerBase>();
+        private bool refreshingRunnerDropdown;
 
         public bool HasTree => tree != null;
         public bool DebugProxiesAreSetup
@@ -117,74 +132,62 @@ namespace BehaviourTree.Editor
             VisualElement titleContainer = new VisualElement
             {
                 name = "GraphTitle",
-                style = { flexDirection = FlexDirection.Row, alignItems = Align.Center }
+                style = { flexDirection = FlexDirection.Column, alignItems = Align.FlexStart }
             };
 
-            graphTitleBadge = new Label("")
-            {
-                name = "GraphTitleBadge",
-                style =
-                {
-                    fontSize = 20,
-                    unityFontStyleAndWeight = FontStyle.Bold,
-                    marginRight = 6,
-                }
-            };
+            // ── Title bar row (badge + text field + dropdown) ─
+            VisualTreeAsset titleBarAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(BehaviourTreeEditorPaths.GraphTitleBarUxml);
+            VisualElement titleRow = titleBarAsset.CloneTree();
+            graphTitleBadge = titleRow.Q<Label>("GraphTitleBadge");
+            graphTitleLabel = titleRow.Q<TextField>("GraphTitleTextField");
+            runnerDropdown = titleRow.Q<DropdownField>("RunnerDropdown");
 
-            graphTitleLabel = new TextField
-            {
-                value = "Behaviour Tree",
-                isDelayed = true
-            };
+            // Style the inner input element of the text field
             graphTitleLabel.ClearClassList();
-
             VisualElement input = graphTitleLabel.Q<VisualElement>("unity-text-input");
             input.name = "GraphTitleInput";
             input.ClearClassList();
 
-            graphTitleLabel.RegisterValueChangedCallback(evt =>
+            graphTitleLabel.RegisterValueChangedCallback(OnGraphTitleChanged);
+
+            runnerDropdown.RegisterValueChangedCallback(OnRunnerDropdownChanged);
+
+            // ── Cycle buttons row (◀ ▶) ─────────────────────
+            VisualTreeAsset controlsAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(BehaviourTreeEditorPaths.GraphTitleControlsUxml);
+            VisualElement controlsRow = controlsAsset.CloneTree();
+
+            // Insert lock toggle from its own UXML at the front
+            VisualTreeAsset lockToggleAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(BehaviourTreeEditorPaths.LockToggleUxml);
+            VisualElement lockToggleElement = lockToggleAsset.CloneTree();
+            lockToggle = lockToggleElement.Q<Toggle>("LockToggle");
+
+            // Load lock icon sprites
+            var lockedIcon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/BehaviourTree/Editor/UITextures/locked-icon.asset");
+            var unlockedIcon = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/BehaviourTree/Editor/UITextures/unlocked-icon.asset");
+
+            void UpdateLockIcon(bool locked)
             {
-                if (tree == null)
-                {
-                    graphTitleLabel.SetValueWithoutNotify("Behaviour Tree");
-                    return;
-                }
+                Sprite icon = locked ? lockedIcon : unlockedIcon;
+                if (icon != null)
+                    lockToggle.style.backgroundImage = new StyleBackground(Background.FromSprite(icon));
+            }
 
-                string newName = evt.newValue?.Trim();
-
-                if (string.IsNullOrEmpty(newName) || newName == tree.name)
-                {
-                    RefreshTitle();
-                    return;
-                }
-
-                if (EditorApplication.isPlaying)
-                {
-                    RefreshTitle();
-                    return;
-                }
-
-                string path = AssetDatabase.GetAssetPath(tree);
-                if (string.IsNullOrEmpty(path))
-                {
-                    RefreshTitle();
-                    return;
-                }
-
-                string err = AssetDatabase.RenameAsset(path, newName);
-                if (!string.IsNullOrEmpty(err))
-                {
-                    Debug.LogError(err);
-                    RefreshTitle();
-                    return;
-                }
-
-                AssetDatabase.SaveAssets();
-                RefreshTitle();
+            lockToggle.RegisterValueChangedCallback(evt =>
+            {
+                BehaviourTreeEditor.selectionIsLocked = evt.newValue;
+                UpdateLockIcon(evt.newValue);
             });
+            UpdateLockIcon(lockToggle.value);
+            controlsRow.Insert(0, lockToggleElement);
 
-            titleContainer.Add(graphTitleBadge);
-            titleContainer.Add(graphTitleLabel);
+            Button prevBtn = controlsRow.Q<Button>("CyclePrevBtn");
+            prevBtn.clicked += () => OnCyclePrevious?.Invoke();
+
+            Button nextBtn = controlsRow.Q<Button>("CycleNextBtn");
+            nextBtn.clicked += () => OnCycleNext?.Invoke();
+
+            titleContainer.Add(titleRow);
+            titleContainer.Add(controlsRow);
             Add(titleContainer);
         }
 
@@ -278,6 +281,7 @@ namespace BehaviourTree.Editor
                 backgroundTint.style.backgroundColor = GraphEditorTheme.instance.graphBgAgent;
 
             graphViewChanged -= OnGraphViewChanged;
+            Undo.undoRedoPerformed -= OnUndoRedo;
             try
             {
                 DeleteElements(graphElements);
@@ -286,7 +290,22 @@ namespace BehaviourTree.Editor
             finally
             {
                 graphViewChanged += OnGraphViewChanged;
+                Undo.undoRedoPerformed += OnUndoRedo;
             }
+
+            RefreshRunnerDropdown();
+        }
+
+        public void Dispose()
+        {
+            graphViewChanged -= OnGraphViewChanged;
+            Undo.undoRedoPerformed -= OnUndoRedo;
+
+            if (graphTitleLabel != null)
+                graphTitleLabel.UnregisterValueChangedCallback(OnGraphTitleChanged);
+
+            if (runnerDropdown != null)
+                runnerDropdown.UnregisterValueChangedCallback(OnRunnerDropdownChanged);
         }
 
         public bool TryConnectPorts(Port from, Port to)
@@ -411,6 +430,7 @@ namespace BehaviourTree.Editor
             {
                 if (elementsToRemove[i] is BehaviourNodeView nodeView)
                 {
+                    nodeView.Cleanup();
                     tree.DeleteNode(nodeView.NodeSO);
                     nodeViewDict.Remove(nodeView.Guid);
                 }
@@ -426,6 +446,7 @@ namespace BehaviourTree.Editor
                 }
                 else if (elementsToRemove[i] is GraphNote graphNote)
                 {
+                    graphNote.Unbind();
                     if (graphNote.Data != null)
                         tree.editorNotes.Remove(graphNote.Data);
                     EditorUtility.SetDirty(tree);
@@ -738,16 +759,11 @@ namespace BehaviourTree.Editor
         {
             if (graphTitleLabel == null) return;
 
-            string goName = BehaviourTreeEditor.currentRunner == null ? null : BehaviourTreeEditor.currentRunner.gameObject?.name;
             string treeName = tree != null ? tree.name : null;
 
             if (treeName == null)
             {
                 graphTitleLabel.SetValueWithoutNotify("Behaviour Tree");
-            }
-            else if (!string.IsNullOrEmpty(goName))
-            {
-                graphTitleLabel.SetValueWithoutNotify($"{goName} - {treeName}");
             }
             else
             {
@@ -772,6 +788,89 @@ namespace BehaviourTree.Editor
                     graphTitleBadge.style.color = GraphEditorTheme.instance.badgeAgent;
                     graphTitleBadge.style.display = DisplayStyle.Flex;
                 }
+            }
+
+            RefreshRunnerDropdown();
+        }
+
+        private void RefreshRunnerDropdown()
+        {
+            if (runnerDropdown == null) return;
+            refreshingRunnerDropdown = true;
+
+            if (!runnersCacheValid || cachedRunners == null)
+            {
+                cachedRunners = new List<BehaviourTreeRunnerBase>();
+                cachedRunners.AddRange(UnityEngine.Object.FindObjectsByType<BehaviourTreeRunnerBase>(FindObjectsInactive.Include, FindObjectsSortMode.None));
+                runnersCacheValid = true;
+            }
+
+            // Remove destroyed entries from cache (e.g. objects destroyed by entering play mode)
+            cachedRunners.RemoveAll(r => r == null);
+
+            availableRunners.Clear();
+            availableRunners.AddRange(cachedRunners);
+            runnerDropdown.choices = availableRunners.Select(r => r.gameObject.name).ToList();
+
+            string goName = BehaviourTreeEditor.currentRunner?.gameObject?.name;
+            if (!string.IsNullOrEmpty(goName) && availableRunners.Any(r => r != null && r.gameObject.name == goName))
+                runnerDropdown.value = goName;
+            else
+                runnerDropdown.value = "";
+
+            refreshingRunnerDropdown = false;
+        }
+
+        private void OnGraphTitleChanged(ChangeEvent<string> evt)
+        {
+            if (tree == null)
+            {
+                graphTitleLabel.SetValueWithoutNotify("Behaviour Tree");
+                return;
+            }
+
+            string newName = evt.newValue?.Trim();
+
+            if (string.IsNullOrEmpty(newName) || newName == tree.name)
+            {
+                RefreshTitle();
+                return;
+            }
+
+            if (EditorApplication.isPlaying)
+            {
+                RefreshTitle();
+                return;
+            }
+
+            string path = AssetDatabase.GetAssetPath(tree);
+            if (string.IsNullOrEmpty(path))
+            {
+                RefreshTitle();
+                return;
+            }
+
+            string err = AssetDatabase.RenameAsset(path, newName);
+            if (!string.IsNullOrEmpty(err))
+            {
+                Debug.LogError(err);
+                RefreshTitle();
+                return;
+            }
+
+            AssetDatabase.SaveAssets();
+            RefreshTitle();
+        }
+
+        private void OnRunnerDropdownChanged(ChangeEvent<string> evt)
+        {
+            if (refreshingRunnerDropdown) return;
+            var runner = availableRunners.FirstOrDefault(r => r != null && r.gameObject.name == evt.newValue);
+            if (runner != null)
+            {
+                BehaviourTreeEditor.lockBypassDepth++;
+                try { Selection.activeGameObject = runner.gameObject; }
+                finally { BehaviourTreeEditor.lockBypassDepth--; }
             }
         }
 
