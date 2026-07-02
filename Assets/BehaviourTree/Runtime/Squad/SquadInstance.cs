@@ -30,10 +30,6 @@ namespace BehaviourTree.Runtime
         public BlackBoard BlackBoard => blackBoard;
         public SquadDefinition Definition => definition;
 
-        /// <summary>
-        /// Initializes the squad's own BlackBoard from the SquadDefinition's schema.
-        /// maxAgents drives stride on squad-data variables and comes from the commander.
-        /// </summary>
         public void Initialize(SquadDefinition squadDefinition, int maxAgents)
         {
             definition = squadDefinition;
@@ -42,10 +38,6 @@ namespace BehaviourTree.Runtime
 
             if (definition != null)
             {
-                // OnValidate handles stride in editor but NOT at runtime.
-                // Serialized stride defaults to 1 — we must apply the commander's
-                // maxAgents stride before initializing the BB so per-agent storage
-                // is sized correctly.
                 definition.EnsureStrideApplied(maxAgents);
                 blackBoard.Initialize(definition.blackboardDefinition);
             }
@@ -54,13 +46,6 @@ namespace BehaviourTree.Runtime
             copyFromCache = new Dictionary<BlackboardDefinition, int[]>();
         }
 
-        /// <summary>
-        /// Resolves variable bindings for a tree, identified by its BlackboardDefinition.
-        /// Idempotent — subsequent calls with the same definition are no-ops.
-        /// 
-        /// Matches the treeDef against SquadBindingGroups by comparing the tree asset's
-        /// BlackboardDefinition with the given treeDef.
-        /// </summary>
         public void EnsureResolved(BlackboardDefinition treeDef)
         {
             if (copyToCache.ContainsKey(treeDef))
@@ -80,13 +65,12 @@ namespace BehaviourTree.Runtime
                 SquadBindingGroup group = definition.bindingGroups[i];
                 if (group.treeAsset == null) continue;
 
-                // Editor: fast path via ScriptableObject reference equality
                 if (treeDef.sourceTreeAsset != null && group.treeAsset == treeDef.sourceTreeAsset)
                 {
                     matchedGroup = group;
                     break;
                 }
-                // Build / baked: fall back to GUID matching
+                
                 if (!string.IsNullOrEmpty(group.treeAssetGuid) &&
                     group.treeAssetGuid == treeDef.sourceTreeGuid)
                 {
@@ -167,34 +151,10 @@ namespace BehaviourTree.Runtime
             copyFromCache[treeDef] = fromTree.ToArray();
         }
 
-        /// <summary>
-        /// Copies squad BB values to the given tree's BB, respecting binding directions.
-        /// Only copies FromSquad and Both bindings.
-        /// When agentOffset is >= 0, squad-side slots for stride > 1 variables are offset
-        /// by agentOffset to read the correct per-agent data (agent tree, stride=1 on tree side).
-        /// When agentOffset is -1 (commander case), all stride slots are copied —
-        /// both sides have stride > 1 and need a full sync.
-        /// </summary>
         public void CopyToBB(BlackBoard treeBB, BlackboardDefinition treeDef, int agentOffset = -1)
         {
             if (!copyToCache.TryGetValue(treeDef, out int[] triplets) || triplets.Length == 0)
                 return;
-
-            // Diagnostic: locate DetectedEnemies on squad BB for logging
-            // int diagVarIndex = -1;
-            // int diagBaseSlot = -1;
-            // int diagStride = 1;
-            // if (definition?.blackboardDefinition != null)
-            // {
-            //     diagVarIndex = definition.blackboardDefinition.GetVariableIndex("DetectedEnemies");
-            //     if (diagVarIndex >= 0)
-            //     {
-            //         diagBaseSlot = ComputeBaseSlot(definition.blackboardDefinition, diagVarIndex);
-            //         var vars = definition.blackboardDefinition.GetAllVariables();
-            //         if (diagVarIndex < vars.Count)
-            //             diagStride = vars[diagVarIndex].Stride;
-            //     }
-            // }
 
             for (int i = 0; i < triplets.Length; i += 3)
             {
@@ -219,18 +179,6 @@ namespace BehaviourTree.Runtime
                         int actualDst = dstSlot + j;
                         object value = blackBoard.GetBoxedRaw(actualSrc);
 
-                        // // Log DetectedEnemies (squad) → commander pushes
-                        // if (diagBaseSlot >= 0 && actualSrc >= diagBaseSlot && actualSrc < diagBaseSlot + diagStride)
-                        // {
-                        //     int elemIndex = actualSrc - diagBaseSlot;
-                        //     string valDisplay = value == null ? "null" :
-                        //         (value is UnityEngine.Object uo && uo == null) ? "<destroyed>" :
-                        //         value.ToString();
-                        //     Debug.Log($"[Squad.CopyToBB] agentOffset=-1 (commander bulk) | " +
-                        //         $"squad.DetectedEnemies[{elemIndex}] (slot={actualSrc})={valDisplay} (type={value?.GetType().Name ?? "null"}) " +
-                        //         $"→ commanderBB[{actualDst}]");
-                        // }
-
                         treeBB.SetBoxedRaw(actualDst, value);
                     }
                 }
@@ -241,34 +189,10 @@ namespace BehaviourTree.Runtime
             }
         }
 
-        /// <summary>
-        /// Copies tree BB values back to the squad BB, respecting binding directions.
-        /// Only copies ToSquad and Both bindings.
-        /// When agentOffset is >= 0, squad-side slots for stride > 1 variables are offset
-        /// by agentOffset to write to the correct per-agent slot (agent tree, stride=1 on tree side).
-        /// When agentOffset is -1 (commander case), all stride slots are copied —
-        /// both sides have stride > 1 and need a full sync.
-        /// </summary>
         public void CopyFromBB(BlackBoard treeBB, BlackboardDefinition treeDef, int agentOffset = -1)
         {
             if (!copyFromCache.TryGetValue(treeDef, out int[] triplets) || triplets.Length == 0)
                 return;
-
-            // Diagnostic: locate DetectedEnemies on squad BB for logging
-            // int diagVarIndex = -1;
-            // int diagBaseSlot = -1;
-            // int diagStride = 1;
-            // if (definition?.blackboardDefinition != null)
-            // {
-            //     diagVarIndex = definition.blackboardDefinition.GetVariableIndex("DetectedEnemies");
-            //     if (diagVarIndex >= 0)
-            //     {
-            //         diagBaseSlot = ComputeBaseSlot(definition.blackboardDefinition, diagVarIndex);
-            //         var vars = definition.blackboardDefinition.GetAllVariables();
-            //         if (diagVarIndex < vars.Count)
-            //             diagStride = vars[diagVarIndex].Stride;
-            //     }
-            // }
 
             for (int i = 0; i < triplets.Length; i += 3)
             {
@@ -282,18 +206,6 @@ namespace BehaviourTree.Runtime
                     int offset = (stride > 1 && agentOffset < stride) ? agentOffset : 0;
                     int actualDst = dstSlot + offset;
                     object srcValue = treeBB.GetBoxedRaw(srcSlot);
-
-                    // // Log DetectedEnemy → DetectedEnemies pushes
-                    // if (diagBaseSlot >= 0 && actualDst >= diagBaseSlot && actualDst < diagBaseSlot + diagStride)
-                    // {
-                    //     int elemIndex = actualDst - diagBaseSlot;
-                    //     string srcDisplay = srcValue == null ? "null" :
-                    //         (srcValue is UnityEngine.Object uo && uo == null) ? "<destroyed>" :
-                    //         srcValue.ToString();
-                    //     Debug.Log($"[Squad.CopyFromBB] agentOffset={agentOffset} | " +
-                    //         $"agentBB[{srcSlot}]={srcDisplay} (type={srcValue?.GetType().Name ?? "null"}) " +
-                    //         $"→ squad.DetectedEnemies[{elemIndex}] (slot={actualDst})");
-                    // }
 
                     blackBoard.SetBoxedRaw(actualDst, srcValue);
                 }

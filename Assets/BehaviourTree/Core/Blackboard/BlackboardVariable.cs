@@ -42,8 +42,9 @@ namespace BehaviourTree.Core
         /// <summary>Gets the value for a specific element index. For stride=1, returns singleValue.</summary>
         public T GetValue(int elementIndex = 0)
         {
-            if (Stride > 1 && arrayValues != null && elementIndex >= 0 && elementIndex < arrayValues.Length)
+            if (Stride > 1 && arrayValues != null && elementIndex >= 0 && elementIndex < arrayValues.Length) 
                 return arrayValues[elementIndex];
+                
             return singleValue;
         }
 

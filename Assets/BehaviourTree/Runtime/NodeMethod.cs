@@ -4,17 +4,6 @@ using UnityEngine;
 
 namespace BehaviourTree.Core
 {
-    // ═══════════════════════════════════════════════════════════════════
-    // NodeMethod — abstract base
-    // ═══════════════════════════════════════════════════════════════════
-
-    /// <summary>
-    /// Base class for all leaf-node methods. Inherit from ActionMethod,
-    /// ConditionMethod, or DecoratorMethod to auto-register a new method.
-    /// Public fields define the inspector schema. Fields with [SharedVar]
-    /// are automatically resolved from the blackboard before Execute() and
-    /// written back after.
-    /// </summary>
     public abstract class NodeMethod
     {
         internal FieldBinding[] bindings;
@@ -22,14 +11,8 @@ namespace BehaviourTree.Core
         private IBlackBoardAccess bbAccess;
         private bool bbInitialized;
 
-        /// <summary>Blackboard accessor. Available during Execute().</summary>
         protected IBlackBoardAccess BB => bbAccess;
 
-        /// <summary>
-        /// Looks up the raw BB slot index for a [SharedVar] field by its C# field name.
-        /// Returns -1 if the field is not found or has no BB binding.
-        /// Preferred over positional bindings[N].bbSlotIndex which breaks on reorder.
-        /// </summary>
         protected int GetSlotByName(string fieldName)
         {
             if (bindings == null) return -1;
@@ -55,33 +38,10 @@ namespace BehaviourTree.Core
             return comp;
         }
 
-        /// <summary>
-        /// Number of parameter slots this method expects. Default 0 means
-        /// "determine from [SharedVar] field count". Override to a positive
-        /// number for dynamic-type nodes that receive FieldData directly
-        /// via <see cref="DeserializeParameters"/> without C# [SharedVar] fields.
-        /// When <see cref="GetDynamicParamDescriptors"/> returns non-null, this value
-        /// is derived from descriptors.Length automatically.
-        /// </summary>
         public virtual int ParameterCount => GetDynamicParamDescriptors()?.Length ?? 0;
 
-        /// <summary>
-        /// Returns the parameter layout for dynamic-type nodes. Null means
-        /// "use [SharedVar] C# field binding" (legacy path).
-        /// Non-null means the editor renders a generic inspector from these descriptors
-        /// and the baker knows this node uses <see cref="DeserializeParameters"/>.
-        /// Each descriptor maps to one FieldData entry by position (descriptors[i] → entry i).
-        /// </summary>
         public virtual DynamicParamDescriptor[] GetDynamicParamDescriptors() => null;
 
-        /// <summary>
-        /// Called once during tree initialization for nodes with dynamic parameters
-        /// (<see cref="GetDynamicParamDescriptors"/> returns non-null).
-        /// Receives FieldData and type names directly — the node stores slot indices / constant values
-        /// in its own fields. No FieldBindings are created.
-        /// Fields with mode=1 contain slot offsets; mode=0 contain packed constants (use fieldTypeNames
-        /// to interpret float bit patterns); mode=2 contain boxed constants.
-        /// </summary>
         public virtual void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants) { }
 
         /// <summary>
@@ -98,19 +58,6 @@ namespace BehaviourTree.Core
             }
         }
 
-        /// <summary>
-        /// Called once during tree initialization. Copies baked constants directly
-        /// onto instance fields and stores BB slot indices for [SharedVar] fields.
-        /// </summary>
-        public void DeserializeFields(ReadOnlySpan<FieldData> fields, FieldBinding[] bindings)
-        {
-            DeserializeFields(fields, bindings, null);
-        }
-
-        /// <summary>
-        /// Called once during tree initialization. Accepts optional boxedConstants
-        /// array for constants larger than 4 bytes (Vector3, Color, custom types).
-        /// </summary>
         public void DeserializeFields(ReadOnlySpan<FieldData> fields, FieldBinding[] bindings, object[] boxedConstants)
         {
             // Clone bindings to avoid mutating the shared cached array from MethodRegistry
@@ -178,17 +125,11 @@ namespace BehaviourTree.Core
 
                 fieldIndex++;
 
-                // TreeBaker injects a stride marker after variable fields with stride > 1.
-                // Skip it so the next binding reads the correct FieldData entry.
                 if (isVariableField && fieldIndex < fields.Length && fields[fieldIndex].IsStrideMarker)
                     fieldIndex++;
             }
         }
 
-        /// <summary>
-        /// Called by the framework before each Execute(). Copies BB values into
-        /// [SharedVar] instance fields using GetBoxed/SetBoxed (supports any type).
-        /// </summary>
         public void ResolveInputsGeneric(IBlackBoardAccess bb)
         {
             bbAccess = bb;
@@ -208,10 +149,6 @@ namespace BehaviourTree.Core
             }
         }
 
-        /// <summary>
-        /// Called by the framework after each Execute(). Copies [SharedVar]
-        /// instance fields back to the BB using GetBoxed/SetBoxed (supports any type).
-        /// </summary>
         public void WriteOutputsGeneric(IBlackBoardAccess bb)
         {
             FieldBinding[] b = bindings;
@@ -250,10 +187,7 @@ namespace BehaviourTree.Core
         protected virtual void OnInitialize() { }
 
         /// <summary>
-        /// Called by AbortSubtree before resetting this node's state to INACTIVE.
-        /// Override to clean up blackboard values or other shared state when a branch
-        /// is aborted. Only use the provided bbAccess — instance fields are shared
-        /// across agents and not safe to use here.
+        /// Called by ConditionalAbort before resetting this node's state to INACTIVE.
         /// </summary>
         public virtual void OnAbort(IBlackBoardAccess bbAccess) { }
 

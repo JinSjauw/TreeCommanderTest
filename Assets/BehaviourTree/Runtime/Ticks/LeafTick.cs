@@ -2,12 +2,6 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Runtime
 {
-    /// <summary>
-    /// Tick functions for leaf nodes (Action and Condition).
-    /// Resolves inputs from the blackboard, executes the method, then writes outputs back.
-    /// Manages bb.currentAgentOffset from ctx.agentIndex so leaves access the correct
-    /// per-agent element transparently.
-    /// </summary>
     internal static partial class TickFunctions
     {
         internal static NodeState TickLeaf(int nodeIndex, ref TickContext ctx)
@@ -22,8 +16,6 @@ namespace BehaviourTree.Runtime
 
             BlackBoard bb = ctx.blackBoard;
 
-            // Apply the current agent index as BB offset so SharedVar fields and dynamic
-            // methods resolve to the correct per-agent element. Restore afterwards.
             int savedOffset = bb.currentAgentOffset;
             bb.currentAgentOffset = ctx.agentIndex;
 

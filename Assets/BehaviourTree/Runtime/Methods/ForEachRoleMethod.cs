@@ -2,24 +2,12 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Runtime.Methods
 {
-    /// <summary>
-    /// ForEachRole ticks all children for agents whose TacticalRole matches the target
-    /// role read from the squad BB. All three values come from squad-def variables.
-    /// Continues past child SUCCESS and FAILURE — only RUNNING pauses the loop.
-    /// Resume position tracked via runningAgentIndex (agent) and activeChildIndex (child).
-    /// Sets ctx.agentIndex so children access the correct per-agent slot.
-    /// </summary>
     [NodeMethod("ForEachRole", allowedTreeType = AllowedTreeType.Commander)]
     public sealed class ForEachRoleMethod : CompositeMethod
     {
-        /// <summary>Baked slot offset of the AgentRoles squad-data variable.
-        /// Auto-bound to "AgentRoles" by convention — not visible in the inspector.
-        /// bindings[0].bbSlotIndex gives the raw offset for per-agent reads.</summary>
         [SharedVar(IsHidden = true, AutoVariableName = "AgentRoles", SkipAutoResolve = true)]
         public int agentRoleSlot;
 
-        /// <summary>Target role to match. When toggle is OFF: TacticalRole enum dropdown (baked as constant).
-        /// When toggle is ON: reads from a squad BB int variable (dynamic per-frame).</summary>
         [SharedVar(isToggleVariable: true, IsRoleDropdown = true)]
         public int targetRoleSlot;
 

@@ -4,25 +4,11 @@ using UnityEngine;
 
 namespace BehaviourTree.Runtime.Methods
 {
-    /// <summary>
-    /// Formation shape types.
-    /// </summary>
     public enum FormationType
     {
         Circle = 0,
     }
 
-    /// <summary>
-    /// Commander node. Use inside ForEachRole/ForEachAgent to compute a per-agent
-    /// formation position and write it to a squad-data Vector3 output variable.
-    ///
-    /// Parameters:
-    ///   FormationCenter — center of the formation (C/V/SO toggle, Vector3)
-    ///   Position Output — squad-data Vector3 variable to write to per agent
-    ///   Formation Type  — enum dropdown (Circle)
-    ///   Radius          — distance from center (ScriptableObjectConstant)
-    ///   Agent Count     — auto-detected from Position Output stride
-    /// </summary>
     [NodeMethod("CalculateFormation", allowedTreeType = AllowedTreeType.Commander)]
     public sealed class CalculateFormation : ActionMethod
     {
@@ -60,8 +46,6 @@ namespace BehaviourTree.Runtime.Methods
                 index = 3,
             },
         };
-
-        // ── Deserialized state ────────────────────────────────────────
 
         private int centerSlot = -1;
         private Vector3 centerConstant;
@@ -131,9 +115,6 @@ namespace BehaviourTree.Runtime.Methods
             BlackBoard bb = BB as BlackBoard;
             int agentOffset = bb != null ? bb.currentAgentOffset : 0;
 
-            // Read center (variable or constant)
-            // centerSlot is a shared/commander-level variable — use GetBoxedRaw
-            // to avoid applying currentAgentOffset (which is for per-agent squad data).
             Vector3 center = Vector3.zero;
 
             if(hasCenterConstant)
@@ -165,8 +146,7 @@ namespace BehaviourTree.Runtime.Methods
             }
 
             Debug.Log($"CalculateFormation: position: {position:F2} agentOffset={agentOffset}");
-            // BB.SetBoxed internally adds currentAgentOffset, so pass posSlot directly.
-            // Adding agentOffset manually would double-offset (posSlot + 2*agentOffset),
+
             BB.SetBoxed(posSlot, position);
             return NodeState.SUCCESS;
         }

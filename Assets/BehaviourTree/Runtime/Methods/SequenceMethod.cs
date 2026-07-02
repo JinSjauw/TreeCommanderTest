@@ -18,9 +18,11 @@ namespace BehaviourTree.Runtime.Methods
             int child = ctx.activeChildIndex[nodeIndex];
 
             // ── Conditional abort check ──
-            int abortResult = TickFunctions.CheckConditionalAbort(nodeIndex, ref ctx);
-            if (abortResult != ctx.activeChildIndex[nodeIndex])
-                child = abortResult;
+            if(node.abortType != AbortType.None)
+            {
+                int abortResult = TickFunctions.CheckConditionalAbort(nodeIndex, ref ctx);
+                if (abortResult != ctx.activeChildIndex[nodeIndex]) child = abortResult;
+            }
 
             int childCount = node.lastChildIndex - node.firstChildIndex + 1;
 

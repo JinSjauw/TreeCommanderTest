@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace BehaviourTree.Core
 {
-    /// <summary>
-    /// Union struct that holds either a constant value or a blackboard variable name.
-    /// Stored per-field on ActionNode.
-    /// </summary>
     [Serializable]
     public struct NodeFieldEntry
     {
@@ -42,24 +38,11 @@ namespace BehaviourTree.Core
         /// for fields marked [SharedVar(IsOrderDropdown = true)].
         /// </summary>
         public bool isOrderConstant;
-
-        /// <summary>
-        /// When non-empty, this entry sources its constant value from a field on a
-        /// ScriptableObject registered in the tree's config sources list.
-        /// Only metadata (GUID + field name) is stored here; the actual value is
-        /// resolved at bake time by TreeBaker.ResolveSOConstantEntry so SO changes
-        /// are always picked up.
-        /// </summary>
         public string configSourceGuid;
 
         /// <summary>Field name on the ScriptableObject referenced by configSourceGuid.</summary>
         public string configFieldName;
 
-        /// <summary>
-        /// True when the user has toggled to SO constant mode (C/V/SO = SO),
-        /// even if no specific field has been selected yet.
-        /// Mutually exclusive with <see cref="isVariable"/>.
-        /// </summary>
         public bool isConfigConstant;
 
         // Constant values (only one used, determined by fieldTypeName)

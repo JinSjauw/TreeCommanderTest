@@ -18,7 +18,7 @@ namespace BehaviourTree.Runtime.Methods
     /// correspond to unregistered agents are treated as neutral.
     /// </summary>
     [NodeMethod("PollAgentStatus", allowedTreeType = AllowedTreeType.Commander)]
-    public sealed class PollAgentStatus : ConditionMethod
+    public sealed class PollAgentStatus : ActionMethod
     {
         public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
         {

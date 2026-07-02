@@ -86,6 +86,48 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   BlackBoardTypeID: 0
+--- !u!114 &-7012153165743683004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: PollAgentStatus
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: 
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 5766c3f0d076e174fb619f3517a4f645
+  graphPosition: {x: 910, y: 700}
+  runtimeIndex: 21
+  leafType: 3
+  methodName: PollAgentStatus
+  fieldEntries:
+  - fieldName: input
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 1
+    variableName: AgentStatus
+    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
 --- !u!114 &-5185096440071770641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,7 +216,7 @@ MonoBehaviour:
   methodName: SEQUENCE
   fieldEntries: []
   abortType: 0
---- !u!114 &-4467815881493242659
+--- !u!114 &-4432721932169831748
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -184,25 +226,79 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: PollAgentStatus
+  m_Name: Cooldown
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: PollAgentStatus
+  nodeName: Cooldown
   children: []
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
-  guid: 7d951e82576d5104f98da56df66ebe38
-  graphPosition: {x: 910, y: 700}
-  runtimeIndex: 21
+  guid: c1d9bccb58be33f41b01a440464acb89
+  graphPosition: {x: 2251.3557, y: 327.2896}
+  runtimeIndex: -1
   leafType: 2
-  methodName: PollAgentStatus
+  methodName: Cooldown
   fieldEntries:
-  - fieldName: input
+  - fieldName: duration
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: remaining
     isVariable: 1
     isToggleVariable: 0
     isArray: 0
-    variableName: AgentStatus
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    variableName: Float
+    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: useCustomTick
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  - fieldName: customTickValue
+    isVariable: 0
+    isToggleVariable: 0
+    isArray: 0
+    variableName: 
+    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
     stringValue: 
     isOrderConstant: 0
     configSourceGuid: 
@@ -469,7 +565,6 @@ MonoBehaviour:
   - {fileID: 2327313945984807962}
   - {fileID: 2419913014970158866}
   - {fileID: 5361264919777312213}
-  - {fileID: -4467815881493242659}
   - {fileID: 7405523774363080492}
   - {fileID: -1469423470487883905}
   - {fileID: 7179348187851499072}
@@ -490,6 +585,8 @@ MonoBehaviour:
   - {fileID: 276911440052197643}
   - {fileID: -8181419914053245510}
   - {fileID: -5185096440071770641}
+  - {fileID: -7012153165743683004}
+  - {fileID: -4432721932169831748}
   editorNotes: []
   commanderSquad: {fileID: 11400000, guid: 31472f977e5443e47a1778f6ade52b9e, type: 2}
   maxSquadSize: 5
@@ -1134,7 +1231,7 @@ MonoBehaviour:
   nodeName: 
   children:
   - {fileID: 3602076011765888837}
-  - {fileID: -4467815881493242659}
+  - {fileID: -7012153165743683004}
   - {fileID: 7405523774363080492}
   firstChildIndex: 0
   lastChildIndex: 0
@@ -1198,6 +1295,7 @@ MonoBehaviour:
   - rid: 3017916985123537041
   - rid: 3017916985123537072
   - rid: 3017917049619874013
+  - rid: 4957661698053636168
   references:
     version: 2
     RefIds:
@@ -1355,6 +1453,17 @@ MonoBehaviour:
         isSystemVariable: 0
         singleValue: 0
         arrayValues: 
+    - rid: 4957661698053636168
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: Float
+        variableStride: 1
+        variableTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: []
 --- !u!114 &6499698951095022240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1373,7 +1482,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 4816096c2d0fd574890ed743c70c2f52
-  graphPosition: {x: 35, y: 700}
+  graphPosition: {x: 23.999998, y: 700}
   runtimeIndex: 15
   leafType: 2
   methodName: CompareVariable

@@ -4,18 +4,6 @@ using UnityEngine;
 
 namespace BehaviourTree.Runtime.Methods
 {
-    /// <summary>
-    /// Commander condition node. Checks a squad-data array across all registered agents.
-    /// Evaluates a condition (IsAnyNull / IsAnyNotNull) on each agent's slot value.
-    /// Returns SUCCESS as soon as ANY element matches the selected operation.
-    ///
-    /// Uses ctx.agentCount (set by CommanderTreeRunner) to iterate only active agent
-    /// indices — unlike CheckVariableArray which uses a stride marker.
-    ///
-    /// Sentinel values written by CompactAndInvalidateSquadSlots on agent removal:
-    ///   int: -1, float: 0f, Vector3: zero, bool: false, UnityEngine.Object: destroyed
-    /// These are treated as "null"/invalid when the corresponding operation is applied.
-    /// </summary>
     [NodeMethod("CheckSquadData", allowedTreeType = AllowedTreeType.Commander)]
     public sealed class CheckSquadData : ConditionMethod
     {

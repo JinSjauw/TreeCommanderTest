@@ -5,21 +5,6 @@ using UnityEngine;
 
 namespace BehaviourTree.Runtime
 {
-    /// <summary>
-    /// Orchestrates a group of agents under a commander behaviour tree.
-    /// Per-frame flow:
-    ///   1. EvaluateCommander:
-    ///      a. Squads → commander BB (agent status from last frame)
-    ///      b. Commander evaluates (reads state, writes orders)
-    ///      c. Commander → squads (orders)
-    ///   2. TickAgents: for each agent
-    ///      a. Push tracked bindings → agent self BB
-    ///      b. Squad → agent BB (fresh orders + status)
-    ///      c. Agent evaluates (reacts to orders)
-    ///      d. Agent → squad BB (reports new status)
-    /// Communication between agents and commander happens exclusively through
-    /// the squad blackboard channel.
-    /// </summary>
     [RequireComponent(typeof(BlackBoard))]
     public class CommanderTreeRunner : BehaviourTreeRunnerBase
     {
@@ -37,7 +22,6 @@ namespace BehaviourTree.Runtime
         {
             // Deregister all agents — they may outlive the commander.
             // Remove from the end so each removal doesn't require shifting
-            // subsequent slots (compaction is still called for invalidation).
             for (int i = registeredAgents.Count - 1; i >= 0; i--)
             {
                 AgentTreeRunner agent = registeredAgents[i];
@@ -59,12 +43,6 @@ namespace BehaviourTree.Runtime
             TickAgents();
         }
 
-        /// <summary>
-        /// Agents tick after commander: squad BB has fresh orders from commander.
-        /// Each agent reads squad data, pushes own data providers, evaluates,
-        /// then writes results back to squad BB.
-        /// The agent index is used as the offset into per-agent squad data slots.
-        /// </summary>
         private void TickAgents()
         {
             for (int i = 0; i < registeredAgents.Count; i++)
@@ -77,9 +55,7 @@ namespace BehaviourTree.Runtime
                 agent.PushTrackedBindings();
                 CopySquadsToTree(agent, i);
                 agent.Evaluate();
-                // Skip write-back if the agent died during Evaluate — compaction
-                // already invalidated and shifted its squad BB slots, so writing
-                // with the old offset would corrupt the next agent's data.
+            
                 if (agent.commander != null)
                     CopySquadsFromTree(agent, i);
             }
@@ -129,10 +105,6 @@ namespace BehaviourTree.Runtime
             }
         }
 
-        /// <summary>
-        /// Gets the registered squads for a runner. Handles both AgentTreeRunner
-        /// and CommanderTreeRunner types.
-        /// </summary>
         private static List<SquadInstance> GetRunnerSquads(BehaviourTreeRunnerBase runner)
         {
             if (runner is AgentTreeRunner agentRunner)
@@ -178,11 +150,6 @@ namespace BehaviourTree.Runtime
             }
         }
 
-        /// <summary>
-        /// Registers an agent with this commander. The stride is fixed at bake time
-        /// (from the CommanderBlackboardDefinition asset), so no runtime resize occurs.
-        /// Logs an error if the agent count would exceed the available stride capacity.
-        /// </summary>
         public void RegisterAgent(AgentTreeRunner agent)
         {
             if (agent == null || registeredAgents.Contains(agent))
@@ -200,12 +167,6 @@ namespace BehaviourTree.Runtime
             registeredAgents.Add(agent);
         }
 
-        /// <summary>
-        /// Unregisters an agent. Before removing from the list, invalidates the
-        /// agent's squad-data slots (-1 for ints, zero for floats/vectors) and
-        /// compacts all subsequent slots down by one to keep indices contiguous
-        /// with the remaining agent list.
-        /// </summary>
         public void UnregisterAgent(AgentTreeRunner agent)
         {
             if (agent == null) return;
@@ -234,44 +195,31 @@ namespace BehaviourTree.Runtime
             return 0;
         }
 
-        /// <summary>
-        /// Invalidates the squad-data slots for the agent at removedIndex by writing
-        /// sentinel values (-1 for ints, zero for floats/Vector3), then shifts all
-        /// subsequent active per-agent slots down by one to keep indices contiguous
-        /// with the compacted agent list.
-        /// Must be called BEFORE the agent is removed from registeredAgents.
-        /// 
-        /// Active range is [0, registeredAgents.Count). Slots beyond that (up to the
-        /// configured stride) are uninitialized garbage and are neither read nor shifted.
-        /// After the shift, the ex-last slot in the active range becomes unreferenced
-        /// — harmless since agentCount will drop by one on the next frame.
-        /// </summary>
         private void CompactAndInvalidateSquadSlots(int removedIndex)
         {
             int activeCount = registeredAgents.Count; // snapshot before removal
 
-            for (int s = 0; s < registeredSquads.Count; s++)
+            for (int i = 0; i < registeredSquads.Count; i++)
             {
-                SquadInstance squad = registeredSquads[s];
+                SquadInstance squad = registeredSquads[i];
                 if (squad?.BlackBoard?.Definition == null) continue;
 
                 BlackboardDefinition squadDef = squad.BlackBoard.Definition;
                 IReadOnlyList<BlackboardVariableBase> vars = squadDef.GetAllVariables();
 
                 int currentSlot = 0;
-                for (int v = 0; v < vars.Count; v++)
+                for (int j = 0; j < vars.Count; j++)
                 {
-                    int varStride = vars[v].Stride > 1 ? vars[v].Stride : 1;
+                    int varStride = vars[j].Stride > 1 ? vars[j].Stride : 1;
 
-                    if (vars[v].isSquadData && varStride > 1)
+                    if (vars[j].isSquadData && varStride > 1)
                     {
-                        Type varType = vars[v].GetValueType();
+                        Type varType = vars[j].GetValueType();
 
-                        // 1) Invalidate the removed agent's slot
                         if (varType == typeof(int))
                             squad.BlackBoard.SetBoxedRaw(currentSlot + removedIndex, -1);
                         else if (varType == typeof(float))
-                            squad.BlackBoard.SetBoxedRaw(currentSlot + removedIndex, 0f);
+                            squad.BlackBoard.SetBoxedRaw(currentSlot + removedIndex, -1f);
                         else if (varType == typeof(Vector3))
                             squad.BlackBoard.SetBoxedRaw(currentSlot + removedIndex, Vector3.zero);
                         else if (varType == typeof(bool))
@@ -279,9 +227,6 @@ namespace BehaviourTree.Runtime
                         else
                             squad.BlackBoard.SetBoxedRaw(currentSlot + removedIndex, -1);
 
-                        // 2) Shift subsequent active slots down by one.
-                        //    Stops at activeCount-1 so garbage beyond the active range
-                        //    is never shifted into the active range.
                         for (int slot = removedIndex; slot < activeCount - 1; slot++)
                         {
                             object val = squad.BlackBoard.GetBoxedRaw(currentSlot + slot + 1);
@@ -293,8 +238,6 @@ namespace BehaviourTree.Runtime
                 }
             }
 
-            // Adjust runningAgentIndex in the evaluator so ForEachRole/ForEachAgent
-            // resume at the correct agent after compaction shifts indices.
             evaluator?.OnAgentCompacted(removedIndex);
         }
 

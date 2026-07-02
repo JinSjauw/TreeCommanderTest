@@ -26,20 +26,8 @@ namespace BehaviourTree.Runtime
 
         public int currentNodeIndex { get; private set; } = -1;
         public NodeState[] nodeStates;
-
-        /// <summary>
-        /// Current agent count for commander trees. Set by CommanderTreeRunner
-        /// before Evaluate() so composites read ctx.agentCount without BB variables.
-        /// Default 0 for non-commander trees.
-        /// </summary>
         public int agentCount;
 
-        /// <summary>
-        /// Adjusts saved runningAgentIndex values after agent compaction.
-        /// Called by CommanderTreeRunner when an agent is unregistered and BB slots shift.
-        /// Indices > removedIndex are decremented; the removed index itself is kept
-        /// (it now points to the next agent after the shift).
-        /// </summary>
         public void OnAgentCompacted(int removedIndex)
         {
             if (runningAgentIndex == null) return;
@@ -114,6 +102,7 @@ namespace BehaviourTree.Runtime
         {
             if (node.fieldDataCount > 0 && fieldDatas != null && node.fieldDataStartIndex >= 0)
                 return new ReadOnlySpan<FieldData>(fieldDatas, node.fieldDataStartIndex, node.fieldDataCount);
+
             return default;
         }
 
@@ -140,15 +129,12 @@ namespace BehaviourTree.Runtime
             tickContext.tickedThisFrame = tickedThisFrame;
             tickContext.blackBoard = blackBoard;
 
-            // Effective root has no children — nothing to evaluate
             if (nodeDatas[0].firstChildIndex < 0) return;
 
             TickDispatcher.TickNode(0, ref tickContext);
             currentNodeIndex = 0;
 
-            // Reset states for nodes that weren't ticked this frame.
-            // RUNNING nodes are always re-ticked (composites resume them),
-            // so their state stays intact for conditional abort on the next tick.
+            // Reset states for nodes that weren't ticked this frame. For runtime debugging visuals
             for (int i = 0; i < nodeStates.Length; i++)
             {
                 if (!tickedThisFrame[i])

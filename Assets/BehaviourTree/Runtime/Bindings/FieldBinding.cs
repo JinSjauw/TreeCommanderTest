@@ -6,16 +6,6 @@ using UnityEngine;
 
 namespace BehaviourTree.Core
 {
-    // ═══════════════════════════════════════════════════════════════════
-    // FieldBinding
-    // ═══════════════════════════════════════════════════════════════════
-
-    /// <summary>
-    /// Describes one serializable field on a NodeMethod subclass.
-    /// Handles reading/writing to the blackboard for [SharedVar] fields.
-    /// Created by MethodRegistry during type scanning; populated by
-    /// NodeMethod.DeserializeFields during tree init.
-    /// </summary>
     public sealed class FieldBinding
     {
         public FieldInfo fieldInfo;
@@ -26,7 +16,7 @@ namespace BehaviourTree.Core
         /// </summary>
         public string fieldTypeName;
 
-        /// <summary>-1 = constant (value set directly on field); >=0 = BB slot index</summary>
+        /// <summary> -1 = constant (value set directly on field); >=0 = BB slot index</summary>
         public int bbSlotIndex = -1;
 
         /// <summary>If true, the field value is written back to BB after Execute.</summary>
@@ -60,14 +50,6 @@ namespace BehaviourTree.Core
 
         /// <summary>True if CompileAccessors ran successfully and both delegates are ready.</summary>
         public bool IsCompiled => readDelegate != null && writeDelegate != null;
-
-        /// <summary>
-        /// TEMPORARY: Attempts to compile typed read/write delegates via Expression trees.
-        /// Called once during tree init, after <see cref="bbSlotIndex"/> is assigned.
-        /// Falls back silently — existing reflection path handles unsupported platforms.
-        /// This (and the similar code in TrackedBinding) gets deleted when we move to DOTS
-        /// with typed NativeArray&lt;T&gt; storage — no type-erased object[] to bridge across.
-        /// </summary>
         public void CompileAccessors(Type declaringType)
         {
             if (bbSlotIndex < 0 || fieldInfo == null || skipAutoResolve) return;
@@ -82,34 +64,23 @@ namespace BehaviourTree.Core
                 MemberExpression fieldExpr = Expression.Field(castInst, fieldInfo);
                 ConstantExpression slotConst = Expression.Constant(bbSlotIndex);
 
-                // Read: ((ConcreteType)inst).field = bb.Get<T>(bbSlotIndex)
-                MethodInfo getMethod = typeof(IBlackBoardAccess).GetMethod("Get")
-                    .MakeGenericMethod(fieldType);
+                MethodInfo getMethod = typeof(IBlackBoardAccess).GetMethod("Get").MakeGenericMethod(fieldType);
                 MethodCallExpression getCall = Expression.Call(bbParam, getMethod, slotConst);
                 BinaryExpression readBody = Expression.Assign(fieldExpr, getCall);
-                readDelegate = Expression.Lambda<Action<NodeMethod, IBlackBoardAccess>>(
-                    readBody, instParam, bbParam).Compile();
+                readDelegate = Expression.Lambda<Action<NodeMethod, IBlackBoardAccess>>(readBody, instParam, bbParam).Compile();
 
-                // Write: bb.Set<T>(bbSlotIndex, ((ConcreteType)inst).field)
-                // Skip when isOutput is false (toggle variables) — the non-compiled path in
-                // WriteToBBGeneric checks isOutput and correctly skips the write.
                 if (isOutput)
                 {
-                    MethodInfo setMethod = typeof(IBlackBoardAccess).GetMethod("Set")
-                        .MakeGenericMethod(fieldType);
+                    MethodInfo setMethod = typeof(IBlackBoardAccess).GetMethod("Set").MakeGenericMethod(fieldType);
                     MethodCallExpression setCall = Expression.Call(bbParam, setMethod, slotConst, fieldExpr);
-                    writeDelegate = Expression.Lambda<Action<NodeMethod, IBlackBoardAccess>>(
-                        setCall, instParam, bbParam).Compile();
+                    writeDelegate = Expression.Lambda<Action<NodeMethod, IBlackBoardAccess>>(setCall, instParam, bbParam).Compile();
                 }
             }
             catch
             {
-                // AOT / IL2CPP — delegates remain null, reflection fallback handles it.
-                // TEMPORARY: this entire try/catch goes away with DOTS typed storage.
+
             }
         }
-
-        // ── Generic read/write (uses GetBoxed/SetBoxed — with type coercion) ──
 
         public void ReadFromBBGeneric(NodeMethod instance, IBlackBoardAccess bb)
         {

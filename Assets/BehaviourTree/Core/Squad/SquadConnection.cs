@@ -17,8 +17,6 @@ namespace BehaviourTree.Core
 
         /// <summary>
         /// Agent-only. Roles this agent can play in the squad.
-        /// Picked from squad.availableRoles (e.g. "Scout", "Flanker").
-        /// Empty for commander trees.
         /// </summary>
         public List<string> assignedRoles = new List<string>();
     }

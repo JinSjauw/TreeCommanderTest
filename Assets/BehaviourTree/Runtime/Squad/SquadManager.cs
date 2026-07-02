@@ -383,9 +383,6 @@ namespace BehaviourTree.Runtime
             hasInitialized = true;
         }
 
-
-
-
         private void SpawnAgent(int agentIndex)
         {
             // Resolve the role for this slot index

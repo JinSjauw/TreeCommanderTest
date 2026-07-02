@@ -12,22 +12,10 @@ namespace BehaviourTree.Core
 
     public class BlackBoard : MonoBehaviour, IBlackBoardAccess
     {        
-        /// <summary>Serialized reference-values exclusively for GameObject / Transform slots.
-        /// These are kept in sync with the runtime values[] array.
-        /// Index maps 1:1 to the definition's sharedVariables list.
-        /// Value types are stored as null. </summary>
         [SerializeField] private List<UnityEngine.Object> serializedReferences = new();
 
-        /// <summary>
-        /// Transient offset applied to all slot-index reads/writes by commander composites
-        /// (ForEachAgent, SelectAgent). When non-zero, GetBoxed/SetBoxed/Get/Set resolve to
-        /// storage[index + currentAgentOffset]. Set by composites, cleared after subtree returns.
-        /// Squad-data variables are value-typed so serializedReferences sync is skipped when offset != 0.
-        /// </summary>
-        [System.NonSerialized] public int currentAgentOffset;
+        [NonSerialized] public int currentAgentOffset;
 
-        /// <summary>Per-component overrides for value-type variables (int, float, bool, Vector2/3/4, Color, enum).
-        /// Keyed by variable name + element index — survives definition reorders without remapping. </summary>
         [SerializeField] private List<BlackboardValueOverride> valueOverrides = new();
 
         /// <summary>Flat slot indices of explicitly-overridden reference-type variables.
@@ -38,10 +26,6 @@ namespace BehaviourTree.Core
         private BlackboardDefinition definition;
         private IBlackboardStorage storage;
 
-        /// <summary>
-        /// Name → flat slot offset cache built once at Initialize().
-        /// Computes the correct offset by summing strides of preceding variables.
-        /// </summary>
         private Dictionary<string, int> nameToBaseSlot = new();
 
         /// <summary>Snapshot of variable names from last BuildSerializedReferences call.
@@ -66,8 +50,6 @@ namespace BehaviourTree.Core
             if (storage == null) storage = new ManagedBlackboardStorage();
             storage.Initialize(definition);
 
-            // Build name → flat slot offset cache (fixes Issue 2:
-            // variable index ≠ slot offset when strides are > 1).
             nameToBaseSlot.Clear();
             IReadOnlyList<BlackboardVariableBase> allVarsForCache = definition.GetAllVariables();
             int slot = 0;
@@ -75,26 +57,12 @@ namespace BehaviourTree.Core
             {
                 if (!string.IsNullOrEmpty(allVarsForCache[i].Name))
                     nameToBaseSlot[allVarsForCache[i].Name] = slot;
+                
                 int stride = allVarsForCache[i].Stride;
                 slot += (stride > 1) ? stride : 1;
             }
             
             IReadOnlyList<BlackboardVariableBase> allVars = definition.GetAllVariables();
-
-#if UNITY_EDITOR
-            Debug.Log($"[BB.Initialize] def='{definition.name}' totalSlots={count} serializedRefs.Count={serializedReferences.Count}");
-            for (int vi = 0; vi < allVars.Count; vi++)
-            {
-                BlackboardVariableBase bv = allVars[vi];
-                int baseSlot = 0;
-                for (int pi = 0; pi < vi; pi++)
-                {
-                    int ps = allVars[pi].Stride;
-                    baseSlot += (ps > 1) ? ps : 1;
-                }
-                Debug.Log($"[BB.Initialize]   var[{vi}]='{bv.Name}' type={bv.TypeName} stride={bv.Stride} baseSlot={baseSlot}");
-            }
-#endif
 
             while (serializedReferences.Count < count)
             {
@@ -105,16 +73,10 @@ namespace BehaviourTree.Core
             {
                 BlackboardSlotKind kind = storage.GetSlotKind(i);
                 UnityEngine.Object refVal = serializedReferences[i];
-#if UNITY_EDITOR
-                Debug.Log($"[BB.Initialize]   slot[{i}] kind={kind} serializedRef='{(refVal != null ? refVal.name : "null")}'");
-#endif
+
                 if (kind == BlackboardSlotKind.Reference && refVal != null)
                 {
                     storage.SetBoxed(i, refVal);
-#if UNITY_EDITOR
-                    object stored = storage.GetBoxed(i);
-                    Debug.Log($"[BB.Initialize]   slot[{i}] SYNCED: '{refVal.name}' → storage='{(stored != null ? ((UnityEngine.Object)stored).name : "null")}'");
-#endif
                 }
             }
 
@@ -147,9 +109,6 @@ namespace BehaviourTree.Core
                     if (overrideValue != null && slotIndex < count)
                     {
                         storage.SetBoxed(slotIndex, overrideValue);
-#if UNITY_EDITOR
-                        Debug.Log($"[BB.Initialize] Value override: '{vo.variableName}[{vo.elementIndex}]' slot={slotIndex} value={overrideValue}");
-#endif
                     }
                 }
             }
@@ -422,35 +381,14 @@ namespace BehaviourTree.Core
             return total;
         }
 
-        public int FindVariableIndex(string keyName)
-        {
-            if (definition == null) 
-            {
-#if UNITY_EDITOR
-                Debug.LogWarning($"[Blackboard] Definition is NULL");
-#endif
-                return -1; 
-            }
-
-            IReadOnlyList<BlackboardVariableBase> allVars = definition.GetAllVariables();
-            for (int i = 0; i < allVars.Count; i++)
-            {
-                if (allVars[i].Name == keyName)
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
         /// <summary>
         /// Returns the flat slot offset for a named variable, accounting for strides
-        /// of preceding variables. Uses a cache built at Initialize() time.
         /// </summary>
         public int GetSlot(string variableName)
         {
             if (nameToBaseSlot != null && nameToBaseSlot.TryGetValue(variableName, out int slot))
                 return slot;
+
             return -1;
         }
 
@@ -533,20 +471,16 @@ namespace BehaviourTree.Core
         }
 
         /// <summary>Get a boxed value WITHOUT applying currentAgentOffset.
-        /// Use for shared/commander-level variables that are not per-agent squad data.</summary>
         public object GetBoxedRaw(int index)
         {
-            if (storage == null)
-                return null;
+            if (storage == null) return null;
             return storage.GetBoxed(index);
         }
 
         /// <summary>Set a boxed value WITHOUT applying currentAgentOffset.
-        /// Use for internal copy operations that handle offsets themselves.</summary>
         public void SetBoxedRaw(int index, object value)
         {
-            if (storage == null)
-                return;
+            if (storage == null) return;
             storage.SetBoxed(index, value);
         }
 
@@ -576,17 +510,12 @@ namespace BehaviourTree.Core
             }
         }
 
-        // ── IBlackBoardAccess explicit methods ──────────────────────────
-
-        // ── Generic ──
         T IBlackBoardAccess.Get<T>(int slot) => Get<T>(slot);
         void IBlackBoardAccess.Set<T>(int slot, T value) => Set(slot, value);
         object IBlackBoardAccess.GetBoxed(int slot) => GetBoxed(slot);
         void IBlackBoardAccess.SetBoxed(int slot, object value) => SetBoxed(slot, value);
         object IBlackBoardAccess.GetBoxedRaw(int slot) => GetBoxedRaw(slot);
         void IBlackBoardAccess.SetBoxedRaw(int slot, object value) => SetBoxedRaw(slot, value);
-
-        // ── Value-Type Override Management ─────────────────────────────
 
         /// <summary>Finds a value-type override by variable name and element index.</summary>
         public BlackboardValueOverride GetValueOverride(string variableName, int elementIndex)

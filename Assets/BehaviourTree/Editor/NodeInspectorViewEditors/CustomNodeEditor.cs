@@ -1341,28 +1341,5 @@ namespace BehaviourTree.Editor
             }
             EditorGUIUtility.labelWidth = savedWidth;
         }
-
-        /// <summary>
-        /// Returns the subset of VariableCompareOp names applicable to the given type.
-        /// </summary>
-        private static string[] GetCompareOpNames(Type fieldType)
-        {
-            if (fieldType == null)
-                return new[] { "Equal", "NotEqual" };
-
-            if (fieldType == typeof(Vector2) || fieldType == typeof(Vector3))
-                return new[] { "Equal", "NotEqual", "Mag <", "Mag <=", "Mag >", "Mag >=" };
-
-            if (fieldType == typeof(int) || fieldType == typeof(float))
-                return new[] { "Equal", "NotEqual", "Less", "LessOrEqual", "Greater", "GreaterOrEqual" };
-
-            // bool, enum, GameObject, Transform, etc.
-            return new[] { "Equal", "NotEqual" };
-        }
-
-        private static bool HasValidConditionForAbort(CompositeNode composite, AbortType abortType)
-        {
-            return NodeWarningEvaluator.HasValidConditionForAbort(composite, abortType);
-        }
     }
 }

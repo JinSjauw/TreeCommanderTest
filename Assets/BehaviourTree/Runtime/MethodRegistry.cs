@@ -14,13 +14,11 @@ namespace BehaviourTree.Runtime
         private static readonly Dictionary<string, Type> methodTypeMap = new();
         private static readonly Dictionary<Type, FieldBinding[]> bindingCache = new();
 
-        // Static constructor — runs once on first type access, in editor and runtime
         static MethodRegistry()
         {
             Build();
         }
 
-        /// <summary>Rebuilds the registry. Call when new types may be available (e.g. after script compilation in editor).</summary>
         public static void Rebuild()
         {
             methodTypeMap.Clear();
@@ -46,8 +44,15 @@ namespace BehaviourTree.Runtime
 
                     try
                     {
-                        NodeMethod temp = (NodeMethod)Activator.CreateInstance(type);
-                        string methodName = temp.MethodName;
+                        // Resolve method name from type metadata — no instantiation needed.
+                        NodeMethodAttribute attr = type.GetCustomAttribute<NodeMethodAttribute>();
+                        string methodName = attr != null ? attr.methodName : type.Name;
+
+                        if (string.IsNullOrWhiteSpace(methodName))
+                        {
+                            Debug.LogError($"[MethodRegistry] '{type.Name}' has a null/empty method name. Skipping.");
+                            continue;
+                        }
 
                         if (methodTypeMap.ContainsKey(methodName))
                         {
@@ -58,15 +63,17 @@ namespace BehaviourTree.Runtime
                         methodTypeMap[methodName] = type;
                         bindingCache[type] = CreateBindings(type);
 
-                        // Guard: [SharedVar] fields and DynamicParamDescriptor[] are mutually exclusive.
-                        if (temp.ParameterCount > 0 && bindingCache[type].Length > 0)
+                        if (bindingCache[type].Length > 0)
                         {
-                            Debug.LogError(
-                                $"[MethodRegistry] Node method '{methodName}' ({type.Name}) " +
-                                "has both [SharedVar] fields and DynamicParamDescriptor[] — " +
-                                "these are mutually exclusive. Remove one or the other.");
+                            NodeMethod temp = (NodeMethod)Activator.CreateInstance(type);
+                            if (temp.ParameterCount > 0)
+                            {
+                                Debug.LogError(
+                                    $"[MethodRegistry] Node method '{methodName}' ({type.Name}) " +
+                                    "has both [SharedVar] fields and DynamicParamDescriptor[] — " +
+                                    "these are mutually exclusive. Remove one or the other.");
+                            }
                         }
-                        //Debug.Log($"[MethodRegistry] Registered: {methodName} ({type.Name})");
                     }
                     catch (Exception ex)
                     {
@@ -115,9 +122,7 @@ namespace BehaviourTree.Runtime
         public static bool IsClassMethod(string methodName) => methodTypeMap.ContainsKey(methodName);
 
         /// <summary>
-        /// Checks whether a method is compatible with the given tree type,
-        /// based on its [NodeMethod] attribute's allowedTreeType.
-        /// Methods without the attribute default to AllowedTreeType.Any.
+        /// Checks whether a method is compatible with the given tree type
         /// </summary>
         public static bool IsMethodAllowed(string methodName, AllowedTreeType treeType)
         {
@@ -130,7 +135,6 @@ namespace BehaviourTree.Runtime
 
         /// <summary>
         /// Returns true if the method is restricted to Commander trees only
-        /// (AllowedTreeType.Commander, not Any or Agent).
         /// </summary>
         public static bool IsCommanderOnly(string methodName)
         {

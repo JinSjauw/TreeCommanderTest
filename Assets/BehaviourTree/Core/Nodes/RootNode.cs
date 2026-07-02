@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace BehaviourTree.Core
 {
     //[CreateAssetMenu(fileName = "RootNode", menuName = "Scriptable Objects/RootNode")]

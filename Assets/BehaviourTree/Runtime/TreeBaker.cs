@@ -11,7 +11,8 @@ namespace BehaviourTree.Runtime
 {
     public static class TreeBaker
     {
-        public static BlackboardDefinition BakeTree(BehaviourNode root, BehaviourTreeAssetBase asset, ref NodeData[] nodeDatas, ref FieldData[] fieldDatas, ref string[] fieldTypeNames, ref object[] boxedConstants, ref string[] nodeGuids, out int maxTreeDepth)
+        public static BlackboardDefinition BakeTree(BehaviourNode root, BehaviourTreeAssetBase asset, ref NodeData[] nodeDatas, ref FieldData[] fieldDatas, 
+            ref string[] fieldTypeNames, ref object[] boxedConstants, ref string[] nodeGuids, out int maxTreeDepth)
         {
             if (root == null)
             {
@@ -32,14 +33,9 @@ namespace BehaviourTree.Runtime
 
             BlackboardDefinition selfDef = asset != null ? asset.BlackboardDefinition : null;
 
-            // 1. Copy self BB variables (generic)
             if (selfDef != null)
                 CopyGenericVariables(runtimeBbDef, selfDef);
 
-            // 2. Append commander BB variables.
-            // Commander trees need the actual stride so that baked slot offsets
-            // match the storage layout (which is initialized with the same stride).
-            // Agent trees only need 1 slot per variable (squad data is copied in single-slot).
             BlackboardDefinition commanderDef = asset != null ? asset.CommanderBlackboardDefinition : null;
             if (commanderDef != null)
                 CopyGenericVariables(runtimeBbDef, commanderDef, withStrideOfOne: !asset.PreserveCommanderStride);
@@ -53,12 +49,6 @@ namespace BehaviourTree.Runtime
                     rootVarIndexByName[name] = i;
             }
 
-#if UNITY_EDITOR
-            Debug.Log($"[TreeBaker] rootVarIndexByName ({rootVarIndexByName.Count} entries):");
-            foreach (var kvp in rootVarIndexByName)
-                Debug.Log($"[TreeBaker]   '{kvp.Key}' → index {kvp.Value}");
-#endif
-
             Dictionary<string, Dictionary<string, int>> scopeVarIndexByName = new Dictionary<string, Dictionary<string, int>>();
 
             List<BakedNodeInstance> instances = new List<BakedNodeInstance>();
@@ -70,7 +60,9 @@ namespace BehaviourTree.Runtime
             HashSet<BehaviourTreeAssetBase> expandingSubtrees = new HashSet<BehaviourTreeAssetBase>();
             HashSet<int> processedIndices = new HashSet<int>();
             maxTreeDepth = 0;
-            ProcessChildren(rootIndex, instances, firstChild, lastChild, runtimeGuidToIndex, scopeVarIndexByName, runtimeBbDef, rootVarIndexByName, expandingSubtrees, processedIndices, ref maxTreeDepth);
+            ProcessChildren(rootIndex, instances, firstChild, lastChild, 
+                runtimeGuidToIndex, scopeVarIndexByName, runtimeBbDef, 
+                rootVarIndexByName, expandingSubtrees, processedIndices, ref maxTreeDepth);
 
             nodeDatas = new NodeData[instances.Count];
             nodeGuids = new string[instances.Count];
@@ -90,7 +82,10 @@ namespace BehaviourTree.Runtime
             fieldDatas = new FieldData[totalFieldDataCount];
             List<object> boxedConstantsList = new List<object>();
             List<string> fieldTypeNamesList = new List<string>();
-            FillNodeData(nodeDatas, fieldDatas, boxedConstantsList, fieldTypeNamesList, nodeGuids, instances, firstChild, lastChild, scopeVarIndexByName, runtimeBbDef, rootVarIndexByName);
+            FillNodeData(nodeDatas, fieldDatas, boxedConstantsList, 
+                fieldTypeNamesList, nodeGuids, instances, firstChild, lastChild, 
+                scopeVarIndexByName, runtimeBbDef, rootVarIndexByName);
+
             boxedConstants = boxedConstantsList.Count > 0 ? boxedConstantsList.ToArray() : Array.Empty<object>();
             fieldTypeNames = fieldTypeNamesList.Count > 0 ? fieldTypeNamesList.ToArray() : Array.Empty<string>();
             return runtimeBbDef;
@@ -465,7 +460,6 @@ namespace BehaviourTree.Runtime
 
                 if (clone == null)
                 {
-                    // Last resort stub
                     clone = new BlackboardVariable<object> { Name = sourceVar.Name, Stride = sourceVar.Stride, isSquadData = sourceVar.isSquadData, isSystemVariable = sourceVar.isSystemVariable, IsArray = sourceVar.IsArray };
                 }
 
@@ -642,7 +636,8 @@ namespace BehaviourTree.Runtime
             if (entry.isVariable)
             {
                 int varIndex = -1;
-                if (varIndexByName != null && !string.IsNullOrEmpty(entry.variableName) && varIndexByName.TryGetValue(entry.variableName, out int mapped))
+                if (varIndexByName != null && !string.IsNullOrEmpty(entry.variableName) 
+                    && varIndexByName.TryGetValue(entry.variableName, out int mapped))
                     varIndex = mapped;
 
                 varIndex = ValidateVariableType(varIndex, entry, runtimeBbDef);

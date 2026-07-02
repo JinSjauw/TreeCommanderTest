@@ -7,26 +7,19 @@ namespace BehaviourTree.Core
 {
     public class BlackboardDefinition : ScriptableObject
     {
-        /// <summary>The tree asset this baked definition was derived from. Set by TreeBaker.
-        /// Used by SquadInstance to match bindings when the baked definition is a different
-        /// ScriptableObject instance from the original asset definition.</summary>
-        [System.NonSerialized] public BehaviourTreeAssetBase sourceTreeAsset;
-        [System.NonSerialized] public string sourceTreeGuid;
+        [NonSerialized] public BehaviourTreeAssetBase sourceTreeAsset;
+        [NonSerialized] public string sourceTreeGuid;
 
-        /// <summary>Polymorphic variable storage. Supports any type via BlackboardVariable&lt;T&gt;.</summary>
         [SerializeReference] public List<BlackboardVariableBase> sharedVariables = new();
 
-        /// <summary>Total number of variables.</summary>
         public int VariableCount => sharedVariables?.Count ?? 0;
 
-        /// <summary>Returns a read-only view of all variables. No allocation — returns the raw list directly.</summary>
         public IReadOnlyList<BlackboardVariableBase> GetAllVariables()
         {
             if (sharedVariables == null) return Array.Empty<BlackboardVariableBase>();
             return sharedVariables;
         }
 
-        /// <summary>Finds a variable by name.</summary>
         public BlackboardVariableBase FindVariable(string variableName)
         {
             if (string.IsNullOrEmpty(variableName) || sharedVariables == null)
@@ -40,7 +33,6 @@ namespace BehaviourTree.Core
             return null;
         }
 
-        /// <summary>Gets the index of a variable by name. Returns -1 if not found.</summary>
         public int GetVariableIndex(string variableName)
         {
             if (string.IsNullOrEmpty(variableName) || sharedVariables == null)
@@ -54,7 +46,6 @@ namespace BehaviourTree.Core
             return -1;
         }
 
-        /// <summary>Creates and adds a new variable of the given type.</summary>
         public BlackboardVariable<T> AddVariable<T>(string name, int stride = 1, T initialValue = default)
         {
             BlackboardVariable<T> variable = new BlackboardVariable<T>(name, stride, initialValue);
@@ -64,11 +55,6 @@ namespace BehaviourTree.Core
             return variable;
         }
 
-        /// <summary>
-        /// Copies a variable definition (name, stride, type) without its values.
-        /// Creates a new variable with default(T) and adds it to this definition.
-        /// Does nothing if a variable with the same name already exists.
-        /// </summary>
         public BlackboardVariableBase CopyVariable(BlackboardVariableBase source)
         {
             if (source == null) return null;
@@ -89,11 +75,6 @@ namespace BehaviourTree.Core
             return clone;
         }
 
-        /// <summary>
-        /// Ensures a base channel variable exists on the definition. If the variable
-        /// already exists, repairs isSystemVariable if needed and warns on type mismatch.
-        /// Returns true if a new variable was created (caller should SetDirty).
-        /// </summary>
         public static bool EnsureBaseChannel<T>(
             BlackboardDefinition bbDef, string name, bool isSquadData, bool isSystemVariable = true)
         {
