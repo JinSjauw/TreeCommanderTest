@@ -308,7 +308,7 @@ MonoBehaviour:
   comment: 
   guid: e893658156ed69145afc121bf53dc087
   graphPosition: {x: 455, y: 1575}
-  runtimeIndex: 57
+  runtimeIndex: 54
   subTreeAsset: {fileID: 11400000, guid: 3a331599925145c4c827a504dccac4e9, type: 2}
   bindings:
   - subtreeVariableName: AttackTarget
@@ -362,8 +362,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: dced761da8a7a1a47970c104c5e97564
-  graphPosition: {x: 1015, y: 785}
-  runtimeIndex: 86
+  graphPosition: {x: 1015, y: 770}
+  runtimeIndex: 83
   leafType: 3
   methodName: ReportStatus
   fieldEntries:
@@ -422,8 +422,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 5e375594c54d415459490e586bc3c311
-  graphPosition: {x: 385, y: 785}
-  runtimeIndex: 83
+  graphPosition: {x: 385, y: 770}
+  runtimeIndex: 80
   leafType: 3
   methodName: SetNavAgentSpeed
   fieldEntries:
@@ -440,66 +440,6 @@ MonoBehaviour:
     isConfigConstant: 0
     intValue: 0
     floatValue: 0.8
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  BlackBoardTypeID: 0
---- !u!114 &-3597380772009312417
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: ReportStatus
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: 
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: 8086431cb83f9fe44802d95cb5882d1d
-  graphPosition: {x: 267.75992, y: 1575}
-  runtimeIndex: 56
-  leafType: 3
-  methodName: ReportStatus
-  fieldEntries:
-  - fieldName: target
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: AgentStatus
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: value
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: 
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
     boolValue: 0
     vector2Value: {x: 0, y: 0}
     vector3Value: {x: 0, y: 0, z: 0}
@@ -526,8 +466,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: f41e5aa8c3dc5cf47a5c222ea028c15c
-  graphPosition: {x: 191.00002, y: 793.00006}
-  runtimeIndex: 82
+  graphPosition: {x: 191, y: 770}
+  runtimeIndex: 79
   compositeType: 1
   methodName: SELECTOR
   fieldEntries: []
@@ -551,7 +491,7 @@ MonoBehaviour:
   comment: 
   guid: 37f53bd79d66d4b459fec04889a336d4
   graphPosition: {x: -105, y: 770}
-  runtimeIndex: 81
+  runtimeIndex: 78
   leafType: 3
   methodName: Enemy_SelectDetectedTarget
   fieldEntries:
@@ -612,7 +552,7 @@ MonoBehaviour:
   comment: 
   guid: 3f285aa79ec833d4f862272b6912837f
   graphPosition: {x: 105, y: 980}
-  runtimeIndex: 87
+  runtimeIndex: 84
   leafType: 2
   methodName: CheckOrder
   fieldEntries:
@@ -653,66 +593,6 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   BlackBoardTypeID: 0
---- !u!114 &-2849182731860178173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: ReportStatus
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: 
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: 5bbe61d7b03e05d428cf7073cc56cf37
-  graphPosition: {x: -2432.9329, y: 1596.0002}
-  runtimeIndex: 17
-  leafType: 3
-  methodName: ReportStatus
-  fieldEntries:
-  - fieldName: target
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: AgentStatus
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: value
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: 
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  BlackBoardTypeID: 0
 --- !u!114 &-1942203300807677091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -732,7 +612,7 @@ MonoBehaviour:
   comment: 
   guid: 0869351bb91a3944ab7dcf8f81ea51ca
   graphPosition: {x: -280, y: 770}
-  runtimeIndex: 80
+  runtimeIndex: 77
   leafType: 2
   methodName: Enemy_Detected
   fieldEntries:
@@ -848,7 +728,6 @@ MonoBehaviour:
   nodeName: 
   children:
   - {fileID: 7446885067574964268}
-  - {fileID: -3597380772009312417}
   - {fileID: -4946176171606349232}
   firstChildIndex: 0
   lastChildIndex: 0
@@ -972,9 +851,6 @@ MonoBehaviour:
   - {fileID: 2103521551675517398}
   - {fileID: -6050827962400638570}
   - {fileID: -5045941581880180321}
-  - {fileID: 5808350877449782519}
-  - {fileID: -2849182731860178173}
-  - {fileID: -3597380772009312417}
   - {fileID: -3364494165439592450}
   - {fileID: 6399685680739518035}
   - {fileID: -3330782802751188614}
@@ -1065,7 +941,7 @@ MonoBehaviour:
   comment: 
   guid: 879edcc024ca1c74b8a4dcecbf6a2d83
   graphPosition: {x: -910, y: 1610}
-  runtimeIndex: 38
+  runtimeIndex: 36
   subTreeAsset: {fileID: 11400000, guid: 8cc0023090cd4814987c9138c41525bf, type: 2}
   bindings:
   - subtreeVariableName: AttackTarget
@@ -1090,8 +966,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 57f41fff9432e2b48b2f24aeedbb767c
-  graphPosition: {x: 1691.909, y: 770}
-  runtimeIndex: 90
+  graphPosition: {x: 1701, y: 770}
+  runtimeIndex: 87
   leafType: 3
   methodName: ReportStatus
   fieldEntries:
@@ -1124,7 +1000,7 @@ MonoBehaviour:
     configSourceGuid: 
     configFieldName: 
     isConfigConstant: 0
-    intValue: 0
+    intValue: 1
     floatValue: 0
     boolValue: 0
     vector2Value: {x: 0, y: 0}
@@ -1150,8 +1026,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 50554a4aa17186244ad73501ef0cd4f1
-  graphPosition: {x: 1481.909, y: 770}
-  runtimeIndex: 89
+  graphPosition: {x: 1470, y: 770}
+  runtimeIndex: 86
   leafType: 3
   methodName: ClearVariable
   fieldEntries:
@@ -1219,8 +1095,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 20004605264c7404d8ad94e4932a2165
-  graphPosition: {x: 805, y: 785}
-  runtimeIndex: 85
+  graphPosition: {x: 805, y: 770}
+  runtimeIndex: 82
   leafType: 3
   methodName: MoveTo
   fieldEntries:
@@ -1289,7 +1165,7 @@ MonoBehaviour:
   comment: 
   guid: e074a343d7159964ca01ee20e063aa52
   graphPosition: {x: -2275, y: 1596.0002}
-  runtimeIndex: 18
+  runtimeIndex: 17
   subTreeAsset: {fileID: 11400000, guid: ee22691b830f1204f9d50d86c5274c6d, type: 2}
   bindings:
   - subtreeVariableName: AttackTarget
@@ -1371,7 +1247,6 @@ MonoBehaviour:
   nodeName: 
   children:
   - {fileID: 7859669638248351731}
-  - {fileID: 5808350877449782519}
   - {fileID: 1150990565865623276}
   firstChildIndex: 0
   lastChildIndex: 0
@@ -1383,66 +1258,6 @@ MonoBehaviour:
   methodName: SEQUENCE
   fieldEntries: []
   abortType: 0
---- !u!114 &5808350877449782519
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: ReportStatus
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: 
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: 79b0dac38d45b3242809776960db1cb5
-  graphPosition: {x: -1085, y: 1610}
-  runtimeIndex: 37
-  leafType: 3
-  methodName: ReportStatus
-  fieldEntries:
-  - fieldName: target
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: AgentStatus
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: value
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: 
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  BlackBoardTypeID: 0
 --- !u!114 &6399685680739518035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1461,8 +1276,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: a48b8462e2f962a49b53a89d99594141
-  graphPosition: {x: 280, y: 980}
-  runtimeIndex: 88
+  graphPosition: {x: 269, y: 980}
+  runtimeIndex: 85
   leafType: 2
   methodName: CheckOrder
   fieldEntries:
@@ -1521,8 +1336,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: aec5b4b5769d35841b5638fbd4285255
-  graphPosition: {x: 595, y: 793}
-  runtimeIndex: 84
+  graphPosition: {x: 595, y: 770}
+  runtimeIndex: 81
   leafType: 3
   methodName: ReportStatus
   fieldEntries:
@@ -1578,7 +1393,6 @@ MonoBehaviour:
   nodeName: 
   children:
   - {fileID: 3270583257702400651}
-  - {fileID: -2849182731860178173}
   - {fileID: 2929166205442619805}
   firstChildIndex: 0
   lastChildIndex: 0
@@ -1609,7 +1423,7 @@ MonoBehaviour:
   comment: 
   guid: e99fd9be9e88b2d42b55751c649a94af
   graphPosition: {x: 105, y: 1575}
-  runtimeIndex: 55
+  runtimeIndex: 53
   leafType: 2
   methodName: CheckOrder
   fieldEntries:
@@ -1776,7 +1590,7 @@ MonoBehaviour:
   comment: 
   guid: 427bf9991317feb4f85cff46709e5dfa
   graphPosition: {x: -1240.0001, y: 1610}
-  runtimeIndex: 36
+  runtimeIndex: 35
   leafType: 2
   methodName: CheckOrder
   fieldEntries:

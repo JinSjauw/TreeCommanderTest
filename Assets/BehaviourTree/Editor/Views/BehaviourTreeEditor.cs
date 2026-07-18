@@ -58,6 +58,13 @@ public class BehaviourTreeEditor : EditorWindow
         return false;
     }
 
+    private void OnTemplateApplied(BlackboardDefinition target)
+    {
+        // Refresh the blackboard view if it's showing the definition that was just modified
+        if (target != null && target == currentBlackboardDef && blackBoardView != null)
+            blackBoardView.BuildBlackboardView(target);
+    }
+
     public void CreateGUI()
     {
         VisualTreeAsset visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(BehaviourTreeEditorPaths.EditorUxml);
@@ -180,6 +187,7 @@ public class BehaviourTreeEditor : EditorWindow
     private void OnEnable()
     {
         EditorApplication.projectChanged += OnProjectChanged;
+        BlackboardTemplate.Applied += OnTemplateApplied;
     }
 
     private void BuildAssetBarMenu()
@@ -226,6 +234,7 @@ public class BehaviourTreeEditor : EditorWindow
         menu.AppendAction("Open Tree/Browse...", BrowseOpenTree);
 
         menu.AppendSeparator();
+        menu.AppendAction("Apply Template...", OpenApplyTemplateDialog);
         menu.AppendAction("Bake Tree", BakeTree);
         menu.AppendAction("Save Tree", SaveTree);
         menu.AppendAction("Sync Tree", SyncTree);
@@ -443,10 +452,22 @@ public class BehaviourTreeEditor : EditorWindow
     private void OnDisable()
     {
         EditorApplication.projectChanged -= OnProjectChanged;
+        BlackboardTemplate.Applied -= OnTemplateApplied;
         EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         EditorApplication.update -= PollDebugState;
 
         ClearGraph();
+    }
+
+    private void OpenApplyTemplateDialog(DropdownMenuAction action)
+    {
+        if (currentBlackboardDef == null)
+        {
+            Debug.LogWarning("[BehaviourTreeEditor] No blackboard definition available — open a tree asset first.");
+            return;
+        }
+
+        TemplateApplyWindow.OpenForTarget(currentBlackboardDef);
     }
 
     private void BakeTree(DropdownMenuAction dropdownMenuAction)

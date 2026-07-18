@@ -70,14 +70,6 @@ public partial class SquadTabView : VisualElement
         RebuildUI();
     }
 
-    private void EnsureTreeBlackboardChannels()
-    {
-        BlackboardDefinition bbDef = currentTree?.BlackboardDefinition;
-        if (bbDef == null) return;
-        if (SquadChannelHelper.EnsureAgentSystemChannels(bbDef))
-            EditorUtility.SetDirty(bbDef);
-    }
-
     private void RebuildUI()
     {
         // Preserve expanded foldout state before clearing
@@ -109,8 +101,6 @@ public partial class SquadTabView : VisualElement
         }
         else
         {
-            EnsureTreeBlackboardChannels();
-
             connectionsScroll.style.display = DisplayStyle.Flex;
             emptyStateLabel.style.display = DisplayStyle.None;
 

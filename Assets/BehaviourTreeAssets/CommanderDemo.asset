@@ -104,8 +104,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 5766c3f0d076e174fb619f3517a4f645
-  graphPosition: {x: 910, y: 700}
-  runtimeIndex: 21
+  graphPosition: {x: 1101, y: 700}
+  runtimeIndex: 22
   leafType: 3
   methodName: PollAgentStatus
   fieldEntries:
@@ -216,102 +216,6 @@ MonoBehaviour:
   methodName: SEQUENCE
   fieldEntries: []
   abortType: 0
---- !u!114 &-4432721932169831748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
-  m_Name: Cooldown
-  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
-  nodeName: Cooldown
-  children: []
-  firstChildIndex: 0
-  lastChildIndex: 0
-  comment: 
-  guid: c1d9bccb58be33f41b01a440464acb89
-  graphPosition: {x: 2251.3557, y: 327.2896}
-  runtimeIndex: -1
-  leafType: 2
-  methodName: Cooldown
-  fieldEntries:
-  - fieldName: duration
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: 
-    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: remaining
-    isVariable: 1
-    isToggleVariable: 0
-    isArray: 0
-    variableName: Float
-    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: useCustomTick
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: 
-    fieldTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  - fieldName: customTickValue
-    isVariable: 0
-    isToggleVariable: 0
-    isArray: 0
-    variableName: 
-    fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
-    stringValue: 
-    isOrderConstant: 0
-    configSourceGuid: 
-    configFieldName: 
-    isConfigConstant: 0
-    intValue: 0
-    floatValue: 0
-    boolValue: 0
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    gameObjectValue: {fileID: 0}
-    transformValue: {fileID: 0}
-  BlackBoardTypeID: 0
 --- !u!114 &-3920582747905440604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -586,7 +490,6 @@ MonoBehaviour:
   - {fileID: -8181419914053245510}
   - {fileID: -5185096440071770641}
   - {fileID: -7012153165743683004}
-  - {fileID: -4432721932169831748}
   editorNotes: []
   commanderSquad: {fileID: 11400000, guid: 31472f977e5443e47a1778f6ade52b9e, type: 2}
   maxSquadSize: 5
@@ -910,7 +813,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 76b119c775a61644199b65cc96ff69a3
-  graphPosition: {x: 665, y: 945}
+  graphPosition: {x: 840, y: 945}
   runtimeIndex: 23
   leafType: 3
   methodName: CalculateFormation
@@ -1068,7 +971,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: c69c6c50762d3214ea4d944ab9af20e0
-  graphPosition: {x: 840, y: 945}
+  graphPosition: {x: 1015, y: 945}
   runtimeIndex: 24
   leafType: 3
   methodName: SendOrder
@@ -1128,7 +1031,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: f21b11b5b010192429cf0bde0cc0961b
-  graphPosition: {x: 193.49377, y: 700}
+  graphPosition: {x: 188, y: 700}
   runtimeIndex: 16
   leafType: 3
   methodName: SquadReduce
@@ -1210,8 +1113,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: ada03ab9101e5a3458a7decd0c650917
-  graphPosition: {x: 751, y: 700}
-  runtimeIndex: 20
+  graphPosition: {x: 921, y: 700}
+  runtimeIndex: 21
   compositeType: 1
   methodName: ForEachAgent
   fieldEntries: []
@@ -1237,7 +1140,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 021112b50d2d7e544abe1f8d39a743c6
-  graphPosition: {x: 889, y: 490}
+  graphPosition: {x: 1101.2003, y: 490}
   runtimeIndex: 3
   compositeType: 1
   methodName: SEQUENCE
@@ -1255,7 +1158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: ForEachAgent
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  nodeName: 
+  nodeName: ForEachAgent
   children:
   - {fileID: -7185604192875443122}
   firstChildIndex: 0
@@ -1482,7 +1385,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 4816096c2d0fd574890ed743c70c2f52
-  graphPosition: {x: 23.999998, y: 700}
+  graphPosition: {x: 24, y: 700}
   runtimeIndex: 15
   leafType: 2
   methodName: CompareVariable
@@ -1587,8 +1490,8 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: c21ec5b612f156547be7bdce17a9189e
-  graphPosition: {x: 1074, y: 700}
-  runtimeIndex: 22
+  graphPosition: {x: 1284.5797, y: 700}
+  runtimeIndex: 20
   leafType: 3
   methodName: ExtractPosition
   fieldEntries:

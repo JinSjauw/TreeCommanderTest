@@ -213,11 +213,18 @@ namespace BehaviourTree.Editor
             return false;
         }
 
+        private void OnTemplateApplied(BlackboardDefinition target)
+        {
+            if (currentSquad != null && target == currentSquad.blackboardDefinition)
+                RefreshUI();
+        }
+
         private void OnEnable()
         {
             EditorApplication.projectChanged += OnProjectChanged;
             BindingGroupEditor.BindingsChangedForSquad += OnBindingsExternallyChanged;
             VariableChangePropagator.ChangesFlushed += OnVariableRenamed;
+            BlackboardTemplate.Applied += OnTemplateApplied;
         }
 
         private void OnDisable()
@@ -225,6 +232,7 @@ namespace BehaviourTree.Editor
             EditorApplication.projectChanged -= OnProjectChanged;
             BindingGroupEditor.BindingsChangedForSquad -= OnBindingsExternallyChanged;
             VariableChangePropagator.ChangesFlushed -= OnVariableRenamed;
+            BlackboardTemplate.Applied -= OnTemplateApplied;
         }
 
         private void OnProjectChanged()
@@ -358,7 +366,6 @@ namespace BehaviourTree.Editor
             bbDef.name = squad.name + "_BB_Definition";
             AssetDatabase.AddObjectToAsset(bbDef, path);
             squad.blackboardDefinition = bbDef;
-            squad.EnsureAllBaseChannels();
             EditorUtility.SetDirty(squad);
             EditorUtility.SetDirty(bbDef);
             AssetDatabase.SaveAssets();
@@ -405,8 +412,6 @@ namespace BehaviourTree.Editor
             bbDef.name = squad.name + "_Schema";
             AssetDatabase.AddObjectToAsset(bbDef, path);
             squad.blackboardDefinition = bbDef;
-            squad.EnsureAllBaseChannels();
-
             EditorUtility.SetDirty(squad);
             EditorUtility.SetDirty(bbDef);
             AssetDatabase.SaveAssets();

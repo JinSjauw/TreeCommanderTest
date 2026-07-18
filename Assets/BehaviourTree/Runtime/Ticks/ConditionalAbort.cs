@@ -4,10 +4,6 @@ namespace BehaviourTree.Runtime
 {
     internal static partial class TickFunctions
     {
-        /// <summary>
-        /// Re-evaluates child condition for conditional abort.
-        /// Called at the start of each composite's Execute().
-        /// </summary>
         internal static int CheckConditionalAbort(int compositeIndex, ref TickContext ctx)
         {
             ref NodeData composite = ref ctx.nodeDatas[compositeIndex];

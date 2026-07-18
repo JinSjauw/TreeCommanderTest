@@ -13,7 +13,6 @@ namespace BehaviourTree.Editor
             createdBlackboard.name = this.name + "_BB_Definition";
 
             blackboardDefinition = createdBlackboard;
-            // System channels are deferred until squad connections exist (OnValidate / SquadTabView)
             AssetDatabase.AddObjectToAsset(createdBlackboard, this);
             AssetDatabase.SaveAssets();
         }
@@ -21,17 +20,6 @@ namespace BehaviourTree.Editor
         private void OnValidate()
         {
             if (squadConnections == null || squadConnections.Count == 0) return;
-
-            BlackboardDefinition bbDef = blackboardDefinition;
-            if (bbDef == null) return;
-
-            EnsureAgentChannels(bbDef);
-        }
-
-        private static void EnsureAgentChannels(BlackboardDefinition bbDef)
-        {
-            if (SquadChannelHelper.EnsureAgentSystemChannels(bbDef))
-                EditorUtility.SetDirty(bbDef);
         }
     }
 }

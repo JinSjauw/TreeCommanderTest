@@ -152,11 +152,6 @@ namespace BehaviourTree.Core
             }
         }
 
-        public void EnsureAllBaseChannels()
-        {
-            SquadChannelHelper.EnsureSquadSystemChannels(blackboardDefinition);
-        }
-
         /// <summary>
         /// Creates the pre-defined system bindings for a binding group.
         /// Commander and agent trees get different sets of bindings.
@@ -188,15 +183,8 @@ namespace BehaviourTree.Core
             EnsureBinding(group, "AgentStatus", "AgentStatus", statusDir);
         }
 
-        private void OnEnable()
-        {
-            SquadChannelHelper.EnsureSquadSystemChannels(blackboardDefinition);
-        }
-
         private void OnValidate()
         {
-            EnsureAllBaseChannels();
-
             // Ensure auto-bindings for each connected tree
             if (bindingGroups != null)
             {

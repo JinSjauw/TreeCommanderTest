@@ -75,50 +75,5 @@ namespace BehaviourTree.Core
             return clone;
         }
 
-        public static bool EnsureBaseChannel<T>(
-            BlackboardDefinition bbDef, string name, bool isSquadData, bool isSystemVariable = true)
-        {
-            if (bbDef == null || bbDef.sharedVariables == null)
-                return false;
-
-            BlackboardVariableBase existing = bbDef.FindVariable(name);
-            if (existing != null)
-            {
-                bool changed = false;
-
-                if (existing.GetValueType() != typeof(T))
-                {
-                    Debug.LogWarning(
-                        $"[BaseChannel] '{name}' has wrong type " +
-                        $"(expected {typeof(T).Name}, got {existing.GetValueType()?.Name ?? "null"}).");
-                }
-
-                if (!existing.isSystemVariable && isSystemVariable)
-                {
-                    existing.isSystemVariable = true;
-                    changed = true;
-                }
-
-                if (!existing.isSquadData && isSquadData)
-                {
-                    existing.isSquadData = isSquadData;
-                    changed = true;
-                }
-
-                return changed;
-            }
-
-            Debug.LogWarning($"[BaseChannel] Missing '{name}' on '{bbDef.name}' — auto-creating.");
-
-            bbDef.AddVariable<T>(name, stride: 1, initialValue: default);
-            BlackboardVariableBase created = bbDef.FindVariable(name);
-            if (created != null)
-            {
-                created.isSquadData = isSquadData;
-                created.isSystemVariable = isSystemVariable;
-            }
-
-            return true;
-        }
     }
 }

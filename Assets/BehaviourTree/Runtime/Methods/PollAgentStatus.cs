@@ -34,6 +34,13 @@ namespace BehaviourTree.Runtime.Methods
 
         private int statusSlot = -1;
 
+        /// <summary>
+        /// Prevents double-fire: after returning SUCCESS, refuses another SUCCESS
+        /// until at least one agent has reported Running(2), confirming the new
+        /// movement cycle has started.
+        /// </summary>
+        private bool consumed;
+
         public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
         {
             // Stride marker (fields[1]) is consumed by field index but ignored —
@@ -62,12 +69,23 @@ namespace BehaviourTree.Runtime.Methods
                 switch (status)
                 {
                     case 1: return NodeState.FAILURE;  // any one failed → fail
-                    case 2: anyRunning = true; break;   // still moving
+                    case 2:
+                        anyRunning = true;
+                        consumed = false;               // agent acknowledged new movement → reset gate
+                        break;
                     // 0: arrived, -1: unregistered → neutral
                 }
             }
 
-            return anyRunning ? NodeState.RUNNING : NodeState.SUCCESS;
+            if (anyRunning)
+                return NodeState.RUNNING;
+
+            // All agents report 0 (arrived / idle)
+            if (consumed)
+                return NodeState.RUNNING;  // already returned SUCCESS for this arrival cycle
+
+            consumed = true;
+            return NodeState.SUCCESS;      // one shot per arrival cycle
         }
     }
 }

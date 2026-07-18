@@ -1,0 +1,32 @@
+.element-container {
+    margin-left: 6px;
+    margin-right: 6px;
+}
+
+#template-definition-name {
+    -unity-text-align: middle-center;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+#template-bar-menu {
+    flex-grow: 0;
+}
+
+#template-nav-row {
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+}
+
+#create-new-template-button {
+    width: 180px;
+}
+
+#browse-template-button {
+    width: 100px;
+}
+
+#apply-button {
+    margin-top: 8px;
+}

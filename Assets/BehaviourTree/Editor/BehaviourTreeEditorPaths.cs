@@ -33,6 +33,11 @@ namespace BehaviourTree.Editor
         public const string TrackedBindingRowUxml = BasePath + "TrackedBindingRow.uxml";
         public const string TrackedBindingRowUss = BasePath + "TrackedBindingRow.uss";
 
+        // ── Template editor ───────────────────────────────────
+        private const string TemplateEditorPath = BasePath + "TemplateEditor/";
+        public const string TemplateEditorUxml = TemplateEditorPath + "BlackboardTemplateEditor.uxml";
+        public const string TemplateEditorUss = TemplateEditorPath + "BlackboardTemplateEditor.uss";
+
         // ── Squad editor ──────────────────────────────────────
         private const string SquadEditorPath = BasePath + "SquadEditor/";
         public const string SquadDefinitionEditorUxml = SquadEditorPath + "SquadDefinitionEditor.uxml";

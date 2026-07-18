@@ -44,7 +44,6 @@ namespace BehaviourTree.Editor
             {
                 // Existing commander tree — bridge to the base field
                 blackboardDefinition = commanderBlackboardDefinition;
-                EnsureCommanderChannels(blackboardDefinition);
                 SyncStrideToBlackboard();
                 EditorUtility.SetDirty(this);
                 AssetDatabase.SaveAssets();
@@ -56,7 +55,6 @@ namespace BehaviourTree.Editor
 
             commanderBlackboardDefinition = created;
             blackboardDefinition = created;
-            EnsureCommanderChannels(created);
             SyncStrideToBlackboard();
             AssetDatabase.AddObjectToAsset(created, this);
             AssetDatabase.SaveAssets();
@@ -72,8 +70,6 @@ namespace BehaviourTree.Editor
 
             BlackboardDefinition bbDef = blackboardDefinition ?? commanderBlackboardDefinition;
             if (bbDef == null) return;
-
-            EnsureCommanderChannels(bbDef);
 
             SyncStrideToBlackboard();
         }
@@ -99,12 +95,6 @@ namespace BehaviourTree.Editor
                 }
             }
             if (changed)
-                EditorUtility.SetDirty(bbDef);
-        }
-
-        private static void EnsureCommanderChannels(BlackboardDefinition bbDef)
-        {
-            if (Core.SquadChannelHelper.EnsureCommanderSystemChannels(bbDef))
                 EditorUtility.SetDirty(bbDef);
         }
     }
