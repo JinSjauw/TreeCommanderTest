@@ -17,8 +17,6 @@ The loop runs continuously — patrol → idle → patrol → idle → (interrup
 - The enemy must **move** between patrol points on a NavMesh.
 - There must be an **idle wait** at each patrol point before moving to the next one.
 
-> `patrolPointsParent` (Transform) is already on the blackboard. `ExtractPosition` uses it as a collection to pick waypoints.
-
 ## Hints
 
 - **Attack or patrol first?** Which branch should the SELECTOR try first each frame?
