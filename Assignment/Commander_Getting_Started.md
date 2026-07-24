@@ -529,23 +529,14 @@ These nodes are only available in commander trees:
 ```
 [ROOT]
   │
-  └── [🔵 PRIORITY]
-        │
-        ├── [🟣 SEQUENCE] — Leader Death: Scatter
-        │    ├── [🟡] CompareVariable: LeaderIndex == -1
-        │    └── [🟣 SEQUENCE]
-        │         ├── [🔴] ForEachAgent
-        │         │    └── [🔴] SendOrder(Order: "Scatter")
-        │         └── [🔴] WaitSeconds(5.0)
-        │
-        └── [🟣 SEQUENCE] — Normal: Formation Patrol
-             ├── [🔴] ExtractPosition → SquadMovePosition
-             ├── [🔴] CalculateFormation → FormationPositions
-             └── [🔴] ForEachAgent
-                  └── [🟣 SEQUENCE]
-                       ├── [🔴] SetVariable(targetMovePosition,
-                       │         FormationPositions[agentIndex])
-                       └── [🔴] SendOrder(Order: "MoveToPosition")
+  └── [🟣 SEQUENCE] — Normal: Formation Patrol
+       ├── [🔴] ExtractPosition → SquadMovePosition
+       ├── [🔴] CalculateFormation → FormationPositions
+       └── [🔴] ForEachAgent
+            └── [🟣 SEQUENCE]
+                 ├── [🔴] SetVariable(targetMovePosition,
+                 │         FormationPositions[agentIndex])
+                 └── [🔴] SendOrder(Order: "MoveToPosition")
 ```
 
 ### Agent Tree Responding to Orders
