@@ -26,3 +26,11 @@ The loop runs continuously — patrol → idle → patrol → idle → (interrup
 - Patrol routing: `ExtractPosition` reads `patrolPointsParent` + a mode (Sequential/Random) and writes a Vector3 to `targetMovePosition`. Then `MoveTo` navigates there.
 - Idle: `WaitSeconds` has a `duration` float — set it to the idle time.
 - The tree loops automatically: when the root's child finishes, the whole tree re-evaluates from the top next frame.
+
+## Challenge: Conditional Abort
+
+The basic tree waits for the patrol branch (move → idle → move → ...) to finish before checking for targets again. This means the enemy walks the entire patrol route before reacting to a target.
+
+**Improvement**: Use a **conditional abort** on the root SELECTOR to interrupt the patrol branch as soon as a target is detected — even while the enemy is mid-patrol.
+
+Read [Conditional Aborts](file:///d:/Dev/TreeCommanderTest/ConditionalAborts.md) to understand the four abort types and decide which one is right for this pattern. The attack branch already has an `Enemy_Detected` condition — that is the condition the abort will re-evaluate every frame.

@@ -12,22 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
   m_Name: TestTree_BB_Definition
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
-  sharedVariables:
-  - rid: 3017917058745630825
+  sharedVariables: []
   references:
     version: 2
-    RefIds:
-    - rid: 3017917058745630825
-      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
-      data:
-        variableName: PatrolPoints
-        variableStride: 1
-        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
-          Culture=neutral, PublicKeyToken=null
-        isSquadData: 0
-        isSystemVariable: 0
-        singleValue: {fileID: 0}
-        arrayValues: []
+    RefIds: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

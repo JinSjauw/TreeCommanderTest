@@ -68,7 +68,7 @@ The commander tree should:
 ### 2. Add Squad Blackboard Variables
 
 In the Squad Editor's blackboard section, add:
-- `AgentRoles` (int, SquadData) — auto-created by system bindings
+- `AgentRoles` (int, SquadData) — auto-created
 - `AgentOrders` (int, SquadData) — auto-created
 - `AgentStatus` (int, SquadData) — auto-created
 - `AgentMoveTarget` (Vector3, SquadData) — **manual**: this is the per-agent position the commander writes and the agent reads
@@ -181,7 +181,7 @@ The agent tree needs to check what order it received before deciding what to do.
         │
         ├── [🟣 SEQUENCE] — Attack
         │    ├── [🟡] CheckOrder(Order: "AttackTarget")
-        │    ├── [🟡] Enemy_DetectTarget(Radius: 20, LessThan)
+        │    ├── [🟡] Enemy_Detected(Radius: 20, LessThan)
         │    ├── [🔴] Enemy_SelectDetectedTarget(Nearest → selectedTarget)
         │    └── [🔴] Enemy_FireSequence(Target: selectedTarget)
         │

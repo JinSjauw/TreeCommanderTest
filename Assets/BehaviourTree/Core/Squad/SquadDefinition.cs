@@ -153,32 +153,61 @@ namespace BehaviourTree.Core
         }
 
         /// <summary>
-        /// Creates the pre-defined system bindings for a binding group.
-        /// Commander and agent trees get different sets of bindings.
+        /// Ensures system variables exist and bindings are set for a tree binding group.
+        /// Creates the following if they don't exist:
+        ///   - Squad BB: AgentRoles, AgentOrders, AgentStatus, LeaderIndex
+        ///   - Commander BB: AgentRoles, AgentOrders, AgentStatus, LeaderIndex
+        ///   - Agent BB: AgentAssignedRole, AgentReceivedOrder, AgentStatus
+        /// Also creates the corresponding variable bindings.
         /// Called from OnValidate and from editor UIs when a new group is created.
         /// </summary>
         public void EnsureAutoBindings(SquadBindingGroup group)
         {
             if (group?.treeAsset == null) return;
 
+            BlackboardDefinition squadDef = blackboardDefinition;
+            if (squadDef == null) return;
+
             bool isCommander = group.treeAsset.CommanderBlackboardDefinition != null;
+            BlackboardDefinition treeDef = isCommander
+                ? group.treeAsset.CommanderBlackboardDefinition
+                : group.treeAsset.BlackboardDefinition;
+            if (treeDef == null) return;
+
+            // ── Ensure squad-side system variables ──
+            squadDef.EnsureVariable("AgentRoles", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
+            squadDef.EnsureVariable("AgentOrders", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
+            squadDef.EnsureVariable("AgentStatus", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
+            squadDef.EnsureVariable("LeaderIndex", typeof(int), stride: 1, isSquadData: false, isSystemVariable: true);
+
+            // ── Ensure tree-side system variables ──
+            if (isCommander)
+            {
+                treeDef.EnsureVariable("AgentRoles", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
+                treeDef.EnsureVariable("AgentOrders", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
+                treeDef.EnsureVariable("AgentStatus", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
+                treeDef.EnsureVariable("LeaderIndex", typeof(int), stride: 1, isSquadData: false, isSystemVariable: true);
+            }
+            else
+            {
+                treeDef.EnsureVariable("AgentAssignedRole", typeof(int), stride: 1, isSquadData: false, isSystemVariable: false);
+                treeDef.EnsureVariable("AgentReceivedOrder", typeof(int), stride: 1, isSquadData: false, isSystemVariable: false);
+                treeDef.EnsureVariable("AgentStatus", typeof(int), stride: 1, isSquadData: false, isSystemVariable: false);
+            }
+
+            // ── Create bindings ──
             string roleTreeVar = isCommander ? "AgentRoles" : "AgentAssignedRole";
             string orderTreeVar = isCommander ? "AgentOrders" : "AgentReceivedOrder";
 
-            // Commander: receives roles from agents (FromSquad), pushes orders (ToSquad)
-            // Agent:    pushes its role to squad (ToSquad), receives orders (FromSquad)
             BindingDirection roleDir = isCommander ? BindingDirection.FromSquad : BindingDirection.ToSquad;
             BindingDirection orderDir = isCommander ? BindingDirection.ToSquad : BindingDirection.FromSquad;
 
-            // ── System variable bindings (grouped first) ──
             EnsureBinding(group, "AgentRoles", roleTreeVar, roleDir);
             EnsureBinding(group, "AgentOrders", orderTreeVar, orderDir);
 
-            if (isCommander) EnsureBinding(group, "LeaderIndex", "LeaderIndex", BindingDirection.FromSquad);
-            // if (isCommander) EnsureBinding(group, "SquadMovePosition", "SquadMovePosition", BindingDirection.FromSquad);
-            // if (isCommander) EnsureBinding(group, "AgentMoveSpeed", "AgentMoveSpeed", BindingDirection.FromSquad);
+            if (isCommander)
+                EnsureBinding(group, "LeaderIndex", "LeaderIndex", BindingDirection.FromSquad);
 
-            // AgentStatus: agent writes it (ToSquad), commander reads it (FromSquad)
             BindingDirection statusDir = isCommander ? BindingDirection.FromSquad : BindingDirection.ToSquad;
             EnsureBinding(group, "AgentStatus", "AgentStatus", statusDir);
         }

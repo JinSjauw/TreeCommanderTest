@@ -95,7 +95,7 @@ Repeats child N times. Returns RUNNING between repetitions. FAILURE if child fai
 
 ## Enemy Conditions (🟡 Yellow — Agent-only)
 
-### Enemy_DetectTarget
+### Enemy_Detected
 Runs target detection. Checks if any target is in range (optionally with LOS).
 
 | Parameter | Kind | Description |
@@ -154,7 +154,7 @@ Picks a target from detected enemies by strategy.
 
 *Instant — returns FAILURE if no targets detected.*
 
-### Enemy_SelectEngagePosition
+### Enemy_EngagePosition
 Calculates a random position within a tunable cone directed toward the target.
 
 | Parameter | Kind | Description |
@@ -187,6 +187,31 @@ Computes a random flanking position perpendicular to the target direction.
 Immediately stops the NavMeshAgent.
 
 *No parameters — instant.*
+
+---
+
+## Other Agent Actions (🔴 Red — Agent-only)
+
+These nodes are available in agent trees only (not commander). They are not enemy-specific — any agent tree can use them.
+
+### ReportStatus
+Writes a status value to an int blackboard variable (typically `AgentStatus`). The squad bridge syncs this to the squad blackboard where the commander's `PollAgentStatus` reads it.
+
+| Parameter | Kind | Description |
+|-----------|------|-------------|
+| Target | Variable (int) | The agent's status blackboard variable (e.g. `AgentStatus`) |
+| Value | Operation | `Success` (0), `Failure` (1), or `Running` (2) |
+
+*Instant.*
+
+### SetNavAgentSpeed
+Sets the NavMeshAgent.speed on this agent's GameObject. Caches the original speed and restores it when the subtree is aborted.
+
+| Parameter | Kind | Description |
+|-----------|------|-------------|
+| Speed | ScriptableObjectConstant (float) | The speed to set |
+
+*Instant.*
 
 ---
 
@@ -300,9 +325,6 @@ Iterates over all registered agents in the squad. Children run once per agent.
 ### ForEachRole
 Iterates over all unique roles defined in the squad definition. Children run once per role.
 
-### SelectAgent
-Selects a specific agent by index or criteria for subsequent operations.
-
 ### SendOrder
 Issues an order to selected agents.
 
@@ -310,40 +332,41 @@ Issues an order to selected agents.
 |-----------|------|-------------|
 | Order | Order dropdown | The order to issue (from OrderRegistry) |
 
-### CheckOrder
-Checks what order an agent has received.
-
 ### CheckSquadData
 Reads a squad-level data variable.
 
-### ReportStatus
-Writes own status to the squad blackboard.
-
 ### PollAgentStatus
-Reads a specific agent's reported status.
+Polls a SquadData int[] status array (e.g. `AgentStatus`) across all registered agents. Used by the commander to check if all agents have completed their current order.
+
+| Parameter | Kind | Description |
+|-----------|------|-------------|
+| Input | Variable (int[]) | The SquadData int array to poll (e.g. `AgentStatus`) |
+
+**Return values:**
+- **SUCCESS** — all agents report `0` (idle / arrived / Success). Has a consumed gate: after returning SUCCESS once, it refuses another SUCCESS until at least one agent reports `2` (Running) again, confirming a new movement cycle has started.
+- **RUNNING** — at least one agent reports `2` (Running / still moving).
+- **FAILURE** — any agent reports `1` (Failure / blocked).
 
 ### CalculateFormation
 Computes formation positions for the squad. Agents are positioned in a circle: agent 0 at center, agents 1..N-1 evenly distributed around.
 
 | Parameter | Kind | Description |
 |-----------|------|-------------|
+| Center | Toggle (Vector3) | Center position of the formation |
 | Output | Variable (Vector3[]) | Where to write the formation positions |
-| Center | Variable (Vector3) | Center position of the formation |
-| Radius | Toggle (float) | Radius of the circle formation |
+| Type | Operation (FormationType) | Formation shape (only `Circle` currently) |
+| Radius | ScriptableObjectConstant (float) | Radius of the circle formation |
 
 *Instant.*
 
-### GetHighestAgent / GetLowestAgent
-Finds the agent with the highest/lowest value of a squad-data variable.
+### SquadReduce
+Reduces a per-agent squadData array by computing the average, lowest, or highest value across all active agents.
 
-### GetNearestAgent
-Finds the nearest agent to a given position.
-
-### SquadReduceMethod / ArrayReduceMethod
-Reduces squad or array data using an accumulator operation.
-
-### PriorityMethod / SequenceMethod / SelectorMethod
-Composite implementations used by the built-in composites. These are the runtime evaluators for SELECTOR, SEQUENCE, and PRIORITY.
+| Parameter | Kind | Description |
+|-----------|------|-------------|
+| Source | Variable (int[]/float[]/Vector2[]/Vector3[]) | The per-agent array to reduce |
+| Op | Operation | `Average`, `Lowest`, or `Highest` |
+| Output | Variable (single) | Where to write the reduced result |
 
 ---
 

@@ -466,7 +466,9 @@ MonoBehaviour:
   root: {fileID: -1536800229760704511}
   blackboardDefinition: {fileID: 8726345457217746331}
   commanderBlackboardDefinition: {fileID: 0}
-  squadConnections: []
+  squadConnections:
+  - squad: {fileID: 11400000, guid: 315de1a1a1fa36d4cbb10aa23a2c865b, type: 2}
+    assignedRoles: []
   availableConfigs: []
   nodesList:
   - {fileID: -1536800229760704511}

@@ -75,5 +75,31 @@ namespace BehaviourTree.Core
             return clone;
         }
 
+        /// <summary>
+        /// Ensures a variable with the given name and type exists. If it already exists, returns it unchanged.
+        /// If not, creates a new variable with the specified properties.
+        /// Useful for auto-creating system variables when binding groups are set up.
+        /// </summary>
+        public BlackboardVariableBase EnsureVariable(string name, Type type, int stride = 1, bool isSquadData = false, bool isSystemVariable = false)
+        {
+            if (string.IsNullOrEmpty(name) || type == null) return null;
+
+            BlackboardVariableBase existing = FindVariable(name);
+            if (existing != null) return existing;
+
+            Type genericType = typeof(BlackboardVariable<>).MakeGenericType(type);
+            BlackboardVariableBase variable = (BlackboardVariableBase)Activator.CreateInstance(genericType);
+            variable.Name = name;
+            variable.Stride = stride;
+            variable.isSquadData = isSquadData;
+            variable.isSystemVariable = isSystemVariable;
+            variable.IsArray = stride > 1;
+
+            if (sharedVariables == null)
+                sharedVariables = new List<BlackboardVariableBase>();
+            sharedVariables.Add(variable);
+            return variable;
+        }
+
     }
 }

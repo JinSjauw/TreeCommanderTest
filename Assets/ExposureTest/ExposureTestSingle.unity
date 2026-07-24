@@ -579,17 +579,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7742238448167979364, guid: 3bf191ac55094db47ae36af44b6433a8, type: 3}
-      propertyPath: authoringAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: ac1b6ceed17dc304abdf6ef3477a35f8, type: 2}
     - target: {fileID: 8261073738341746034, guid: 3bf191ac55094db47ae36af44b6433a8, type: 3}
       propertyPath: m_Name
       value: TargetTest
       objectReference: {fileID: 0}
     - target: {fileID: 8452727825258029498, guid: 3bf191ac55094db47ae36af44b6433a8, type: 3}
       propertyPath: serializedReferences.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8452727825258029498, guid: 3bf191ac55094db47ae36af44b6433a8, type: 3}
       propertyPath: 'serializedReferences.Array.data[0]'

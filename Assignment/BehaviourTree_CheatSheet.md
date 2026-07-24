@@ -33,8 +33,8 @@ Frame 3: MoveTo → SUCCESS  (arrived!)
 Conditions are **instant**. They check something right now and answer yes/no. They **never** return RUNNING.
 
 ```
-Frame 1: Enemy_DetectTarget → SUCCESS (target found!)
-Frame 1: Enemy_DetectTarget → FAILURE (no targets)
+Frame 1: Enemy_Detected → SUCCESS (target found!)
+Frame 1: Enemy_Detected → FAILURE (no targets)
 ```
 
 ---
@@ -250,30 +250,31 @@ Optional overrides: `alwaysFailure` / `alwaysSuccess` ignore child and force a f
 
 ---
 
-## All EnemyMethods (from TooltipRegistry)
+## Enemy-Only Nodes (Agent Trees)
+
+> These nodes are only available in Agent trees (agent-only). For generic nodes available in any tree type, see the Generic Variable Nodes section below.
 
 ### 🟡 Conditions
 
 | Node | Description | Returns |
 |------|-------------|---------|
-| `Enemy_DetectTarget` | Runs target detection. Current detections get saved. | SUCCESS if target detected; FAILURE if none. |
+| `Enemy_Detected` | Runs target detection. Current detections get saved. | SUCCESS if target detected; FAILURE if none. |
 | `Enemy_HasArrived` | Checks whether the NavMeshAgent has reached its destination. | SUCCESS if arrived; FAILURE if not. |
-| `Enemy_IsAimed` | Checks if the gun is currently aimed on target. | SUCCESS if on target; FAILURE if not. |
-| `Enemy_IsInFiringRange` | Checks if the selected target is within firing range. | SUCCESS if in range; FAILURE if out. |
 | `Enemy_HasLineOfSight` | Checks a clear line of sight (no obstacles) to target. | SUCCESS if clear; FAILURE if blocked. |
+| `CheckOrder` | Compares agent's received order against an expected order. | SUCCESS on match; FAILURE otherwise. |
 
 ### 🔴 Actions
 
 | Node | Description | RUNNING while... |
 |------|-------------|------------------|
-| `MoveTo` | Sets NavMeshAgent destination to a Vector3 or Transform and waits until arrival. | Moving |
-| `ExtractPosition` | Selects next position from a collection (Transform children, Transform[], Vector3[]) using Sequential or Random mode. Writes to an output Vector3 variable. | *(instant)* |
-| `Enemy_SelectEngagePosition` | Calculates a random position within a tunable cone directed toward the target. | *(instant)* |
+| `Enemy_EngagePosition` | Calculates a random position within a tunable cone directed toward the target. | *(instant)* |
 | `Enemy_FlankPosition` | Computes a random flanking position perpendicular to the target direction. | *(instant)* |
 | `Enemy_StopMovement` | Immediately stops the NavMeshAgent. | *(instant)* |
 | `Enemy_FireSequence` | Full fire cycle: aim → search trajectory → fire delay → fire. Handles reload, aiming, trajectory, and firing internally. | Any phase |
 | `Enemy_SelectDetectedTarget` | Selects a target from detected targets (Nearest, Farthest, Random). Writes to a Transform/GameObject variable. | *(instant)* |
 | `Enemy_CheckRange` | Checks 2D distance from enemy to a target (Transform/GameObject/Vector3) against a radius with LessThan/GreaterThan. | *(instant)* |
+| `ReportStatus` | Writes own status (Success/Failure/Running) to the squad blackboard. | *(instant)* |
+| `SetNavAgentSpeed` | Sets NavMeshAgent.speed on this agent's GameObject. Restores original on abort. | *(instant)* |
 
 ---
 
@@ -292,6 +293,8 @@ These replace the old BB_* nodes. They work with **any** blackboard variable typ
 
 | Node | Description |
 |------|-------------|
+| `MoveTo` | Sets NavMeshAgent destination to a Vector3 or Transform and waits until arrival. |
+| `ExtractPosition` | Selects next position from a collection (Sequential or Random mode). Writes to an output Vector3 variable. *(instant)* |
 | `WaitSeconds` | Wait N seconds. RUNNING while waiting. |
 | `Cooldown` | Returns SUCCESS once per cooldown period. FAILURE while on cooldown. |
 | `SetVariable` | Writes a value (constant or from another variable) into a blackboard variable. Supports all types. |
@@ -367,6 +370,44 @@ Repeats the child N times, then returns SUCCESS.
 
 ---
 
+## Node Inspector Field Controls
+
+When you select a node, its fields appear in the Inspector. Each field's appearance depends on its **kind**:
+
+### Variable — dropdown + S + F buttons
+
+A dropdown of matching blackboard variables. Two small buttons appear next to it:
+
+| Button | What it does |
+|--------|-------------|
+| **S** | Opens a search popup — type to filter. Useful with many variables. |
+| **F** | Opens a type picker to change which types are shown. Only appears on fields accepting multiple types. |
+
+### Toggle — C / V switch
+
+Toggles between Constant and Variable mode. The button shows the opposite mode:
+
+| Button shown | Current mode | Click to switch to |
+|--------------|-------------|-------------------|
+| **C** | Variable (blackboard variable) | Constant (direct value) |
+| **V** | Constant (direct value) | Variable (blackboard variable) |
+
+### ScriptableObjectConstant — C / V / SO three-way switch
+
+Each click on the label cycles to the next mode:
+
+| Button | Mode | Behaviour |
+|--------|------|-----------|
+| **C** | Constant | Regular input field |
+| **V** | Variable | Blackboard variable dropdown |
+| **SO** | SO Field | Picks a field from a ScriptableObject in the tree's **Config Sources**. Resolved at bake time — zero runtime overhead. |
+
+### Operation — enum dropdown
+
+A dropdown of enum values. Options may be filtered by context (e.g. fewer comparison operators for bool types).
+
+---
+
 ## Squad Definition Editor
 
 The Squad Definition Editor (`BehaviourTree > Open Squad Editor`) is the central UI for configuring squads.
@@ -379,7 +420,7 @@ The Squad Definition Editor (`BehaviourTree > Open Squad Editor`) is the central
 |---------|---------|
 | **Blackboard** | Define squad-wide variables shared between commander and agents. Variables marked **SquadData** get dynamic per-agent stride at runtime. |
 | **Roles** | Define available roles (name, colour, max amount, prefab, fallback flag). The sum of `maxAmount` across all roles determines the total squad size. |
-| **Binding Groups** | Per-tree bindings that map variables between the squad blackboard and each connected tree's blackboard. Each group has auto-generated system bindings (AgentRoles, AgentOrders, AgentStatus, LeaderIndex). |
+| **Binding Groups** | Per-tree bindings that map variables between the squad blackboard and each connected tree's blackboard. System bindings (AgentRoles, AgentOrders, AgentStatus, LeaderIndex) are auto-created along with their blackboard variables. |
 
 ### How Bindings Work
 
@@ -413,14 +454,16 @@ Commander trees orchestrate multiple agent trees in a squad. They use the **PRIO
    d. Agent BB → Squad copy
 ```
 
-### System Blackboard Variables (auto-created by EnsureAutoBindings)
+### System Blackboard Variables (auto-created)
+
+When a binding group is set up, `EnsureAutoBindings()` creates these variables on the squad and tree blackboards, plus the bindings between them:
 
 | Commander BB | Squad BB | Direction | Purpose |
 |-------------|----------|-----------|---------|
-| AgentRoles | AgentRoles | Squad → Commander | Each agent's assigned role index |
-| AgentOrders | AgentOrders | Commander → Squad | Orders assigned to each agent |
-| AgentStatus | AgentStatus | Both | Current status per agent |
-| LeaderIndex | LeaderIndex | Squad → Commander | Index of current squad leader |
+| AgentRoles (int, SquadData) | AgentRoles (int, SquadData) | Squad → Commander | Each agent's assigned role index |
+| AgentOrders (int, SquadData) | AgentOrders (int, SquadData) | Commander → Squad | Orders assigned to each agent |
+| AgentStatus (int, SquadData) | AgentStatus (int, SquadData) | Both | Current status per agent |
+| LeaderIndex (int) | LeaderIndex (int) | Squad → Commander | Index of current squad leader |
 
 ### SquadData Variables
 
@@ -428,30 +471,29 @@ Variables marked **isSquadData** in the Commander Blackboard get their stride dy
 
 ---
 
-## Serialized References on Scene GameObjects
+## Scene-Level Blackboard Overrides
 
-The `BlackBoard` component on scene GameObjects persists reference-type variable values (Transform, GameObject, Component) through Unity serialization.
+Variables defined in a tree asset get their defaults from the asset. To set different values per scene instance (e.g. different patrol routes, different targets), override them on the scene GameObject's `BlackBoard` component.
 
-### How It Works
+### Workflow
 
-1. **BuildSerializedReferences** is called from `BehaviourTreeRunnerBase.OnValidate()` — whenever the tree asset or blackboard definition changes in the editor.
-2. It creates a flat `List<UnityEngine.Object>` matching the blackboard's slot layout (accounting for variable strides).
-3. Each reference-type slot gets an entry. Value-type slots (int, float, Vector3, etc.) use `BlackboardValueOverride` instead.
-4. When the blackboard definition layout changes (variables added/removed/renamed), values are remapped **by name** so existing scene references survive the change.
+1. **Add a variable** to the tree asset's Blackboard tab (e.g. `patrolPointsParent` of type `Transform`)
+2. **Select the scene GameObject** with the `AgentTreeRunner` or `CommanderTreeRunner` component
+3. **Override in the Inspector** — the BlackBoard section shows all variables:
 
-### Reference Overrides (the "X" to clear / checkmark to override)
+- **Reference types** (Transform, GameObject, Component): check the **✓** box and drag a scene object into the field
+- **Value types** (int, float, bool, Vector2/3/4, Color, enum): edit the value directly
 
-- Reference slots show a checkbox in the Inspector — checked means "this slot has an explicitly overridden value."
-- Unchecking clears the override flag but does NOT clear the serialized reference value (the value remains in `serializedReferences` but is not loaded into storage).
-- The override state is stored separately from the value itself so domain reload doesn't pollute the override state with stale data.
+Unchecking clears the override but preserves the stored value — re-checking restores it.
 
-### Value-Type Overrides (BlackboardValueOverride)
+### When to use
 
-- Value-type variables (int, float, bool, Vector2/3/4, Color, enum) can be overridden per-component via `BlackboardValueOverride`.
-- Each override is keyed by `(variableName, elementIndex)` — name-based, not slot-based, so reordering the blackboard definition doesn't break existing overrides.
-- Overrides are applied during `BlackBoard.Initialize()` after the storage is set up.
+| Scenario | Example |
+|----------|---------|
+| **Scene references** | Drag a patrol route parent, spawn point, or target from the scene into a reference slot |
+| **Per-instance tuning** | Different patrol speeds or health thresholds per enemy without separate tree assets |
+| **Shared prefab, different data** | Multiple enemies share one tree asset but need different patrol points or target positions |
 
-### When to Use
+### Survival Guarantee
 
-- **Scene references**: Drag a Transform/GameObject from the scene into the inspector slot for a blackboard variable that needs to point to a specific scene object (e.g., a patrol route parent, a specific enemy spawn point).
-- **Per-instance tuning**: Override a float variable's default value differently on different enemy prefab instances without creating separate tree assets.
+Overrides are stored **by variable name**, not slot index. Renaming a variable in the asset remaps existing overrides automatically. Adding/removing other variables does not affect them.
