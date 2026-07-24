@@ -33,4 +33,4 @@ The basic tree waits for the patrol branch (move → idle → move → ...) to f
 
 **Improvement**: Use a **conditional abort** on the root SELECTOR to interrupt the patrol branch as soon as a target is detected — even while the enemy is mid-patrol.
 
-Read [Conditional Aborts](file:///d:/Dev/TreeCommanderTest/ConditionalAborts.md) to understand the four abort types and decide which one is right for this pattern. The attack branch already has an `Enemy_Detected` condition — that is the condition the abort will re-evaluate every frame.
+Read [Conditional Aborts](ConditionalAborts.md) to understand the four abort types and decide which one is right for this pattern. The attack branch already has an `Enemy_Detected` condition — that is the condition the abort will re-evaluate every frame.

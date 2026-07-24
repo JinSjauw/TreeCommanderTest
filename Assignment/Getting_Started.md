@@ -64,7 +64,7 @@ The left panel has two sections:
 
 The **Shared** tab shows the blackboard — every tree has one. Variables created here can be referenced by node fields (via Variable dropdowns) and overridden per-instance on scene GameObjects.
 
-The **Squad** tab is visible on both agent and commander trees. It manages connections to SquadDefinitions. The **Commander** tab appears only on commander tree assets and selects which squad the commander commands. Both are explained in depth in the [Commander & Squad guide](file:///d:/Dev/TreeCommanderTest/Commander_Getting_Started.md).
+The **Squad** tab is visible on both agent and commander trees. It manages connections to SquadDefinitions. The **Commander** tab appears only on commander tree assets and selects which squad the commander commands. Both are explained in depth in the [Commander & Squad guide](Commander_Getting_Started.md).
 
 ---
 
@@ -319,7 +319,7 @@ The direction controls which way data flows:
 | `FromSquad` | Squad → Tree | Agent reads what order was assigned to it |
 | `Both` | Squad ↔ Tree | Both sides read and write the same variable (e.g. formation positions) |
 
-> A full walkthrough of setting up squads, roles, and commanders is in the [Commander & Squad guide](Assignment/Commander_Getting_Started.md).
+> A full walkthrough of setting up squads, roles, and commanders is in the [Commander & Squad guide](Commander_Getting_Started.md).
 
 ## Editor Controls Reference
 

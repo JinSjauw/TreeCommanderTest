@@ -252,6 +252,10 @@ PrefabInstance:
       propertyPath: authoringAsset
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4096845100476099490, guid: 32a93f9fea1499348a9fc1f8c0f0cb96, type: 3}
+      propertyPath: trackedBindingGroups.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4198321844556231410, guid: 32a93f9fea1499348a9fc1f8c0f0cb96, type: 3}
       propertyPath: m_Layer
       value: 8

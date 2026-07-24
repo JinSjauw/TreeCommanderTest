@@ -46,40 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de84ed8973a25ae4a9ee5f6fb88c2f85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackBoard
-  serializedReferences:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  serializedReferences: []
   valueOverrides: []
   overriddenReferenceSlots: 
 --- !u!114 &9052893811937196989
@@ -97,15 +64,7 @@ MonoBehaviour:
   blackBoard: {fileID: 1101994468010055678}
   runtimeAsset: {fileID: 0}
   authoringAsset: {fileID: 11400000, guid: a8f6398331ad38244935a1ef9f7faeca, type: 2}
-  trackedBindingGroups:
-  - targetTree: {fileID: 11400000, guid: f925db3be8ac89e41afebf7f2ee89cf2, type: 2}
-    targetTreeGuid: f925db3be8ac89e41afebf7f2ee89cf2
-    bindings:
-    - targetComponent: {fileID: 4763498702124455055}
-      memberName: TESTINT
-      blackboardVariableName: LOLINT
-      isProperty: 0
-      memberTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  trackedBindingGroups: []
   registeredAgents: []
 --- !u!114 &4763498702124455055
 MonoBehaviour:

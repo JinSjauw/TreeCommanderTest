@@ -1,10 +1,10 @@
 # Assignment: Squad Patrol (Commander Tree)
 
-> **Reference**: See [Commander & Squad — Getting Started](file:///d:/Dev/TreeCommanderTest/Commander_Getting_Started.md) for detailed explanations of squad definitions, commander trees, the Squad/Commander tabs, squad data, and how agent trees interact with squads.
+> **Reference**: See [Commander & Squad — Getting Started](Commander_Getting_Started.md) for detailed explanations of squad definitions, commander trees, the Squad/Commander tabs, squad data, and how agent trees interact with squads.
 
 ## Prerequisites
 
-Complete the [Patrol-Idle-Attack Assignment](file:///d:/Dev/TreeCommanderTest/Assignment_PatrolIdleAttack.md) first. You will reuse and modify that agent tree.
+Complete the [Patrol-Idle-Attack Assignment](Assignment_PatrolIdleAttack.md) first. You will reuse and modify that agent tree.
 
 ## Goal
 
@@ -15,14 +15,12 @@ The commander tree should:
 1. **Form up** the squad in a circle formation.
 2. **Move the formation** to a patrol position.
 3. **Wait** for all agents to arrive before moving to the next position.
-4. **Interrupt** and scatter if the leader is killed.
 
 ## Requirements
 
 - Create a **Commander Tree Asset** (`Assets > Create > BehaviourTree > Commander Tree`).
 - Create a **SquadDefinition** that defines roles and connects the commander tree to the agent tree.
-- Use the **SquadManager** or manual setup to link the commander, squad instance, and agents.
-- The commander tree must use **PRIORITY** for the leader-death scatter interrupt.
+- Use a **SEQUENCE** to run the patrol loop: extract position → calculate formation → for each agent.
 - Use **`CalculateFormation`** to compute formation positions.
 - Use **`ForEachAgent`** with a SEQUENCE to set each agent's target position and send a `MoveToPosition` order.
 - The agent tree must be updated to **receive orders** via `CheckOrder`.
@@ -54,147 +52,27 @@ The commander tree should:
 
 ---
 
-## Setup Steps
+## Setup
 
-### 1. Create the SquadDefinition
+### 1. Create the Commander Tree
 
-1. `Assets > Create > BehaviourTree > Squad Definition`, name it "PatrolSquad".
-2. Open it (`BehaviourTree > Open Squad Editor` or double-click).
-3. Define roles, e.g.:
-   - **Leader** (maxAmount: 1, colour: gold)
-   - **Scout** (maxAmount: 3, colour: blue)
-4. The squad size will be 4 (1 Leader + 3 Scouts).
+Create a new Commander Tree asset (`Assets > Create > BehaviourTree > Commander Tree`). Assign it to the `CommanderTest` prefab — drag the tree asset into the prefab's `CommanderTreeRunner` component's **Authoring Asset** field.
 
-### 2. Add Squad Blackboard Variables
+### 2. Create the SquadDefinition
 
-In the Squad Editor's blackboard section, add:
-- `AgentRoles` (int, SquadData) — auto-created
-- `AgentOrders` (int, SquadData) — auto-created
-- `AgentStatus` (int, SquadData) — auto-created
-- `AgentMoveTarget` (Vector3, SquadData) — **manual**: this is the per-agent position the commander writes and the agent reads
+Create a new SquadDefinition via the Squad Editor (`BehaviourTree > Open Squad Editor` → "Create New Squad"). Define roles (e.g. Leader with maxAmount 1, Scouts with maxAmount 3).
 
-### 3. Create the Commander Tree
+### 3. Hook Up the Squad
 
-1. `Assets > Create > BehaviourTree > Commander Tree`, name it "SquadPatrolCommander".
-2. In the **Commander tab**, select "PatrolSquad" as the commanded squad.
-3. System bindings are auto-created.
-4. Add a custom binding for `AgentMoveTarget` (step 5 below).
+In the **Commander tab** of your commander tree asset, select the SquadDefinition as the commanded squad. System variables and bindings are auto-created.
 
-### 4. Update the Agent Tree
+In the **Squad tab** of your agent tree asset, add a connection to the same SquadDefinition. System variables are auto-created on the agent side too.
 
-Reuse your existing patrol tree. Add to the agent's blackboard:
-- `AgentReceivedOrder` (int) — receives orders from the squad
-- `AgentAssignedRole` (int) — role assigned by SquadManager
-- `AgentStatus` (int) — reports status to squad
+### 4. Verify Bindings
 
-### 5. Set Up Bindings in the Squad Editor
+Open the SquadDefinition in the Squad Editor and check the **Binding Groups** section. You should see both the commander tree and agent tree listed with their auto-created system bindings.
 
-Add the commander tree and agent tree as binding groups in your SquadDefinition.
-
-**System bindings** (auto-created):
-
-| Squad Var | Commander Var | Agent Var | Direction |
-|-----------|---------------|-----------|-----------|
-| AgentRoles | AgentRoles | — | Squad → Commander |
-| AgentOrders | AgentOrders | — | Commander → Squad |
-| AgentStatus | AgentStatus | AgentStatus | Both |
-| LeaderIndex | LeaderIndex | — | Squad → Commander |
-| AgentOrders | — | AgentReceivedOrder | Squad → Agent |
-| AgentRoles | — | AgentAssignedRole | Squad → Agent |
-
-**Custom binding** (you add):
-
-| Squad Var | Commander Var | Agent Var | Direction |
-|-----------|---------------|-----------|-----------|
-| AgentMoveTarget | AgentMoveTarget | targetMovePosition | Both |
-
-This lets the commander write to `AgentMoveTarget[index]` inside `ForEachAgent`, and the agent reads it as `targetMovePosition`.
-
-### 6. Required Blackboard Variables
-
-#### Commander Blackboard
-
-| Variable | Type | SquadData | Purpose |
-|----------|------|-----------|---------|
-| `SquadMovePosition` | Vector3 | No | Where the formation should center |
-| `FormationPositions` | Vector3[] | No | Per-agent formation positions (stride = squad size) |
-| `AgentMoveTarget` | Vector3 | Yes | Per-agent movement target |
-| `PatrolPoints` | Transform | No | Patrol points parent |
-| `AgentCount` | int | No | Number of registered agents |
-
-#### Agent Blackboard
-
-| Variable | Type | Purpose |
-|----------|------|---------|
-| `AgentAssignedRole` | int | Role index assigned by SquadManager |
-| `AgentReceivedOrder` | int | Current order from the squad |
-| `targetMovePosition` | Vector3 | Where the commander says to go |
-| `selectedTarget` | Transform | Enemy target |
-| `patrolPointsParent` | Transform | Squad's shared patrol points |
-
----
-
-## Commander Tree Structure
-
-```
-[ROOT]
-  │
-  └── [🔵 PRIORITY]
-        │
-        ├── [🟣 SEQUENCE] — Leader Death Scatter
-        │    ├── [🟡] CompareVariable: LeaderIndex == -1
-        │    └── [🟣 SEQUENCE]
-        │         ├── [🔴] SendOrder(Order: "Scatter")
-        │         └── [🔴] WaitSeconds(duration: 5.0)
-        │
-        └── [🟣 SEQUENCE] — Normal Squad Patrol
-             ├── [🟡] Cooldown(duration: 2.0)         ← rate-limit
-             ├── [🔴] ExtractPosition(PatrolPoints → SquadMovePosition, Sequential)
-             ├── [🔴] CalculateFormation(→ FormationPositions,
-             │         Center: SquadMovePosition, Radius: 5.0)
-             └── [🔴] ForEachAgent
-                  └── [🟣 SEQUENCE]
-                       ├── [🔴] SetVariable(target: AgentMoveTarget[agentIndex],
-                       │         value: FormationPositions[agentIndex])
-                       └── [🔴] SendOrder(Order: "MoveToPosition")
-```
-
-### How It Works
-
-1. **PRIORITY** tries the scatter branch first. If `LeaderIndex` = -1 (leader dead), it scatters.
-2. **Normal branch**: every 2 seconds the commander:
-   - Picks the next patrol point
-   - Computes formation positions around that point
-   - For each agent: writes their formation position to `AgentMoveTarget[index]` and sends the `MoveToPosition` order
-3. Squad bindings copy `AgentMoveTarget[index]` → each agent's `targetMovePosition`.
-
----
-
-## Updated Agent Tree
-
-The agent tree needs to check what order it received before deciding what to do.
-
-```
-[ROOT]
-  │
-  └── [🔵 SELECTOR]
-        │
-        ├── [🟣 SEQUENCE] — Attack
-        │    ├── [🟡] CheckOrder(Order: "AttackTarget")
-        │    ├── [🟡] Enemy_Detected(Radius: 20, LessThan)
-        │    ├── [🔴] Enemy_SelectDetectedTarget(Nearest → selectedTarget)
-        │    └── [🔴] Enemy_FireSequence(Target: selectedTarget)
-        │
-        ├── [🟣 SEQUENCE] — Move
-        │    ├── [🟡] CheckOrder(Order: "MoveToPosition")
-        │    └── [🔴] MoveTo(Target: targetMovePosition)
-        │
-        └── [🟣 SEQUENCE] — Scatter / idle
-             ├── [🟡] CheckOrder(Order: "Scatter")
-             └── [🔴] WaitSeconds(duration: 3.0)
-```
-
-Each branch checks the order. If it matches, the branch runs. If not, SELECTOR falls through.
+Add any custom bindings needed (e.g. `AgentMoveTarget` Vector3, SquadData on commander side → `targetMovePosition` Vector3 on agent side).
 
 ---
 
@@ -204,8 +82,6 @@ Each branch checks the order. If it matches, the branch runs. If not, SELECTOR f
 - Use `LogVariable` to debug what orders agents are receiving.
 - `agentIndex` inside `ForEachAgent` is the loop variable — use it to index into `FormationPositions`.
 - If agents don't move, check bindings: both direction and variable name must match on squad, commander, and agent sides.
-- Set up a `SquadManager` on a GameObject with the commander and agent prefabs assigned — it handles all the wiring.
-- Monitor `LeaderIndex` to test leader death → scatter.
 
 ## Extension Ideas
 

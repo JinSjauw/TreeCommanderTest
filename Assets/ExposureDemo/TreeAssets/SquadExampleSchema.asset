@@ -17,7 +17,7 @@ MonoBehaviour:
   - name: ARTILLERY
     colour: {r: 1, g: 0, b: 0, a: 1}
     maxAmount: 1
-    isFallback: 0
+    isFallback: 1
     prefab: {fileID: 0}
   - name: FLANKER
     colour: {r: 0.8396226, g: 0, b: 0.5984322, a: 1}
@@ -27,7 +27,7 @@ MonoBehaviour:
   - name: ASSAULT
     colour: {r: 1, g: 0.85521466, b: 0.33490568, a: 1}
     maxAmount: 2
-    isFallback: 0
+    isFallback: 1
     prefab: {fileID: 0}
   bindingGroups:
   - treeAsset: {fileID: 11400000, guid: f925db3be8ac89e41afebf7f2ee89cf2, type: 2}
@@ -80,6 +80,18 @@ MonoBehaviour:
       direction: 0
     - treeVariableName: EnagagePosition
       squadVariableName: AgentsPosition
+      direction: 0
+  - treeAsset: {fileID: 11400000, guid: ac1b6ceed17dc304abdf6ef3477a35f8, type: 2}
+    treeAssetGuid: ac1b6ceed17dc304abdf6ef3477a35f8
+    bindings:
+    - treeVariableName: AgentAssignedRole
+      squadVariableName: AgentRoles
+      direction: 0
+    - treeVariableName: AgentReceivedOrder
+      squadVariableName: AgentOrders
+      direction: 1
+    - treeVariableName: AgentStatus
+      squadVariableName: AgentStatus
       direction: 0
 --- !u!114 &818047124686629
 MonoBehaviour:
