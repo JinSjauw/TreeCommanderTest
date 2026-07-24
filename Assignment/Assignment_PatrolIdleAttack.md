@@ -21,7 +21,6 @@ The loop runs continuously — patrol → idle → patrol → idle → (interrup
 
 - **Attack or patrol first?** Which branch should the SELECTOR try first each frame?
 - Target selection: `Enemy_FireSequence` needs a `selectedTarget` Transform — use `Enemy_SelectDetectedTarget` (with strategy) to get one.
-- Patrol routing: `ExtractPosition` reads `patrolPointsParent` + a mode (Sequential/Random) and writes a Vector3 to `targetMovePosition`. Then `MoveTo` navigates there.
 - Idle: `WaitSeconds` has a `duration` float — set it to the idle time.
 - The tree loops automatically: when the root's child finishes, the whole tree re-evaluates from the top next frame.
 
