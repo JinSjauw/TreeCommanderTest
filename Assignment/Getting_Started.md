@@ -23,8 +23,6 @@ Create tree assets and related ScriptableObjects in the Project window:
 - `Assets > Create > BehaviourTree` in the menu bar
 - Or **right-click** in the Project window → `Create > BehaviourTree`
 
-![Create menu context menu](Images/GraphContextMenu.png)
-
 Both show the same list of assets you can create:
 
 | Menu Item | Creates | Description |
@@ -229,7 +227,7 @@ On the scene GameObject's `BlackBoard` component Inspector, each variable can be
 
 Unchecking the box clears the override but keeps the value stored — checking it again restores the previous override.
 
-![Blackboard overrides on a scene GameObject](Images/SerializedRef.png)  ![Blackboard overrides detail view](Images/SerializedRef-1.png)
+![Blackboard overrides](Images/SerializedRef-1.png)
 
 Overrides are stored **by variable name**, not by slot index. Renaming a variable in the asset remaps existing overrides automatically. Adding or removing other variables does not affect them.
 
