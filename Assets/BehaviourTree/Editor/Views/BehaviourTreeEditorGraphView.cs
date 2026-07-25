@@ -433,14 +433,12 @@ namespace BehaviourTree.Editor
         {
             if (tree == null) return change;
 
-            if (EditorApplication.isPlaying && change.edgesToCreate != null)
+            if (EditorApplication.isPlaying)
             {
-                change.edgesToCreate.RemoveAll(edge =>
-                {
-                    BehaviourNodeView pv = edge.output?.node as BehaviourNodeView;
-                    BehaviourNodeView cv = edge.input?.node as BehaviourNodeView;
-                    return (pv != null && pv.IsReadOnlyProxy) || (cv != null && cv.IsReadOnlyProxy);
-                });
+                // Play mode: the view mirrors the running tree. Block structural edits
+                // entirely so the visual graph and the model cannot desync.
+                change.edgesToCreate?.Clear();
+                change.elementsToRemove?.Clear();
             }
 
             if (change.elementsToRemove != null)
@@ -460,8 +458,6 @@ namespace BehaviourTree.Editor
 
         private void HandleElementRemoval(List<GraphElement> elementsToRemove)
         {
-            if (EditorApplication.isPlaying) return;
-
             for (int i = 0; i < elementsToRemove.Count; i++)
             {
                 if (elementsToRemove[i] is BehaviourNodeView nodeView)
