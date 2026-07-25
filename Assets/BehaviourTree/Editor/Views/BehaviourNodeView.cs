@@ -78,11 +78,7 @@ namespace BehaviourTree.Editor
 
         private void OnNodeClicked(MouseDownEvent evt)
         {
-            if (evt.clickCount == 1)
-            {
-                OnNodeSelected?.Invoke(this);
-            }
-            else if (evt.clickCount == 2 && NodeSO is SubtreeNode subtreeNode && subtreeNode.subTreeAsset != null)
+            if (evt.clickCount == 2 && NodeSO is SubtreeNode subtreeNode && subtreeNode.subTreeAsset != null)
             {
                 Selection.activeObject = subtreeNode.subTreeAsset;
                 evt.StopPropagation();
