@@ -528,7 +528,7 @@ The editor command that scans all `NodeMethod` types and writes the generated fi
 
 **Files:**
 - Create: `Assets/BehaviourTree/Editor/Codegen/BindingAccessorGenerator.cs`
-- Generated (by running it): `Assets/BehaviourTree/Generated/BehaviourTree.Generated.asmdef`, `Assets/BehaviourTree/Generated/GeneratedBindingAccessors.cs`
+- Generated (by running it): `Assets/BehaviourTree/Generated/GeneratedBindingAccessors.cs` — **no asmdef** in that folder: the generated code must reference types from ALL assemblies (NodeMethod types in asmdefs AND gameplay components in Assembly-CSharp), and only Assembly-CSharp auto-references everything
 - Test: `Assets/BehaviourTree/Tests/EditMode/BindingAccessorGeneratorTests.cs`
 
 - [ ] **Step 1: Write the failing test** (file-content level, not a full generation run)
@@ -1176,6 +1176,7 @@ git commit -m "docs: generated binding accessors as production path; Expression.
 - **SharedVar field additions are the staleness vector.** Any new/renamed/retyped public field on a `NodeMethod` without regeneration → fallback warning. The validator + bake hook exist to catch this; consider wiring generation into your pre-commit or bake workflow if it bites often.
 - **Field type change with same name** makes the *generated assembly fail to compile* (e.g. float → int changes what `bb.GetFloat(slot)` can assign to). That's loud, not silent — regenerate and the error disappears. This is intentional: wrong-type generated code should never run.
 - **`RuntimeInitializeOnLoadMethod(SubsystemRegistration)`** re-registers on every play (and on domain reload in-editor when playing). Edit-time tools must call `RegisterAll()` reflectively (the validator does).
+- **No separate assembly for generated code.** `Assets/BehaviourTree/Generated/` deliberately has NO asmdef: `HealthComponent` and similar gameplay types live in Assembly-CSharp, which asmdefs cannot reference. Compiling the generated file into Assembly-CSharp gives it visibility of every type in the project. If you ever move gameplay types into asmdefs, keep them `autoReferenced`.
 - **Generic instantiations in generated code** (`bb.Get<Transform>(slot)`, `bb.Get<MyStruct>(slot)`) are statically compiled — present in the AOT image by construction. This is the core IL2CPP fix.
 - **Tracked bindings without the attribute** silently keep the Expression fallback — when adding a new tracked component type, mark it `[GenerateBindingAccessors]` and regenerate.
 - **Not deleted (yet):** `CompileAccessors`, `CompileTrackedBindingDelegate`, `Expression.Compile` — they remain the editor-iteration bridge. Deletion belongs to the DOTS plan.

@@ -20,23 +20,11 @@ namespace BehaviourTree.EditorTools.Codegen
     {
         public const string OutputFolder = "Assets/BehaviourTree/Generated";
         public const string OutputFile = OutputFolder + "/GeneratedBindingAccessors.cs";
-        public const string AsmdefFile = OutputFolder + "/BehaviourTree.Generated.asmdef";
 
-        private const string AsmdefContent =
-@"{
-    ""name"": ""BehaviourTree.Generated"",
-    ""rootNamespace"": ""BehaviourTree.Generated"",
-    ""references"": [
-        ""BehaviourTree.Core"",
-        ""BehaviourTree.Runtime""
-    ],
-    ""includePlatforms"": [],
-    ""excludePlatforms"": [],
-    ""allowUnsafeCode"": false,
-    ""autoReferenced"": true,
-    ""noEngineReferences"": false
-}
-";
+        // NOTE: deliberately NO asmdef in the output folder. The generated code must
+        // reference types from ALL assemblies (NodeMethod types in asmdefs AND gameplay
+        // components like HealthComponent in Assembly-CSharp) — only Assembly-CSharp
+        // can see everything (it auto-references all asmdefs).
 
         [MenuItem("Behaviour Tree/Generate Binding Accessors")]
         public static void Generate()
@@ -89,8 +77,6 @@ namespace BehaviourTree.EditorTools.Codegen
                                                           b.type.FullName + "." + b.member.Name));
 
             Directory.CreateDirectory(OutputFolder);
-            if (!File.Exists(AsmdefFile))
-                File.WriteAllText(AsmdefFile, AsmdefContent);
 
             string content = BuildFile(methodFields, tracked);
             if (File.Exists(OutputFile) && File.ReadAllText(OutputFile) == content)

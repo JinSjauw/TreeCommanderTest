@@ -18,7 +18,8 @@ namespace BehaviourTree.EditorTools.Codegen
         public static void Validate()
         {
             // Ensure the generated table is populated outside playmode.
-            Type generated = Type.GetType("BehaviourTree.Generated.GeneratedBindingAccessors, BehaviourTree.Generated");
+            // The generated file lives in Assembly-CSharp (no asmdef in the folder).
+            Type generated = Type.GetType("BehaviourTree.Generated.GeneratedBindingAccessors, Assembly-CSharp");
             generated?.GetMethod("RegisterAll")?.Invoke(null, null);
 
             int missing = 0;
