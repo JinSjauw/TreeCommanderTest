@@ -10,6 +10,7 @@ namespace BehaviourTree.Tests
     /// One TestFixture attribute per implementation.
     /// </summary>
     [TestFixture(typeof(ManagedBlackboardStorage))]
+    [TestFixture(typeof(TypedBlackboardStorage))]
     public class BlackboardStorageContractTests<TStorage> where TStorage : IBlackboardStorage, new()
     {
         private enum TestState { Idle = 0, Running = 1 }
