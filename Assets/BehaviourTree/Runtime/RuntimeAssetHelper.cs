@@ -10,6 +10,35 @@ namespace BehaviourTree.Runtime
     /// </summary>
     public static class RuntimeAssetHelper
     {
+        /// <summary>Resources-relative folder (no leading slash) where build-baked trees live.</summary>
+        public const string BakedTreesResourcesPath = "BakedTrees";
+
+        /// <summary>
+        /// Single bake core shared by editor autobake (transient) and disk baking for builds.
+        /// Fills all serialized fields including sourceTreeGuid — the build-time matching key.
+        /// </summary>
+        public static RuntimeBehaviourTreeAsset BakeInto(
+            BehaviourTreeAssetBase authoringAsset, string sourceGuid, bool transient)
+        {
+            RuntimeBehaviourTreeAsset baked = ScriptableObject.CreateInstance<RuntimeBehaviourTreeAsset>();
+            baked.name = authoringAsset.DisplayName + "_Runtime";
+            if (transient)
+                baked.hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
+#if UNITY_EDITOR
+            baked.sourceTree = authoringAsset;
+#endif
+            baked.sourceTreeGuid = sourceGuid;
+            baked.blackboardDefinition = TreeBaker.BakeTree(
+                authoringAsset.Root, authoringAsset,
+                ref baked.runtimeNodeData,
+                ref baked.runtimeFieldData,
+                ref baked.fieldTypeNames,
+                ref baked.boxedConstants,
+                ref baked.runtimeNodeGuids,
+                out baked.maxTreeDepth);
+            return baked;
+        }
+
         /// <summary>
         /// Returns a ready-to-use RuntimeBehaviourTreeAsset.
         /// If <paramref name="existing"/> is null, bakes from <paramref name="authoringAsset"/>

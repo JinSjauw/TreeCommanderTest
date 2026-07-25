@@ -484,26 +484,7 @@ public class BehaviourTreeEditor : EditorWindow
         // accessors so the developer regenerates (menu) before the next build.
         GeneratedAccessorValidator.Validate();
 
-        RuntimeBehaviourTreeAsset runtimeAsset = CreateInstance<RuntimeBehaviourTreeAsset>();
-        runtimeAsset.name = currentTree.name + "_Runtime";
-        runtimeAsset.sourceTree = currentTree;
-
-        runtimeAsset.blackboardDefinition = TreeBaker.BakeTree(currentTree.root, currentTree,
-        ref runtimeAsset.runtimeNodeData,
-        ref runtimeAsset.runtimeFieldData,
-        ref runtimeAsset.fieldTypeNames,
-        ref runtimeAsset.boxedConstants,
-        ref runtimeAsset.runtimeNodeGuids,
-        out runtimeAsset.maxTreeDepth);
-
-        string assetPath = $"Assets/{runtimeAsset.name}.asset";
-        AssetDatabase.CreateAsset(runtimeAsset, assetPath);
-        if (runtimeAsset.blackboardDefinition != null)
-        {
-            runtimeAsset.blackboardDefinition.name = runtimeAsset.name + "_BB_Definition";
-            AssetDatabase.AddObjectToAsset(runtimeAsset.blackboardDefinition, runtimeAsset);
-        }
-        AssetDatabase.SaveAssets();
+        TreeBakeUtility.BakeToDisk(currentTree);
     }
 
     private bool selectionChangePending;
