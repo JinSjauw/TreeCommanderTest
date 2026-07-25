@@ -583,7 +583,10 @@ public class BehaviourTreeEditor : EditorWindow
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Error populating view: {ex.Message}");
+                Debug.LogException(ex);
+                currentTree = null;
+                currentBlackboardDef = null;
+                treeGraphView.ClearView();
             }
         }
     }
