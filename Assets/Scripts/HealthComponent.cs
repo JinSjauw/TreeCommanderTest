@@ -1,7 +1,9 @@
 using System;
+using BehaviourTree.Core;
 using UnityEngine;
 
 [RequireComponent(typeof(DeathHandler))]
+[GenerateBindingAccessors] // tracked binding on `health` gets a generated typed push accessor
 public class HealthComponent : MonoBehaviour
 {
     //[SerializeField] private UIEvents uiEvents;

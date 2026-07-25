@@ -244,6 +244,15 @@ namespace BehaviourTree.Runtime
                     ? binding.cachedPropertyInfo.PropertyType
                     : binding.cachedFieldInfo.FieldType;
 
+                // Generated accessor wins (AOT-safe static code, no Expression at all).
+                if (TrackedAccessorRegistry.TryGet(comp.GetType(), binding.memberName, memberType,
+                        out TrackedAccessorRegistry.PushAccessor generatedPush))
+                {
+                    Component generatedComp = comp;
+                    binding.typedPushDelegate = (bb, slot) => generatedPush(generatedComp, bb, slot);
+                    return;
+                }
+
                 MethodInfo typedSetter = TypedAccessorMap.GetSetter(memberType);
                 if (typedSetter != null)
                 {
