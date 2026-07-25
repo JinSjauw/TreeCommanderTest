@@ -53,7 +53,7 @@ namespace BehaviourTree.EditorTools.Codegen
             var sb = new StringBuilder(256);
             sb.Append("            R(typeof(").Append(FormatTypeName(methodType)).Append("), \"")
               .Append(field.Name).Append("\", typeof(").Append(fieldTypeName).Append("),\n");
-            sb.Append("                (m, bb, slot) => ").Append(readBody).Append('\n');
+            sb.Append("                (m, bb, slot) => ").Append(readBody).Append(",\n");
             sb.Append("                (m, bb, slot) => ").Append(writeBody).Append(");\n");
             return sb.ToString();
         }
