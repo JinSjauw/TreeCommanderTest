@@ -161,7 +161,12 @@ namespace BehaviourTree.Runtime
 
         // ── Internal ───────────────────────────────────────────────
 
-        internal static FieldBinding[] CreateBindings(Type methodType)
+        /// <summary>
+        /// Builds the binding descriptors for all public instance fields of a method
+        /// type. Used by the registry cache, the runtime deserializer, and the
+        /// editor-side accessor generator (must stay the single source of field selection).
+        /// </summary>
+        public static FieldBinding[] CreateBindings(Type methodType)
         {
             FieldInfo[] fields = methodType.GetFields(BindingFlags.Public | BindingFlags.Instance);
             List<FieldBinding> list = new List<FieldBinding>(fields.Length);

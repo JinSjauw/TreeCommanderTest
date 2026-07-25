@@ -48,8 +48,38 @@ namespace BehaviourTree.Core
         /// <summary>Compiled delegate for zero-allocation field write (null → fall back to reflection).</summary>
         private Action<NodeMethod, IBlackBoardAccess> writeDelegate;
 
-        /// <summary>True if CompileAccessors ran successfully and both delegates are ready.</summary>
-        public bool IsCompiled => readDelegate != null && writeDelegate != null;
+        /// <summary>True once a read delegate exists (write delegate is output-only).</summary>
+        public bool IsCompiled => readDelegate != null;
+
+        /// <summary>
+        /// Production bind path: use the build-time-generated accessor when one is
+        /// registered for (declaringType, field) with a matching field type;
+        /// otherwise fall back to Expression.Compile (editor iteration).
+        /// </summary>
+        public void BindAccessors(Type declaringType)
+        {
+            if (bbSlotIndex < 0 || fieldInfo == null || skipAutoResolve) return;
+
+            if (GeneratedAccessorRegistry.TryGet(declaringType, fieldInfo,
+                    out GeneratedAccessorRegistry.ReadAccessor read,
+                    out GeneratedAccessorRegistry.WriteAccessor write))
+            {
+                int slot = bbSlotIndex;
+                readDelegate = (m, bb) => read(m, bb, slot);
+                if (isOutput && write != null)
+                    writeDelegate = (m, bb) => write(m, bb, slot);
+                return;
+            }
+
+#if UNITY_EDITOR
+            UnityEngine.Debug.LogWarning(
+                $"[FieldBinding] No generated accessor for {declaringType.Name}.{fieldInfo.Name} " +
+                "(or stale field type) — falling back to Expression.Compile. " +
+                "Regenerate via 'Behaviour Tree/Generate Binding Accessors'.");
+#endif
+            CompileAccessors(declaringType);
+        }
+
         public void CompileAccessors(Type declaringType)
         {
             if (bbSlotIndex < 0 || fieldInfo == null || skipAutoResolve) return;

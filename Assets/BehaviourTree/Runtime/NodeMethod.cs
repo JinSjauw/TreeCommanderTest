@@ -120,7 +120,7 @@ namespace BehaviourTree.Core
                 else
                 {
                     binding.bbSlotIndex = fd.value;
-                    binding.CompileAccessors(GetType());
+                    binding.BindAccessors(GetType());
                 }
 
                 fieldIndex++;
