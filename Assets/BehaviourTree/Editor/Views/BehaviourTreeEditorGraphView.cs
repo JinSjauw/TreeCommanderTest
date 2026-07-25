@@ -161,11 +161,11 @@ namespace BehaviourTree.Editor
             graphTitleLabel = titleRow.Q<TextField>("GraphTitleTextField");
             runnerDropdown = titleRow.Q<DropdownField>("RunnerDropdown");
 
-            // Style the inner input element of the text field
-            graphTitleLabel.ClearClassList();
+            // Keep Unity's built-in classes intact; custom styling hooks via element names
+            // (selectors #GraphTitleTextField / #GraphTitleInput in BehaviourTreeEditor.uss).
             VisualElement input = graphTitleLabel.Q<VisualElement>("unity-text-input");
-            input.name = "GraphTitleInput";
-            input.ClearClassList();
+            if (input != null)
+                input.name = "GraphTitleInput";
 
             graphTitleLabel.RegisterValueChangedCallback(OnGraphTitleChanged);
 
