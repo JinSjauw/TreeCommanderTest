@@ -168,20 +168,16 @@ namespace BehaviourTree.Runtime
 
                 if (agentOffset >= 0)
                 {
-                    // Per-agent copy: offset only the squad-side slot
+                    // Per-agent copy: offset only the squad-side slot.
+                    // Count-1 typed copy — no boxing on value-type slots.
                     int offset = (stride > 1 && agentOffset < stride) ? agentOffset : 0;
-                    int actualSrc = srcSlot + offset;
-                    object value = blackBoard.GetBoxedRaw(actualSrc);
-                    treeBB.SetBoxedRaw(dstSlot, value);
-                }
-                else if (stride > 1)
-                {
-                    // Commander sync: copy all stride slots (both sides have stride > 1)
-                    treeBB.CopySlotsRawFrom(blackBoard, srcSlot, dstSlot, stride);
+                    treeBB.CopySlotsRawFrom(blackBoard, srcSlot + offset, dstSlot, 1);
                 }
                 else
                 {
-                    treeBB.SetBoxedRaw(dstSlot, blackBoard.GetBoxedRaw(srcSlot));
+                    // Commander sync: typed memmove (stride 1 for scalars, full
+                    // stride for per-agent data — both sides share the layout).
+                    treeBB.CopySlotsRawFrom(blackBoard, srcSlot, dstSlot, stride);
                 }
             }
         }
@@ -199,21 +195,16 @@ namespace BehaviourTree.Runtime
 
                 if (agentOffset >= 0)
                 {
-                    // Per-agent copy: offset only the squad-side slot
+                    // Per-agent copy: offset only the squad-side slot.
+                    // Count-1 typed copy — no boxing on value-type slots.
                     int offset = (stride > 1 && agentOffset < stride) ? agentOffset : 0;
-                    int actualDst = dstSlot + offset;
-                    object srcValue = treeBB.GetBoxedRaw(srcSlot);
-
-                    blackBoard.SetBoxedRaw(actualDst, srcValue);
-                }
-                else if (stride > 1)
-                {
-                    // Commander sync: copy all stride slots (both sides have stride > 1)
-                    blackBoard.CopySlotsRawFrom(treeBB, srcSlot, dstSlot, stride);
+                    blackBoard.CopySlotsRawFrom(treeBB, srcSlot, dstSlot + offset, 1);
                 }
                 else
                 {
-                    blackBoard.SetBoxedRaw(dstSlot, treeBB.GetBoxedRaw(srcSlot));
+                    // Commander sync: typed memmove (stride 1 for scalars, full
+                    // stride for per-agent data — both sides share the layout).
+                    blackBoard.CopySlotsRawFrom(treeBB, srcSlot, dstSlot, stride);
                 }
             }
         }
