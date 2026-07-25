@@ -51,6 +51,23 @@ namespace BehaviourTree.Editor
         private DropdownField runnerDropdown;
         private List<BehaviourTreeRunnerBase> availableRunners = new List<BehaviourTreeRunnerBase>();
         private bool refreshingRunnerDropdown;
+        private bool eventsSubscribed;
+
+        private void SubscribeEvents()
+        {
+            if (eventsSubscribed) return;
+            graphViewChanged += OnGraphViewChanged;
+            Undo.undoRedoPerformed += OnUndoRedo;
+            eventsSubscribed = true;
+        }
+
+        private void UnsubscribeEvents()
+        {
+            if (!eventsSubscribed) return;
+            graphViewChanged -= OnGraphViewChanged;
+            Undo.undoRedoPerformed -= OnUndoRedo;
+            eventsSubscribed = false;
+        }
 
         public bool HasTree => tree != null;
         public bool DebugProxiesAreSetup
@@ -87,9 +104,7 @@ namespace BehaviourTree.Editor
             unserializeAndPaste = UnSerializeAndPaste;
 
             //Listen for graph changes to trigger auto-save/compile
-            graphViewChanged += OnGraphViewChanged;
-
-            Undo.undoRedoPerformed += OnUndoRedo;
+            SubscribeEvents();
         }
 
         private void UnSerializeAndPaste(string operationName, string data)
@@ -280,26 +295,33 @@ namespace BehaviourTree.Editor
             if (backgroundTint != null)
                 backgroundTint.style.backgroundColor = GraphEditorTheme.instance.graphBgAgent;
 
-            graphViewChanged -= OnGraphViewChanged;
-            Undo.undoRedoPerformed -= OnUndoRedo;
+            UnsubscribeEvents();
             try
             {
+                CleanupGraphElements();
                 DeleteElements(graphElements);
                 nodeViewDict.Clear();
             }
             finally
             {
-                graphViewChanged += OnGraphViewChanged;
-                Undo.undoRedoPerformed += OnUndoRedo;
+                SubscribeEvents();
             }
 
             RefreshRunnerDropdown();
         }
 
+        private void CleanupGraphElements()
+        {
+            foreach (GraphElement element in graphElements.ToList())
+            {
+                if (element is BehaviourNodeView nodeView) nodeView.Cleanup();
+                else if (element is GraphNote note) note.Unbind();
+            }
+        }
+
         public void Dispose()
         {
-            graphViewChanged -= OnGraphViewChanged;
-            Undo.undoRedoPerformed -= OnUndoRedo;
+            UnsubscribeEvents();
 
             if (graphTitleLabel != null)
                 graphTitleLabel.UnregisterValueChangedCallback(OnGraphTitleChanged);
@@ -896,14 +918,15 @@ namespace BehaviourTree.Editor
         private void ClearAndRebuildViews()
         {
             debugProxiesAreSetup = false;
-            graphViewChanged -= OnGraphViewChanged;
+            UnsubscribeEvents();
             try
             {
+                CleanupGraphElements();
                 DeleteElements(graphElements);
                 nodeViewDict.Clear();
                 runtimeDebugManager.ClearCaches();
             }
-            finally { graphViewChanged += OnGraphViewChanged; }
+            finally { SubscribeEvents(); }
         }
 
         private void EnsureRootNodeExists()
