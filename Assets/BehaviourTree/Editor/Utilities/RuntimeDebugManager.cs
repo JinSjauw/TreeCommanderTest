@@ -178,19 +178,16 @@ namespace BehaviourTree.Editor
             }
 
             List<string> toRemove = new List<string>();
-            foreach (BehaviourNodeView proxy in proxyNodeViews.Values)
+            foreach (KeyValuePair<string, BehaviourNodeView> kvp in proxyNodeViews)
             {
-                if (needed.Contains(proxy.Guid)) continue;
-                toRemove.Add(proxy.Guid);
+                if (!needed.Contains(kvp.Key))
+                    toRemove.Add(kvp.Key);
             }
-            if (toRemove.Count > 0)
+            for (int i = 0; i < toRemove.Count; i++)
             {
-                for (int i = 0; i < toRemove.Count; i++)
-                {
-                    string guid = toRemove[i];
-                    if (proxyNodeViews.TryGetValue(guid, out BehaviourNodeView view)) view.RemoveFromHierarchy();
-                    proxyNodeViews.Remove(guid);
-                }
+                if (proxyNodeViews.TryGetValue(toRemove[i], out BehaviourNodeView view))
+                    view?.RemoveFromHierarchy();
+                proxyNodeViews.Remove(toRemove[i]);
             }
         }
 
