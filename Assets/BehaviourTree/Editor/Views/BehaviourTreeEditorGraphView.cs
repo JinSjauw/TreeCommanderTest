@@ -741,11 +741,17 @@ namespace BehaviourTree.Editor
                 return;
             }
 
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             InitTree(tree);
             ApplyGridTint(tree);
             ClearAndRebuildViews();
             EnsureRootNodeExists();
             CleanupAndCreateViews();
+            if (BehaviourTreeEditor.ProfileTreeSwitch)
+            {
+                Debug.Log($"[TreeSwitch] Populate.CreateViews({tree.nodesList.Count} nodes): {sw.ElapsedMilliseconds} ms");
+                sw.Restart();
+            }
             CleanupAndWireEdges();
 
             // Initialize child order number labels
@@ -775,6 +781,9 @@ namespace BehaviourTree.Editor
                     RefreshAllNodeIcons();
                 }
             }
+
+            if (BehaviourTreeEditor.ProfileTreeSwitch)
+                Debug.Log($"[TreeSwitch] Populate.EdgesIconsNotes: {sw.ElapsedMilliseconds} ms");
 
             UnregisterCallback<GeometryChangedEvent>(OnGeometryChangedForFrameAll);
             RegisterCallback<GeometryChangedEvent>(OnGeometryChangedForFrameAll);

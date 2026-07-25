@@ -37,6 +37,9 @@ public class BehaviourTreeEditor : EditorWindow
     public static bool selectionIsLocked;
     public static int lockBypassDepth;
 
+    /// <summary>Temporary: log tree-switch phase timings to the Console.</summary>
+    internal const bool ProfileTreeSwitch = true;
+
     [MenuItem("BehaviourTree/Open Behaviour Tree Graph", priority = 29)]
     public static void OpenWindow()
     {
@@ -536,9 +539,12 @@ public class BehaviourTreeEditor : EditorWindow
         // Refresh tracked variables view — the binding group depends on currentTree
         if (selectedAsset != null)
         {
+            var swTabs = System.Diagnostics.Stopwatch.StartNew();
             trackedVariablesView?.Refresh(currentRunner);
             squadTabView?.Refresh(currentTree);
             commanderTabView?.Refresh(currentTree);
+            swTabs.Stop();
+            if (ProfileTreeSwitch) Debug.Log($"[TreeSwitch] Tab refreshes: {swTabs.ElapsedMilliseconds} ms");
         }
 
         // Null check for tree asset before using it
@@ -572,14 +578,20 @@ public class BehaviourTreeEditor : EditorWindow
             {
                 inspectorView?.ClearView();
                 treeGraphView.OnNodeSelected = OnNodeSelectionChanged;
+                var swPopulate = System.Diagnostics.Stopwatch.StartNew();
                 treeGraphView.PopulateView(currentTree);
+                swPopulate.Stop();
+                if (ProfileTreeSwitch) Debug.Log($"[TreeSwitch] PopulateView: {swPopulate.ElapsedMilliseconds} ms");
                 RecordTreeOpened(currentTree);
                 if (blackBoardView != null)
                     blackBoardView.IsSquadContext = currentTree is CommanderTreeAsset;
                 BlackboardDefinition bbDef = currentTree is CommanderTreeAsset
                     ? currentTree.CommanderBlackboardDefinition
                     : currentTree.blackboardDefinition;
+                var swBb = System.Diagnostics.Stopwatch.StartNew();
                 blackBoardView.BuildBlackboardView(bbDef);
+                swBb.Stop();
+                if (ProfileTreeSwitch) Debug.Log($"[TreeSwitch] BuildBlackboardView: {swBb.ElapsedMilliseconds} ms");
             }
             catch (Exception ex)
             {
