@@ -59,5 +59,34 @@ namespace BehaviourTree.Tests
             StringAssert.Contains("bb.Set(slot,", code);
             StringAssert.Contains(".EmitterStubMethod)m).label", code);
         }
+
+        [Test]
+        public void FloatField_ExactOutput_IsValidArgumentList()
+        {
+            // Pins the exact 3-line shape: expression lambdas WITHOUT trailing
+            // semicolons, comma-separated inside the R(...) argument list.
+            string typeName = AccessorEmitter.FormatTypeName(typeof(EmitterStubMethod));
+            string expected =
+                $"            R(typeof({typeName}), \"speed\", typeof(float),\n" +
+                $"                (m, bb, slot) => (({typeName})m).speed = bb.GetFloat(slot),\n" +
+                $"                (m, bb, slot) => bb.SetFloat(slot, (({typeName})m).speed));\n";
+
+            Assert.AreEqual(expected, Emit(nameof(EmitterStubMethod.speed)));
+        }
+
+        private class TrackedStubComp : MonoBehaviour { public float health; }
+
+        [Test]
+        public void TrackedMember_ExactOutput_IsValidArgumentList()
+        {
+            string compName = AccessorEmitter.FormatTypeName(typeof(TrackedStubComp));
+            string expected =
+                $"            TR(typeof({compName}), \"health\", typeof(float),\n" +
+                $"                (c, bb, slot) => bb.SetFloat(slot, (({compName})c).health));\n";
+
+            Assert.AreEqual(expected,
+                AccessorEmitter.EmitTrackedRegistration(typeof(TrackedStubComp),
+                    typeof(TrackedStubComp).GetField(nameof(TrackedStubComp.health))));
+        }
     }
 }
