@@ -139,137 +139,18 @@ namespace BehaviourTree.Editor
         private void BuildFieldEntries(string selectedMethodName, bool methodChanged)
         {
             NodeMethod temp = MethodRegistry.CreateInstance(selectedMethodName);
-            DynamicParamDescriptor[] descriptors = temp?.GetDynamicParamDescriptors();
-            if (descriptors != null)
+            DynamicParamDescriptor[] descriptors = NodeParamSchema.GetForMethod(temp);
+
+            if (descriptors == null || descriptors.Length == 0)
             {
-                BuildDynamicFieldEntries(descriptors, methodChanged);
-                return;
-            }
-            // ... legacy ParamInfo path continues unchanged below (deleted in Phase 3)
-
-            List<ParamInfo> paramInfoList = null;
-            if (!string.IsNullOrEmpty(selectedMethodName))
-                paramInfoList = MethodMetadataCache.GetParamsForMethod(selectedMethodName);
-
-            if (paramInfoList != null && paramInfoList.Count > 0)
-            {
-                if(methodChanged)
-                {
-                    ResizeFieldEntries(paramInfoList);
-                }
-
-                for (int i = 0; i < paramInfoList.Count; i++)
-                {
-                    ParamInfo info = paramInfoList[i];
-                    SerializedProperty entryProp = fieldEntriesProp.GetArrayElementAtIndex(i);
-                    SerializedProperty fieldNameProp = entryProp.FindPropertyRelative("fieldName");
-                    SerializedProperty isVariableProp = entryProp.FindPropertyRelative("isVariable");
-                    SerializedProperty isArrayProp = entryProp.FindPropertyRelative("isArray");
-                    SerializedProperty isToggleVariableProp = entryProp.FindPropertyRelative("isToggleVariable");
-                    SerializedProperty variableNameProp = entryProp.FindPropertyRelative("variableName");
-                    SerializedProperty fieldTypeNameProp = entryProp.FindPropertyRelative("fieldTypeName");
-
-                    // Set static metadata
-                    fieldNameProp.stringValue = info.fieldName;
-                    fieldTypeNameProp.stringValue = info.fieldType?.AssemblyQualifiedName ?? string.Empty;
-                    isArrayProp.boolValue = info.isArray;
-
-                    if (methodChanged && info.isOrderDropdown)
-                    {
-                        SerializedProperty isOrderProp = entryProp.FindPropertyRelative("isOrderConstant");
-                        if (isOrderProp != null) isOrderProp.boolValue = true;
-                    }
-
-                    if (info.isHidden)
-                    {
-                        // Auto-fill variable binding by convention — no UI rendered
-                        if (methodChanged)
-                        {
-                            isVariableProp.boolValue = true;
-                            variableNameProp.stringValue = info.autoVariableName;
-                        }
-                        continue;
-                    }
-
-                    EditorGUILayout.BeginVertical("box");
-
-                    string typeLabel;
-                    string colorHex = "lightblue";
-                    if(info.fieldType != null && info.fieldType.IsEnum)
-                    {
-                        typeLabel = $"Enum( {TypeDisplayRegistry.instance.GetDisplayName(info.fieldType)} )";
-                    }
-                    else if (info.fieldType != null)
-                    {
-                        typeLabel = TypeDisplayRegistry.instance.GetDisplayName(info.fieldType);
-                        if (info.isArray) typeLabel += "[]";
-                        colorHex = TypeDisplayRegistry.instance.GetRichColorHex(info.fieldType);
-                    }
-                    else
-                    {
-                        typeLabel = "Unknown";
-                    }
-                    
-                    string displayName = char.ToUpper(info.fieldName[0]) + info.fieldName.Substring(1);
-                    EditorGUILayout.LabelField($"<b>{displayName}</b> : <color=#{colorHex}>{typeLabel}</color>", RichTextLabelStyle);
-
-                    if (!info.isToggleVariable)
-                        isVariableProp.boolValue = info.isVariable || info.isArray;
-
-                    // Hide customTickValue when useCustomTick is false (works for both legacy and new)
-                    if (info.fieldName == "customTickValue" && i > 0)
-                    {
-                        SerializedProperty useCustomEntry = fieldEntriesProp.GetArrayElementAtIndex(i - 1);
-                        if (!useCustomEntry.FindPropertyRelative("boolValue").boolValue)
-                        {
-                            EditorGUILayout.EndVertical();
-                            continue;
-                        }
-                    }
-
-                    EditorGUILayout.BeginHorizontal();
-
-                    bool drawVariableField = info.isToggleVariable ? isToggleVariableProp.boolValue : isVariableProp.boolValue;
-
-                    if (drawVariableField)
-                    {
-                        DrawVariableDropdown(variableNameProp, info.fieldType, info.isArray);
-                    }
-                    else
-                    {
-                        DrawConstantField(entryProp, info);
-                    }
-
-                    GUILayout.FlexibleSpace();
-
-                    if (info.isToggleVariable)
-                    {
-                        string toggleLabel = drawVariableField ? "C" : "V";
-                        string toggleTooltip = drawVariableField ? "Switch to constant" : "Switch to variable";
-                        if (GUILayout.Button(new GUIContent(toggleLabel, toggleTooltip), GUILayout.Width(SmallButtonWidth), GUILayout.Height(EditorGUIUtility.singleLineHeight)))
-                        {
-                            bool newValue = !drawVariableField;
-                            entryProp.FindPropertyRelative("isVariable").boolValue = newValue;
-                            entryProp.FindPropertyRelative("isToggleVariable").boolValue = newValue;
-                            nodeVisualsChangedThisFrame = true;
-                        }
-                    }
-
-                    EditorGUILayout.EndHorizontal();
-
-                    EditorGUILayout.EndVertical();
-                }
-            }
-            else
-            {
-                // No metadata; clear entries
                 fieldEntriesProp.ClearArray();
-
-                if(target is CompositeNode) return;
-
+                if (target is CompositeNode) return;
                 string methodDesc = !string.IsNullOrEmpty(selectedMethodName) ? selectedMethodName : "(none)";
                 EditorGUILayout.HelpBox($"No schema found for method '{methodDesc}'.", MessageType.Info);
+                return;
             }
+
+            BuildDynamicFieldEntries(descriptors, methodChanged);
         }
 
         private void ResizeFieldEntries(List<ParamInfo> paramInfoList)
@@ -447,10 +328,21 @@ namespace BehaviourTree.Editor
                     entry.FindPropertyRelative("isVariable").boolValue =
                         desc.kind == DynamicParamKind.Variable;
                 }
+
+                // Hidden params: auto-bind by convention, no UI rendered
+                for (int i = 0; i < syncCount; i++)
+                {
+                    DynamicParamDescriptor desc = descriptors[i];
+                    if (!desc.isHidden) continue;
+                    SerializedProperty entry = fieldEntriesProp.GetArrayElementAtIndex(i);
+                    entry.FindPropertyRelative("isVariable").boolValue = true;
+                    entry.FindPropertyRelative("variableName").stringValue = desc.autoVariableName;
+                }
             }
 
             // Sync linked entry types from their source indices
             SyncLinkedEntryTypes();
+            EnforceProjectedMetadata(descriptors);
 
             if (fieldEntriesProp.arraySize < realCount)
                 return;
@@ -464,6 +356,17 @@ namespace BehaviourTree.Editor
                 SerializedProperty entry = fieldEntriesProp.GetArrayElementAtIndex(i);
                 Type paramType = ResolveEntryType(i);
                 bool entryIsArray = entry.FindPropertyRelative("isArray").boolValue;
+
+                // Hidden params render nothing (auto-bound in resize step)
+                if (desc.isHidden) continue;
+
+                // Visibility gated on another entry's bool (e.g. customTickValue)
+                if (desc.visibilityDependsOnIndex is int depIndex &&
+                    depIndex >= 0 && depIndex < fieldEntriesProp.arraySize &&
+                    !fieldEntriesProp.GetArrayElementAtIndex(depIndex).FindPropertyRelative("boolValue").boolValue)
+                {
+                    continue;
+                }
 
                 bool hasTitle = !string.IsNullOrEmpty(desc.titleLabel);
 
@@ -495,6 +398,8 @@ namespace BehaviourTree.Editor
                         DrawToggleParamRow(entry, desc, paramType, entryIsArray, hasTitle);
                         break;
                     case DynamicParamKind.Constant:
+                        if (desc.constantEditor == ConstantEditorHint.RoleDropdown) { DrawRoleDropdown(entry); break; }
+                        if (desc.constantEditor == ConstantEditorHint.OrderDropdown) { DrawOrderDropdown(entry); break; }
                         EditorGUILayout.BeginHorizontal();
                         EditorGUILayout.LabelField(desc.label, GUILayout.Width(FieldLabelWidth));
                         GUILayout.FlexibleSpace();
@@ -514,6 +419,43 @@ namespace BehaviourTree.Editor
             EditorGUILayout.EndVertical();
         }
 
+        /// <summary>
+        /// Attribute-projected descriptors (fieldName != null) carry static metadata that
+        /// overrides the serialized entry every repaint — same guarantee the legacy
+        /// ParamInfo path gave. Hand-authored dynamic descriptors skip this (user edits win).
+        /// </summary>
+        private void EnforceProjectedMetadata(DynamicParamDescriptor[] descriptors)
+        {
+            for (int i = 0; i < descriptors.Length && i < fieldEntriesProp.arraySize; i++)
+            {
+                DynamicParamDescriptor desc = descriptors[i];
+                SerializedProperty entry = fieldEntriesProp.GetArrayElementAtIndex(i);
+
+                if (desc.fieldName != null)
+                {
+                    entry.FindPropertyRelative("fieldName").stringValue = desc.fieldName;
+                    entry.FindPropertyRelative("fieldTypeName").stringValue =
+                        desc.allowedTypes != null && desc.allowedTypes.Length > 0
+                            ? desc.allowedTypes[0].AssemblyQualifiedName : string.Empty;
+                }
+
+                // Unified isVariable rule: Variable => always variable, Constant => never,
+                // Toggle/SOConstant preserve the user's C/V/SO choice.
+                switch (desc.kind)
+                {
+                    case DynamicParamKind.Variable:
+                        entry.FindPropertyRelative("isVariable").boolValue = true;
+                        break;
+                    case DynamicParamKind.Constant:
+                        entry.FindPropertyRelative("isVariable").boolValue = false;
+                        break;
+                }
+
+                if (desc.isArray)
+                    entry.FindPropertyRelative("isArray").boolValue = true;
+            }
+        }
+
         private Type ResolveEntryType(int entryIndex)
         {
             if (entryIndex >= fieldEntriesProp.arraySize) return null;
@@ -526,7 +468,8 @@ namespace BehaviourTree.Editor
         /// <summary>Sets initial defaults on a newly created entry from its descriptor.</summary>
         private static void InitNewEntryFromDescriptor(SerializedProperty entry, DynamicParamDescriptor desc)
         {
-            entry.FindPropertyRelative("fieldName").stringValue = desc.label.ToLowerInvariant().Replace(" ", "");
+            entry.FindPropertyRelative("fieldName").stringValue =
+                desc.fieldName ?? desc.label.ToLowerInvariant().Replace(" ", "");
             entry.FindPropertyRelative("isVariable").boolValue =
                 desc.kind == DynamicParamKind.Variable || desc.kind == DynamicParamKind.Toggle;
             entry.FindPropertyRelative("isConfigConstant").boolValue =
@@ -634,6 +577,14 @@ namespace BehaviourTree.Editor
             if (isVarProp.boolValue)
             {
                 DrawVariableDropdownWithSquadFilter(variableNameProp, paramType, isArray);
+            }
+            else if (desc.constantEditor == ConstantEditorHint.RoleDropdown)
+            {
+                DrawRoleDropdown(entry);
+            }
+            else if (desc.constantEditor == ConstantEditorHint.OrderDropdown)
+            {
+                DrawOrderDropdown(entry);
             }
             else
             {
