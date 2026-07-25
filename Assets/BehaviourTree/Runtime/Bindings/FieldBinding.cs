@@ -64,22 +64,54 @@ namespace BehaviourTree.Core
                 MemberExpression fieldExpr = Expression.Field(castInst, fieldInfo);
                 ConstantExpression slotConst = Expression.Constant(bbSlotIndex);
 
-                MethodInfo getMethod = typeof(IBlackBoardAccess).GetMethod("Get").MakeGenericMethod(fieldType);
-                MethodCallExpression getCall = Expression.Call(bbParam, getMethod, slotConst);
-                BinaryExpression readBody = Expression.Assign(fieldExpr, getCall);
-                readDelegate = Expression.Lambda<Action<NodeMethod, IBlackBoardAccess>>(readBody, instParam, bbParam).Compile();
+                Expression readValue = BuildReadExpression(bbParam, slotConst, fieldType);
+                readDelegate = Expression.Lambda<Action<NodeMethod, IBlackBoardAccess>>(
+                    Expression.Assign(fieldExpr, readValue), instParam, bbParam).Compile();
 
                 if (isOutput)
                 {
-                    MethodInfo setMethod = typeof(IBlackBoardAccess).GetMethod("Set").MakeGenericMethod(fieldType);
-                    MethodCallExpression setCall = Expression.Call(bbParam, setMethod, slotConst, fieldExpr);
-                    writeDelegate = Expression.Lambda<Action<NodeMethod, IBlackBoardAccess>>(setCall, instParam, bbParam).Compile();
+                    MethodCallExpression writeCall = BuildWriteCall(bbParam, slotConst, fieldExpr, fieldType);
+                    writeDelegate = Expression.Lambda<Action<NodeMethod, IBlackBoardAccess>>(
+                        writeCall, instParam, bbParam).Compile();
                 }
             }
             catch
             {
 
             }
+        }
+
+        /// <summary>
+        /// Builds the BB-read expression for a field: typed accessor when the field
+        /// type maps to one (allocation-free), generic Get&lt;T&gt; otherwise.
+        /// Enums read as int and are cast back to the enum type.
+        /// </summary>
+        private static Expression BuildReadExpression(ParameterExpression bbParam, ConstantExpression slotConst, Type fieldType)
+        {
+            MethodInfo typedGetter = TypedAccessorMap.GetGetter(fieldType);
+            if (typedGetter != null)
+            {
+                Expression call = Expression.Call(bbParam, typedGetter, slotConst);
+                return fieldType.IsEnum ? Expression.Convert(call, fieldType) : call;
+            }
+
+            MethodInfo genericGet = typeof(IBlackBoardAccess).GetMethod("Get").MakeGenericMethod(fieldType);
+            return Expression.Call(bbParam, genericGet, slotConst);
+        }
+
+        private static MethodCallExpression BuildWriteCall(ParameterExpression bbParam, ConstantExpression slotConst, MemberExpression fieldExpr, Type fieldType)
+        {
+            MethodInfo typedSetter = TypedAccessorMap.GetSetter(fieldType);
+            if (typedSetter != null)
+            {
+                Expression valueExpr = fieldType.IsEnum
+                    ? Expression.Convert(fieldExpr, typeof(int))
+                    : (Expression)fieldExpr;
+                return Expression.Call(bbParam, typedSetter, slotConst, valueExpr);
+            }
+
+            MethodInfo genericSet = typeof(IBlackBoardAccess).GetMethod("Set").MakeGenericMethod(fieldType);
+            return Expression.Call(bbParam, genericSet, slotConst, fieldExpr);
         }
 
         public void ReadFromBBGeneric(NodeMethod instance, IBlackBoardAccess bb)
