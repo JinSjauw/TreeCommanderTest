@@ -4,8 +4,8 @@ using UnityEngine;
 namespace BehaviourTree.Runtime
 {
     /// <summary>
-    /// Shared logic for resolving a RuntimeBehaviourTreeAsset from either
-    /// an authoring asset (editor bake) or a pre-baked runtime asset (build).
+    /// Shared logic for resolving a RuntimeBehaviourTreeAsset: explicit override,
+    /// authoring asset (editor in-memory bake), or a build-baked Resources artifact.
     /// Used by both AgentTreeRunner and CommanderTreeRunner.
     /// </summary>
     public static class RuntimeAssetHelper
@@ -40,52 +40,45 @@ namespace BehaviourTree.Runtime
         }
 
         /// <summary>
-        /// Returns a ready-to-use RuntimeBehaviourTreeAsset.
-        /// If <paramref name="existing"/> is null, bakes from <paramref name="authoringAsset"/>
-        /// in the editor, or logs an error in builds.
-        /// If <paramref name="existing"/> is non-null, instantiates a copy.
+        /// Returns a ready-to-use RuntimeBehaviourTreeAsset, in priority order:
+        /// explicit override (tests/tools) → editor in-memory autobake → Resources
+        /// artifact baked by the build preprocessor (keyed by authoring GUID).
         /// Returns null when resolution fails; caller should abort initialization.
         /// </summary>
-        public static RuntimeBehaviourTreeAsset GetOrBake(
-            RuntimeBehaviourTreeAsset existing,
+        public static RuntimeBehaviourTreeAsset Resolve(
+            RuntimeBehaviourTreeAsset overrideAsset,
             BehaviourTreeAssetBase authoringAsset,
-            string logContext = "AgentTreeRunner")
+            string authoringAssetGuid,
+            string logContext = "BehaviourTreeRunner")
         {
-            if (existing == null)
+            if (overrideAsset != null)
+                return PrepareInstance(Object.Instantiate(overrideAsset));
+
+#if UNITY_EDITOR
+            if (authoringAsset != null)
             {
-#if UNITY_EDITOR
-                if (authoringAsset != null)
-                {
-                    RuntimeBehaviourTreeAsset temp = ScriptableObject.CreateInstance<RuntimeBehaviourTreeAsset>();
-                    temp.hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
-                    temp.name = authoringAsset.DisplayName + "_Runtime";
-                    temp.sourceTree = authoringAsset;
-#if UNITY_EDITOR
-                    string assetPath = UnityEditor.AssetDatabase.GetAssetPath(authoringAsset);
-                    temp.sourceTreeGuid = UnityEditor.AssetDatabase.AssetPathToGUID(assetPath);
+                string path = UnityEditor.AssetDatabase.GetAssetPath(authoringAsset);
+                string guid = string.IsNullOrEmpty(path) ? null : UnityEditor.AssetDatabase.AssetPathToGUID(path);
+                if (guid != null)
+                    return BakeInto(authoringAsset, guid, transient: true);
+            }
 #endif
 
-                    temp.blackboardDefinition = TreeBaker.BakeTree(
-                        authoringAsset.Root, authoringAsset,
-                        ref temp.runtimeNodeData,
-                        ref temp.runtimeFieldData,
-                        ref temp.fieldTypeNames,
-                        ref temp.boxedConstants,
-                        ref temp.runtimeNodeGuids,
-                        out temp.maxTreeDepth);
-
-                    return temp;
-                }
-
-                Debug.LogError($"[{logContext}] Authoring asset is null — cannot bake tree.");
-                return null;
-#else
-                Debug.LogError($"[{logContext}] Runtime asset is null.");
-                return null;
-#endif
+            if (!string.IsNullOrEmpty(authoringAssetGuid))
+            {
+                RuntimeBehaviourTreeAsset baked = Resources.Load<RuntimeBehaviourTreeAsset>(
+                    BakedTreesResourcesPath + "/" + authoringAssetGuid);
+                if (baked != null)
+                    return PrepareInstance(Object.Instantiate(baked));
             }
 
-            RuntimeBehaviourTreeAsset instance = Object.Instantiate(existing);
+            Debug.LogError($"[{logContext}] No baked tree found (authoring GUID: '{authoringAssetGuid}'). " +
+                           "In the editor, assign an authoring asset; in builds, ensure the bake preprocessor ran.");
+            return null;
+        }
+
+        private static RuntimeBehaviourTreeAsset PrepareInstance(RuntimeBehaviourTreeAsset instance)
+        {
             instance.hideFlags = HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild;
             return instance;
         }

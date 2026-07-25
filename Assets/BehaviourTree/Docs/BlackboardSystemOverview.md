@@ -83,22 +83,27 @@ The **runtime component** that holds the actual data. Implements `IBlackBoardAcc
 
 **`currentAgentOffset`**: A transient offset applied to all slot reads/writes by commander composites (`ForEachAgent`, `SelectAgent`). Makes each agent see a different slice of per-agent squad data. Cleared after subtree evaluation.
 
-### 1.5 `ManagedBlackboardStorage`
+### 1.5 `TypedBlackboardStorage`
 
-File: `Assets/BehaviourTree/Core/ManagedBlackboardStorage.cs`
+File: `Assets/BehaviourTree/Core/Blackboard/TypedBlackboardStorage.cs`
 
-Low-level flat storage implementation:
+Typed-array storage implementation (replaced the legacy flat `object[]` storage):
 
 ```
-values[]    → object[N]     (boxed values)
-slotTypes[] → Type[N]        (declared type per slot)
+map[]       → SlotLocation[N]  (virtual slot → typed array + local index)
+slotTypes[] → Type[N]          (declared type per slot)
 slotKinds[] → BlackboardSlotKind[N]  (Value or Reference)
+versions[]  → int[N]           (per-slot write counters for change detection)
+floats/ints/bools/vec2s/vec3s/vec4s/colors/quats[] → typed value arrays
+objects[]   → object[]         (reference types, custom value types, exotic enums)
 ```
 
-- `Initialize(definition)` — allocates arrays from the definition's variable list, computing flat size as `sum(max(stride, 1))`
-- `Get<T>(index)` / `Set<T>(index, value)` — typed access with type checking (`CanWrite`)
-- `GetBoxed(index)` / `SetBoxed(index, value)` — untyped access used by squad copy and tracked bindings
-- `ResizeFromVariables()` — rebuilds arrays preserving existing data, used when squad-data strides change at runtime
+- Virtual slot numbering matches the legacy flat layout exactly (variable order, stride expansion) — baked `FieldData` slot indices are unaffected. `BlackboardStorageLayout` builds the map at `Initialize`; the supported type set is `float/int/bool/Vector2/3/4/Color/Quaternion` + int32-backed enums (stored in the int array). Everything else lands in `objects[]`.
+- `GetFloat/SetFloat` etc. (`IBlackboardTypedAccess`) — allocation-free typed access; the hot path used by compiled field bindings and tracked-binding pushes. Enums are read/written as int.
+- `Get<T>`/`Set<T>` and `GetBoxed`/`SetBoxed` — compatibility paths (may box); used by editor tooling, JSON, and dynamic-type nodes. Boxed reads of enum slots reconstruct the enum instance.
+- `CopySlotsFrom(source, src, dst, count)` — typed region copies (`Array.Copy` runs) when layouts match, boxed fallback per slot otherwise. Used by squad sync and agent compaction.
+- `GetSlotVersion(slot)` — monotonic write counter per slot (zero after seeding; bumped by every write path).
+- `Initialize(definition)` / `Initialize(variables)` — builds layout + arrays, seeds typed initial values without boxing.
 - `GetVariableSlotRange(varIndex, out baseSlot, out stride)` — converts variable index to flat slot range
 
 ### 1.6 `BlackboardValueOverride`
@@ -298,7 +303,7 @@ Tick-based behaviour tree evaluator. Replaces stack-based approach with fixed-si
 File: `Assets/BehaviourTree/Runtime/BehaviourTreeRunnerBase.cs`
 
 Shared base class for `AgentTreeRunner` and `CommanderTreeRunner`. Handles:
-- Baking/copying the runtime asset (`RuntimeAssetHelper.GetOrBake`)
+- Resolving the runtime asset (`RuntimeAssetHelper.Resolve` — editor in-memory autobake, or `Resources/BakedTrees/{guid}` in builds)
 - BB initialization (`blackBoard.Initialize(runtimeAsset.blackboardDefinition)`)
 - Evaluator creation
 - Debug provider setup
@@ -478,7 +483,9 @@ This is the pattern for setting initial values on spawned agents — write to th
 | `BlackboardVariableBase.cs` | Abstract base for all variable types |
 | `BlackboardVariable.cs` | Typed generic variable (BlackboardVariable\<T\>) |
 | `BlackBoardDefinition.cs` | ScriptableObject schema (variable list) |
-| `ManagedBlackboardStorage.cs` | Flat object[] storage backend |
+| `TypedBlackboardStorage.cs` | Typed-array storage backend (+ typed accessors, slot versions) |
+| `BlackboardStorageLayout.cs` | Virtual-slot → typed-array mapping (SlotLocation) |
+| `IBlackboardTypedAccess.cs` | Allocation-free typed accessor contract |
 | `IBlackboardStorage.cs` | Storage interface |
 | `IBlackBoardAccess.cs` | Read/write interface |
 | `BlackboardValueOverride.cs` | Per-component typed override storage |

@@ -19,10 +19,21 @@ namespace BehaviourTree.Runtime
 
         /// <summary>Public accessor for the blackboard. Used by squad copy helpers.</summary>
         public BlackBoard BlackBoard => blackBoard;
-        [SerializeField] protected RuntimeBehaviourTreeAsset runtimeAsset;
+        /// <summary>Baked runtime tree. Non-serialized: purely derived data, resolved in
+        /// Initialize() from the authoring asset (editor) or Resources (build).</summary>
+        [NonSerialized] protected RuntimeBehaviourTreeAsset runtimeAsset;
+
+        /// <summary>Optional explicit baked asset (tests/tools). Assign before Initialize(); wins
+        /// over editor autobake and Resources resolution.</summary>
+        [NonSerialized] public RuntimeBehaviourTreeAsset RuntimeAssetOverride;
 #if UNITY_EDITOR
         [SerializeField] protected BehaviourTreeAssetBase authoringAsset;
 #endif
+
+        /// <summary>GUID of the authoring tree asset. Serialized so player builds can locate the
+        /// preprocessor-baked runtime asset in Resources. Populated in OnValidate and by the
+        /// build preprocessor's prefab backfill.</summary>
+        [SerializeField, HideInInspector] private string authoringAssetGuid;
 
         protected TreeEvaluator evaluator;
         protected RuntimeDebugProvider debugProvider;
@@ -43,12 +54,14 @@ namespace BehaviourTree.Runtime
         {
             if (initialized) return;
 
-            runtimeAsset = RuntimeAssetHelper.GetOrBake(runtimeAsset,
+            runtimeAsset = RuntimeAssetHelper.Resolve(
+                RuntimeAssetOverride,
 #if UNITY_EDITOR
                 authoringAsset,
 #else
                 null,
 #endif
+                authoringAssetGuid,
                 GetType().Name);
             if (runtimeAsset == null) return;
 
@@ -306,6 +319,16 @@ namespace BehaviourTree.Runtime
 #if UNITY_EDITOR
         protected virtual void OnValidate()
         {
+            if (authoringAsset != null)
+            {
+                string path = UnityEditor.AssetDatabase.GetAssetPath(authoringAsset);
+                authoringAssetGuid = UnityEditor.AssetDatabase.AssetPathToGUID(path);
+            }
+            else
+            {
+                authoringAssetGuid = string.Empty;
+            }
+
             if (runtimeAsset != null)
             {
                 blackBoard?.BuildSerializedReferences(runtimeAsset.blackboardDefinition);

@@ -114,7 +114,7 @@ Assets/
 │   │   ├── SquadSpawner.cs           # Spawns commander + N agents, wires squads
 │   │   ├── CompositeMethod.cs        # Abstract: Execute(nodeIndex, ref TickContext)
 │   │   ├── TrackedBinding.cs         # Component field → BB variable, grouped by tree
-│   │   ├── RuntimeAssetHelper.cs     # GetOrBake() factory
+│   │   ├── RuntimeAssetHelper.cs     # Resolve() factory (autobake / Resources)
 │   │   ├── RuntimeBTreeAsset.cs      # SO holding baked NodeData[], FieldData[], BB def
 │   │   ├── RuntimeDebugProvider.cs   # Exposes runtime state for editor debug window
 │   │   └── Methods/
@@ -515,8 +515,9 @@ Template Method for both AgentTreeRunner and CommanderTreeRunner:
 
 ```
 Initialize()
-├── RuntimeAssetHelper.GetOrBake(authoringAsset)
-│   └── TreeBaker.BakeTree() → RuntimeBehaviourTreeAsset
+├── RuntimeAssetHelper.Resolve(authoringAsset / authoringAssetGuid)
+│   ├── editor: TreeBaker.BakeTree() → transient RuntimeBehaviourTreeAsset
+│   └── build: Resources.Load("BakedTrees/{guid}") → Instantiate
 ├── blackBoard.Initialize(runtimeAsset.blackboardDefinition)
 ├── evaluator = new TreeEvaluator(nodeDatas, fieldDatas, ...)
 ├── EnsureComponent<RuntimeDebugProvider>
