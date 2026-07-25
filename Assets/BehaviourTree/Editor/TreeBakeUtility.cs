@@ -84,7 +84,64 @@ namespace BehaviourTree.Editor
         }
 
         [MenuItem("BehaviourTree/Bake All Trees For Build")]
-        private static void BakeAllMenu() => BakeAllAuthoringTrees();
+        private static void BakeAllMenu()
+        {
+            BackfillRunnerGuids();
+            BakeAllAuthoringTrees();
+        }
+
+        /// <summary>
+        /// Writes authoringAssetGuid on every runner prefab from its assigned authoring asset.
+        /// Covers prefabs that were never opened since the field was added (OnValidate timing).
+        /// Returns the number of prefabs modified.
+        /// </summary>
+        public static int BackfillRunnerGuids()
+        {
+            int touched = 0;
+            foreach (string guid in AssetDatabase.FindAssets("t:Prefab"))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                if (prefab == null) continue;
+
+                bool dirty = false;
+                foreach (BehaviourTreeRunnerBase runner in
+                         prefab.GetComponentsInChildren<BehaviourTreeRunnerBase>(true))
+                {
+                    var so = new SerializedObject(runner);
+                    SerializedProperty authoring = so.FindProperty("authoringAsset");
+                    SerializedProperty guidProp = so.FindProperty("authoringAssetGuid");
+                    if (authoring == null || guidProp == null) continue;
+
+                    string expected = string.Empty;
+                    if (authoring.objectReferenceValue != null)
+                    {
+                        string assetPath = AssetDatabase.GetAssetPath(authoring.objectReferenceValue);
+                        expected = AssetDatabase.AssetPathToGUID(assetPath);
+                    }
+
+                    if (guidProp.stringValue != expected)
+                    {
+                        guidProp.stringValue = expected;
+                        so.ApplyModifiedPropertiesWithoutUndo();
+                        dirty = true;
+                    }
+                }
+
+                if (dirty)
+                {
+                    EditorUtility.SetDirty(prefab);
+                    touched++;
+                }
+            }
+
+            if (touched > 0)
+            {
+                AssetDatabase.SaveAssets();
+                Debug.Log($"[TreeBakeUtility] Backfilled authoringAssetGuid on {touched} prefab(s).");
+            }
+            return touched;
+        }
 
         private static void EnsureFolder(string folder)
         {
