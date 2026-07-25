@@ -8,7 +8,7 @@ namespace BehaviourTree.Tests
     {
         private enum TestState { Idle = 0, Running = 1 }
 
-        private class StubMethod : ActionMethod
+        private class FieldBindingStubMethod : ActionMethod
         {
             public float speed;
             public TestState state;
@@ -44,7 +44,7 @@ namespace BehaviourTree.Tests
         {
             return new FieldBinding
             {
-                fieldInfo = typeof(StubMethod).GetField(fieldName),
+                fieldInfo = typeof(FieldBindingStubMethod).GetField(fieldName),
                 bbSlotIndex = slot,
                 isOutput = true
             };
@@ -53,9 +53,9 @@ namespace BehaviourTree.Tests
         [Test]
         public void FloatField_ReadWrite_NoBoxingPath()
         {
-            var method = new StubMethod();
-            FieldBinding binding = MakeBinding(nameof(StubMethod.speed), 0);
-            binding.CompileAccessors(typeof(StubMethod));
+            var method = new FieldBindingStubMethod();
+            FieldBinding binding = MakeBinding(nameof(FieldBindingStubMethod.speed), 0);
+            binding.CompileAccessors(typeof(FieldBindingStubMethod));
             Assert.IsTrue(binding.IsCompiled);
 
             bb.SetFloat(0, 3.5f);
@@ -70,9 +70,9 @@ namespace BehaviourTree.Tests
         [Test]
         public void EnumField_ReadWrite_ViaIntArray()
         {
-            var method = new StubMethod();
-            FieldBinding binding = MakeBinding(nameof(StubMethod.state), 1);
-            binding.CompileAccessors(typeof(StubMethod));
+            var method = new FieldBindingStubMethod();
+            FieldBinding binding = MakeBinding(nameof(FieldBindingStubMethod.state), 1);
+            binding.CompileAccessors(typeof(FieldBindingStubMethod));
 
             bb.Set(1, TestState.Running);
             binding.ReadFromBBGeneric(method, bb);
@@ -90,9 +90,9 @@ namespace BehaviourTree.Tests
         [Test]
         public void RefField_ReadWrite_ViaObjectArray()
         {
-            var method = new StubMethod();
-            FieldBinding binding = MakeBinding(nameof(StubMethod.label), 2);
-            binding.CompileAccessors(typeof(StubMethod));
+            var method = new FieldBindingStubMethod();
+            FieldBinding binding = MakeBinding(nameof(FieldBindingStubMethod.label), 2);
+            binding.CompileAccessors(typeof(FieldBindingStubMethod));
 
             bb.SetObject(2, "hello");
             binding.ReadFromBBGeneric(method, bb);

@@ -4,6 +4,7 @@
     "references": [
         "BehaviourTree.Core",
         "BehaviourTree.Runtime",
+        "BehaviourTree.Editor",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
