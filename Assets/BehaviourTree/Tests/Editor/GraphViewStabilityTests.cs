@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -12,6 +13,22 @@ public class GraphViewStabilityTests
         var nodeView = new BehaviourNodeView(node) { GraphView = view };
         view.AddElement(nodeView);
         return nodeView;
+    }
+
+    [Test]
+    public void BuildWarningTooltip_FromList_RendersAllMessages()
+    {
+        var warnings = new List<NodeWarning>
+        {
+            new NodeWarning { Type = NodeWarningType.VariableNotFound, Message = "Variable 'Foo' not found in Blackboard." },
+            new NodeWarning { Type = NodeWarningType.VariableNotAssigned, Message = "Variable not assigned for 'Bar'." },
+        };
+
+        string tooltip = NodeWarningEvaluator.BuildWarningTooltip(warnings);
+
+        StringAssert.Contains("Foo", tooltip);
+        StringAssert.Contains("Bar", tooltip);
+        Assert.AreEqual("No warnings", NodeWarningEvaluator.BuildWarningTooltip(new List<NodeWarning>()));
     }
 
     [Test]

@@ -215,13 +215,17 @@ namespace BehaviourTree.Editor
 
         public static string BuildWarningTooltip(BehaviourNode node)
         {
-            List<NodeWarning> list = Evaluate(node);
-            if (list.Count == 0) return "No warnings";
+            return BuildWarningTooltip(Evaluate(node));
+        }
+
+        public static string BuildWarningTooltip(List<NodeWarning> warnings)
+        {
+            if (warnings == null || warnings.Count == 0) return "No warnings";
 
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<b>Warnings:</b>");
-            for (int i = 0; i < list.Count; i++)
-                sb.AppendLine("  \u2022 " + list[i].Message);
+            for (int i = 0; i < warnings.Count; i++)
+                sb.AppendLine("  • " + warnings[i].Message);
             return sb.ToString().TrimEnd();
         }
     }

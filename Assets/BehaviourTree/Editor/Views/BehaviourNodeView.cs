@@ -518,7 +518,7 @@ namespace BehaviourTree.Editor
             if (warnings.Count > 0)
             {
                 warningIcon.style.display = DisplayStyle.Flex;
-                warningIcon.tooltip = NodeWarningEvaluator.BuildWarningTooltip(NodeSO);
+                warningIcon.tooltip = NodeWarningEvaluator.BuildWarningTooltip(warnings);
             }
             else
             {
