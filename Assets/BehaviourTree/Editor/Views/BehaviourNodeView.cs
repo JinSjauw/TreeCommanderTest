@@ -501,11 +501,11 @@ namespace BehaviourTree.Editor
 
         private BehaviourNodeView FindParentNodeView()
         {
-            if (GraphView == null) return null;
-            foreach (Edge edge in GraphView.edges.ToList())
+            if (input == null) return null;
+            foreach (Edge edge in input.connections)
             {
-                if (edge.input?.node == this)
-                    return edge.output?.node as BehaviourNodeView;
+                if (edge.output?.node is BehaviourNodeView parent)
+                    return parent;
             }
             return null;
         }
