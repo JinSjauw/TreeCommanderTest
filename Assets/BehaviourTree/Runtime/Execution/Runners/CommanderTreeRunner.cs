@@ -227,11 +227,10 @@ namespace BehaviourTree.Runtime
                         else
                             squad.BlackBoard.SetBoxedRaw(currentSlot + removedIndex, -1);
 
-                        for (int slot = removedIndex; slot < activeCount - 1; slot++)
-                        {
-                            object val = squad.BlackBoard.GetBoxedRaw(currentSlot + slot + 1);
-                            squad.BlackBoard.SetBoxedRaw(currentSlot + slot, val);
-                        }
+                        // Shift per-agent slots down by one within the stride region (typed memmove).
+                        squad.BlackBoard.CopySlotsRawFrom(squad.BlackBoard,
+                            currentSlot + removedIndex + 1, currentSlot + removedIndex,
+                            activeCount - 1 - removedIndex);
                     }
 
                     currentSlot += varStride;

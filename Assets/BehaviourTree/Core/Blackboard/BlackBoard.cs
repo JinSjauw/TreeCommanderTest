@@ -490,6 +490,13 @@ namespace BehaviourTree.Core
             storage.SetBoxed(index, value);
         }
 
+        /// <summary>Raw slot-range copy (no agent offset). Used by squad sync and agent compaction.</summary>
+        public void CopySlotsRawFrom(BlackBoard source, int sourceSlot, int destSlot, int count)
+        {
+            if (storage == null || source == null || source.storage == null || count <= 0) return;
+            storage.CopySlotsFrom(source.storage, sourceSlot, destSlot, count);
+        }
+
         /// <summary>Set a boxed value by slot index. Used by the bridge for type-agnostic copying.</summary>
         public void SetBoxed(int index, object value)
         {

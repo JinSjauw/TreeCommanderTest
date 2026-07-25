@@ -173,14 +173,7 @@ namespace BehaviourTree.Runtime
                 else if (stride > 1)
                 {
                     // Commander sync: copy all stride slots (both sides have stride > 1)
-                    for (int j = 0; j < stride; j++)
-                    {
-                        int actualSrc = srcSlot + j;
-                        int actualDst = dstSlot + j;
-                        object value = blackBoard.GetBoxedRaw(actualSrc);
-
-                        treeBB.SetBoxedRaw(actualDst, value);
-                    }
+                    treeBB.CopySlotsRawFrom(blackBoard, srcSlot, dstSlot, stride);
                 }
                 else
                 {
@@ -212,8 +205,7 @@ namespace BehaviourTree.Runtime
                 else if (stride > 1)
                 {
                     // Commander sync: copy all stride slots (both sides have stride > 1)
-                    for (int j = 0; j < stride; j++)
-                        blackBoard.SetBoxedRaw(dstSlot + j, treeBB.GetBoxedRaw(srcSlot + j));
+                    blackBoard.CopySlotsRawFrom(treeBB, srcSlot, dstSlot, stride);
                 }
                 else
                 {

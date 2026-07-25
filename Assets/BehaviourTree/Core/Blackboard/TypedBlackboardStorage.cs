@@ -313,6 +313,72 @@ namespace BehaviourTree.Core
         public T GetObject<T>(int slot) where T : class => objects[map[slot].LocalIndex] as T;
         public void SetObject(int slot, object value) => objects[map[slot].LocalIndex] = value;
 
+        public void CopySlotsFrom(IBlackboardStorage source, int sourceSlot, int destSlot, int count)
+        {
+            if (source is TypedBlackboardStorage src && src.map != null && map != null)
+            {
+                int remaining = count;
+                int s = sourceSlot;
+                int d = destSlot;
+
+                while (remaining > 0)
+                {
+                    SlotLocation srcLoc = src.map[s];
+                    SlotLocation dstLoc = map[d];
+
+                    if (srcLoc.ArrayId == dstLoc.ArrayId)
+                    {
+                        // Extend the run while both sides stay in the same typed
+                        // array with contiguous local indices (same layout).
+                        int run = 1;
+                        while (run < remaining
+                            && src.map[s + run].ArrayId == srcLoc.ArrayId
+                            && map[d + run].ArrayId == srcLoc.ArrayId
+                            && src.map[s + run].LocalIndex == srcLoc.LocalIndex + run
+                            && map[d + run].LocalIndex == dstLoc.LocalIndex + run)
+                        {
+                            run++;
+                        }
+
+                        CopyRun(src, srcLoc, dstLoc, run);
+                        s += run;
+                        d += run;
+                        remaining -= run;
+                    }
+                    else
+                    {
+                        // Layout mismatch for this slot — boxed fallback.
+                        WriteBoxedUnchecked(d, src.GetBoxed(s));
+                        s++;
+                        d++;
+                        remaining--;
+                    }
+                }
+                return;
+            }
+
+            // Non-typed source — boxed fallback.
+            for (int i = 0; i < count; i++)
+                SetBoxed(destSlot + i, source.GetBoxed(sourceSlot + i));
+        }
+
+        private void CopyRun(TypedBlackboardStorage src, SlotLocation srcLoc, SlotLocation dstLoc, int length)
+        {
+            // Array.Copy handles overlapping ranges within the same array (memmove).
+            switch (srcLoc.ArrayId)
+            {
+                case BlackboardArrayId.Float: Array.Copy(src.floats, srcLoc.LocalIndex, floats, dstLoc.LocalIndex, length); break;
+                case BlackboardArrayId.Int: Array.Copy(src.ints, srcLoc.LocalIndex, ints, dstLoc.LocalIndex, length); break;
+                case BlackboardArrayId.Bool: Array.Copy(src.bools, srcLoc.LocalIndex, bools, dstLoc.LocalIndex, length); break;
+                case BlackboardArrayId.Vector2: Array.Copy(src.vec2s, srcLoc.LocalIndex, vec2s, dstLoc.LocalIndex, length); break;
+                case BlackboardArrayId.Vector3: Array.Copy(src.vec3s, srcLoc.LocalIndex, vec3s, dstLoc.LocalIndex, length); break;
+                case BlackboardArrayId.Vector4: Array.Copy(src.vec4s, srcLoc.LocalIndex, vec4s, dstLoc.LocalIndex, length); break;
+                case BlackboardArrayId.Color: Array.Copy(src.colors, srcLoc.LocalIndex, colors, dstLoc.LocalIndex, length); break;
+                case BlackboardArrayId.Quaternion: Array.Copy(src.quats, srcLoc.LocalIndex, quats, dstLoc.LocalIndex, length); break;
+                default: Array.Copy(src.objects, srcLoc.LocalIndex, objects, dstLoc.LocalIndex, length); break;
+            }
+        }
+
         private bool CanWrite<T>(int index, T value)
         {
             if (map == null || index < 0 || index >= map.Length) return false;

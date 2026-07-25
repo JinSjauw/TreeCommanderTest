@@ -175,6 +175,16 @@ namespace BehaviourTree.Core
             values[index] = value;
         }
 
+        public void CopySlotsFrom(IBlackboardStorage source, int sourceSlot, int destSlot, int count)
+        {
+            // Buffer to keep memmove semantics for overlapping self-copies.
+            object[] buffer = new object[count];
+            for (int i = 0; i < count; i++)
+                buffer[i] = source.GetBoxed(sourceSlot + i);
+            for (int i = 0; i < count; i++)
+                SetBoxed(destSlot + i, buffer[i]);
+        }
+
         private bool CanWrite<T>(int index, T value)
         {
             if (values == null || index < 0 || index >= values.Length) return false;

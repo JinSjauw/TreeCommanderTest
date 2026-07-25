@@ -22,6 +22,14 @@ namespace BehaviourTree.Core
         void SetBoxed(int index, object value);
 
         /// <summary>
+        /// Copies a range of virtual slots from another storage into this one.
+        /// Implementations use fast typed region copies when both sides share a
+        /// layout; otherwise falls back to per-slot boxed copies.
+        /// Overlapping ranges within the same storage are supported (memmove semantics).
+        /// </summary>
+        void CopySlotsFrom(IBlackboardStorage source, int sourceSlot, int destSlot, int count);
+
+        /// <summary>
         /// Given a variable index into the unified variable list,
         /// returns the base slot index and stride in the flat values array.
         /// </summary>
