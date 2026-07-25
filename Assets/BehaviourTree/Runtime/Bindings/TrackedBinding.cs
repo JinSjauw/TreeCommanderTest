@@ -36,10 +36,12 @@ namespace BehaviourTree.Runtime
         [NonSerialized] public PropertyInfo cachedPropertyInfo;
         [NonSerialized] public int variableIndex = -1;
 
-        // TEMPORARY: Compiled delegate to avoid PropertyInfo.GetValue() reflection per frame.
-        // This (and Expression.Compile in FieldBinding) gets deleted when we move to DOTS
-        // with typed NativeArray<T> storage — then there's no type-erased object[] to bridge across.
+        // TEMPORARY (until codegen): compiled delegates avoid per-frame reflection.
+        // typedPushDelegate is the allocation-free path for member types with a
+        // typed storage accessor (float/int/bool/vectors/Color/Quaternion/enums).
+        // readDelegate (boxed) remains the fallback for all other member types.
         [NonSerialized] public Func<object> readDelegate;
+        [NonSerialized] public Action<IBlackBoardAccess, int> typedPushDelegate;
     }
 
     /// <summary>

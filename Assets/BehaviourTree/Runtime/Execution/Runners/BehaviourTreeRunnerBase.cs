@@ -183,10 +183,14 @@ namespace BehaviourTree.Runtime
                 TrackedBinding binding = trackedBindingsToPush[i];
                 if (binding.variableIndex < 0 || binding.targetComponent == null) continue;
 
-                // TEMPORARY: Uses a Func<object> delegate compiled at resolve time instead of
-                // PropertyInfo.GetValue / FieldInfo.GetValue. The boxing on the return path is
-                // acceptable — the point is to avoid per-frame reflection, not per-frame boxing.
-                // Deleted when DOTS typed storage arrives.
+                // Typed push (no boxing) when the member type has a storage accessor;
+                // otherwise the boxed Func<object> path.
+                if (binding.typedPushDelegate != null)
+                {
+                    binding.typedPushDelegate(blackBoard, binding.variableIndex);
+                    continue;
+                }
+
                 object value = binding.readDelegate?.Invoke();
 
                 blackBoard.SetBoxed(binding.variableIndex, value);
@@ -216,7 +220,7 @@ namespace BehaviourTree.Runtime
         // Falls back silently on AOT platforms where Expression.Compile throws — the binding
         // simply won't push, which matches the existing PropertyInfo/FieldInfo null-guard behavior.
         // Entire method deleted when DOTS typed storage arrives.
-        private static void CompileTrackedBindingDelegate(TrackedBinding binding)
+        internal static void CompileTrackedBindingDelegate(TrackedBinding binding)
         {
             Component comp = binding.targetComponent;
             if (comp == null) return;
@@ -235,6 +239,32 @@ namespace BehaviourTree.Runtime
                 else
                     return;
 
+                // Typed path: member type has a storage accessor → push without boxing.
+                Type memberType = binding.isProperty
+                    ? binding.cachedPropertyInfo.PropertyType
+                    : binding.cachedFieldInfo.FieldType;
+
+                MethodInfo typedSetter = TypedAccessorMap.GetSetter(memberType);
+                if (typedSetter != null)
+                {
+                    ParameterExpression bbParam = Expression.Parameter(typeof(IBlackBoardAccess), "bb");
+                    ParameterExpression slotParam = Expression.Parameter(typeof(int), "slot");
+
+                    Expression valueExpr = memberType.IsEnum
+                        ? Expression.Convert(memberAccess, typeof(int))
+                        : (Expression)memberAccess;
+
+                    var typedLambda = Expression.Lambda<Action<Component, IBlackBoardAccess, int>>(
+                        Expression.Call(bbParam, typedSetter, slotParam, valueExpr),
+                        compParam, bbParam, slotParam);
+
+                    Action<Component, IBlackBoardAccess, int> compiled = typedLambda.Compile();
+                    Component capturedComp = comp;
+                    binding.typedPushDelegate = (bb, slot) => compiled(capturedComp, bb, slot);
+                    return;
+                }
+
+                // Boxed fallback for all other member types.
                 UnaryExpression castResult = Expression.Convert(memberAccess, typeof(object));
                 Expression<Func<Component, object>> lambda =
                     Expression.Lambda<Func<Component, object>>(castResult, compParam);
