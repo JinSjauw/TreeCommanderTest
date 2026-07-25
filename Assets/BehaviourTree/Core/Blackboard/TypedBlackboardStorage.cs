@@ -13,7 +13,7 @@ namespace BehaviourTree.Core
     /// The generic Get&lt;T&gt;/Set&lt;T&gt; and boxed paths may allocate (compatibility).
     /// Hot paths must use the IBlackboardTypedAccess accessors (Phase 3).
     /// </summary>
-    public sealed class TypedBlackboardStorage : IBlackboardStorage
+    public sealed class TypedBlackboardStorage : IBlackboardStorage, IBlackboardTypedAccess
     {
         private BlackboardDefinition definition;
         private IReadOnlyList<BlackboardVariableBase> runtimeVariables;
@@ -288,6 +288,30 @@ namespace BehaviourTree.Core
                 default: objects[loc.LocalIndex] = value; break;
             }
         }
+
+        // ── IBlackboardTypedAccess ──────────────────────────────────
+        // No bounds checks here beyond the map/array indexer: hot path.
+        // Slot validity is guaranteed by the bake; invalid slots throw
+        // IndexOutOfRange, same as any direct array access.
+
+        public float GetFloat(int slot) => floats[map[slot].LocalIndex];
+        public void SetFloat(int slot, float value) => floats[map[slot].LocalIndex] = value;
+        public int GetInt(int slot) => ints[map[slot].LocalIndex];
+        public void SetInt(int slot, int value) => ints[map[slot].LocalIndex] = value;
+        public bool GetBool(int slot) => bools[map[slot].LocalIndex];
+        public void SetBool(int slot, bool value) => bools[map[slot].LocalIndex] = value;
+        public Vector2 GetVector2(int slot) => vec2s[map[slot].LocalIndex];
+        public void SetVector2(int slot, Vector2 value) => vec2s[map[slot].LocalIndex] = value;
+        public Vector3 GetVector3(int slot) => vec3s[map[slot].LocalIndex];
+        public void SetVector3(int slot, Vector3 value) => vec3s[map[slot].LocalIndex] = value;
+        public Vector4 GetVector4(int slot) => vec4s[map[slot].LocalIndex];
+        public void SetVector4(int slot, Vector4 value) => vec4s[map[slot].LocalIndex] = value;
+        public Color GetColor(int slot) => colors[map[slot].LocalIndex];
+        public void SetColor(int slot, Color value) => colors[map[slot].LocalIndex] = value;
+        public Quaternion GetQuaternion(int slot) => quats[map[slot].LocalIndex];
+        public void SetQuaternion(int slot, Quaternion value) => quats[map[slot].LocalIndex] = value;
+        public T GetObject<T>(int slot) where T : class => objects[map[slot].LocalIndex] as T;
+        public void SetObject(int slot, object value) => objects[map[slot].LocalIndex] = value;
 
         private bool CanWrite<T>(int index, T value)
         {
