@@ -50,5 +50,13 @@ namespace BehaviourTree.Tests
             Assert.IsTrue(d.isHidden);
             Assert.AreEqual("AgentOrders", d.autoVariableName);
         }
+
+        [Test]
+        public void NoTitle_ClearsTitleLabel_KeepsLabel()
+        {
+            var d = Params.Variable("Target").NoTitle();
+            Assert.IsNull(d.titleLabel);
+            Assert.AreEqual("Target", d.label);
+        }
     }
 }

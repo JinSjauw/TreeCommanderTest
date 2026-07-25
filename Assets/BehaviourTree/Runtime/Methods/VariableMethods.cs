@@ -617,14 +617,8 @@ namespace BehaviourTree.Runtime.Methods
     [NodeMethod("MoveTo")]
     public sealed class MoveTo : ActionMethod
     {
-        public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
-        {
-            new DynamicParamDescriptor
-            {
-                label = "Target", kind = DynamicParamKind.Variable, index = 0,
-                allowedTypes = new[] { typeof(Vector2), typeof(Vector3), typeof(Transform) }
-            },
-        };
+        public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => Params.Build(
+            Params.Variable("Target", typeof(Vector2), typeof(Vector3), typeof(Transform)).NoTitle());
 
         private int targetSlot = -1;
         private NavMeshAgent agent;

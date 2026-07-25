@@ -85,5 +85,12 @@ namespace BehaviourTree.Core
             d.visibilityDependsOnIndex = entryIndex;
             return d;
         }
+
+        /// <summary>No bold title header above the row; the row shows a typed label instead.</summary>
+        public static DynamicParamDescriptor NoTitle(this DynamicParamDescriptor d)
+        {
+            d.titleLabel = null;
+            return d;
+        }
     }
 }
