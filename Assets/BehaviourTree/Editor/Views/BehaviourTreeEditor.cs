@@ -501,10 +501,28 @@ public class BehaviourTreeEditor : EditorWindow
         AssetDatabase.SaveAssets();
     }
 
+    private bool selectionChangePending;
+
     private void OnSelectionChange()
     {
+        // Evaluated synchronously so the lock/bypass state is read at event time.
         if (selectionIsLocked && currentTree != null && lockBypassDepth == 0) return;
 
+        // Unity frequently fires OnSelectionChange twice for one user action —
+        // coalesce into a single deferred pass.
+        if (selectionChangePending) return;
+        selectionChangePending = true;
+
+        EditorApplication.delayCall += () =>
+        {
+            selectionChangePending = false;
+            if (treeGraphView?.panel == null) return; // window closed before the deferred call ran
+            OnSelectionChangeInternal();
+        };
+    }
+
+    private void OnSelectionChangeInternal()
+    {
         BaseEditorTreeAsset selectedAsset = OnSelectTree();
 
         if (selectedAsset == null) return;
