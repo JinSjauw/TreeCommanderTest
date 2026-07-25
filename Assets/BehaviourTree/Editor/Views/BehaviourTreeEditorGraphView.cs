@@ -46,7 +46,6 @@ namespace BehaviourTree.Editor
         private BtEdgeConnectorListener edgeConnectorListener;
         private RuntimeDebugManager runtimeDebugManager;
         private SubtreeExtractor subtreeExtractor;
-        private List<Port> compatiblePortsCache = new List<Port>();
         private bool debugProxiesAreSetup;
         private DropdownField runnerDropdown;
         private List<BehaviourTreeRunnerBase> availableRunners = new List<BehaviourTreeRunnerBase>();
@@ -634,7 +633,7 @@ namespace BehaviourTree.Editor
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
         {
-            compatiblePortsCache.Clear();
+            var compatiblePorts = new List<Port>();
 
             foreach (Port port in ports)
             {
@@ -649,10 +648,10 @@ namespace BehaviourTree.Editor
                     if (WouldCreateCycle(startNode, endNode)) continue;
                 }
 
-                compatiblePortsCache.Add(port);
+                compatiblePorts.Add(port);
             }
 
-            return compatiblePortsCache;
+            return compatiblePorts;
         }
 
         private static bool IsSelfOrSameNode(Port port, Port startPort)
@@ -776,6 +775,7 @@ namespace BehaviourTree.Editor
                 }
             }
 
+            UnregisterCallback<GeometryChangedEvent>(OnGeometryChangedForFrameAll);
             RegisterCallback<GeometryChangedEvent>(OnGeometryChangedForFrameAll);
         }
 
