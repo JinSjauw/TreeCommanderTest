@@ -21,5 +21,13 @@ namespace BehaviourTree.Core
         /// <summary>Set a boxed value WITHOUT applying currentAgentOffset.
         /// Use for internal copy operations that handle offsets themselves.</summary>
         void SetBoxedRaw(int slot, object value);
+
+        /// <summary>
+        /// Slot-to-slot copy within this blackboard (applies currentAgentOffset
+        /// to both slots). Same-type pairs copy inside the typed arrays — the
+        /// value never materializes in managed code. Mismatched-type pairs
+        /// convert through the boxed fallback.
+        /// </summary>
+        void CopySlot(int sourceSlot, int destSlot);
     }
 }

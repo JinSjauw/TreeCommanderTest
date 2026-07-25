@@ -497,6 +497,20 @@ namespace BehaviourTree.Core
             storage.CopySlotsFrom(source.storage, sourceSlot, destSlot, count);
         }
 
+        /// <summary>Per-slot write version of the raw slot (applies currentAgentOffset). Zero if uninitialized.</summary>
+        public int GetSlotVersion(int slot)
+        {
+            if (storage == null) return 0;
+            return storage.GetSlotVersion(slot + currentAgentOffset);
+        }
+
+        /// <summary>Slot-to-slot copy within this blackboard (applies currentAgentOffset to both slots).</summary>
+        public void CopySlot(int sourceSlot, int destSlot)
+        {
+            if (storage == null) return;
+            storage.CopySlotsFrom(storage, sourceSlot + currentAgentOffset, destSlot + currentAgentOffset, 1);
+        }
+
         /// <summary>Set a boxed value by slot index. Used by the bridge for type-agnostic copying.</summary>
         public void SetBoxed(int index, object value)
         {

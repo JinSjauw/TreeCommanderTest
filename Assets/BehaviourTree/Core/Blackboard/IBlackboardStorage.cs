@@ -30,6 +30,14 @@ namespace BehaviourTree.Core
         void CopySlotsFrom(IBlackboardStorage source, int sourceSlot, int destSlot, int count);
 
         /// <summary>
+        /// Monotonic per-slot write counter. Zero after Initialize (seeding does
+        /// not count). Bumped on every write to the slot — typed setters, generic
+        /// Set, boxed writes, and CopySlotsFrom destinations. Reads never bump.
+        /// Used by change-detection nodes (e.g. HasChanged) to avoid value reads.
+        /// </summary>
+        int GetSlotVersion(int slot);
+
+        /// <summary>
         /// Given a variable index into the unified variable list,
         /// returns the base slot index and stride in the flat values array.
         /// </summary>

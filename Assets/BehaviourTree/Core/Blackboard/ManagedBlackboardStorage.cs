@@ -185,6 +185,10 @@ namespace BehaviourTree.Core
                 SetBoxed(destSlot + i, buffer[i]);
         }
 
+        // Version counters are a TypedBlackboardStorage feature; the legacy
+        // storage (deleted in Phase 8) reports 0 for all slots.
+        public int GetSlotVersion(int slot) => 0;
+
         private bool CanWrite<T>(int index, T value)
         {
             if (values == null || index < 0 || index >= values.Length) return false;

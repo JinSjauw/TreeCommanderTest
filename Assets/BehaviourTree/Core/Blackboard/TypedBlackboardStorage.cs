@@ -31,6 +31,7 @@ namespace BehaviourTree.Core
         private SlotLocation[] map;
         private Type[] slotTypes;
         private BlackboardSlotKind[] slotKinds;
+        private int[] versions;
 
         public BlackboardDefinition Definition => definition;
         public int Count => map?.Length ?? 0;
@@ -70,6 +71,7 @@ namespace BehaviourTree.Core
             vec4s = null;
             colors = null;
             quats = null;
+            versions = null;
         }
 
         private void InitializeFromVariables(IReadOnlyList<BlackboardVariableBase> variables)
@@ -93,6 +95,9 @@ namespace BehaviourTree.Core
             quats = new Quaternion[sizes[(int)BlackboardArrayId.Quaternion]];
 
             SeedFromVariables(variables);
+
+            // Versions start at zero AFTER seeding — initial values don't count as writes.
+            versions = new int[map.Length];
         }
 
         private void SeedFromVariables(IReadOnlyList<BlackboardVariableBase> variables)
@@ -138,6 +143,18 @@ namespace BehaviourTree.Core
         {
             if (slotKinds == null || index < 0 || index >= slotKinds.Length) return BlackboardSlotKind.Value;
             return slotKinds[index];
+        }
+
+        public int GetSlotVersion(int slot)
+        {
+            if (versions == null || slot < 0 || slot >= versions.Length) return 0;
+            return versions[slot];
+        }
+
+        private void BumpVersion(int slot)
+        {
+            // versions is null during Initialize seeding (allocated right after).
+            if (versions != null) versions[slot]++;
         }
 
         public T Get<T>(int index)
@@ -226,6 +243,8 @@ namespace BehaviourTree.Core
                 case BlackboardArrayId.Quaternion: quats[loc.LocalIndex] = (Quaternion)(object)value; break;
                 default: objects[loc.LocalIndex] = value; break;
             }
+
+            BumpVersion(index);
         }
 
         public object GetBoxed(int index)
@@ -271,7 +290,10 @@ namespace BehaviourTree.Core
                 // keep their current value (CanWrite checks reject null for value
                 // slots; seeding leaves default(T)).
                 if (loc.ArrayId == BlackboardArrayId.Object)
+                {
                     objects[loc.LocalIndex] = null;
+                    BumpVersion(index);
+                }
                 return;
             }
 
@@ -287,6 +309,8 @@ namespace BehaviourTree.Core
                 case BlackboardArrayId.Quaternion: quats[loc.LocalIndex] = (Quaternion)value; break;
                 default: objects[loc.LocalIndex] = value; break;
             }
+
+            BumpVersion(index);
         }
 
         // ── IBlackboardTypedAccess ──────────────────────────────────
@@ -295,23 +319,23 @@ namespace BehaviourTree.Core
         // IndexOutOfRange, same as any direct array access.
 
         public float GetFloat(int slot) => floats[map[slot].LocalIndex];
-        public void SetFloat(int slot, float value) => floats[map[slot].LocalIndex] = value;
+        public void SetFloat(int slot, float value) { floats[map[slot].LocalIndex] = value; BumpVersion(slot); }
         public int GetInt(int slot) => ints[map[slot].LocalIndex];
-        public void SetInt(int slot, int value) => ints[map[slot].LocalIndex] = value;
+        public void SetInt(int slot, int value) { ints[map[slot].LocalIndex] = value; BumpVersion(slot); }
         public bool GetBool(int slot) => bools[map[slot].LocalIndex];
-        public void SetBool(int slot, bool value) => bools[map[slot].LocalIndex] = value;
+        public void SetBool(int slot, bool value) { bools[map[slot].LocalIndex] = value; BumpVersion(slot); }
         public Vector2 GetVector2(int slot) => vec2s[map[slot].LocalIndex];
-        public void SetVector2(int slot, Vector2 value) => vec2s[map[slot].LocalIndex] = value;
+        public void SetVector2(int slot, Vector2 value) { vec2s[map[slot].LocalIndex] = value; BumpVersion(slot); }
         public Vector3 GetVector3(int slot) => vec3s[map[slot].LocalIndex];
-        public void SetVector3(int slot, Vector3 value) => vec3s[map[slot].LocalIndex] = value;
+        public void SetVector3(int slot, Vector3 value) { vec3s[map[slot].LocalIndex] = value; BumpVersion(slot); }
         public Vector4 GetVector4(int slot) => vec4s[map[slot].LocalIndex];
-        public void SetVector4(int slot, Vector4 value) => vec4s[map[slot].LocalIndex] = value;
+        public void SetVector4(int slot, Vector4 value) { vec4s[map[slot].LocalIndex] = value; BumpVersion(slot); }
         public Color GetColor(int slot) => colors[map[slot].LocalIndex];
-        public void SetColor(int slot, Color value) => colors[map[slot].LocalIndex] = value;
+        public void SetColor(int slot, Color value) { colors[map[slot].LocalIndex] = value; BumpVersion(slot); }
         public Quaternion GetQuaternion(int slot) => quats[map[slot].LocalIndex];
-        public void SetQuaternion(int slot, Quaternion value) => quats[map[slot].LocalIndex] = value;
+        public void SetQuaternion(int slot, Quaternion value) { quats[map[slot].LocalIndex] = value; BumpVersion(slot); }
         public T GetObject<T>(int slot) where T : class => objects[map[slot].LocalIndex] as T;
-        public void SetObject(int slot, object value) => objects[map[slot].LocalIndex] = value;
+        public void SetObject(int slot, object value) { objects[map[slot].LocalIndex] = value; BumpVersion(slot); }
 
         public void CopySlotsFrom(IBlackboardStorage source, int sourceSlot, int destSlot, int count)
         {
@@ -341,6 +365,7 @@ namespace BehaviourTree.Core
                         }
 
                         CopyRun(src, srcLoc, dstLoc, run);
+                        for (int i = 0; i < run; i++) BumpVersion(d + i);
                         s += run;
                         d += run;
                         remaining -= run;
