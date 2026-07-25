@@ -225,6 +225,7 @@ namespace BehaviourTree.Editor
         {
             EnsureSearchWindow();
             if (tree == null) return;
+            if (EditorWindow.focusedWindow == null) return;
 
             Rect windowRect = EditorWindow.focusedWindow.position;
             Vector2 localPos = this.ChangeCoordinatesTo(contentViewContainer,
@@ -274,6 +275,7 @@ namespace BehaviourTree.Editor
             EnsureSearchWindow();
             if (searchWindow == null) return;
             if (tree == null) return;
+            if (EditorWindow.focusedWindow == null) return;
 
             Vector2 screenPos = GUIUtility.GUIToScreenPoint(graphMousePosition);
             Rect windowRect = EditorWindow.focusedWindow.position;
@@ -429,6 +431,8 @@ namespace BehaviourTree.Editor
 
         private GraphViewChange OnGraphViewChanged(GraphViewChange change)
         {
+            if (tree == null) return change;
+
             if (EditorApplication.isPlaying && change.edgesToCreate != null)
             {
                 change.edgesToCreate.RemoveAll(edge =>
@@ -490,11 +494,13 @@ namespace BehaviourTree.Editor
 
         private void HandleEdgeCreation(List<Edge> edgesToCreate)
         {
+            if (EditorApplication.isPlaying) return;
+
             for (int i = 0; i < edgesToCreate.Count; i++)
             {
                 Edge edge = edgesToCreate[i];
-                BehaviourNodeView parentView = edge.output.node as BehaviourNodeView;
-                BehaviourNodeView childView = edge.input.node as BehaviourNodeView;
+                if (edge?.output?.node is not BehaviourNodeView parentView) continue;
+                if (edge?.input?.node is not BehaviourNodeView childView) continue;
 
                 tree.AddChild(parentView.NodeSO, childView.NodeSO);
                 parentView.SortChildren();

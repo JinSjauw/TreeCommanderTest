@@ -15,6 +15,12 @@ public class GraphViewStabilityTests
     }
 
     [Test]
+    public void GraphEditorTheme_Instance_IsNeverNull()
+    {
+        Assert.NotNull(GraphEditorTheme.instance);
+    }
+
+    [Test]
     public void Dispose_DestroysSearchProvider_AndIsIdempotent()
     {
         int before = Resources.FindObjectsOfTypeAll<NodeSearchProvider>().Length;

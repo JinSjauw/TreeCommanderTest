@@ -20,7 +20,11 @@ namespace BehaviourTree.Editor
             get
             {
                 if (cachedInstance == null)
+                {
                     cachedInstance = AssetDatabase.LoadAssetAtPath<GraphEditorTheme>(AssetPath);
+                    if (cachedInstance == null)
+                        cachedInstance = CreateInstance<GraphEditorTheme>(); // default palette fallback — never null
+                }
                 return cachedInstance;
             }
         }
