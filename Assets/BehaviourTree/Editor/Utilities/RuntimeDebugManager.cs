@@ -442,6 +442,8 @@ namespace BehaviourTree.Editor
                 string key = "replace:" + edgeKey;
                 if (proxyReplacementEdges.ContainsKey(key)) continue;
 
+                if (rootProxy.input.connected) continue; // single-capacity input already rewired
+
                 Edge replacement = edge.output.ConnectTo(rootProxy.input);
                 proxyReplacementEdges[key] = replacement;
                 graphView.AddElement(replacement);

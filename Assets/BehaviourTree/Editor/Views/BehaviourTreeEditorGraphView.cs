@@ -17,6 +17,7 @@ namespace BehaviourTree.Editor
         static BehaviourTreeEditorGraphView()
         {
             EditorSceneManager.sceneOpened += (_, _) => runnersCacheValid = false;
+            EditorApplication.hierarchyChanged += () => runnersCacheValid = false;
         }
 
         private static List<BehaviourTreeRunnerBase> cachedRunners;
