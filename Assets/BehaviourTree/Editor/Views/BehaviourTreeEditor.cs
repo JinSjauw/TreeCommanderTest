@@ -6,6 +6,7 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using BehaviourTree.Core;
 using BehaviourTree.Editor;
+using BehaviourTree.EditorTools.Codegen;
 using BehaviourTree.Runtime;
 using System;
 using System.Collections.Generic;
@@ -478,6 +479,10 @@ public class BehaviourTreeEditor : EditorWindow
         if (currentTree == null || currentBlackboardDef == null) return;
 
         Debug.Log("Baking Tree!");
+
+        // Validation only — never generation. Lists stale/missing generated
+        // accessors so the developer regenerates (menu) before the next build.
+        GeneratedAccessorValidator.Validate();
 
         RuntimeBehaviourTreeAsset runtimeAsset = CreateInstance<RuntimeBehaviourTreeAsset>();
         runtimeAsset.name = currentTree.name + "_Runtime";
