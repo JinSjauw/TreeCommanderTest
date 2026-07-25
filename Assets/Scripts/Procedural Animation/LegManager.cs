@@ -12,6 +12,10 @@ public class LegManager : MonoBehaviour
 
     private List<LegController> allLegs;
 
+    /// <summary>Reused per-frame scratch list for UpdateRotation — avoids a
+    /// list + backing-array allocation every frame.</summary>
+    private readonly List<Vector3> localLegs = new List<Vector3>();
+
     [SerializeField] private Transform bodyTransform;
     [SerializeField] private float heightOffset;
 
@@ -97,9 +101,9 @@ public class LegManager : MonoBehaviour
         }
     }
 
-    private void UpdateRotation() 
+    private void UpdateRotation()
     {
-        List<Vector3> localLegs = new List<Vector3>();
+        localLegs.Clear();
         Vector3 center = Vector3.zero;
 
         for (int i = 0; i < allLegs.Count; i++) 
