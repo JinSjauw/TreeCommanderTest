@@ -637,8 +637,6 @@ namespace BehaviourTree.Runtime.Methods
             object target = BB.GetBoxed(targetSlot);
             if (target == null) return NodeState.FAILURE;
 
-            //Debug.Log("HELE");
-
             Vector3 destination;
             if (target is Transform t)
                 destination = t.position;
