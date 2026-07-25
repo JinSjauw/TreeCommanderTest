@@ -153,33 +153,6 @@ namespace BehaviourTree.Editor
             BuildDynamicFieldEntries(descriptors, methodChanged);
         }
 
-        private void ResizeFieldEntries(List<ParamInfo> paramInfoList)
-        {
-            while (fieldEntriesProp.arraySize < paramInfoList.Count)
-                fieldEntriesProp.InsertArrayElementAtIndex(fieldEntriesProp.arraySize);
-            while (fieldEntriesProp.arraySize > paramInfoList.Count)
-                fieldEntriesProp.DeleteArrayElementAtIndex(fieldEntriesProp.arraySize - 1);
-        }
-
-        private void DrawConstantField(SerializedProperty entryProp, ParamInfo info)
-        {
-            if (info.isRoleDropdown) { DrawRoleDropdown(entryProp); return; }
-            if (info.isOrderDropdown) { DrawOrderDropdown(entryProp); return; }
-            ConstantValueFieldDrawer.Draw(entryProp, info.fieldType, "Value",
-                showLabel: true, fieldWidth: FieldLabelWidth + InputFieldWidth);
-        }
-
-        private void DrawVariableDropdown(SerializedProperty variableNameProp, Type expectedType, bool isArray = false)
-        {
-            variablePicker.Draw(variableNameProp, expectedType, isArray, new BlackboardVariablePicker.Options
-            {
-                label = "Shared Variable",
-                labelWidth = FieldLabelWidth,
-                dropdownWidth = FieldLabelWidth + InputFieldWidth,
-                showProxyMapping = true,
-            });
-        }
-
         // ── Conditional Abort Validation ──
 
         private void DrawRoleDropdown(SerializedProperty entryProp)
@@ -422,7 +395,7 @@ namespace BehaviourTree.Editor
         /// <summary>
         /// Attribute-projected descriptors (fieldName != null) carry static metadata that
         /// overrides the serialized entry every repaint — same guarantee the legacy
-        /// ParamInfo path gave. Hand-authored dynamic descriptors skip this (user edits win).
+        /// reflection path gave. Hand-authored dynamic descriptors skip this (user edits win).
         /// </summary>
         private void EnforceProjectedMetadata(DynamicParamDescriptor[] descriptors)
         {

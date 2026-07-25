@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using BehaviourTree.Core;
+using BehaviourTree.Runtime;
 using UnityEditor;
 
 namespace BehaviourTree.Editor
@@ -854,15 +855,17 @@ namespace BehaviourTree.Editor
                 var entry = methodTooltips[i];
                 if (entry == null || entry.data == null || string.IsNullOrEmpty(entry.methodName)) continue;
 
-                var paramInfos = MethodMetadataCache.GetParamsForMethod(entry.methodName);
-                if (paramInfos == null || paramInfos.Count == 0) continue;
+                NodeMethod temp = MethodRegistry.CreateInstance(entry.methodName);
+                var descriptors = NodeParamSchema.GetForMethod(temp);
+                if (descriptors == null || descriptors.Length == 0) continue;
 
                 var existingDescriptions = entry.data.fieldDescriptions;
-                var newDescriptions = new NodeFieldDescription[paramInfos.Count];
+                var newDescriptions = new NodeFieldDescription[descriptors.Length];
 
-                for (int f = 0; f < paramInfos.Count; f++)
+                for (int f = 0; f < descriptors.Length; f++)
                 {
-                    string fieldName = paramInfos[f].fieldName;
+                    string fieldName = descriptors[f].fieldName
+                                       ?? descriptors[f].label.ToLowerInvariant().Replace(" ", "");
                     string existingDesc = FindExistingDescription(existingDescriptions, fieldName);
 
                     newDescriptions[f] = new NodeFieldDescription
