@@ -33,8 +33,11 @@ a permanent design.
 
 ### Future path: typed arrays → DOTS NativeArray<T>
 
-1. **Step 1 — Typed arrays per supported type.**
-   Replace the single `object[]` with one array per common type:
+1. **Step 1 — Typed arrays per supported type.** ✅ IMPLEMENTED (`TypedBlackboardStorage`,
+   branch `refactor/RuntimeBlackboardStorage`) — one array per common type plus an `object[]`
+   fallback, virtual slot numbering unchanged. Field/tracked bindings now call typed accessors
+   (`GetFloat`/`SetInt`/...) — boxing is gone from those paths. Dynamic-type nodes and editor
+   tooling still use the boxed API by design.
 
    ```
    object[] storage      →    float[]     _floats
@@ -67,10 +70,15 @@ a permanent design.
    - `CompileTrackedBindingDelegate()` — the entire method
    - `FieldBinding.CompileAccessors()` — the entire method
    - `Func<object> readDelegate` — no delegates needed
-   - `ManagedBlackboardStorage.CanWriteBoxed()` — no type-checking needed
+   - `TypedBlackboardStorage.CanWriteBoxed()` — no type-checking needed
    - `IBlackBoardAccess.GetBoxed()` / `SetBoxed()` — replaced by typed indexers
 
 ### Why we didn't skip to typed arrays immediately
+
+> **Update (July 2026):** typed arrays HAVE landed — `TypedBlackboardStorage` with typed
+> accessors for bindings, typed region copies for squad sync, and slot version counters.
+> `Expression.Compile` remains only as the editor-iteration bridge until the build-time
+> getter/setter codegen lands (next plan). The DOTS step (point 2 above) is still pending.
 
 The boxed `object[]` path is demonstrably fine for the current project scale (<50 bindings,
 <20 BB reads per tick). The reflection path was the actual measurable cost. Typed arrays

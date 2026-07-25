@@ -73,7 +73,7 @@ File: `Assets/BehaviourTree/Core/BlackBoard.cs`
 
 The **runtime component** that holds the actual data. Implements `IBlackBoardAccess`. Key design:
 
-**Storage**: Delegates to `IBlackboardStorage` (currently `ManagedBlackboardStorage`) — a flat `object[]` array where each slot has a declared `Type` and `BlackboardSlotKind` (Value or Reference).
+**Storage**: Delegates to `IBlackboardStorage` (`TypedBlackboardStorage`) — one array per supported value type plus an `object[]` fallback, with a `SlotLocation[]` map translating virtual slots. Each slot also has a declared `Type` and `BlackboardSlotKind` (Value or Reference).
 
 **SerializedReferences** (`List<UnityEngine.Object>`): Unity can only serialize `UnityEngine.Object` references in MonoBehaviours, not arbitrary C# objects. For reference-type variables (GameObject, Transform, custom ScriptableObjects, etc.), the references are stored in this parallel list. They sync to/from the flat storage on `Initialize()`.
 

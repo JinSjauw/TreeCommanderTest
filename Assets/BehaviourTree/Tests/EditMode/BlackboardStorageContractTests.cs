@@ -9,7 +9,6 @@ namespace BehaviourTree.Tests
     /// Contract tests every IBlackboardStorage implementation must satisfy.
     /// One TestFixture attribute per implementation.
     /// </summary>
-    [TestFixture(typeof(ManagedBlackboardStorage))]
     [TestFixture(typeof(TypedBlackboardStorage))]
     public class BlackboardStorageContractTests<TStorage> where TStorage : IBlackboardStorage, new()
     {

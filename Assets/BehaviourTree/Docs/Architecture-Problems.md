@@ -56,7 +56,7 @@ This works only because each agent has its own `TreeEvaluator` → its own `meth
 `PushTrackedBindings()` calls `PropertyInfo.GetValue()` / `FieldInfo.GetValue()` for every binding, every frame. The BT node `FieldBinding` system uses Expression-compiled delegates. Tracked bindings don't. For <20 bindings this is fine, but inconsistent with the BT node approach and doesn't scale well.
 
 ### 2. Silent type-mismatch drops
-If a tracked binding's member type doesn't EXACTLY match the BB slot type (for value types), the write is silently dropped by `ManagedBlackboardStorage.CanWriteBoxed()`. No runtime warning. Only caught by editor validation in `TrackedVariablesView`. If a BB variable type is changed after bindings are configured, bindings silently stop working.
+If a tracked binding's member type doesn't EXACTLY match the BB slot type (for value types), the write is silently dropped by `TypedBlackboardStorage.CanWriteBoxed()`. No runtime warning. Only caught by editor validation in `TrackedVariablesView`. If a BB variable type is changed after bindings are configured, bindings silently stop working.
 
 ### 3. Overwrite conflict with BT node writes
 Execution order:

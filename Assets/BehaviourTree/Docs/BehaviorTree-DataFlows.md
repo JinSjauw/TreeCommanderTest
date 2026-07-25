@@ -77,8 +77,8 @@ Assets/
 │   │   ├── BlackboardDefinition.cs    # ScriptableObject schema (variable list)
 │   │   ├── BlackboardVariable.cs      # BlackboardVariable<T> (typed, stride support)
 │   │   ├── BlackboardVariableBase.cs  # Abstract base (Name, Stride, TypeName, isSquadData)
-│   │   ├── ManagedBlackboardStorage.cs # Flat object[] backend
-│   │   ├── IBlackBoardAccess.cs       # Get<T>/Set<T>/GetBoxed/SetBoxed (slot-based)
+│   │   ├── TypedBlackboardStorage.cs  # Typed-array backend (SlotLocation map)
+│   │   ├── IBlackBoardAccess.cs       # Get<T>/Set<T>/GetBoxed/SetBoxed + typed accessors (slot-based)
 │   │   ├── IBlackboardStorage.cs      # Storage backend contract
 │   │   ├── NodeData.cs               # Flat runtime node struct (8 fields)
 │   │   ├── NodeFieldEntry.cs         # Editor-side parameter entry (union of typed values)
@@ -243,10 +243,11 @@ BlackboardDefinition (schema, SO)
          └── BlackboardVariable<Vector3> Name="Position",     Stride=1
 
 At runtime:
-ManagedBlackboardStorage
-    ├── values[]    = object[totalSlots]     // boxed values
-    ├── slotTypes[] = Type[totalSlots]       // declared type per slot
-    └── slotKinds[] = BlackboardSlotKind[]   // Value or Reference
+TypedBlackboardStorage
+    ├── map[]       = SlotLocation[totalSlots] // virtual slot → typed array + local index
+    ├── slotTypes[] = Type[totalSlots]         // declared type per slot
+    ├── slotKinds[] = BlackboardSlotKind[]     // Value or Reference
+    └── floats[]/ints[]/vec3s[]/objects[] ...  // typed value arrays + object[] fallback
 
 Slot layout (positional):
     Variable "AgentRoles"  (Stride=N) → slots 0..N-1
