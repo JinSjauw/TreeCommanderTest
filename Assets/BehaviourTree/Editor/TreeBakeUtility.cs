@@ -47,6 +47,12 @@ namespace BehaviourTree.Editor
                 AssetDatabase.AddObjectToAsset(baked.blackboardDefinition, baked);
             }
             AssetDatabase.SaveAssets();
+
+            if (AssetDatabase.LoadAssetAtPath<RuntimeBehaviourTreeAsset>(assetPath) == null)
+            {
+                Debug.LogError($"[TreeBakeUtility] Failed to persist baked asset at {assetPath}.");
+                return null;
+            }
             return baked;
         }
 
@@ -71,11 +77,15 @@ namespace BehaviourTree.Editor
 
             if (AssetDatabase.IsValidFolder(BakedTreesFolder))
             {
-                foreach (string old in AssetDatabase.FindAssets(
+                foreach (string fileGuid in AssetDatabase.FindAssets(
                              "t:RuntimeBehaviourTreeAsset", new[] { BakedTreesFolder }))
                 {
-                    if (!liveGuids.Contains(old))
-                        AssetDatabase.DeleteAsset(AssetDatabase.GUIDToAssetPath(old));
+                    string orphanPath = AssetDatabase.GUIDToAssetPath(fileGuid);
+                    // Files are keyed by the AUTHORING guid in their filename — the
+                    // .meta guid of the baked file itself is a different, unrelated guid.
+                    string authoringGuid = System.IO.Path.GetFileNameWithoutExtension(orphanPath);
+                    if (!liveGuids.Contains(authoringGuid))
+                        AssetDatabase.DeleteAsset(orphanPath);
                 }
             }
 
