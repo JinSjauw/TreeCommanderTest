@@ -1006,7 +1006,7 @@ namespace BehaviourTree.Editor
             runtimeDebugManager.RemoveAllProxies();
             foreach (BehaviourNodeView nodeView in nodeViewDict.Values)
             {
-                nodeView?.SetDebugState(NodeState.NONE, false);
+                nodeView?.SetDebugState(NodeState.NONE);
             }
         }
 

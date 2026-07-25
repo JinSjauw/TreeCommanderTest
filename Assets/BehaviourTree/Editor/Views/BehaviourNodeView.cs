@@ -384,25 +384,25 @@ namespace BehaviourTree.Editor
             return left.graphPosition.x < right.graphPosition.x ? -1 : left.graphPosition.x > right.graphPosition.x ? 1 : 0;
         }
 
-        public void SetDebugState(NodeState state, bool isActive)
+        private NodeState lastDebugState = NodeState.NONE;
+        private bool debugStateInitialized;
+
+        public void SetDebugState(NodeState state)
         {
-            if (statusborder != null)
+            if (statusborder == null) return;
+            if (debugStateInitialized && state == lastDebugState) return;
+
+            debugStateInitialized = true;
+            lastDebugState = state;
+
+            statusborder.ClearClassList();
+            statusborder.AddToClassList(state switch
             {
-
-                string nodeStatusClass;
-
-                statusborder.ClearClassList();
-
-                nodeStatusClass = state switch
-                {
-                    NodeState.RUNNING => "node-running",
-                    NodeState.SUCCESS => "node-success",
-                    NodeState.FAILURE => "node-failure",
-                    _ => "node-none"
-                };
-
-                statusborder.AddToClassList(nodeStatusClass);
-            }
+                NodeState.RUNNING => "node-running",
+                NodeState.SUCCESS => "node-success",
+                NodeState.FAILURE => "node-failure",
+                _ => "node-none"
+            });
         }
 
         // ── Node Icons ────────────────────────────────────────────────

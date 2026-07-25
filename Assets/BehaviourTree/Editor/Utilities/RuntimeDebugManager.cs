@@ -22,6 +22,7 @@ namespace BehaviourTree.Editor
         private readonly List<BehaviourNodeView> hiddenSubtreeViews = new List<BehaviourNodeView>();
 
         private readonly Dictionary<BaseEditorTreeAsset, Dictionary<string, BehaviourNode>> authoringNodeLookupCache;
+        private readonly Dictionary<string, int> guidToIndexCache = new Dictionary<string, int>();
 
         public RuntimeDebugManager(BehaviourTreeEditorGraphView graphView)
         {
@@ -62,7 +63,6 @@ namespace BehaviourTree.Editor
             if (provider == null || provider.currentNodeStates == null) return;
 
             NodeState[] states = provider.currentNodeStates;
-            int activeIndex = provider.activeNodeIndex;
 
             if (provider.currentNodeGuids == null || provider.currentNodeGuids.Length != states.Length)
             {
@@ -71,58 +71,30 @@ namespace BehaviourTree.Editor
                     if (nodeView?.NodeSO == null) continue;
 
                     int runtimeIdx = nodeView.NodeSO.runtimeIndex;
-                    if (runtimeIdx < 0 || runtimeIdx >= states.Length)
-                    {
-                        nodeView.SetDebugState(NodeState.NONE, false);
-                        continue;
-                    }
-
-                    NodeState state = states[runtimeIdx];
-                    bool isActive = runtimeIdx == activeIndex;
-                    nodeView.SetDebugState(state, isActive);
+                    nodeView.SetDebugState(runtimeIdx < 0 || runtimeIdx >= states.Length ? NodeState.NONE : states[runtimeIdx]);
                 }
                 return;
             }
 
-            Dictionary<string, int> guidToIndex = new Dictionary<string, int>(provider.currentNodeGuids.Length);
+            guidToIndexCache.Clear();
             for (int i = 0; i < provider.currentNodeGuids.Length; i++)
             {
                 string guid = provider.currentNodeGuids[i];
-                if (string.IsNullOrEmpty(guid)) continue;
-                guidToIndex[guid] = i;
+                if (!string.IsNullOrEmpty(guid))
+                    guidToIndexCache[guid] = i;
             }
 
             foreach (BehaviourNodeView nodeView in nodeViewDict.Values)
             {
                 if (nodeView?.NodeSO == null) continue;
-
-                if (guidToIndex.TryGetValue(nodeView.Guid, out int runtimeIdx))
-                {
-                    NodeState state = states[runtimeIdx];
-                    bool isActive = runtimeIdx == activeIndex;
-                    nodeView.SetDebugState(state, isActive);
-                }
-                else
-                {
-                    nodeView.SetDebugState(NodeState.NONE, false);
-                }
+                nodeView.SetDebugState(guidToIndexCache.TryGetValue(nodeView.Guid, out int runtimeIdx) ? states[runtimeIdx] : NodeState.NONE);
             }
 
             foreach (KeyValuePair<string, BehaviourNodeView> kvp in proxyNodeViews)
             {
                 BehaviourNodeView proxy = kvp.Value;
                 if (proxy == null) continue;
-
-                if (guidToIndex.TryGetValue(kvp.Key, out int runtimeIdx))
-                {
-                    NodeState state = states[runtimeIdx];
-                    bool isActive = runtimeIdx == activeIndex;
-                    proxy.SetDebugState(state, isActive);
-                }
-                else
-                {
-                    proxy.SetDebugState(NodeState.NONE, false);
-                }
+                proxy.SetDebugState(guidToIndexCache.TryGetValue(kvp.Key, out int runtimeIdx) ? states[runtimeIdx] : NodeState.NONE);
             }
         }
 
