@@ -61,9 +61,13 @@ namespace BehaviourTree.Editor
             return loadedAsset;
         }
 
+        /// <summary>Fired when the tooltip asset changes and any composed/cached tooltip text must be rebuilt.</summary>
+        public static event Action CacheInvalidated;
+
         public static void InvalidateCache()
         {
             loadedAsset = null;
+            CacheInvalidated?.Invoke();
         }
 
         public static NodeTooltipData GetTooltip(BehaviourNodeType nodeType)

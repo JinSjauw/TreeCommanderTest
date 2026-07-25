@@ -35,6 +35,16 @@ namespace BehaviourTree.Editor
         private Label abortLabel;
 
         public BehaviourTreeEditorGraphView GraphView { get; set; }
+        public bool IsReadOnlyProxy { get; set; }
+
+        // Composed tooltip text is identical for all nodes with the same method —
+        // build once per method, clear when the tooltip asset changes.
+        private static readonly Dictionary<string, string> tooltipStringCache = new Dictionary<string, string>();
+
+        static BehaviourNodeView()
+        {
+            TooltipRegistry.CacheInvalidated += () => tooltipStringCache.Clear();
+        }
 
         public BehaviourNodeView(BehaviourNode nodeObject) : base(BehaviourTreeEditorPaths.GraphNodeViewUxml)
         {
@@ -174,6 +184,7 @@ namespace BehaviourTree.Editor
             }
 
             tooltip = description;
+            tooltipStringCache[cacheKey] = description;
         }
 
         public override Port InstantiatePort(Orientation orientation, Direction direction, Port.Capacity capacity, Type type)

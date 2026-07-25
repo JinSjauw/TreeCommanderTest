@@ -44,13 +44,14 @@ namespace BehaviourTree.Editor
             UpdateConnectionStateClass();
         }
 
+        private static VisualTreeAsset cachedPortUxml;
+
         private void LoadTemplate()
         {
-            VisualTreeAsset treeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(BehaviourTreeEditorPaths.BehaviourPortUxml);
-            if (treeAsset != null)
-            {
-                treeAsset.CloneTree(this);
-            }
+            if (cachedPortUxml == null)
+                cachedPortUxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(BehaviourTreeEditorPaths.BehaviourPortUxml);
+            if (cachedPortUxml != null)
+                cachedPortUxml.CloneTree(this);
         }
 
         private void SetupBaseClasses()
