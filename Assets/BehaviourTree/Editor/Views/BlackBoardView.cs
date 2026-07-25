@@ -73,8 +73,14 @@ public partial class BlackBoardView : VisualElement
     /// </summary>
     public bool IsSquadContext { get; set; }
 
-    public void BuildBlackboardView(BlackboardDefinition blackboardDefinition)
+    public void BuildBlackboardView(BlackboardDefinition blackboardDefinition, bool force = true)
     {
+        // Skip redundant full rebuilds — same definition, view still attached.
+        // Callers that mutate the definition's content (e.g. template apply) must pass force: true.
+        if (!force && blackboardDefinition == cachedDefinition
+            && variableListView != null && variableListView.panel != null)
+            return;
+
         cachedDefinition = blackboardDefinition;
         previousVariableNames.Clear();
         previousVariableTypes.Clear();

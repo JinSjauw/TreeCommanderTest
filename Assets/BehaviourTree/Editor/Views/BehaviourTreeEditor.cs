@@ -607,7 +607,7 @@ public class BehaviourTreeEditor : EditorWindow
                     ? currentTree.CommanderBlackboardDefinition
                     : currentTree.blackboardDefinition;
                 var swBb = System.Diagnostics.Stopwatch.StartNew();
-                blackBoardView.BuildBlackboardView(bbDef);
+                blackBoardView.BuildBlackboardView(bbDef, force: false);
                 swBb.Stop();
                 if (ProfileTreeSwitch) Debug.Log($"[TreeSwitch] BuildBlackboardView: {swBb.ElapsedMilliseconds} ms");
             }
