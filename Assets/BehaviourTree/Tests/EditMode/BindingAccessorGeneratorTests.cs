@@ -1,6 +1,7 @@
 using System.Reflection;
 using BehaviourTree.Core;
 using BehaviourTree.EditorTools.Codegen;
+using BehaviourTree.Runtime;
 using NUnit.Framework;
 
 namespace BehaviourTree.Tests
@@ -27,6 +28,14 @@ namespace BehaviourTree.Tests
             StringAssert.Contains("GeneratedAccessorRegistry.Clear();", file);
             StringAssert.Contains("bb.GetFloat(slot)", file);
             StringAssert.Contains("GenStubMethod", file);
+        }
+
+        [Test]
+        public void IsTestAssembly_FlagsTestAssemblies_NotGameAssemblies()
+        {
+            Assert.IsTrue(BindingAccessorGenerator.IsTestAssembly(typeof(BindingAccessorGeneratorTests).Assembly));
+            Assert.IsFalse(BindingAccessorGenerator.IsTestAssembly(typeof(BlackBoard).Assembly));      // BehaviourTree.Core
+            Assert.IsFalse(BindingAccessorGenerator.IsTestAssembly(typeof(MethodRegistry).Assembly));  // BehaviourTree.Runtime
         }
     }
 }

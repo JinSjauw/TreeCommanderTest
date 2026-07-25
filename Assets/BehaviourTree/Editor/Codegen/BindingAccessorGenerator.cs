@@ -26,6 +26,20 @@ namespace BehaviourTree.EditorTools.Codegen
         // components like HealthComponent in Assembly-CSharp) — only Assembly-CSharp
         // can see everything (it auto-references all asmdefs).
 
+        /// <summary>
+        /// Test assemblies (name contains ".Tests" or references nunit.framework) are
+        /// excluded from generation: Assembly-CSharp can't see them, so emitted
+        /// registrations referencing their stub types would not compile.
+        /// </summary>
+        public static bool IsTestAssembly(Assembly assembly)
+        {
+            string name = assembly.GetName().Name;
+            if (name.Contains(".Tests") || name.Contains("TestFramework")) return true;
+            foreach (AssemblyName reference in assembly.GetReferencedAssemblies())
+                if (reference.Name == "nunit.framework") return true;
+            return false;
+        }
+
         [MenuItem("Behaviour Tree/Generate Binding Accessors")]
         public static void Generate()
         {
@@ -35,6 +49,7 @@ namespace BehaviourTree.EditorTools.Codegen
             {
                 Type type = MethodRegistry.GetMethodType(methodName);
                 if (type == null) continue;
+                if (IsTestAssembly(type.Assembly)) continue;
 
                 FieldBinding[] bindings = MethodRegistry.CreateBindings(type);
                 if (bindings == null || bindings.Length == 0) continue;
@@ -55,6 +70,8 @@ namespace BehaviourTree.EditorTools.Codegen
             var tracked = new List<(Type type, MemberInfo member)>();
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
+                if (IsTestAssembly(assembly)) continue;
+
                 Type[] types;
                 try { types = assembly.GetTypes(); }
                 catch (ReflectionTypeLoadException e) { types = e.Types; }
