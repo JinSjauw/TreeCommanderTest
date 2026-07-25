@@ -17,7 +17,6 @@ namespace BehaviourTree.Editor
             portName = "";
 
             LoadTemplate();
-            LoadStylesheet();
             SetupBaseClasses();
         }
 
@@ -51,16 +50,6 @@ namespace BehaviourTree.Editor
             if (treeAsset != null)
             {
                 treeAsset.CloneTree(this);
-            }
-        }
-
-        private void LoadStylesheet()
-        {
-            StyleSheet styleSheet =
-                AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeEditorPaths.BehaviourPortUss);
-            if (styleSheet != null)
-            {
-                styleSheets.Add(styleSheet);
             }
         }
 

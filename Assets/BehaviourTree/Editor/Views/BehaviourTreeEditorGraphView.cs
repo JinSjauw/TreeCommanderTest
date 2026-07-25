@@ -81,6 +81,11 @@ namespace BehaviourTree.Editor
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeEditorPaths.EditorUss);
             styleSheets.Add(styleSheet);
 
+            // Port styles live once on the graph root — USS cascades to all port instances.
+            var portStyleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(BehaviourTreeEditorPaths.BehaviourPortUss);
+            if (portStyleSheet != null)
+                styleSheets.Add(portStyleSheet);
+
             nodeViewDict = new Dictionary<string, BehaviourNodeView>();
             runtimeDebugManager = new RuntimeDebugManager(this);
             subtreeExtractor = new SubtreeExtractor(this);
