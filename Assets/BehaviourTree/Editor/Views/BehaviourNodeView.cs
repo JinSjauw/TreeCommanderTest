@@ -342,26 +342,39 @@ namespace BehaviourTree.Editor
                 newPos.y = snappedY;
 
             base.SetPosition(newPos);
+        }
+
+        /// <summary>
+        /// Called once by GraphView manipulators when a drag finishes.
+        /// Persisting here (instead of in SetPosition, which fires per mouse-move)
+        /// records a single undo entry per drag instead of flooding the undo stack.
+        /// </summary>
+        public override void UpdatePresenterPosition()
+        {
+            base.UpdatePresenterPosition();
+            if (NodeSO == null) return;
+
+            Rect pos = GetPosition();
+            if (NodeSO.graphPosition == pos.position) return;
+
             Undo.RecordObject(NodeSO, "(BTree) Set Position");
-            NodeSO.graphPosition.x = newPos.xMin;
-            NodeSO.graphPosition.y = newPos.yMin;
+            NodeSO.graphPosition = pos.position;
             EditorUtility.SetDirty(NodeSO);
         }
 
         public void SortChildren()
         {
-            if (NodeSO.NodeType == BehaviourNodeType.COMPOSITE)
+            if (NodeSO.NodeType != BehaviourNodeType.COMPOSITE || GraphView == null) return;
+
+            NodeSO.children.Sort(SortByHorizontalPosition);
+
+            for (int i = 0; i < NodeSO.children.Count; i++)
             {
-                NodeSO.children.Sort(SortByHorizontalPosition);
-
-                for (int i = 0; i < NodeSO.children.Count; i++)
-                {
-                    BehaviourNodeView childView = GraphView.FindNodeView(NodeSO.children[i]);
-                    childView?.SetOrderNumber(i + 1);
-                }
-
-                EditorUtility.SetDirty(NodeSO);
+                BehaviourNodeView childView = GraphView.FindNodeView(NodeSO.children[i]);
+                childView?.SetOrderNumber(i + 1);
             }
+
+            EditorUtility.SetDirty(NodeSO);
         }
 
         public void SetOrderNumber(int order)
@@ -381,7 +394,12 @@ namespace BehaviourTree.Editor
 
         private int SortByHorizontalPosition(BehaviourNode left, BehaviourNode right)
         {
-            return left.graphPosition.x < right.graphPosition.x ? -1 : left.graphPosition.x > right.graphPosition.x ? 1 : 0;
+            return GetViewX(left).CompareTo(GetViewX(right));
+        }
+
+        private float GetViewX(BehaviourNode node)
+        {
+            return GraphView?.FindNodeView(node)?.GetPosition().x ?? node.graphPosition.x;
         }
 
         private NodeState lastDebugState = NodeState.NONE;
