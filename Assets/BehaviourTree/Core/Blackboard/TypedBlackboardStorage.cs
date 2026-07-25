@@ -102,16 +102,47 @@ namespace BehaviourTree.Core
 
         private void SeedFromVariables(IReadOnlyList<BlackboardVariableBase> variables)
         {
-            // Phase 8 replaces this boxed seeding with typed seeding.
-            // Boxing here happens once per Initialize, not per tick.
             int slot = 0;
             for (int varIndex = 0; varIndex < variables.Count; varIndex++)
             {
                 BlackboardVariableBase variable = variables[varIndex];
                 int stride = variable.Stride;
                 int actualStride = (stride > 1) ? stride : 1;
-                for (int element = 0; element < actualStride; element++)
-                    WriteBoxedUnchecked(slot + element, variable.GetBoxedValue(element));
+
+                switch (variable)
+                {
+                    case BlackboardVariable<float> v:
+                        for (int e = 0; e < actualStride; e++) floats[map[slot + e].LocalIndex] = v.GetValue(e);
+                        break;
+                    case BlackboardVariable<int> v:
+                        for (int e = 0; e < actualStride; e++) ints[map[slot + e].LocalIndex] = v.GetValue(e);
+                        break;
+                    case BlackboardVariable<bool> v:
+                        for (int e = 0; e < actualStride; e++) bools[map[slot + e].LocalIndex] = v.GetValue(e);
+                        break;
+                    case BlackboardVariable<Vector2> v:
+                        for (int e = 0; e < actualStride; e++) vec2s[map[slot + e].LocalIndex] = v.GetValue(e);
+                        break;
+                    case BlackboardVariable<Vector3> v:
+                        for (int e = 0; e < actualStride; e++) vec3s[map[slot + e].LocalIndex] = v.GetValue(e);
+                        break;
+                    case BlackboardVariable<Vector4> v:
+                        for (int e = 0; e < actualStride; e++) vec4s[map[slot + e].LocalIndex] = v.GetValue(e);
+                        break;
+                    case BlackboardVariable<Color> v:
+                        for (int e = 0; e < actualStride; e++) colors[map[slot + e].LocalIndex] = v.GetValue(e);
+                        break;
+                    case BlackboardVariable<Quaternion> v:
+                        for (int e = 0; e < actualStride; e++) quats[map[slot + e].LocalIndex] = v.GetValue(e);
+                        break;
+                    default:
+                        // Enums (boxed as their enum type — WriteBoxedUnchecked converts
+                        // to int), reference types, custom types.
+                        for (int e = 0; e < actualStride; e++)
+                            WriteBoxedUnchecked(slot + e, variable.GetBoxedValue(e));
+                        break;
+                }
+
                 slot += actualStride;
             }
         }
