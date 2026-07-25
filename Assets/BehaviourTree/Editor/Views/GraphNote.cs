@@ -72,7 +72,6 @@ namespace BehaviourTree.Editor
             contentsField.SetValueWithoutNotify(data.contents);
             colorField.SetValueWithoutNotify(data.noteColor);
             textColorField.SetValueWithoutNotify(data.textColor);
-            Debug.Log(data.position);
             SetPosition(new Rect(data.position, data.size));
             ApplyBackgroundColor(data.noteColor);
             ApplyTextColor(data.textColor);
