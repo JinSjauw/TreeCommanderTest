@@ -63,16 +63,20 @@ namespace BehaviourTree.Runtime
             for (int i = 0; i < definition.bindingGroups.Count; i++)
             {
                 SquadBindingGroup group = definition.bindingGroups[i];
-                if (group.treeAsset == null) continue;
 
-                if (treeDef.sourceTreeAsset != null && group.treeAsset == treeDef.sourceTreeAsset)
+                // Build-safe path first: treeAsset is an editor-assembly asset and
+                // deserializes null in player builds — the GUID is the stable key there.
+                if (!string.IsNullOrEmpty(group.treeAssetGuid) &&
+                    group.treeAssetGuid == treeDef.sourceTreeGuid)
                 {
                     matchedGroup = group;
                     break;
                 }
-                
-                if (!string.IsNullOrEmpty(group.treeAssetGuid) &&
-                    group.treeAssetGuid == treeDef.sourceTreeGuid)
+
+                // Editor convenience path: direct asset reference match.
+                if (group.treeAsset != null &&
+                    treeDef.sourceTreeAsset != null &&
+                    group.treeAsset == treeDef.sourceTreeAsset)
                 {
                     matchedGroup = group;
                     break;
