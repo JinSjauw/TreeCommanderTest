@@ -354,36 +354,15 @@ namespace BehaviourTree.Editor
 
             if (!GetCompatiblePorts(output, null).Contains(input)) return false;
 
-            List<GraphElement> edgesToRemove = new List<GraphElement>();
-
-            if (input.capacity == Port.Capacity.Single)
-            {
-                foreach (Edge e in input.connections)
-                {
-                    if (e.input?.node is BehaviourNodeView child)
-                        child.HideOrderNumber();
-                    edgesToRemove.Add(e);
-                }
-            }
-
-            if (output.capacity == Port.Capacity.Single)
-            {
-                foreach (Edge e in output.connections)
-                {
-                    if (e.input?.node is BehaviourNodeView child)
-                        child.HideOrderNumber();
-                    edgesToRemove.Add(e);
-                }
-            }
-
-            if (edgesToRemove.Count > 0)
-                DeleteElements(edgesToRemove);
-
             BehaviourNodeView parentView = output.node as BehaviourNodeView;
             BehaviourNodeView childView = input.node as BehaviourNodeView;
 
             if (parentView == null || childView == null) return false;
             if (tree == null) return false;
+
+            changeNotificationSuppression++;
+            try { RemoveConflictingEdges(output, input); }
+            finally { changeNotificationSuppression--; }
 
             tree.AddChild(parentView.NodeSO, childView.NodeSO);
             parentView.SortChildren();
@@ -392,8 +371,36 @@ namespace BehaviourTree.Editor
             Edge edge = output.ConnectTo(input);
             AddElement(edge);
 
-            onGraphDataChanged?.Invoke(this);
+            NotifyGraphDataChanged();
             return true;
+        }
+
+        private int changeNotificationSuppression;
+
+        private void NotifyGraphDataChanged()
+        {
+            if (changeNotificationSuppression > 0) return;
+            onGraphDataChanged?.Invoke(this);
+        }
+
+        private void RemoveConflictingEdges(Port output, Port input, Edge keepEdge = null)
+        {
+            List<GraphElement> toRemove = new List<GraphElement>();
+
+            if (input.capacity == Port.Capacity.Single)
+                foreach (Edge e in input.connections)
+                    if (e != keepEdge) toRemove.Add(e);
+
+            if (output.capacity == Port.Capacity.Single)
+                foreach (Edge e in output.connections)
+                    if (e != keepEdge) toRemove.Add(e);
+
+            foreach (GraphElement ge in toRemove)
+                if (ge is Edge e && e.input?.node is BehaviourNodeView child)
+                    child.HideOrderNumber();
+
+            if (toRemove.Count > 0)
+                DeleteElements(toRemove);
         }
 
         private void OnUndoRedo()
@@ -490,7 +497,7 @@ namespace BehaviourTree.Editor
                 }
             }
 
-            onGraphDataChanged?.Invoke(this);
+            NotifyGraphDataChanged();
         }
 
         private void HandleEdgeCreation(List<Edge> edgesToCreate)
@@ -508,7 +515,7 @@ namespace BehaviourTree.Editor
                 EditorUtility.SetDirty(parentView.NodeSO);
             }
 
-            onGraphDataChanged?.Invoke(this);
+            NotifyGraphDataChanged();
         }
 
         private void HandleElementsMoved(List<GraphElement> movedElements)
@@ -1048,28 +1055,7 @@ namespace BehaviourTree.Editor
                 if (graphView == null || edge == null) return;
                 if (edge.input == null || edge.output == null) return;
 
-                List<GraphElement> elementsToRemove = new List<GraphElement>();
-
-                if (edge.input.capacity == Port.Capacity.Single)
-                {
-                    foreach (Edge connection in edge.input.connections)
-                    {
-                        if (connection != edge)
-                            elementsToRemove.Add(connection);
-                    }
-                }
-
-                if (edge.output.capacity == Port.Capacity.Single)
-                {
-                    foreach (Edge connection in edge.output.connections)
-                    {
-                        if (connection != edge)
-                            elementsToRemove.Add(connection);
-                    }
-                }
-
-                if (elementsToRemove.Count > 0)
-                    graphView.DeleteElements(elementsToRemove);
+                this.graphView.RemoveConflictingEdges(edge.output, edge.input, edge);
 
                 edge.input.Connect(edge);
                 edge.output.Connect(edge);
