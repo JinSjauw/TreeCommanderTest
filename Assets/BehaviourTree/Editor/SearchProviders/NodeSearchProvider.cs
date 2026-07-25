@@ -29,11 +29,18 @@ namespace BehaviourTree.Editor
 
         private void OnDestroy()
         {
+            MethodRegistry.OnRegistryRebuilt -= OnRegistryRebuilt;
             if (identationIcon != null)
             {
                 DestroyImmediate(identationIcon);
                 identationIcon = null;
             }
+        }
+
+        /// <summary>Explicit teardown for owners that destroy this provider via DestroyImmediate.</summary>
+        public void Shutdown()
+        {
+            MethodRegistry.OnRegistryRebuilt -= OnRegistryRebuilt;
         }
 
         public void Initialize(BehaviourTreeEditorGraphView sourceGraphView)

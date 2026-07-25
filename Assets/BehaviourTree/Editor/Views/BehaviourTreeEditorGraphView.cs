@@ -306,6 +306,13 @@ namespace BehaviourTree.Editor
 
             if (runnerDropdown != null)
                 runnerDropdown.UnregisterValueChangedCallback(OnRunnerDropdownChanged);
+
+            if (searchWindow != null)
+            {
+                searchWindow.Shutdown();
+                UnityEngine.Object.DestroyImmediate(searchWindow);
+                searchWindow = null;
+            }
         }
 
         public bool TryConnectPorts(Port from, Port to)

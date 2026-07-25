@@ -15,6 +15,20 @@ public class GraphViewStabilityTests
     }
 
     [Test]
+    public void Dispose_DestroysSearchProvider_AndIsIdempotent()
+    {
+        int before = Resources.FindObjectsOfTypeAll<NodeSearchProvider>().Length;
+
+        var view = new BehaviourTreeEditorGraphView();
+        view.EnsureSearchWindow();
+        Assert.AreEqual(before + 1, Resources.FindObjectsOfTypeAll<NodeSearchProvider>().Length);
+
+        view.Dispose();
+        Assert.AreEqual(before, Resources.FindObjectsOfTypeAll<NodeSearchProvider>().Length);
+        Assert.DoesNotThrow(() => view.Dispose());
+    }
+
+    [Test]
     [Timeout(5000)]
     public void GetCompatiblePorts_PreExistingCycle_CompletesWithoutHanging()
     {
