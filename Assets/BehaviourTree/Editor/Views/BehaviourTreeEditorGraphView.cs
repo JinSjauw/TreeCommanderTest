@@ -508,15 +508,17 @@ namespace BehaviourTree.Editor
 
         private void HandleElementsMoved(List<GraphElement> movedElements)
         {
-            foreach (BehaviourNodeView nodeView in nodeViewDict.Values)
-                nodeView.SortChildren();
-
-            for (int i = 0; i < movedElements.Count; i++)
+            foreach (GraphElement element in movedElements)
             {
-                if (movedElements[i] is GraphNote note)
+                if (element is BehaviourNodeView nodeView)
+                {
+                    nodeView.SortChildren();
+                    GetParent(nodeView)?.SortChildren();
+                }
+                else if (element is GraphNote note)
                 {
                     note.PersistLayout();
-                    EditorUtility.SetDirty(tree);
+                    if (tree != null) EditorUtility.SetDirty(tree);
                 }
             }
         }
