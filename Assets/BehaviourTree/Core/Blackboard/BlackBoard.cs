@@ -25,6 +25,7 @@ namespace BehaviourTree.Core
 
         private BlackboardDefinition definition;
         private IBlackboardStorage storage;
+        private IBlackboardTypedAccess typed; // same instance as storage, typed view
 
         private Dictionary<string, int> nameToBaseSlot = new();
 
@@ -47,7 +48,11 @@ namespace BehaviourTree.Core
             if (definition == null) return;
 
             int count = GetTotalSlotCount(definition);
-            if (storage == null) storage = new ManagedBlackboardStorage();
+            if (storage == null)
+            {
+                storage = new TypedBlackboardStorage();
+                typed = (IBlackboardTypedAccess)storage;
+            }
             storage.Initialize(definition);
 
             nameToBaseSlot.Clear();
@@ -193,6 +198,7 @@ namespace BehaviourTree.Core
         {
             definition = null;
             storage = null;
+            typed = null;
             nameToBaseSlot.Clear();
             serializedReferences.Clear();
             lastBuiltVarNames = null;
@@ -508,6 +514,146 @@ namespace BehaviourTree.Core
                     }
                 }
             }
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public float GetFloat(int slot)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return default; }
+            return typed.GetFloat(slot + currentAgentOffset);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public void SetFloat(int slot, float value)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return; }
+            typed.SetFloat(slot + currentAgentOffset, value);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public int GetInt(int slot)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return default; }
+            return typed.GetInt(slot + currentAgentOffset);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public void SetInt(int slot, int value)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return; }
+            typed.SetInt(slot + currentAgentOffset, value);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public bool GetBool(int slot)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return default; }
+            return typed.GetBool(slot + currentAgentOffset);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public void SetBool(int slot, bool value)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return; }
+            typed.SetBool(slot + currentAgentOffset, value);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public Vector2 GetVector2(int slot)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return default; }
+            return typed.GetVector2(slot + currentAgentOffset);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public void SetVector2(int slot, Vector2 value)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return; }
+            typed.SetVector2(slot + currentAgentOffset, value);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public Vector3 GetVector3(int slot)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return default; }
+            return typed.GetVector3(slot + currentAgentOffset);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public void SetVector3(int slot, Vector3 value)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return; }
+            typed.SetVector3(slot + currentAgentOffset, value);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public Vector4 GetVector4(int slot)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return default; }
+            return typed.GetVector4(slot + currentAgentOffset);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public void SetVector4(int slot, Vector4 value)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return; }
+            typed.SetVector4(slot + currentAgentOffset, value);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public Color GetColor(int slot)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return default; }
+            return typed.GetColor(slot + currentAgentOffset);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public void SetColor(int slot, Color value)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return; }
+            typed.SetColor(slot + currentAgentOffset, value);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public Quaternion GetQuaternion(int slot)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return default; }
+            return typed.GetQuaternion(slot + currentAgentOffset);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public void SetQuaternion(int slot, Quaternion value)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return; }
+            typed.SetQuaternion(slot + currentAgentOffset, value);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset, no boxing.</summary>
+        public T GetObject<T>(int slot) where T : class
+        {
+            if (typed == null) { EditorWarnStorageNull(); return null; }
+            return typed.GetObject<T>(slot + currentAgentOffset);
+        }
+
+        /// <summary>Typed hot-path accessor — applies currentAgentOffset. Syncs serializedReferences on ref slots.</summary>
+        public void SetObject(int slot, object value)
+        {
+            if (typed == null) { EditorWarnStorageNull(); return; }
+
+            typed.SetObject(slot + currentAgentOffset, value);
+
+            // Keep serialized reference in sync, same rule as SetBoxed.
+            if (currentAgentOffset == 0 && definition != null && slot >= 0 && slot < serializedReferences.Count
+                && storage.GetSlotKind(slot) == BlackboardSlotKind.Reference)
+            {
+                serializedReferences[slot] = value as UnityEngine.Object;
+            }
+        }
+
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        private static void EditorWarnStorageNull()
+        {
+            Debug.LogWarning("[Blackboard] Storage is NULL");
         }
 
         T IBlackBoardAccess.Get<T>(int slot) => Get<T>(slot);

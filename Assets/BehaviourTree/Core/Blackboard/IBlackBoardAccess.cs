@@ -7,7 +7,7 @@ namespace BehaviourTree.Core
     /// [SharedVar] fields without coupling to the concrete BlackBoard implementation.
     /// OOP BlackBoard and DOTS DotsBlackboard both satisfy this interface.
     /// </summary>
-    public interface IBlackBoardAccess
+    public interface IBlackBoardAccess : IBlackboardTypedAccess
     {
         T Get<T>(int slot);
         void Set<T>(int slot, T value);
