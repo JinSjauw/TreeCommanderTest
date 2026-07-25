@@ -1,0 +1,14 @@
+{
+    "name": "BehaviourTree.Tests.Editor",
+    "rootNamespace": "BehaviourTree.Tests",
+    "references": [
+        "BehaviourTree.Core",
+        "BehaviourTree.Runtime"
+    ],
+    "includePlatforms": ["Editor"],
+    "excludePlatforms": [],
+    "precompiledReferences": ["nunit.framework.dll"],
+    "overrideReferences": true,
+    "autoReferenced": false,
+    "defineConstraints": ["UNITY_INCLUDE_TESTS"]
+}

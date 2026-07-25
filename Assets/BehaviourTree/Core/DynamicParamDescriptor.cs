@@ -16,6 +16,14 @@ namespace BehaviourTree.Core
         ScriptableObjectConstant,
     }
 
+    /// <summary>Which custom editor a constant-mode param uses instead of the raw value field.</summary>
+    public enum ConstantEditorHint
+    {
+        None,
+        RoleDropdown,
+        OrderDropdown,
+    }
+
     public struct DynamicParamDescriptor
     {
         public string titleLabel;
@@ -27,5 +35,27 @@ namespace BehaviourTree.Core
         public bool syncElementType;
         public Type operationEnumType;
         public Func<Type, int[]> getAvailableOpIndices;
+
+        // ── Attribute-projection parity (set by ParamSchemaReflection; dynamic
+        // methods may also set these via the Params builder) ──
+
+        /// <summary>Exact reflected field name for attribute-projected params.
+        /// Written to entry.fieldName so runtime GetSlotByName() keeps working.
+        /// Null for hand-authored dynamic params (label-derived fallback).</summary>
+        public string fieldName;
+
+        /// <summary>Default array-ness ([SharedArray]). Mutable afterwards via the type filter button.</summary>
+        public bool isArray;
+
+        /// <summary>Hidden from inspector; variableName auto-bound from autoVariableName.</summary>
+        public bool isHidden;
+        public string autoVariableName;
+
+        /// <summary>Custom constant editor (role/order dropdown) instead of the raw value field.</summary>
+        public ConstantEditorHint constantEditor;
+
+        /// <summary>When set, the row is only drawn while that entry's boolValue is true
+        /// (replaces the hardcoded customTickValue rule).</summary>
+        public int? visibilityDependsOnIndex;
     }
 }
