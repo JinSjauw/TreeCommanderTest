@@ -99,6 +99,9 @@ namespace BehaviourTree.Editor
 
         private NodeTooltipData GetTooltipInternal(string methodName)
         {
+            if (string.IsNullOrEmpty(methodName))
+                return GetDefaultTooltip("Unknown");
+
             EnsureLookup();
             if (tooltipLookup != null && tooltipLookup.TryGetValue(methodName, out var data))
                 return data;
