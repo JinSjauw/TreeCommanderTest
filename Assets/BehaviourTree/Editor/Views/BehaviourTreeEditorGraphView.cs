@@ -370,11 +370,14 @@ namespace BehaviourTree.Editor
             PopulateView(tree);
         }
 
-        // Simple cycle detection: can't connect if 'target' is an ancestor of 'source'
+        // Simple cycle detection: can't connect if 'target' is an ancestor of 'source'.
+        // The visited set also protects against hand-corrupted graphs that already contain
+        // a cycle — without it this walk loops forever and hangs the editor.
         private bool WouldCreateCycle(BehaviourNodeView source, BehaviourNodeView target)
         {
+            var visited = new HashSet<BehaviourNodeView>();
             BehaviourNodeView current = target;
-            while (current != null)
+            while (current != null && visited.Add(current))
             {
                 if(current.input == null) return false;
                 if (current == source && current.input.capacity != Port.Capacity.Single) return true;
