@@ -1,0 +1,312 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-851215471677718364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
+  m_Name: 8cc0023090cd4814987c9138c41525bf_BB_Definition
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
+  sharedVariables:
+  - rid: 4957662233663111433
+  - rid: 4957662233663111434
+  references:
+    version: 2
+    RefIds:
+    - rid: 4957662233663111433
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AttackTarget
+        variableStride: 1
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+    - rid: 4957662233663111434
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: EngagePosition
+        variableStride: 1
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66c25e780b933274d83104b31a416a22, type: 3}
+  m_Name: 8cc0023090cd4814987c9138c41525bf
+  m_EditorClassIdentifier: BehaviourTree.Runtime::RuntimeBehaviourTreeAsset
+  runtimeNodeData:
+  - nodeType: 1
+    firstChildIndex: 1
+    lastChildIndex: 4
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 1
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_Detected
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_SelectDetectedTarget
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 3
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SetNavAgentSpeed
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 5
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 5
+    lastChildIndex: 6
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 7
+    lastChildIndex: 10
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 0
+    abortType: 2
+  - nodeType: 1
+    firstChildIndex: 14
+    lastChildIndex: 15
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_CheckRange
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_HasLineOfSight
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 9
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 4
+    firstChildIndex: 11
+    lastChildIndex: 11
+    methodName: Repeater
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 10
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 12
+    lastChildIndex: 13
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 11
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_FireSequence
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 11
+    fieldDataCount: 7
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_EngagePosition
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 18
+    fieldDataCount: 6
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 24
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_EngagePosition
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 25
+    fieldDataCount: 6
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 31
+    fieldDataCount: 1
+    abortType: 0
+  runtimeNodeGuids:
+  - efef1ff65ea041d44bcdd35f37a5473a
+  - cd4ebacca1c5ff845a7eead2a0202045
+  - 3f2e8e93281465147b4cf95a6ebeecc1
+  - 611be0982fe9325479e72f6b5f7600c0
+  - 9e6887fae12853b44bcc0b29bae9cec2
+  - c0df32ad5278af14eabe85196e7c41a7
+  - 993467dbb23de53448d7514442b5dad1
+  - 4d35aca74444e15458c6333633a79344
+  - 28b52bc91b035224fb356fd1cf5d57b0
+  - 321cc85fbed3df5478d76c7cc011ad5a
+  - 4d54f415cab10fe42b7ecea6392fbdc0
+  - 091c8a7fc9207c646ae8f072fe6b8a85
+  - c1795d04ceae6104eb6a0343510efed2
+  - 52ab26bbbb768de408b2036ba368231d
+  - 94b5e103589873f47881825c67eb1a4b
+  - 1b2264228414bfe45a9ae27ff8577d50
+  runtimeFieldData:
+  - mode: 0
+    value: 1124859904
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 1067030938
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 1108082688
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 2
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 1050253722
+  - mode: 0
+    value: 1077936128
+  - mode: 0
+    value: 1065353216
+  - mode: 0
+    value: 45
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 1
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 1119092736
+  - mode: 0
+    value: 1097859072
+  - mode: 0
+    value: 1106247680
+  - mode: 0
+    value: 1102053376
+  - mode: 1
+    value: 1
+  - mode: 1
+    value: 1
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 1108082688
+  - mode: 0
+    value: 1101004800
+  - mode: 0
+    value: 1110704128
+  - mode: 0
+    value: 1102053376
+  - mode: 1
+    value: 1
+  fieldTypeNames:
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  blackboardDefinition: {fileID: -851215471677718364}
+  maxTreeDepth: 4
+  sourceTreeGuid: 8cc0023090cd4814987c9138c41525bf
+  sourceTree: {fileID: 11400000, guid: 8cc0023090cd4814987c9138c41525bf, type: 2}

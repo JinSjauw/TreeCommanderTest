@@ -105,7 +105,7 @@ MonoBehaviour:
   comment: 
   guid: 5766c3f0d076e174fb619f3517a4f645
   graphPosition: {x: 1101, y: 700}
-  runtimeIndex: 22
+  runtimeIndex: 21
   leafType: 3
   methodName: PollAgentStatus
   fieldEntries:
@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 464cd23f50ca02c4083d3fedc631de61, type: 3}
   m_Name: SEQUENCE
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
-  nodeName: 
+  nodeName: SEQUENCE
   children:
   - {fileID: 6499698951095022240}
   - {fileID: 2849794811486516056}
@@ -631,7 +631,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 211fdd313f5510c40a54dfcf52fa0c8a
-  graphPosition: {x: -840, y: 910}
+  graphPosition: {x: -832, y: 918}
   runtimeIndex: 6
   leafType: 2
   methodName: CheckSquadData
@@ -1114,7 +1114,7 @@ MonoBehaviour:
   comment: 
   guid: ada03ab9101e5a3458a7decd0c650917
   graphPosition: {x: 921, y: 700}
-  runtimeIndex: 21
+  runtimeIndex: 20
   compositeType: 1
   methodName: ForEachAgent
   fieldEntries: []
@@ -1491,7 +1491,7 @@ MonoBehaviour:
   comment: 
   guid: c21ec5b612f156547be7bdce17a9189e
   graphPosition: {x: 1284.5797, y: 700}
-  runtimeIndex: 20
+  runtimeIndex: 22
   leafType: 3
   methodName: ExtractPosition
   fieldEntries:

@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66c25e780b933274d83104b31a416a22, type: 3}
+  m_Name: ac1b6ceed17dc304abdf6ef3477a35f8
+  m_EditorClassIdentifier: BehaviourTree.Runtime::RuntimeBehaviourTreeAsset
+  runtimeNodeData:
+  - nodeType: 0
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: 
+    blackBoardTypeID: 0
+    fieldDataStartIndex: -1
+    fieldDataCount: 0
+    abortType: 0
+  runtimeNodeGuids:
+  - 8e5e39f6f4d7db447974ead9a56fd0e7
+  runtimeFieldData: []
+  fieldTypeNames: []
+  blackboardDefinition: {fileID: 302855990910394887}
+  maxTreeDepth: 0
+  sourceTreeGuid: ac1b6ceed17dc304abdf6ef3477a35f8
+  sourceTree: {fileID: 11400000, guid: ac1b6ceed17dc304abdf6ef3477a35f8, type: 2}
+--- !u!114 &302855990910394887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
+  m_Name: ac1b6ceed17dc304abdf6ef3477a35f8_BB_Definition
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
+  sharedVariables:
+  - rid: 4957662233663111473
+  - rid: 4957662233663111474
+  - rid: 4957662233663111475
+  - rid: 4957662233663111476
+  - rid: 4957662233663111477
+  references:
+    version: 2
+    RefIds:
+    - rid: 4957662233663111473
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: PatrolPoints
+        variableStride: 1
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+    - rid: 4957662233663111474
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentAssignedRole
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111475
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentReceivedOrder
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111476
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentStatus
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111477
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: CanMoveFlag
+        variableStride: 1
+        variableTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: 

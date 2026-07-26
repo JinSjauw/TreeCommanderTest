@@ -40,6 +40,15 @@ namespace BehaviourTree.Editor
                 return;
             }
 
+            // In playmode the inspector repaints continuously; rebuilding serialized
+            // references and drawing every slot per repaint causes multi-ms EditorLoop
+            // spikes. Show a cheap read-only summary instead.
+            if (EditorApplication.isPlaying)
+            {
+                EditorGUILayout.HelpBox($"{definition.GetAllVariables().Count} variable(s). Editing disabled in Play Mode.", MessageType.None);
+                return;
+            }
+
             // BuildSerializedReferences is the single owner of serializedReferences layout.
             // It handles layout-change detection, save/restore by name, and resizing.
             blackboard.BuildSerializedReferences(definition);
@@ -145,9 +154,6 @@ namespace BehaviourTree.Editor
                 lastLayoutHash = currentLayoutHash;
             }
 
-            bool isPlaying = EditorApplication.isPlaying;
-            EditorGUI.BeginDisabledGroup(isPlaying);
-
             EditorGUI.BeginChangeCheck();
             if (hasRefs)
             {
@@ -174,7 +180,7 @@ namespace BehaviourTree.Editor
                     else
                     {
                         if (!foldoutStates.ContainsKey(bv.Name))
-                            foldoutStates[bv.Name] = true;
+                            foldoutStates[bv.Name] = false;
                         foldoutStates[bv.Name] = EditorGUILayout.Foldout(foldoutStates[bv.Name], $"{bv.Name} : {displayName} [{stride}]", true);
                         if (foldoutStates[bv.Name])
                         {
@@ -228,7 +234,7 @@ namespace BehaviourTree.Editor
                     else
                     {
                         if (!foldoutStates.ContainsKey(bv.Name))
-                            foldoutStates[bv.Name] = true;
+                            foldoutStates[bv.Name] = false;
                         foldoutStates[bv.Name] = EditorGUILayout.Foldout(foldoutStates[bv.Name], $"{bv.Name} : {displayName} [{stride}]", true);
                         if (foldoutStates[bv.Name])
                         {
@@ -240,8 +246,6 @@ namespace BehaviourTree.Editor
                     }
                 }
             }
-
-            EditorGUI.EndDisabledGroup();
 
             so.ApplyModifiedProperties();
         }

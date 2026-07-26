@@ -155,6 +155,7 @@ public class BehaviourTreeEditor : EditorWindow
 
         OnSelectionChange();
 
+        EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
         EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
 
         if (EditorApplication.isPlaying)

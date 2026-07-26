@@ -1,0 +1,327 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66c25e780b933274d83104b31a416a22, type: 3}
+  m_Name: ee22691b830f1204f9d50d86c5274c6d
+  m_EditorClassIdentifier: BehaviourTree.Runtime::RuntimeBehaviourTreeAsset
+  runtimeNodeData:
+  - nodeType: 1
+    firstChildIndex: 1
+    lastChildIndex: 2
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 1
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: HasChanged
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 3
+    lastChildIndex: 6
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 1
+    fieldDataCount: 0
+    abortType: 1
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_Detected
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 1
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_SelectDetectedTarget
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 4
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SetNavAgentSpeed
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 7
+    lastChildIndex: 7
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 7
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 8
+    lastChildIndex: 10
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 7
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_FlankPosition
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 7
+    fieldDataCount: 7
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 14
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 4
+    firstChildIndex: 11
+    lastChildIndex: 11
+    methodName: Repeater
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 15
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 12
+    lastChildIndex: 14
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 16
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_CheckRange
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 16
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_FireSequence
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 19
+    fieldDataCount: 7
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 15
+    lastChildIndex: 16
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 26
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: Enemy_FlankPosition
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 26
+    fieldDataCount: 7
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 33
+    fieldDataCount: 1
+    abortType: 0
+  runtimeNodeGuids:
+  - 723fd4ac0f86c1f4692794f8032f393e
+  - ad279ad18b4103d4eb58ed690ec4fcdb
+  - 47eb67cc2366eb04aa9708e67bb43d35
+  - e7b55437a667cf34b8cdcd60a2376a08
+  - 34efe9facfc1e6641957e4b1b689f3c9
+  - f23267b72e8d1ac4fbdbc8028068513f
+  - 35627ef38e6921744b103d9b66732581
+  - 1a8b60e4cee5ec44eab822c70290702e
+  - 308bc14ccc34c6a4c9439e4e3773238e
+  - fece182b376fa7f41bf03291b1325251
+  - d084f5789acc3f44abefa15bdbf0ed25
+  - 37a07f5ac6f2e1c40acf7a9d52c0b014
+  - 9ab26b7198ffb664eb2f645b3a4ba1da
+  - ed48f8b5ecb3638479d05956661b4e39
+  - 6c026f77e9c4f1b44b3412d51e06deca
+  - 14245f193efa00b44b25a135ba35cf08
+  - 1e1c63cdb75357840894186b13d63e76
+  runtimeFieldData:
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 1124859904
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 1069547520
+  - mode: 1
+    value: 1
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 1113325568
+  - mode: 0
+    value: 1097859072
+  - mode: 0
+    value: 1114636288
+  - mode: 0
+    value: 1118437376
+  - mode: 0
+    value: 1109393408
+  - mode: 1
+    value: 1
+  - mode: 0
+    value: 2
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 1113325568
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 1050253722
+  - mode: 0
+    value: 1069547520
+  - mode: 0
+    value: 1073741824
+  - mode: 0
+    value: 110
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 1
+  - mode: 1
+    value: 0
+  - mode: 0
+    value: 1114636288
+  - mode: 0
+    value: 1103626240
+  - mode: 0
+    value: 1101004800
+  - mode: 0
+    value: 1108082688
+  - mode: 0
+    value: 1109393408
+  - mode: 1
+    value: 1
+  fieldTypeNames:
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  blackboardDefinition: {fileID: 734130576005227999}
+  maxTreeDepth: 7
+  sourceTreeGuid: ee22691b830f1204f9d50d86c5274c6d
+  sourceTree: {fileID: 11400000, guid: ee22691b830f1204f9d50d86c5274c6d, type: 2}
+--- !u!114 &734130576005227999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
+  m_Name: ee22691b830f1204f9d50d86c5274c6d_BB_Definition
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
+  sharedVariables:
+  - rid: 4957662233663111435
+  - rid: 4957662233663111436
+  references:
+    version: 2
+    RefIds:
+    - rid: 4957662233663111435
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AttackTarget
+        variableStride: 1
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+    - rid: 4957662233663111436
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: EngagePosition
+        variableStride: 1
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []

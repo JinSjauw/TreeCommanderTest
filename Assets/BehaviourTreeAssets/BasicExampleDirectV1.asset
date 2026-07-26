@@ -230,6 +230,48 @@ MonoBehaviour:
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
   BlackBoardTypeID: 0
+--- !u!114 &-8335082889112783939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34ea6a75b13e47c46a1b18839e2630f4, type: 3}
+  m_Name: LogVariable
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.LeafNode
+  nodeName: 
+  children: []
+  firstChildIndex: 0
+  lastChildIndex: 0
+  comment: 
+  guid: 5fd0bf72842762c499a15b15d019b6ce
+  graphPosition: {x: 910, y: 665}
+  runtimeIndex: 20
+  leafType: 3
+  methodName: LogVariable
+  fieldEntries:
+  - fieldName: variable
+    isVariable: 1
+    isToggleVariable: 0
+    isArray: 0
+    variableName: CanMove
+    fieldTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    stringValue: 
+    isOrderConstant: 0
+    configSourceGuid: 
+    configFieldName: 
+    isConfigConstant: 0
+    intValue: 0
+    floatValue: 0
+    boolValue: 0
+    vector2Value: {x: 0, y: 0}
+    vector3Value: {x: 0, y: 0, z: 0}
+    gameObjectValue: {fileID: 0}
+    transformValue: {fileID: 0}
+  BlackBoardTypeID: 0
 --- !u!114 &-7091416826477733700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,8 +286,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.CompositeNode
   nodeName: 
   children:
-  - {fileID: 1163057909808094548}
   - {fileID: -816318558944264761}
+  - {fileID: 1163057909808094548}
+  - {fileID: -8335082889112783939}
   firstChildIndex: 0
   lastChildIndex: 0
   comment: 
@@ -427,7 +470,7 @@ MonoBehaviour:
   comment: 
   guid: 2d971b8c8fa527b4297bb836e06cf27c
   graphPosition: {x: 665, y: 665}
-  runtimeIndex: 19
+  runtimeIndex: 18
   leafType: 3
   methodName: MoveTo
   fieldEntries:
@@ -486,6 +529,7 @@ MonoBehaviour:
   - {fileID: -5911449974557983723}
   - {fileID: 6361934294503997374}
   - {fileID: -5960027891630648361}
+  - {fileID: -8335082889112783939}
   editorNotes: []
 --- !u!114 &1163057909808094548
 MonoBehaviour:
@@ -506,7 +550,7 @@ MonoBehaviour:
   comment: 
   guid: 88e75f777f46ad740b5afd8612a6dc8d
   graphPosition: {x: 385, y: 665}
-  runtimeIndex: 18
+  runtimeIndex: 19
   leafType: 3
   methodName: ExtractPosition
   fieldEntries:
@@ -793,9 +837,11 @@ MonoBehaviour:
   - rid: 3017916979489538157
   - rid: 3017916979489538158
   - rid: 3017916979489538159
-  - rid: 4957662190652096594
-  - rid: 4957662190652096595
-  - rid: 4957662190652096596
+  - rid: 4957662229462777856
+  - rid: 4957662229462777857
+  - rid: 4957662229637365760
+  - rid: 4957662229637365761
+  - rid: 4957662229637365762
   references:
     version: 2
     RefIds:
@@ -843,7 +889,29 @@ MonoBehaviour:
         isSystemVariable: 0
         singleValue: {fileID: 0}
         arrayValues: []
-    - rid: 4957662190652096594
+    - rid: 4957662229462777856
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: CanMove
+        variableStride: 1
+        variableTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662229462777857
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: Test
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662229637365760
       type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentAssignedRole
@@ -854,7 +922,7 @@ MonoBehaviour:
         isSystemVariable: 0
         singleValue: 0
         arrayValues: 
-    - rid: 4957662190652096595
+    - rid: 4957662229637365761
       type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentReceivedOrder
@@ -865,7 +933,7 @@ MonoBehaviour:
         isSystemVariable: 0
         singleValue: 0
         arrayValues: 
-    - rid: 4957662190652096596
+    - rid: 4957662229637365762
       type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentStatus

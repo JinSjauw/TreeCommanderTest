@@ -14,7 +14,7 @@ namespace BehaviourTree.EditorTools.Codegen
     /// </summary>
     public static class GeneratedAccessorValidator
     {
-        [MenuItem("Behaviour Tree/Validate Binding Accessors")]
+        [MenuItem("BehaviourTree/Validate Binding Accessors")]
         public static void Validate()
         {
             // Ensure the generated table is populated outside playmode.

@@ -94,14 +94,14 @@ MonoBehaviour:
   - treeAsset: {fileID: 11400000, guid: 6f657e5519dbc4f49902a218fe2b824f, type: 2}
     treeAssetGuid: 6f657e5519dbc4f49902a218fe2b824f
     bindings:
-    - treeVariableName: AgentAssignedRole
+    - treeVariableName: 
       squadVariableName: AgentRoles
       direction: 0
-    - treeVariableName: AgentReceivedOrder
+    - treeVariableName: 
       squadVariableName: AgentOrders
       direction: 1
-    - treeVariableName: AgentStatus
-      squadVariableName: AgentStatus
+    - treeVariableName: 
+      squadVariableName: 
       direction: 0
   - treeAsset: {fileID: 11400000, guid: c1c5549937eadec45b94fb42fde90b3b, type: 2}
     treeAssetGuid: c1c5549937eadec45b94fb42fde90b3b

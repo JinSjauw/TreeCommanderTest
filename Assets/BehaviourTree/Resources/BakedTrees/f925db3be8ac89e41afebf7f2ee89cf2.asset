@@ -1,0 +1,783 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66c25e780b933274d83104b31a416a22, type: 3}
+  m_Name: f925db3be8ac89e41afebf7f2ee89cf2
+  m_EditorClassIdentifier: BehaviourTree.Runtime::RuntimeBehaviourTreeAsset
+  runtimeNodeData:
+  - nodeType: 1
+    firstChildIndex: 1
+    lastChildIndex: 3
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 4
+    lastChildIndex: 5
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 2
+  - nodeType: 1
+    firstChildIndex: 15
+    lastChildIndex: 18
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 20
+    lastChildIndex: 22
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 6
+    lastChildIndex: 7
+    methodName: SELECTOR
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 2
+  - nodeType: 1
+    firstChildIndex: 9
+    lastChildIndex: 11
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: CheckSquadData
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 4
+    firstChildIndex: 8
+    lastChildIndex: 8
+    methodName: Inverter
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 3
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SetVariable
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 5
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 12
+    lastChildIndex: 12
+    methodName: ForEachRole
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 7
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 13
+    lastChildIndex: 13
+    methodName: ForEachRole
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 10
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 14
+    lastChildIndex: 14
+    methodName: ForEachRole
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 13
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SendOrder
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 16
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SendOrder
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 19
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SendOrder
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 22
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: CompareVariable
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 25
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SquadReduce
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 28
+    fieldDataCount: 4
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 19
+    lastChildIndex: 19
+    methodName: ForEachAgent
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 32
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SetVariable
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 32
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SendOrder
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 34
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 1
+    firstChildIndex: 23
+    lastChildIndex: 24
+    methodName: ForEachAgent
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 37
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: PollAgentStatus
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 37
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ExtractPosition
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 39
+    fieldDataCount: 3
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: CalculateFormation
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 42
+    fieldDataCount: 5
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SendOrder
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 47
+    fieldDataCount: 3
+    abortType: 0
+  runtimeNodeGuids:
+  - 98ae22e51ac7d1b4b92962b2aa9724ca
+  - 40f8195b65cc0e14c88a28079ee239e0
+  - 0e0e48bb65d5e4f419d93494e8d61095
+  - 021112b50d2d7e544abe1f8d39a743c6
+  - ef5cebd6419369b4bbf298e8b11d9faa
+  - 3e1e978e79079e24f8625b924f102ff2
+  - 211fdd313f5510c40a54dfcf52fa0c8a
+  - 494c31cd5962c1747a8fe6b2df3236c7
+  - b5e6804bee2e7d442b46c13ebe8fdcf0
+  - b2fab1f487ff4f745b8bcc8e98080554
+  - 5a530bcd5cac96b408368e297714cb3b
+  - 9f834692d7409454c8ca64cdb71abd59
+  - baa55b52c8927ec418d41b79e32bd3b0
+  - b5db406910c1e0a4dbfcb122d79efd09
+  - a69766732438d994b96d864f61e8950d
+  - 4816096c2d0fd574890ed743c70c2f52
+  - f21b11b5b010192429cf0bde0cc0961b
+  - 6b34aa091e9708443b6fda5d3a52b51a
+  - b579a8f8bbad5b94dbaa861666463c5f
+  - dda9b20325578f346b9db020dc47b7f6
+  - ada03ab9101e5a3458a7decd0c650917
+  - 5766c3f0d076e174fb619f3517a4f645
+  - c21ec5b612f156547be7bdce17a9189e
+  - 76b119c775a61644199b65cc96ff69a3
+  - c69c6c50762d3214ea4d944ab9af20e0
+  runtimeFieldData:
+  - mode: 1
+    value: 29
+  - mode: 3
+    value: 5
+  - mode: 0
+    value: 1
+  - mode: 0
+    value: 1
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 41
+  - mode: 0
+    value: 1
+  - mode: 1
+    value: 2
+  - mode: 3
+    value: 5
+  - mode: 0
+    value: 2
+  - mode: 1
+    value: 2
+  - mode: 3
+    value: 5
+  - mode: 0
+    value: 1
+  - mode: 1
+    value: 2
+  - mode: 3
+    value: 5
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 7
+  - mode: 3
+    value: 5
+  - mode: 0
+    value: 3
+  - mode: 1
+    value: 7
+  - mode: 3
+    value: 5
+  - mode: 0
+    value: 2
+  - mode: 1
+    value: 7
+  - mode: 3
+    value: 5
+  - mode: 0
+    value: 5
+  - mode: 1
+    value: 41
+  - mode: 0
+    value: 1
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 34
+  - mode: 3
+    value: 5
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 39
+  - mode: 1
+    value: 41
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 7
+  - mode: 3
+    value: 5
+  - mode: 0
+    value: 7
+  - mode: 1
+    value: 13
+  - mode: 3
+    value: 5
+  - mode: 1
+    value: 40
+  - mode: 1
+    value: 39
+  - mode: 0
+    value: 0
+  - mode: 1
+    value: 39
+  - mode: 1
+    value: 19
+  - mode: 3
+    value: 5
+  - mode: 0
+    value: 0
+  - mode: 0
+    value: 12
+  - mode: 1
+    value: 7
+  - mode: 3
+    value: 5
+  - mode: 0
+    value: 1
+  fieldTypeNames:
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  blackboardDefinition: {fileID: 3540386278497657745}
+  maxTreeDepth: 4
+  sourceTreeGuid: f925db3be8ac89e41afebf7f2ee89cf2
+  sourceTree: {fileID: 11400000, guid: f925db3be8ac89e41afebf7f2ee89cf2, type: 2}
+--- !u!114 &3540386278497657745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
+  m_Name: f925db3be8ac89e41afebf7f2ee89cf2_BB_Definition
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
+  sharedVariables:
+  - rid: 4957662233663111397
+  - rid: 4957662233663111398
+  - rid: 4957662233663111399
+  - rid: 4957662233663111400
+  - rid: 4957662233663111401
+  - rid: 4957662233663111402
+  - rid: 4957662233663111403
+  - rid: 4957662233663111404
+  - rid: 4957662233663111405
+  - rid: 4957662233663111406
+  - rid: 4957662233663111407
+  - rid: 4957662233663111408
+  - rid: 4957662233663111409
+  - rid: 4957662233663111410
+  - rid: 4957662233663111411
+  - rid: 4957662233663111412
+  - rid: 4957662233663111413
+  - rid: 4957662233663111414
+  - rid: 4957662233663111415
+  - rid: 4957662233663111416
+  - rid: 4957662233663111417
+  - rid: 4957662233663111418
+  - rid: 4957662233663111419
+  - rid: 4957662233663111420
+  - rid: 4957662233663111421
+  - rid: 4957662233663111422
+  - rid: 4957662233663111423
+  - rid: 4957662233663111424
+  - rid: 4957662233663111425
+  - rid: 4957662233663111426
+  references:
+    version: 2
+    RefIds:
+    - rid: 4957662233663111397
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentReceivedOrder
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111398
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentAssignedRole
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111399
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentRoles
+        variableStride: 5
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111400
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentOrders
+        variableStride: 5
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111401
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: LeaderIndex
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111402
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentStatus
+        variableStride: 5
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111403
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentCount
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111404
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentsMovePos
+        variableStride: 5
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []
+    - rid: 4957662233663111405
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentMoveSpeed
+        variableStride: 5
+        variableTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: []
+    - rid: 4957662233663111406
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: DetectedEnemies
+        variableStride: 5
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+    - rid: 4957662233663111407
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentsPosition
+        variableStride: 5
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []
+    - rid: 4957662233663111408
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: SquadMovePosition
+        variableStride: 1
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {x: 40, y: 0, z: 106.3}
+        arrayValues: []
+    - rid: 4957662233663111409
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: PatrolPoints
+        variableStride: 1
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+    - rid: 4957662233663111410
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: CanRegroup
+        variableStride: 1
+        variableTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111411
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: Float
+        variableStride: 1
+        variableTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: []
+    - rid: 4957662233663111412
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentReceivedOrder
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111413
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentAssignedRole
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111414
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentRoles
+        variableStride: 5
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111415
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentOrders
+        variableStride: 5
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111416
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: LeaderIndex
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111417
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentStatus
+        variableStride: 5
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111418
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentCount
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111419
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentsMovePos
+        variableStride: 5
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []
+    - rid: 4957662233663111420
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentMoveSpeed
+        variableStride: 5
+        variableTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: []
+    - rid: 4957662233663111421
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: DetectedEnemies
+        variableStride: 5
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+    - rid: 4957662233663111422
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentsPosition
+        variableStride: 5
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 1
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []
+    - rid: 4957662233663111423
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: SquadMovePosition
+        variableStride: 1
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {x: 40, y: 0, z: 106.3}
+        arrayValues: []
+    - rid: 4957662233663111424
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Transform, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: PatrolPoints
+        variableStride: 1
+        variableTypeName: UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {fileID: 0}
+        arrayValues: []
+    - rid: 4957662233663111425
+      type: {class: 'BlackboardVariable`1[[System.Boolean, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: CanRegroup
+        variableStride: 1
+        variableTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111426
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: Float
+        variableStride: 1
+        variableTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 0
+        arrayValues: []

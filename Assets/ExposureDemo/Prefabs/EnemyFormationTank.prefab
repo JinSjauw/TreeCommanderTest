@@ -922,8 +922,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Runtime::BehaviourTree.Runtime.TreeRunner
   blackBoard: {fileID: 2802647565752943484}
-  runtimeAsset: {fileID: 0}
   authoringAsset: {fileID: 11400000, guid: 4a6bf587047dff84ea2f8e3304bcf0ee, type: 2}
+  authoringAssetGuid: 4a6bf587047dff84ea2f8e3304bcf0ee
   trackedBindingGroups:
   - targetTree: {fileID: 11400000, guid: 4a6bf587047dff84ea2f8e3304bcf0ee, type: 2}
     targetTreeGuid: 4a6bf587047dff84ea2f8e3304bcf0ee

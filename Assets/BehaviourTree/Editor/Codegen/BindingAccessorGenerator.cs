@@ -40,7 +40,7 @@ namespace BehaviourTree.EditorTools.Codegen
             return false;
         }
 
-        [MenuItem("Behaviour Tree/Generate Binding Accessors")]
+        [MenuItem("BehaviourTree/Generate Binding Accessors")]
         public static void Generate()
         {
             var methodFields = new List<(Type type, FieldInfo[] fields)>();

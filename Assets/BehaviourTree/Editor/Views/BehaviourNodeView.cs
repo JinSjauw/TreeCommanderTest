@@ -35,10 +35,7 @@ namespace BehaviourTree.Editor
         private Label abortLabel;
 
         public BehaviourTreeEditorGraphView GraphView { get; set; }
-        public bool IsReadOnlyProxy { get; set; }
 
-        // Composed tooltip text is identical for all nodes with the same method —
-        // build once per method, clear when the tooltip asset changes.
         private static readonly Dictionary<string, string> tooltipStringCache = new Dictionary<string, string>();
 
         static BehaviourNodeView()
@@ -146,6 +143,13 @@ namespace BehaviourTree.Editor
 
         private void SetTooltip()
         {
+            string cacheKey = GetMethodName() ?? "type:" + NodeSO.NodeType;
+            if (tooltipStringCache.TryGetValue(cacheKey, out string cachedTooltip))
+            {
+                tooltip = cachedTooltip;
+                return;
+            }
+
             NodeTooltipData tooltipData = TooltipRegistry.GetTooltip(NodeSO);
 
             string description = tooltipData.nodeName;

@@ -1,0 +1,165 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-3063614455631778021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82a0807de4b2de84da3dfb40d273bf41, type: 3}
+  m_Name: a8468937d345f8d4b971da736a9935ec_BB_Definition
+  m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackboardDefinition
+  sharedVariables:
+  - rid: 4957662233663111464
+  - rid: 4957662233663111465
+  - rid: 4957662233663111466
+  - rid: 4957662233663111467
+  references:
+    version: 2
+    RefIds:
+    - rid: 4957662233663111464
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentAssignedRole
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111465
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentReceivedOrder
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111466
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentStatus
+        variableStride: 1
+        variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 1
+        singleValue: 0
+        arrayValues: 
+    - rid: 4957662233663111467
+      type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: AgentMoveTarget
+        variableStride: 1
+        variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
+          Culture=neutral, PublicKeyToken=null
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: {x: 0, y: 0, z: 0}
+        arrayValues: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66c25e780b933274d83104b31a416a22, type: 3}
+  m_Name: a8468937d345f8d4b971da736a9935ec
+  m_EditorClassIdentifier: BehaviourTree.Runtime::RuntimeBehaviourTreeAsset
+  runtimeNodeData:
+  - nodeType: 1
+    firstChildIndex: 1
+    lastChildIndex: 5
+    methodName: SEQUENCE
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 0
+    abortType: 0
+  - nodeType: 2
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: CheckOrder
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 0
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: SetNavAgentSpeed
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 2
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ReportStatus
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 3
+    fieldDataCount: 2
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: MoveTo
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 5
+    fieldDataCount: 1
+    abortType: 0
+  - nodeType: 3
+    firstChildIndex: -1
+    lastChildIndex: -1
+    methodName: ReportStatus
+    blackBoardTypeID: 0
+    fieldDataStartIndex: 6
+    fieldDataCount: 2
+    abortType: 0
+  runtimeNodeGuids:
+  - 9a4c9281665448046a1c434b15201626
+  - ea702a94385c78742bb1726f4a066f5b
+  - 8be8a19d6bdc2644fa70b9004980cc42
+  - 2bc2ae10069153c45bda6cb0056c172e
+  - 767cd042eb0ff514788c210925a2b28d
+  - 2d8c5c5fb0190f249a868297836c0746
+  runtimeFieldData:
+  - mode: 1
+    value: 1
+  - mode: 0
+    value: 1
+  - mode: 0
+    value: 1061997773
+  - mode: 1
+    value: 2
+  - mode: 0
+    value: 2
+  - mode: 1
+    value: 3
+  - mode: 1
+    value: 2
+  - mode: 0
+    value: 0
+  fieldTypeNames:
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
+    PublicKeyToken=null
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  - System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+  blackboardDefinition: {fileID: -3063614455631778021}
+  maxTreeDepth: 1
+  sourceTreeGuid: a8468937d345f8d4b971da736a9935ec
+  sourceTree: {fileID: 11400000, guid: a8468937d345f8d4b971da736a9935ec, type: 2}
