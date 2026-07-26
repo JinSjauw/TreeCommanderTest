@@ -366,6 +366,7 @@ namespace BehaviourTree.Editor
             bbDef.name = squad.name + "_BB_Definition";
             AssetDatabase.AddObjectToAsset(bbDef, path);
             squad.blackboardDefinition = bbDef;
+            squad.EnsureSystemVariables();
             EditorUtility.SetDirty(squad);
             EditorUtility.SetDirty(bbDef);
             AssetDatabase.SaveAssets();
@@ -412,6 +413,7 @@ namespace BehaviourTree.Editor
             bbDef.name = squad.name + "_Schema";
             AssetDatabase.AddObjectToAsset(bbDef, path);
             squad.blackboardDefinition = bbDef;
+            squad.EnsureSystemVariables();
             EditorUtility.SetDirty(squad);
             EditorUtility.SetDirty(bbDef);
             AssetDatabase.SaveAssets();

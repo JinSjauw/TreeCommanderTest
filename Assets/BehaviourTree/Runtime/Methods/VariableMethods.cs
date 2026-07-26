@@ -676,7 +676,12 @@ namespace BehaviourTree.Runtime.Methods
     // Shared helpers for dynamic-type nodes
     // ═══════════════════════════════════════════════════════════════
 
-    internal static class VariableMethodHelper
+    /// <summary>
+    /// Helpers for reading baked node parameters (constant/variable slots).
+    /// Public so node methods outside the runtime assembly (game-specific
+    /// extensions) can use the same deserialization pattern.
+    /// </summary>
+    public static class VariableMethodHelper
     {
         /// <summary>
         /// Reads a variable slot from the field stream at the current position.

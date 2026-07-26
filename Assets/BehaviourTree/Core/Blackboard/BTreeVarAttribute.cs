@@ -12,6 +12,13 @@ namespace BehaviourTree.Core
         public bool IsToggleVariable = false;
 
         /// <summary>
+        /// When true, the row becomes a three-way C/V/SO selector (constant,
+        /// blackboard variable, or ScriptableObject field). Takes precedence over
+        /// IsToggleVariable for the row kind; the field is always treated as an input.
+        /// </summary>
+        public bool IsSOConstant = false;
+
+        /// <summary>
         /// When true, constant-mode shows a role dropdown pulled from the tree's
         /// SquadDefinition.availableRoles instead of a raw int field.
         /// </summary>

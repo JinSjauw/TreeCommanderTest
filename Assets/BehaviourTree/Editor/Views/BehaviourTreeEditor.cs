@@ -35,6 +35,10 @@ public class BehaviourTreeEditor : EditorWindow
     private static List<BaseEditorTreeAsset> recentOpenedTrees = new List<BaseEditorTreeAsset>();
     private const int maxRecentTrees = 5;
 
+    // Set when a tree is opened via Previous/Next cycling, so RecordTreeOpened
+    // knows to leave the history order untouched (cycling only moves the pointer).
+    private static BaseEditorTreeAsset pendingCycleTarget;
+
     public static bool selectionIsLocked;
     public static int lockBypassDepth;
 
@@ -300,7 +304,16 @@ public class BehaviourTreeEditor : EditorWindow
         SquadDefinition squad = CreateInstance<SquadDefinition>();
         squad.name = System.IO.Path.GetFileNameWithoutExtension(path);
         AssetDatabase.CreateAsset(squad, path);
+
+        // Auto-create embedded BlackboardDefinition as a sub-asset
+        BlackboardDefinition bbDef = CreateInstance<BlackboardDefinition>();
+        bbDef.name = squad.name + "_BB_Definition";
+        AssetDatabase.AddObjectToAsset(bbDef, path);
+        squad.blackboardDefinition = bbDef;
+        squad.EnsureSystemVariables();
+
         EditorUtility.SetDirty(squad);
+        EditorUtility.SetDirty(bbDef);
         AssetDatabase.SaveAssets();
 
         OpenSquadEditor(squad);
@@ -539,6 +552,7 @@ public class BehaviourTreeEditor : EditorWindow
             }
         }
 
+        BaseEditorTreeAsset previousTree = currentTree;
         currentTree = selectedAsset;
 
         // Refresh tracked variables view — the binding group depends on currentTree
@@ -587,7 +601,7 @@ public class BehaviourTreeEditor : EditorWindow
                 treeGraphView.PopulateView(currentTree);
                 swPopulate.Stop();
                 if (ProfileTreeSwitch) Debug.Log($"[TreeSwitch] PopulateView: {swPopulate.ElapsedMilliseconds} ms");
-                RecordTreeOpened(currentTree);
+                RecordTreeOpened(currentTree, previousTree);
                 if (blackBoardView != null)
                     blackBoardView.IsSquadContext = currentTree is CommanderTreeAsset;
                 BlackboardDefinition bbDef = currentTree is CommanderTreeAsset
@@ -670,11 +684,26 @@ public class BehaviourTreeEditor : EditorWindow
         }
     }
 
-    private static void RecordTreeOpened(BaseEditorTreeAsset treeAsset)
+    private static void RecordTreeOpened(BaseEditorTreeAsset treeAsset, BaseEditorTreeAsset previousTree)
     {
         if (treeAsset == null) return;
+
+        // Opened via Previous/Next cycling: the list is the navigation order,
+        // so leave it untouched — otherwise Next can't return to the tree we came from.
+        if (treeAsset == pendingCycleTarget)
+        {
+            pendingCycleTarget = null;
+            return;
+        }
+
         recentOpenedTrees.Remove(treeAsset);
-        recentOpenedTrees.Add(treeAsset);
+
+        // New current goes directly after the tree we came from; when the cap is
+        // exceeded the oldest entry (index 0) falls off and everything shifts down one.
+        int insertIndex = recentOpenedTrees.IndexOf(previousTree) + 1;
+        if (insertIndex <= 0) insertIndex = recentOpenedTrees.Count;
+        recentOpenedTrees.Insert(insertIndex, treeAsset);
+
         while (recentOpenedTrees.Count > maxRecentTrees)
             recentOpenedTrees.RemoveAt(0);
     }
@@ -694,6 +723,10 @@ public class BehaviourTreeEditor : EditorWindow
         idx = (idx + direction + recentOpenedTrees.Count) % recentOpenedTrees.Count;
         var target = recentOpenedTrees[idx];
         if (target == currentTree) return;
+
+        // Mark before opening: the deferred selection-change will record this tree,
+        // and it must not reorder the history list.
+        pendingCycleTarget = target;
 
         lockBypassDepth++;
         try

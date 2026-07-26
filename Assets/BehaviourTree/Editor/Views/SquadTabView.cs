@@ -72,11 +72,14 @@ public partial class SquadTabView : VisualElement
 
     private void RebuildUI()
     {
-        // Preserve expanded foldout state before clearing
+        // Preserve expanded foldout state before clearing.
+        // The Foldout is nested inside the cloned UXML root (squad-connection-container),
+        // so query for it instead of casting the direct child.
         expandedConnectionFoldouts.Clear();
         for (int i = 0; i < connectionsScroll.childCount; i++)
         {
-            Foldout foldout = connectionsScroll[i] as Foldout;
+            VisualElement child = connectionsScroll[i];
+            Foldout foldout = child as Foldout ?? child.Q<Foldout>("connection-foldout");
             if (foldout != null && foldout.value)
                 expandedConnectionFoldouts.Add(foldout.text);
         }
@@ -267,7 +270,29 @@ public partial class SquadTabView : VisualElement
         {
             removeConnectionButton.clicked += () =>
             {
+                SquadDefinition removedSquad = connection.squad;
                 currentTree.squadConnections.RemoveAt(connectionIndex);
+
+                // No remaining connection to this squad — drop the tree's binding
+                // group from it. Otherwise re-adding the connection later would find
+                // the stale group and skip auto-creation, and SquadDefinition.OnValidate
+                // would resurrect the removed system variables.
+                if (removedSquad != null && !HasConnectionTo(removedSquad))
+                {
+                    SquadBindingGroup staleGroup = removedSquad.GetBindingGroup(currentTree);
+                    if (staleGroup != null)
+                    {
+                        removedSquad.bindingGroups.Remove(staleGroup);
+                        EditorUtility.SetDirty(removedSquad);
+                    }
+                }
+
+                // Last connection removed — clean up the system variables that
+                // were auto-spawned on the agent tree when a squad was connected.
+                // Commander trees keep theirs (they are generated on creation).
+                if (currentTree.squadConnections.Count == 0 && currentTree is AgentTreeAsset)
+                    SquadDefinition.RemoveAgentSystemVariables(currentTree.BlackboardDefinition);
+
                 EditorUtility.SetDirty(currentTree);
                 RebuildUI();
             };
@@ -353,6 +378,18 @@ public partial class SquadTabView : VisualElement
         currentTree.squadConnections.Add(new SquadConnection());
         EditorUtility.SetDirty(currentTree);
         RebuildUI();
+    }
+
+    private bool HasConnectionTo(SquadDefinition squad)
+    {
+        List<SquadConnection> connections = currentTree.squadConnections;
+        if (connections == null) return false;
+        for (int i = 0; i < connections.Count; i++)
+        {
+            if (connections[i].squad == squad)
+                return true;
+        }
+        return false;
     }
 
     private void OnBindingsExternallyChanged(SquadDefinition squad, object source)

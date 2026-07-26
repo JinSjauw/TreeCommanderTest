@@ -153,10 +153,37 @@ namespace BehaviourTree.Core
         }
 
         /// <summary>
+        /// Ensures the squad-side system variables exist in the squad blackboard:
+        /// AgentRoles, AgentOrders and AgentStatus (per-agent squad data).
+        /// Generated on squad creation so every squad always carries its required schema.
+        /// </summary>
+        public void EnsureSystemVariables()
+        {
+            if (blackboardDefinition == null) return;
+            blackboardDefinition.EnsureVariable("AgentRoles", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
+            blackboardDefinition.EnsureVariable("AgentOrders", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
+            blackboardDefinition.EnsureVariable("AgentStatus", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
+        }
+
+        /// <summary>
+        /// Removes the agent-side system variables (AgentAssignedRole, AgentReceivedOrder,
+        /// AgentStatus) from the given tree blackboard. Called when an agent tree's last
+        /// squad connection is removed, so the auto-spawned variables don't linger.
+        /// Only variables flagged as system variables are removed.
+        /// </summary>
+        public static void RemoveAgentSystemVariables(BlackboardDefinition treeDef)
+        {
+            if (treeDef?.sharedVariables == null) return;
+            treeDef.sharedVariables.RemoveAll(v =>
+                v != null && v.isSystemVariable &&
+                (v.Name == "AgentAssignedRole" || v.Name == "AgentReceivedOrder" || v.Name == "AgentStatus"));
+        }
+
+        /// <summary>
         /// Ensures system variables exist and bindings are set for a tree binding group.
         /// Creates the following if they don't exist:
-        ///   - Squad BB: AgentRoles, AgentOrders, AgentStatus, LeaderIndex
-        ///   - Commander BB: AgentRoles, AgentOrders, AgentStatus, LeaderIndex
+        ///   - Squad BB: AgentRoles, AgentOrders, AgentStatus
+        ///   - Commander BB: AgentRoles, AgentOrders, AgentStatus
         ///   - Agent BB: AgentAssignedRole, AgentReceivedOrder, AgentStatus
         /// Also creates the corresponding variable bindings.
         /// Called from OnValidate and from editor UIs when a new group is created.
@@ -175,10 +202,7 @@ namespace BehaviourTree.Core
             if (treeDef == null) return;
 
             // ── Ensure squad-side system variables ──
-            squadDef.EnsureVariable("AgentRoles", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
-            squadDef.EnsureVariable("AgentOrders", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
-            squadDef.EnsureVariable("AgentStatus", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
-            squadDef.EnsureVariable("LeaderIndex", typeof(int), stride: 1, isSquadData: false, isSystemVariable: true);
+            EnsureSystemVariables();
 
             // ── Ensure tree-side system variables ──
             if (isCommander)
@@ -186,13 +210,12 @@ namespace BehaviourTree.Core
                 treeDef.EnsureVariable("AgentRoles", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
                 treeDef.EnsureVariable("AgentOrders", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
                 treeDef.EnsureVariable("AgentStatus", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
-                treeDef.EnsureVariable("LeaderIndex", typeof(int), stride: 1, isSquadData: false, isSystemVariable: true);
             }
             else
             {
-                treeDef.EnsureVariable("AgentAssignedRole", typeof(int), stride: 1, isSquadData: false, isSystemVariable: false);
-                treeDef.EnsureVariable("AgentReceivedOrder", typeof(int), stride: 1, isSquadData: false, isSystemVariable: false);
-                treeDef.EnsureVariable("AgentStatus", typeof(int), stride: 1, isSquadData: false, isSystemVariable: false);
+                treeDef.EnsureVariable("AgentAssignedRole", typeof(int), stride: 1, isSquadData: false, isSystemVariable: true);
+                treeDef.EnsureVariable("AgentReceivedOrder", typeof(int), stride: 1, isSquadData: false, isSystemVariable: true);
+                treeDef.EnsureVariable("AgentStatus", typeof(int), stride: 1, isSquadData: false, isSystemVariable: true);
             }
 
             // ── Create bindings ──
@@ -204,9 +227,6 @@ namespace BehaviourTree.Core
 
             EnsureBinding(group, "AgentRoles", roleTreeVar, roleDir);
             EnsureBinding(group, "AgentOrders", orderTreeVar, orderDir);
-
-            if (isCommander)
-                EnsureBinding(group, "LeaderIndex", "LeaderIndex", BindingDirection.FromSquad);
 
             BindingDirection statusDir = isCommander ? BindingDirection.FromSquad : BindingDirection.ToSquad;
             EnsureBinding(group, "AgentStatus", "AgentStatus", statusDir);

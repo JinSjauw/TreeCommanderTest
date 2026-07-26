@@ -44,6 +44,7 @@ namespace BehaviourTree.Runtime.Methods
                 label = "Radius",
                 kind = DynamicParamKind.ScriptableObjectConstant,
                 index = 3,
+                allowedTypes = new[] { typeof(float) },
             },
         };
 
@@ -55,7 +56,9 @@ namespace BehaviourTree.Runtime.Methods
 
         private FormationType formationType;
 
-        private float radius;
+        private int radiusSlot = -1;
+        private float radiusConstant = 5f;
+        private bool hasRadiusConstant;
 
         public override void DeserializeParameters(ReadOnlySpan<FieldData> fields, string[] fieldTypeNames, object[] boxedConstants)
         {
@@ -93,11 +96,19 @@ namespace BehaviourTree.Runtime.Methods
                 fieldIndex++;
             }
 
-            // ── Field 3: Radius (SO constant, baked as float) ────────
+            // ── Field 3: Radius (constant, variable, or SO field) ──
             if (fieldIndex < fields.Length)
             {
-                object val = VariableMethodHelper.ReadConstant(fields, ref fieldIndex, fieldTypeNames, boxedConstants);
-                radius = val is float f ? f : (val is int i ? (float)i : 5f);
+                if (fields[fieldIndex].IsVariable)
+                {
+                    radiusSlot = VariableMethodHelper.ReadVariableSlot(fields, ref fieldIndex);
+                }
+                else
+                {
+                    hasRadiusConstant = true;
+                    object val = VariableMethodHelper.ReadConstant(fields, ref fieldIndex, fieldTypeNames, boxedConstants);
+                    radiusConstant = val is float f ? f : (val is int i ? (float)i : 5f);
+                }
             }
         }
 
@@ -128,6 +139,10 @@ namespace BehaviourTree.Runtime.Methods
             }
 
             Vector3 position = center;
+
+            float radius = hasRadiusConstant
+                ? radiusConstant
+                : (radiusSlot >= 0 ? Convert.ToSingle(BB.GetBoxed(radiusSlot)) : 5f);
 
             if(agentOffset == 0)
             {

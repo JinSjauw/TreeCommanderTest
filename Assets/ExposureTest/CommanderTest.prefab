@@ -46,7 +46,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de84ed8973a25ae4a9ee5f6fb88c2f85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackBoard
-  serializedReferences: []
+  serializedReferences:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   valueOverrides: []
   overriddenReferenceSlots: 
 --- !u!114 &9052893811937196989
@@ -62,8 +98,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Runtime::BehaviourTree.Runtime.CommanderTreeRunner
   blackBoard: {fileID: 1101994468010055678}
-  runtimeAsset: {fileID: 0}
-  authoringAsset: {fileID: 11400000, guid: a8f6398331ad38244935a1ef9f7faeca, type: 2}
+  authoringAsset: {fileID: 11400000, guid: 221d8808e50837440bea4bc218e7d66e, type: 2}
+  authoringAssetGuid: 221d8808e50837440bea4bc218e7d66e
   trackedBindingGroups: []
   registeredAgents: []
 --- !u!114 &4763498702124455055

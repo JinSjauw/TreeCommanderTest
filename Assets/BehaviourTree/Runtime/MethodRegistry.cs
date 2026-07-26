@@ -177,7 +177,7 @@ namespace BehaviourTree.Runtime
                 SharedVarAttribute sharedVar = field.GetCustomAttribute<SharedVarAttribute>();
                 bool isSharedVar = sharedVar != null;
                 bool isOutput = isSharedVar;
-                if (isSharedVar && sharedVar.IsToggleVariable)
+                if (isSharedVar && (sharedVar.IsToggleVariable || sharedVar.IsSOConstant))
                     isOutput = false;
 
                 list.Add(new FieldBinding

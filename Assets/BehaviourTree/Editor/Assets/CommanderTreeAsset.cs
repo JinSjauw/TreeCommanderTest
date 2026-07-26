@@ -44,6 +44,7 @@ namespace BehaviourTree.Editor
             {
                 // Existing commander tree — bridge to the base field
                 blackboardDefinition = commanderBlackboardDefinition;
+                EnsureSystemVariables(blackboardDefinition);
                 SyncStrideToBlackboard();
                 EditorUtility.SetDirty(this);
                 AssetDatabase.SaveAssets();
@@ -55,9 +56,23 @@ namespace BehaviourTree.Editor
 
             commanderBlackboardDefinition = created;
             blackboardDefinition = created;
+            EnsureSystemVariables(created);
             SyncStrideToBlackboard();
             AssetDatabase.AddObjectToAsset(created, this);
             AssetDatabase.SaveAssets();
+        }
+
+        /// <summary>
+        /// Ensures the commander-side system variables (AgentRoles, AgentOrders,
+        /// AgentStatus) exist in the given blackboard. Generated on
+        /// creation so every commander tree always carries them.
+        /// </summary>
+        private static void EnsureSystemVariables(BlackboardDefinition bbDef)
+        {
+            if (bbDef == null) return;
+            bbDef.EnsureVariable("AgentRoles", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
+            bbDef.EnsureVariable("AgentOrders", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
+            bbDef.EnsureVariable("AgentStatus", typeof(int), stride: 1, isSquadData: true, isSystemVariable: true);
         }
 
         private void OnValidate()

@@ -12,56 +12,18 @@ namespace BehaviourTree.Runtime.Methods
     [NodeMethod("Enemy_Detected", allowedTreeType = AllowedTreeType.Agent)]
     public sealed class Enemy_Detected : ConditionMethod
     {
-        public override DynamicParamDescriptor[] GetDynamicParamDescriptors() => new[]
-        {
-            new DynamicParamDescriptor
-            {
-                titleLabel = "Radius",
-                label = "Radius",
-                kind = DynamicParamKind.ScriptableObjectConstant,
-                index = 0,
-                allowedTypes = new[] { typeof(float) }
-            },
-            new DynamicParamDescriptor
-            {
-                titleLabel = "Operation",
-                label = "Operation",
-                kind = DynamicParamKind.Operation,
-                index = 1,
-                operationEnumType = typeof(RangeCheckOp)
-            },
-            new DynamicParamDescriptor
-            {
-                titleLabel = "Check LOS",
-                label = "Check LOS",
-                kind = DynamicParamKind.Constant,
-                index = 2,
-                allowedTypes = new[] { typeof(bool) }
-            },
-        };
+        /// <summary>Detection radius. Three-way row: constant, BB variable, or ScriptableObject field.</summary>
+        [SharedVar(IsSOConstant = true)]
+        public float radius;
 
-        private float radius;
-        private RangeCheckOp operation;
-        private bool checkLineOfSight;
+        /// <summary>Range comparison applied to each detected target.</summary>
+        public RangeCheckOp operation;
+
+        /// <summary>When true, targets also require line of sight.</summary>
+        public bool checkLineOfSight;
+
         private EnemyDetectionSystem cachedDetection;
         private Transform cachedAgentTransform;
-
-        public override void DeserializeParameters(
-            ReadOnlySpan<FieldData> fields,
-            string[] fieldTypeNames,
-            object[] boxedConstants)
-        {
-            int fieldIndex = 0;
-
-            if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
-                radius = fields[fieldIndex++].GetFloat();
-
-            if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
-                operation = (RangeCheckOp)fields[fieldIndex++].value;
-
-            if (fieldIndex < fields.Length && fields[fieldIndex].IsConstant)
-                checkLineOfSight = fields[fieldIndex].GetBool();
-        }
 
         protected override void OnInitialize()
         {

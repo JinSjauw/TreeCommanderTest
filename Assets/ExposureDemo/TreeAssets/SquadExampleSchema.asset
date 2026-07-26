@@ -93,6 +93,21 @@ MonoBehaviour:
     - treeVariableName: AgentStatus
       squadVariableName: AgentStatus
       direction: 0
+  - treeAsset: {fileID: 11400000, guid: 8368782eccbf76140b5b5eba5654d92f, type: 2}
+    treeAssetGuid: 8368782eccbf76140b5b5eba5654d92f
+    bindings:
+    - treeVariableName: 
+      squadVariableName: AgentRoles
+      direction: 0
+    - treeVariableName: 
+      squadVariableName: AgentOrders
+      direction: 1
+    - treeVariableName: 
+      squadVariableName: 
+      direction: 0
+    - treeVariableName: 
+      squadVariableName: 
+      direction: 0
 --- !u!114 &818047124686629
 MonoBehaviour:
   m_ObjectHideFlags: 0

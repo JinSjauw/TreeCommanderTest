@@ -135,6 +135,13 @@ public partial class BlackBoardView : VisualElement
         // Undo/redo — rebuild ListView and re-run propagation
         Undo.undoRedoPerformed -= OnUndoRedoPerformed;
         Undo.undoRedoPerformed += OnUndoRedoPerformed;
+
+        // External additions (e.g. auto-created system variables from squad
+        // connections) — the 100ms scheduler detects them and flushes this
+        // event; rebuild the list so they become visible.
+        VariableChangePropagator.ChangesFlushed -= OnVariablesChanged;
+        VariableChangePropagator.ChangesFlushed += OnVariablesChanged;
+
         RegisterCallback<DetachFromPanelEvent>(OnDetach);
     }
 
@@ -660,8 +667,19 @@ public partial class BlackBoardView : VisualElement
         HandleTypeChanges();
     }
 
+    private void OnVariablesChanged()
+    {
+        if (cachedDefinition == null || variableListView == null) return;
+
+        // itemsSource may point to a stale list reference; re-assign and
+        // rebuild so newly added (e.g. auto-created) variables show up.
+        variableListView.itemsSource = cachedDefinition.sharedVariables;
+        variableListView.Rebuild();
+    }
+
     private void OnDetach(DetachFromPanelEvent evt)
     {
         Undo.undoRedoPerformed -= OnUndoRedoPerformed;
+        VariableChangePropagator.ChangesFlushed -= OnVariablesChanged;
     }
 }

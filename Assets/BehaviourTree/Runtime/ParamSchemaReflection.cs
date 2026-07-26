@@ -40,7 +40,9 @@ namespace BehaviourTree.Core
                 string title = char.ToUpper(f.Name[0]) + f.Name.Substring(1);
 
                 DynamicParamDescriptor d;
-                if (sv != null && sv.IsToggleVariable)
+                if (sv != null && sv.IsSOConstant)
+                    d = Params.SOConstant(title, f.FieldType);
+                else if (sv != null && sv.IsToggleVariable)
                     d = Params.Toggle(title, f.FieldType);
                 else if (sv != null || isArray)
                     d = Params.Variable(title, f.FieldType);

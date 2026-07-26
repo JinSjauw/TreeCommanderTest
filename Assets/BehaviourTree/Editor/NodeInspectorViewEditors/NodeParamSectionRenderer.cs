@@ -334,6 +334,16 @@ namespace BehaviourTree.Editor
                         break;
                 }
 
+                // SOConstant rows have no type-filter button, so for single-type
+                // descriptors the entry type is unambiguous — repair stale values
+                // (e.g. entries serialized before the descriptor declared allowedTypes).
+                if (desc.kind == DynamicParamKind.ScriptableObjectConstant &&
+                    desc.allowedTypes != null && desc.allowedTypes.Length == 1)
+                {
+                    entry.FindPropertyRelative("fieldTypeName").stringValue =
+                        desc.allowedTypes[0].AssemblyQualifiedName;
+                }
+
                 if (desc.isArray)
                     entry.FindPropertyRelative("isArray").boolValue = true;
             }

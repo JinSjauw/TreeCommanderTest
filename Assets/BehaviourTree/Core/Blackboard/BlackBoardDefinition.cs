@@ -76,7 +76,8 @@ namespace BehaviourTree.Core
         }
 
         /// <summary>
-        /// Ensures a variable with the given name and type exists. If it already exists, returns it unchanged.
+        /// Ensures a variable with the given name and type exists. If it already exists, repairs
+        /// mismatched squad-data/system flags and returns it.
         /// If not, creates a new variable with the specified properties.
         /// Useful for auto-creating system variables when binding groups are set up.
         /// </summary>
@@ -85,7 +86,15 @@ namespace BehaviourTree.Core
             if (string.IsNullOrEmpty(name) || type == null) return null;
 
             BlackboardVariableBase existing = FindVariable(name);
-            if (existing != null) return existing;
+            if (existing != null)
+            {
+                // Repair flags that may have been written with wrong values before
+                if (existing.isSquadData != isSquadData)
+                    existing.isSquadData = isSquadData;
+                if (existing.isSystemVariable != isSystemVariable)
+                    existing.isSystemVariable = isSystemVariable;
+                return existing;
+            }
 
             Type genericType = typeof(BlackboardVariable<>).MakeGenericType(type);
             BlackboardVariableBase variable = (BlackboardVariableBase)Activator.CreateInstance(genericType);

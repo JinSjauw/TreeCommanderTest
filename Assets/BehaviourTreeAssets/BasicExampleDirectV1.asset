@@ -46,7 +46,7 @@ MonoBehaviour:
     isVariable: 0
     isToggleVariable: 0
     isArray: 0
-    variableName: HEALTH
+    variableName: 
     fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
     stringValue: 
     isOrderConstant: 0
@@ -740,10 +740,10 @@ MonoBehaviour:
   methodName: Enemy_Detected
   fieldEntries:
   - fieldName: radius
-    isVariable: 0
+    isVariable: 1
     isToggleVariable: 0
     isArray: 0
-    variableName: 
+    variableName: TestVar
     fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
     stringValue: 
     isOrderConstant: 0
@@ -762,7 +762,8 @@ MonoBehaviour:
     isToggleVariable: 0
     isArray: 0
     variableName: 
-    fieldTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+    fieldTypeName: BehaviourTree.Runtime.Methods.RangeCheckOp, Assembly-CSharp, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
     stringValue: 
     isOrderConstant: 0
     configSourceGuid: 
@@ -775,7 +776,7 @@ MonoBehaviour:
     vector3Value: {x: 0, y: 0, z: 0}
     gameObjectValue: {fileID: 0}
     transformValue: {fileID: 0}
-  - fieldName: checklos
+  - fieldName: checkLineOfSight
     isVariable: 0
     isToggleVariable: 0
     isArray: 0
@@ -842,6 +843,7 @@ MonoBehaviour:
   - rid: 4957662229637365760
   - rid: 4957662229637365761
   - rid: 4957662229637365762
+  - rid: 4957662253024804953
   references:
     version: 2
     RefIds:
@@ -919,7 +921,7 @@ MonoBehaviour:
         variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         isSquadData: 0
-        isSystemVariable: 0
+        isSystemVariable: 1
         singleValue: 0
         arrayValues: 
     - rid: 4957662229637365761
@@ -930,7 +932,7 @@ MonoBehaviour:
         variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         isSquadData: 0
-        isSystemVariable: 0
+        isSystemVariable: 1
         singleValue: 0
         arrayValues: 
     - rid: 4957662229637365762
@@ -941,6 +943,17 @@ MonoBehaviour:
         variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         isSquadData: 0
-        isSystemVariable: 0
+        isSystemVariable: 1
         singleValue: 0
         arrayValues: 
+    - rid: 4957662253024804953
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
+      data:
+        variableName: TestVar
+        variableStride: 1
+        variableTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+        isSquadData: 0
+        isSystemVariable: 0
+        singleValue: 25
+        arrayValues: []
