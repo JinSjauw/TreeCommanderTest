@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21e56169e2eb9a0468b42aed5cafc71b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Runtime::BehaviourTree.Runtime.SquadManager
-  definition: {fileID: 11400000, guid: 315de1a1a1fa36d4cbb10aa23a2c865b, type: 2}
+  definition: {fileID: 0}
   commanderPrefab: {fileID: 979536817622609347, guid: e4a06b6e35de3e840ad3d82da7bc3fe1, type: 3}
   agentPrefab: {fileID: 2381881914486876084, guid: f6796897431bb524c9ca71c4872a2715, type: 3}
   agentCount: 7

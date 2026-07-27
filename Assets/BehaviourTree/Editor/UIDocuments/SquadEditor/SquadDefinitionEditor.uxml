@@ -16,9 +16,9 @@
         </ui:VisualElement>
         <ui:ScrollView name="sections-scroll" style="flex-grow: 1; padding-right: 0; padding-left: 0; padding-top: 4px; padding-bottom: 0; margin-right: 0; margin-left: 0; border-bottom-width: 2px; border-left-color: rgb(231, 231, 231); border-right-color: rgb(231, 231, 231); border-top-color: rgb(231, 231, 231); border-bottom-color: rgb(231, 231, 231);">
             <ui:VisualElement name="blackboard-container" class="element-container">
-                <BlackBoardView name="squad-blackboard-view"/>
+                <BlackBoardView name="squad-blackboard-view" style="padding-bottom: 12px;"/>
             </ui:VisualElement>
-            <ui:VisualElement name="roles-container" class="element-container" style="flex-direction: column; flex-grow: 1; align-items: stretch; padding-left: 6px; padding-right: 6px; background-color: rgb(46, 46, 46); border-top-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-bottom-left-radius: 8px;">
+            <ui:VisualElement name="roles-container" class="element-container">
                 <ui:Label text="Available Roles" name="roles-header" class="squad-section-header squad-section-header--subsequent"/>
                 <ui:Label text="Total Slots: " name="amount-sub-header" style="color: rgb(200, 200, 200); margin-bottom: 4px;"/>
                 <ui:VisualElement name="role-add-container" style="flex-grow: 1; flex-direction: row;">

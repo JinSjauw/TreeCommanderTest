@@ -17,7 +17,7 @@ MonoBehaviour:
   - name: ARTILLERY
     colour: {r: 1, g: 0, b: 0, a: 1}
     maxAmount: 1
-    isFallback: 1
+    isFallback: 0
     prefab: {fileID: 0}
   - name: FLANKER
     colour: {r: 0.8396226, g: 0, b: 0.5984322, a: 1}
@@ -26,7 +26,7 @@ MonoBehaviour:
     prefab: {fileID: 0}
   - name: ASSAULT
     colour: {r: 1, g: 0.85521466, b: 0.33490568, a: 1}
-    maxAmount: 2
+    maxAmount: 3
     isFallback: 1
     prefab: {fileID: 0}
   bindingGroups:
@@ -81,33 +81,18 @@ MonoBehaviour:
     - treeVariableName: EnagagePosition
       squadVariableName: AgentsPosition
       direction: 0
-  - treeAsset: {fileID: 11400000, guid: ac1b6ceed17dc304abdf6ef3477a35f8, type: 2}
-    treeAssetGuid: ac1b6ceed17dc304abdf6ef3477a35f8
+  - treeAsset: {fileID: 11400000, guid: 7c11e8e41a71a704f89960b279370038, type: 2}
+    treeAssetGuid: 7c11e8e41a71a704f89960b279370038
     bindings:
-    - treeVariableName: AgentAssignedRole
+    - treeVariableName: AgentRoles
       squadVariableName: AgentRoles
-      direction: 0
-    - treeVariableName: AgentReceivedOrder
-      squadVariableName: AgentOrders
       direction: 1
+    - treeVariableName: AgentOrders
+      squadVariableName: AgentOrders
+      direction: 0
     - treeVariableName: AgentStatus
       squadVariableName: AgentStatus
-      direction: 0
-  - treeAsset: {fileID: 11400000, guid: 8368782eccbf76140b5b5eba5654d92f, type: 2}
-    treeAssetGuid: 8368782eccbf76140b5b5eba5654d92f
-    bindings:
-    - treeVariableName: 
-      squadVariableName: AgentRoles
-      direction: 0
-    - treeVariableName: 
-      squadVariableName: AgentOrders
       direction: 1
-    - treeVariableName: 
-      squadVariableName: 
-      direction: 0
-    - treeVariableName: 
-      squadVariableName: 
-      direction: 0
 --- !u!114 &818047124686629
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -74,15 +74,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   valueOverrides: []
   overriddenReferenceSlots: 
 --- !u!114 &9052893811937196989
@@ -98,8 +89,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Runtime::BehaviourTree.Runtime.CommanderTreeRunner
   blackBoard: {fileID: 1101994468010055678}
-  authoringAsset: {fileID: 11400000, guid: 221d8808e50837440bea4bc218e7d66e, type: 2}
-  authoringAssetGuid: 221d8808e50837440bea4bc218e7d66e
+  authoringAsset: {fileID: 11400000, guid: 7c11e8e41a71a704f89960b279370038, type: 2}
+  authoringAssetGuid: 7c11e8e41a71a704f89960b279370038
   trackedBindingGroups: []
   registeredAgents: []
 --- !u!114 &4763498702124455055

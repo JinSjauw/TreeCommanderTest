@@ -4,13 +4,13 @@
 
 **Preset assets (already in the project):**
 
-| Asset | Path | Role |
-|-------|------|------|
-| Commander tree | `Assets/ExposureTest/CommanderPatrolTest.asset` | Calculates formation, sends PATROL order |
-| Agent tree | `Assets/ExposureTest/SquaddieTest.asset` | Receives order, moves to its formation slot |
-| Squad prefab | `Assets/ExposureTest/SquadTest.prefab` | Has the `SquadManager` component |
-| Commander prefab | `Assets/ExposureTest/CommanderTest.prefab` | Has the `CommanderTreeRunner` |
-| Agent prefab | `Assets/ExposureTest/SquaddieTank.prefab` | Has the `AgentTreeRunner` |
+| Asset | Role |
+|-------|------|
+| `CommanderTest` (commander tree) | Calculates formation, sends PATROL order |
+| `SquaddieTest` (agent tree) | Receives order, moves to its formation slot |
+| `SquadTest` (prefab) | Has the `SquadManager` component |
+| `CommanderTest` (prefab) | Has the `CommanderTreeRunner` |
+| `SquaddieTank` (prefab) | Has the `AgentTreeRunner` |
 
 ## Goal
 
@@ -22,7 +22,7 @@ Wire the preset commander tree and agent tree together through a new SquadDefini
 
 Open both trees (double-click the assets) and inspect their blackboards and nodes.
 
-**CommanderPatrolTest:**
+**CommanderTest:**
 - `ExtractPosition` reads `PatrolPoints` and writes the next waypoint into `SquadMovePosition`.
 - `CalculateFormation` takes `SquadMovePosition` as the centre and writes each agent's circle position into **`AgentMovePosition`** (Vector3, SquadData — one slot per agent).
 - `SendOrder` writes `PATROL` into `AgentOrders`.
@@ -38,24 +38,48 @@ Open both trees (double-click the assets) and inspect their blackboards and node
 commander  AgentMovePosition[i]  ──►  squad  ──►  agent  AgentMoveTarget
 ```
 
+
 So the squad definition needs **one custom variable**: `AgentMovePosition` (Vector3, **SquadData** = per-agent array). Orders, roles, status and leader index are *system channels* — you do not create those by hand; they appear automatically in Step 4.
 
-**[ SCREENSHOT: both trees open, highlighting AgentMovePosition on the commander and AgentMoveTarget on the agent ]**
+> **The mental model — think in data first.** Before touching the editor, decide **what data needs to travel between the commander and the agents**. The two trees never talk to each other directly: the **SquadDefinition is the intermediary layer**. The commander writes to and reads from the squad blackboard; each agent writes to and reads from the squad blackboard. **Commander ↔ SquadDef ↔ Agent** — never Commander ↔ Agent.
+
+---
+
+## The Squads Tab vs the Commander Tab
+
+When you open a tree asset you will see these tabs:
+
+![The Squads tab (blue) and the Commander tab (purple)](Images/TabsExample.png)
+
+- **Squads tab** (blue) — present on **both** tree types. This is where you configure **which squads this tree is compatible with**: *"What squad definitions can this tree be a member of?"* A tree lists every squad it can join here as a squaddie.
+- **Commander tab** (purple) — **only available on a Commander Tree**. This is where you define **which squad definition this commander controls**: *"What type of squad does this tree command?"*
+
+In short: the **Squads tab = membership** (what squads can I join?), the **Commander tab = command** (what squad do I control?).
 
 ---
 
 ## Step 2 — Create a new SquadDefinition
 
 1. Open the Squad Editor via the menu `BehaviourTree > Open Squad Editor`.
+
+![Opening the Squad Editor from the menu](Images/OpenSquadEditorExample_Menu.png)
+
 2. Click **Create New Squad** and save it (e.g. `PatrolSquad`).
 3. In the **Blackboard section** (top), add the custom variable from Step 1:
    - Name: `AgentMovePosition`
    - Type: `Vector3`
    - **SquadData: ON** (one slot per agent — the stride is set automatically at runtime)
+![Blackboard section with the AgentMovePosition variable](Images/SquadDatasSelectExample.png)
+![Blackboard section with the AgentMovePosition variable](Images/BlackboardExample.png)
 
-Do not add `AgentRoles`, `AgentOrders`, `AgentStatus` or `LeaderIndex` manually — those are system variables and are auto-created when you add binding groups in Step 4.
+> **SquadData — the key concept for designers.**
+> Only the **SquadDefinition** and the **commander tree** can hold SquadData variables — a SquadData variable is an **array with one slot per agent** (e.g. `AgentMovePosition[0..2]` for 3 agents).
+> **Agent trees cannot hold SquadData.** An agent never sees the array — it automatically reads and writes **only its own slot** and always works with a **plain single value** (e.g. one Vector3 `AgentMoveTarget`). The slot offset comes from the agent's index in the squad and is applied for you.
+> So when you design a data channel: array on the squad/commander side, single value on the agent side, and the binding bridges the two.
 
-**[ SCREENSHOT: the new SquadDefinition in the Squad Editor with the AgentMovePosition variable ]**
+Do not add `AgentRoles`, `AgentOrders`, `AgentStatus` manually — those are system variables and are auto-created when you add binding groups in Step 4.
+
+
 
 ---
 
@@ -73,7 +97,7 @@ In the **Roles section** (middle), click **+ Add Role**:
 
 The sum of `Max Amount` across all roles = the total number of agent slots in the squad. Keep this number in mind — the SquadManager's `Agent Count` may not exceed it (extra agents are clamped with a warning).
 
-**[ SCREENSHOT: the Roles section with the ASSAULT role filled in ]**
+![Roles section with the ASSAULT role filled in](Images/RoleSectionExample.png)
 
 ---
 
@@ -81,9 +105,11 @@ The sum of `Max Amount` across all roles = the total number of agent slots in th
 
 In the **Binding Groups section** (bottom) you create one binding group per tree. A binding says: *which tree variable reads or writes which squad variable, and in which direction* (`ToSquad` = tree → squad, `FromSquad` = squad → tree).
 
+![Tree binding groups in the Squad Editor](Images/TreeBindingExample.png)
+
 ### 4a. Commander binding group
 
-Click **+ Add Binding Group** and select **CommanderPatrolTest**. The system bindings appear automatically:
+Click **+ Add Binding Group** and select **CommanderTest**. The system bindings appear automatically:
 
 | Squad Variable | Tree Variable | Direction |
 |----------------|---------------|-----------|
@@ -98,7 +124,7 @@ Click **+ Add Binding** and add the custom binding for the formation position:
 |----------------|---------------|-----------|-----|
 | AgentMovePosition | AgentMovePosition | **ToSquad** | The commander *writes* each agent's formation slot into the squad |
 
-**[ SCREENSHOT: the commander binding group with all five bindings ]**
+![Commander tab showing the bindings for the squad](Images/CommanderTabExample.png)
 
 ### 4b. Agent binding group
 
@@ -116,15 +142,19 @@ Click **+ Add Binding** and add the custom binding:
 |----------------|---------------|-----------|-----|
 | AgentMovePosition | AgentMoveTarget | **FromSquad** | The agent *reads* its own formation slot — the per-agent offset is applied automatically |
 
+![The binding row: SquadData array on the squad side (blue), single value on the agent side (red)](Images/SquadDataExample.png)
+
 > Variable names must match **exactly** (the commander's output is `AgentMovePosition`, the agent's input is `AgentMoveTarget`). A typo or a wrong direction silently results in agents that never move.
 
-**[ SCREENSHOT: the agent binding group with all four bindings ]**
+![Squad connection on the agent tree](Images/SquadConnectionExample.png)
+
+![A single binding row in the connection](Images/SquadConnectionRowExample.png)
 
 ---
 
 ## Step 5 — Wire up the SquadTest prefab
 
-Open `Assets/ExposureTest/SquadTest.prefab` and set the **SquadManager** component fields:
+Open the `SquadTest` prefab and set the **SquadManager** component fields:
 
 | Field | Value |
 |-------|-------|
@@ -143,12 +173,9 @@ Open `Assets/ExposureTest/SquadTest.prefab` and set the **SquadManager** compone
 
 Both runners must point at the correct tree assets:
 
-1. Open `CommanderTest.prefab` → `CommanderTreeRunner` → **Authoring Asset** = `CommanderPatrolTest`.
-2. Open `SquaddieTank.prefab` → `AgentTreeRunner` → **Authoring Asset** = `SquaddieTest`.
+1. Open the `CommanderTest` prefab → `CommanderTreeRunner` → **Authoring Asset** = `CommanderTest` (the commander tree).
+2. Open the `SquaddieTank` prefab → `AgentTreeRunner` → **Authoring Asset** = `SquaddieTest`.
 
-**[ SCREENSHOT: CommanderTreeRunner with CommanderPatrolTest assigned ]**
-
-**[ SCREENSHOT: AgentTreeRunner with SquaddieTest assigned ]**
 
 ---
 

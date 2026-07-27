@@ -9,7 +9,7 @@
         </ui:VisualElement>
         <ui:Label text="Label" name="max-member-field" style="-unity-font-style: bold; margin-top: 8px; margin-bottom: 8px; display: none;"/>
         <ui:VisualElement name="section-separator" style="flex-grow: 1; border-top-width: 1px; border-left-color: rgb(196, 196, 196); border-right-color: rgb(196, 196, 196); border-top-color: rgb(196, 196, 196); border-bottom-color: rgb(196, 196, 196); padding-bottom: 0; padding-top: 0; margin-bottom: 6px; margin-top: 2px;"/>
-        <ui:VisualElement name="roles-section" style="margin-bottom: 8px;">
+        <ui:VisualElement name="roles-section" enabled="true" style="margin-bottom: 8px; display: none; visibility: hidden;">
             <ui:Label text="Roles" name="roles-header" style="color: rgb(179, 179, 179); -unity-font-style: bold; margin-bottom: 4px;"/>
             <ui:Button text="+ Add Role" name="add-role-button" style="margin-top: 2px;"/>
             <ui:VisualElement name="roles-container"/>

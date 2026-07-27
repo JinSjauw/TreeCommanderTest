@@ -582,14 +582,18 @@ PrefabInstance:
     - target: {fileID: 7742238448167979364, guid: 3bf191ac55094db47ae36af44b6433a8, type: 3}
       propertyPath: authoringAsset
       value: 
-      objectReference: {fileID: 11400000, guid: 8368782eccbf76140b5b5eba5654d92f, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 7742238448167979364, guid: 3bf191ac55094db47ae36af44b6433a8, type: 3}
       propertyPath: authoringAssetGuid
-      value: 8368782eccbf76140b5b5eba5654d92f
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8261073738341746034, guid: 3bf191ac55094db47ae36af44b6433a8, type: 3}
       propertyPath: m_Name
       value: TargetTest
+      objectReference: {fileID: 0}
+    - target: {fileID: 8261073738341746034, guid: 3bf191ac55094db47ae36af44b6433a8, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8452727825258029498, guid: 3bf191ac55094db47ae36af44b6433a8, type: 3}
       propertyPath: serializedReferences.Array.size
@@ -1486,7 +1490,7 @@ MonoBehaviour:
   objectPool: {fileID: 1660154982}
   enemyPrefab: {fileID: 8261073738341746034, guid: 3bf191ac55094db47ae36af44b6433a8, type: 3}
   enemyPatrolPoints: {fileID: 264813706}
-  spawnEnemyAtStart: 0
+  spawnEnemyAtStart: 1
   spawnEnemyOnTimer: 0
   enemySpawnTimer: 180
   squadManagerPrefab: {fileID: 4318205481906272402, guid: 3d7fe7e4fc8a1ee4891d59dccf12c22c, type: 3}
@@ -1494,7 +1498,7 @@ MonoBehaviour:
   spawnSquadAtStart: 1
   spawnSquadOnTimer: 0
   squadSpawnTimer: 180
-  squadAgentCount: 6
+  squadAgentCount: 10
   squadRadius: 8
 --- !u!1 &1327896414
 GameObject:

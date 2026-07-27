@@ -72,12 +72,6 @@
     margin-top: 4px;
 }
 
-
-
-
-
-
-
 #bindings-add-row {
     flex-direction: row;
     align-items: center;
@@ -108,12 +102,6 @@
     font-size: 12px;
     white-space: normal;
 }
-
-
-
-
-
-
 
 #sub-section-separator {
     border-top-width: 2px;
@@ -158,9 +146,20 @@
     margin-top: 10px;
 }
 
-
-
 #content-area > #sections-scroll > #bindings-container > #binding-groups-scroll > #unity-content-and-vertical-scroll-container > #unity-content-viewport {
     padding-left: 6px;
     padding-right: 6px;
+}
+
+.element-container {
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: stretch;
+    padding-left: 6px;
+    padding-right: 6px;
+    background-color: rgb(46, 46, 46);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
 }
