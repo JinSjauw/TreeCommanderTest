@@ -165,8 +165,6 @@ Open the `SquadTest` prefab and set the **SquadManager** component fields:
 | Spawn On Start | ✓ |
 | Leader Death Behavior | `Promote` |
 
-**[ SCREENSHOT: the SquadManager component on the SquadTest prefab, fully assigned ]**
-
 ---
 
 ## Step 6 — Check the tree runners
