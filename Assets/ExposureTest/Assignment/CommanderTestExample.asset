@@ -20,7 +20,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 4ecbb3f5c456e1e4b8e1b7174584bbb2
-  graphPosition: {x: -167, y: 393}
+  graphPosition: {x: -167, y: 409}
   runtimeIndex: -1
   compositeType: 1
   methodName: ForEachAgent
@@ -92,7 +92,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: 43bfd53752ab14d4d9c907b55a04b6a8
-  graphPosition: {x: -342, y: 393}
+  graphPosition: {x: -377, y: 409}
   runtimeIndex: -1
   leafType: 3
   methodName: ExtractPosition
@@ -164,14 +164,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d1ee0a8d9db227047b1741495fd2232d, type: 3}
-  m_Name: CommanderTest
+  m_Name: CommanderTestExample
   m_EditorClassIdentifier: BehaviourTree.Editor::BehaviourTree.Editor.CommanderTreeAsset
   root: {fileID: -6892583958024655455}
   blackboardDefinition: {fileID: 8567297082842997377}
   commanderBlackboardDefinition: {fileID: 8567297082842997377}
-  squadConnections:
-  - squad: {fileID: 11400000, guid: 31472f977e5443e47a1778f6ade52b9e, type: 2}
-    assignedRoles: []
+  squadConnections: []
   availableConfigs: []
   nodesList:
   - {fileID: -6892583958024655455}
@@ -183,7 +181,7 @@ MonoBehaviour:
   - {fileID: -8978101440253739513}
   editorNotes: []
   commanderSquad: {fileID: 11400000, guid: 31472f977e5443e47a1778f6ade52b9e, type: 2}
-  maxSquadSize: 8
+  maxSquadSize: 6
 --- !u!114 &2128919178268196619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,7 +200,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: f5096911900856f4fa568a81fcaa88e0
-  graphPosition: {x: 8, y: 393}
+  graphPosition: {x: 62, y: 407}
   runtimeIndex: -1
   leafType: 3
   methodName: PollAgentStatus
@@ -244,7 +242,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: afb96ebd84b849a47b1d2a81d3529936
-  graphPosition: {x: -237, y: 638}
+  graphPosition: {x: -291, y: 638}
   runtimeIndex: -1
   leafType: 3
   methodName: CalculateFormation
@@ -342,7 +340,7 @@ MonoBehaviour:
   lastChildIndex: 0
   comment: 
   guid: c5f8e7c09d32d7b4ea71378c92d73bf4
-  graphPosition: {x: -62, y: 638}
+  graphPosition: {x: -27, y: 638}
   runtimeIndex: -1
   leafType: 3
   methodName: SendOrder
@@ -410,7 +408,7 @@ MonoBehaviour:
       type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentRoles
-        variableStride: 8
+        variableStride: 6
         variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         isSquadData: 1
@@ -421,7 +419,7 @@ MonoBehaviour:
       type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentOrders
-        variableStride: 8
+        variableStride: 6
         variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         isSquadData: 1
@@ -432,7 +430,7 @@ MonoBehaviour:
       type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentStatus
-        variableStride: 8
+        variableStride: 6
         variableTypeName: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         isSquadData: 1
@@ -465,7 +463,7 @@ MonoBehaviour:
       type: {class: 'BlackboardVariable`1[[UnityEngine.Vector3, UnityEngine.CoreModule]]', ns: BehaviourTree.Core, asm: BehaviourTree.Core}
       data:
         variableName: AgentMovePositions
-        variableStride: 8
+        variableStride: 6
         variableTypeName: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
         isSquadData: 1
