@@ -81,6 +81,21 @@ MonoBehaviour:
     - treeVariableName: EnagagePosition
       squadVariableName: AgentsPosition
       direction: 0
+  - treeAsset: {fileID: 11400000, guid: a8468937d345f8d4b971da736a9935ec, type: 2}
+    treeAssetGuid: a8468937d345f8d4b971da736a9935ec
+    bindings:
+    - treeVariableName: AgentAssignedRole
+      squadVariableName: AgentRoles
+      direction: 0
+    - treeVariableName: AgentReceivedOrder
+      squadVariableName: AgentOrders
+      direction: 1
+    - treeVariableName: AgentStatus
+      squadVariableName: AgentStatus
+      direction: 0
+    - treeVariableName: AgentMoveTarget
+      squadVariableName: AgentMovePosition
+      direction: 1
 --- !u!114 &818047124686629
 MonoBehaviour:
   m_ObjectHideFlags: 0

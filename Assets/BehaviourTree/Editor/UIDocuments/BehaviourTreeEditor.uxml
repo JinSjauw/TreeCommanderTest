@@ -1,11 +1,11 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True" style="flex-grow: 1;">
-    <Style src="project://database/Assets/Scripts/BehaviourTree/Editor/UIDocuments/BehaviourTreeEditor.uss?fileID=7433441132597879392&amp;guid=f5b57338203a14a4380802d587fdec85&amp;type=3#BehaviourTreeEditor"/>
-    <Style src="project://database/Assets/Scripts/BehaviourTree/Editor/UIDocuments/TabContentStyle.uss?fileID=7433441132597879392&amp;guid=8f92422b15060c441845a2cf4623c6d8&amp;type=3#TabContentStyle"/>
+    <Style src="project://database/Assets/BehaviourTree/Editor/UIDocuments/BehaviourTreeEditor.uss?fileID=7433441132597879392&amp;guid=f5b57338203a14a4380802d587fdec85&amp;type=3#BehaviourTreeEditor"/>
+    <Style src="project://database/Assets/BehaviourTree/Editor/UIDocuments/TabContentStyle.uss?fileID=7433441132597879392&amp;guid=8f92422b15060c441845a2cf4623c6d8&amp;type=3#TabContentStyle"/>
     <uie:Toolbar>
         <uie:ToolbarMenu text="Assets" name="AssetBarMenu"/>
     </uie:Toolbar>
     <SplitView fixed-pane-index="0" fixed-pane-initial-dimension="380" orientation="Horizontal">
-        <ui:VisualElement name="InspectorPane" style="flex-grow: 1; flex-shrink: 1; height: 100%; width: 400px;">
+        <ui:VisualElement name="InspectorPane" style="flex-grow: 1; flex-shrink: 1; height: 100%; width: 380px;">
             <ui:TabView name="TabView" style="height: 45%; flex-grow: 1; min-height: auto; flex-shrink: 1; display: flex;">
                 <ui:Tab label="Shared" name="SharedVariablesTab" class="tab-container-styling">
                     <BlackBoardView name="black-board-view" class="tab-styling"/>
