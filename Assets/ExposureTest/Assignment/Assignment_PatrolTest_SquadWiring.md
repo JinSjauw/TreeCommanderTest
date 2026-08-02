@@ -66,9 +66,10 @@ In short: the **Squads tab = membership** (what squads can I join?), the **Comma
 
 2. Click **Create New Squad** and save it (e.g. `PatrolSquad`).
 3. In the **Blackboard section** (top), add the custom variable from Step 1:
-   - Name: `AgentMovePosition`
+   - Name: `AgentMovePosition(Or your own var name)`
    - Type: `Vector3`
    - **SquadData: ON** (one slot per agent — the stride is set automatically at runtime)
+
 ![Blackboard section with the AgentMovePosition variable](Images/SquadDatasSelectExample.png)
 ![Blackboard section with the AgentMovePosition variable](Images/BlackboardExample.png)
 
@@ -109,16 +110,17 @@ In the **Binding Groups section** (bottom) you create one binding group per tree
 
 ### 4a. Commander binding group
 
-Click **+ Add Binding Group** and select **CommanderTest**. The system bindings appear automatically:
+In the Squad Definition Editor Click **+ Add** and select **CommanderTest**. The system bindings appear automatically:
+OR
+In the Commander Tab in the CommanderTest tree asset select **Your squad definition**
 
 | Squad Variable | Tree Variable | Direction |
 |----------------|---------------|-----------|
 | AgentRoles | AgentRoles | FromSquad |
 | AgentOrders | AgentOrders | ToSquad |
 | AgentStatus | AgentStatus | FromSquad |
-| LeaderIndex | LeaderIndex | FromSquad |
 
-Click **+ Add Binding** and add the custom binding for the formation position:
+In either the squad definition editor or the tree asset click **+ Add Binding** and add the custom binding for the formation position:
 
 | Squad Variable | Tree Variable | Direction | Why |
 |----------------|---------------|-----------|-----|
@@ -128,7 +130,9 @@ Click **+ Add Binding** and add the custom binding for the formation position:
 
 ### 4b. Agent binding group
 
-Click **+ Add Binding Group** and select **SquaddieTest**. The system bindings appear automatically:
+In the squad definition editor click **+ Add** and select **SquaddieTest**. The system bindings appear automatically:
+OR
+In the **SquaddieTest** in the **Squads** tab you can add a squad connection in that tab and configure the bindings there.
 
 | Squad Variable | Tree Variable | Direction |
 |----------------|---------------|-----------|
@@ -164,8 +168,6 @@ Open the `SquadTest` prefab and set the **SquadManager** component fields:
 | Agent Count | `3` (≤ total role slots from Step 3) |
 | Spawn On Start | ✓ |
 | Leader Death Behavior | `Promote` |
-
-**[ SCREENSHOT: the SquadManager component on the SquadTest prefab, fully assigned ]**
 
 ---
 
