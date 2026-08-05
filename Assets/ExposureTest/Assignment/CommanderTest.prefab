@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6714113862871991729}
   - component: {fileID: 1101994468010055678}
   - component: {fileID: 9052893811937196989}
-  - component: {fileID: 4763498702124455055}
   m_Layer: 0
   m_Name: CommanderTest
   m_TagString: Untagged
@@ -46,34 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de84ed8973a25ae4a9ee5f6fb88c2f85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BehaviourTree.Core::BehaviourTree.Core.BlackBoard
-  serializedReferences:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  serializedReferences: []
   valueOverrides: []
   overriddenReferenceSlots: 
 --- !u!114 &9052893811937196989
@@ -90,19 +62,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: BehaviourTree.Runtime::BehaviourTree.Runtime.CommanderTreeRunner
   blackBoard: {fileID: 1101994468010055678}
   authoringAsset: {fileID: 11400000, guid: 7c11e8e41a71a704f89960b279370038, type: 2}
-  authoringAssetGuid: 7c11e8e41a71a704f89960b279370038
+  authoringAssetGuid: 
   trackedBindingGroups: []
   registeredAgents: []
---- !u!114 &4763498702124455055
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 979536817622609347}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4229e115ca48e574f818f811e0a1579a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  TESTINT: 1

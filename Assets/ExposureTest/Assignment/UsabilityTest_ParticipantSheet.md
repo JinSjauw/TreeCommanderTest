@@ -29,15 +29,15 @@ But the **commander has no tree**. When you press Play, the squad spawns and not
 
 ## Your Tasks
 
-### Task 0 — Create the commander tree and hook up the patrol points
+### Task 0 - Setup — Create the commander tree and hook up the patrol points
 
-Create a **new commander tree** and make the **CommanderTest.prefab** run it. Then, on that tree's blackboard, add a variable that holds a reference to the patrol-points Transform (a parent object with the points as its children):
+Create a **new commander tree** and assign it on the **CommanderTest.prefab**. Then, on that tree's blackboard, add a variable that holds a reference to the patrol-points Transform (a parent object with the points as its children):
 
 - Name it **exactly** `PatrolPoints`
 - Type: **Transform**
 - A **single value** (not SquadData)
 
-Name and type are all that matter — the scene fills in the actual reference for you at runtime.
+**Name and type are all that matter — the scene fills in the actual reference for you at runtime.**
 
 ### Task 1 — Move as a formation
 
